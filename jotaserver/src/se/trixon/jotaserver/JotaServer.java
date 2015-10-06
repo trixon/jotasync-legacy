@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2015 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,32 @@
  */
 package se.trixon.jotaserver;
 
+import java.util.ResourceBundle;
+import org.apache.commons.cli.CommandLine;
+import se.trixon.util.BundleHelper;
+import se.trixon.util.Xlog;
+
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class JotaServer {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static final int DEFAULT_PORT = 1099;
+
+    private final ResourceBundle mBundle = BundleHelper.getBundle(Main.class, "Bundle");
+
+    public JotaServer(CommandLine cmd) {
+        if (cmd.hasOption("port")) {
+            String port = cmd.getOptionValue("port");
+            try {
+                //mConnectionManager.setPort(Integer.valueOf(port));
+            } catch (NumberFormatException e) {
+                Xlog.timedErr(String.format(mBundle.getString("invalid_port"), port, DEFAULT_PORT));
+            }
+        }
+
+        //mConnectionManager.startServer();
     }
-    
+
 }
