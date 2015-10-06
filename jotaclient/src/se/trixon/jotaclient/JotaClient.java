@@ -15,6 +15,8 @@
  */
 package se.trixon.jotaclient;
 
+import se.trixon.util.SystemHelper;
+
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
@@ -25,7 +27,7 @@ public class JotaClient {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        System.setProperty("java.rmi.server.hostname", SystemHelper.getHostname());
     }
     
 }
