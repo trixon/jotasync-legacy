@@ -5,3 +5,5 @@
 /jotaclient/build/
 /jotaserver/build/
 /jotaserver/dist/
+/jotacommon/build/
+/jotacommon/dist/

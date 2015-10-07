@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jotaclient;
-
-import se.trixon.util.SystemHelper;
+package se.trixon.jota;
 
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class JotaClient {
+public class JotaHelper {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        System.setProperty("java.rmi.server.hostname", SystemHelper.getHostname());
+    public static String getRmiName(String host, int port, Class c) {
+        return String.format("//%s:%d/%s", host, port, c.getCanonicalName());
     }
-    
+
 }

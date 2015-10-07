@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2015 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jotaserver;
+package se.trixon.jota;
 
 import java.util.ResourceBundle;
-import org.apache.commons.cli.CommandLine;
 import se.trixon.util.BundleHelper;
-import se.trixon.util.Xlog;
 
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class JotaServer {
+public class Jota {
+
+    private static final ResourceBundle sBundle = BundleHelper.getBundle(Jota.class, "Bundle");
 
     public static final int DEFAULT_PORT = 1099;
 
-    private final ResourceBundle mBundle = BundleHelper.getBundle(Main.class, "Bundle");
-
-    public JotaServer(CommandLine cmd) {
-        if (cmd.hasOption("port")) {
-            String port = cmd.getOptionValue("port");
-            try {
-                //mConnectionManager.setPort(Integer.valueOf(port));
-            } catch (NumberFormatException e) {
-                Xlog.timedErr(String.format(mBundle.getString("invalid_port"), port, DEFAULT_PORT));
-            }
-        }
-
-        //mConnectionManager.startServer();
+    public static ResourceBundle getBundle() {
+        return sBundle;
     }
 
+    public static void exit() {
+        exit(0);
+    }
+
+    public static void exit(int status) {
+        System.exit(status);
+    }
+
+    public static String getVersionInfo(String name) {
+        return String.format(sBundle.getString("version_info"), name, sBundle.getString("version"),name);
+    }
 }

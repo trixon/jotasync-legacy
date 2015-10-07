@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jotaserver;
+package se.trixon.jotaclient;
 
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
@@ -33,7 +33,6 @@ import se.trixon.util.Xlog;
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class Main {
-
     private final ResourceBundle mJotaBundle = Jota.getBundle();
 
     /**
@@ -51,37 +50,48 @@ public class Main {
             } else if (cmd.hasOption("version")) {
                 displayVersion();
             } else {
-                Server server = new Server(cmd);
+                Client client = new Client(cmd);
             }
         } catch (ParseException ex) {
             Xlog.timedErr(ex.getMessage());
-            System.out.println("Try 'jotaserver --help' for more information.");
+            System.out.println("Try 'jotaclient --help' for more information.");
         }
     }
-
+    
     private static void displayHelp(Options options) {
         String header = "rsync front end with built in cron\n\n";
         String footer = "\nPlease report issues to patrik@trixon.se";
 
         HelpFormatter formatter = new HelpFormatter();
         formatter.setOptionComparator(null);
-        formatter.printHelp("jotaserver", header, options, footer, true);
+        formatter.printHelp("jotaclient", header, options, footer, true);
     }
 
     private static void displayVersion() {
-        System.out.println(Jota.getVersionInfo("jotaserver"));
+        System.out.println(Jota.getVersionInfo("jotaclient"));
     }
 
     private static Options initOptions() {
         Option help = new Option("?", "help", false, "print this message");
         Option version = new Option("v", "version", false, "print the version information and exit\n");
+        Option host = Option.builder("h").longOpt("host").argName("host").hasArg(true).desc("connect to server at host [hostname]").build();
         Option port = Option.builder("p").longOpt("port").argName("port").hasArg(true).desc("connect to server at port [1099]").build();
+        Option enable = new Option("e", "enable", false, "enable internal cron");
+        Option disable = new Option("d", "disable", false, "disable internal cron");
+        Option shutdown = new Option("s", "shutdown", false, "shutdown jotasync");
+        Option status = new Option("u", "status", false, "print status information");
 
         Options options = new Options();
         options.addOption(help);
         options.addOption(version);
+        options.addOption(host);
         options.addOption(port);
+        options.addOption(enable);
+        options.addOption(disable);
+        options.addOption(shutdown);
+        options.addOption(status);
 
         return options;
     }
+    
 }
