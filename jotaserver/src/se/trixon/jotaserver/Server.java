@@ -26,12 +26,14 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.PreferenceChangeEvent;
 import org.apache.commons.cli.CommandLine;
 import se.trixon.jota.ClientCallbacks;
 import se.trixon.jota.Jota;
 import se.trixon.jota.JotaHelper;
 import se.trixon.jota.JotaServer;
 import se.trixon.jota.ServerCommander;
+import se.trixon.jota.ServerEvent;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 
@@ -41,11 +43,12 @@ import se.trixon.util.Xlog;
  */
 public class Server extends UnicastRemoteObject implements ServerCommander {
 
+    private HashSet<ClientCallbacks> mClientCallbacks = new HashSet<>();
     private final ResourceBundle mJotaBundle = Jota.getBundle();
-    private int mPort = Jota.DEFAULT_PORT;
+    private final Options mOptions = Options.INSTANCE;
+    private int mPort = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameServer;
     private VMID mServerVmid;
-    private HashSet<ClientCallbacks> mClientCallbacks = new HashSet<>();
 
     public Server(CommandLine cmd) throws RemoteException {
         super(0);
@@ -54,10 +57,10 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
             try {
                 mPort = Integer.valueOf(port);
             } catch (NumberFormatException e) {
-                Xlog.timedErr(String.format(mJotaBundle.getString("invalid_port"), port, Jota.DEFAULT_PORT));
+                Xlog.timedErr(String.format(mJotaBundle.getString("invalid_port"), port, Jota.DEFAULT_PORT_HOST));
             }
         }
-
+        intiListeners();
         startServer();
     }
 
@@ -67,13 +70,26 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public void displayStatus() throws RemoteException {
-        Xlog.timedOut("TODO: return server status");
+    public String getStatus() throws RemoteException {
+        StringBuilder builder = new StringBuilder("status\n");
+        builder.append(String.format("vmid\t%s", mServerVmid.toString())).append("\n");
+        builder.append(String.format("clients\t%d", mClientCallbacks.size())).append("\n");
+        builder.append(String.format("cron\t%s", mOptions.isCronActive())).append("\n");
+        builder.append(String.format("rsync\t%s", mOptions.getRsyncPath())).append("\n");
+        String status = builder.toString();
+        Xlog.timedOut("return " + status);
+
+        return status;
     }
 
     @Override
     public VMID getVMID() throws RemoteException {
         return mServerVmid;
+    }
+
+    @Override
+    public boolean isCronActive() throws RemoteException {
+        return mOptions.isCronActive();
     }
 
     @Override
@@ -90,7 +106,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
 
     @Override
     public void setCronActive(boolean enable) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        mOptions.setCronActive(enable);
     }
 
     @Override
@@ -102,6 +118,32 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
         } catch (NotBoundException | MalformedURLException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void intiListeners() {
+        mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
+            Xlog.timedOut(String.format(">>> %s on %s key=%s", "preferenceChange", SystemHelper.getHostname(), evt.getKey()));
+            HashSet<ClientCallbacks> invalidClientCallbacks = new HashSet<>();
+
+            for (ClientCallbacks clientCallback : mClientCallbacks) {
+                switch (evt.getKey()) {
+                    case Options.KEY_CRON_ACTIVE: {
+                        try {
+                            clientCallback.onServerEvent(ServerEvent.CRON_CHANGED);
+                        } catch (RemoteException ex) {
+                            //Add invalid reference for removal
+                            invalidClientCallbacks.add(clientCallback);
+                        }
+                    }
+                    break;
+                }
+            }
+
+            invalidClientCallbacks.stream().forEach((invalidClientCallback) -> {
+                //Remove invalid reference
+                mClientCallbacks.remove(invalidClientCallback);
+            });
+        });
     }
 
     private void startServer() {

@@ -20,16 +20,20 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 import org.apache.commons.cli.CommandLine;
 import se.trixon.jota.ClientCallbacks;
 import se.trixon.jota.Jota;
+import se.trixon.jota.JotaClient;
 import se.trixon.jota.JotaHelper;
 import se.trixon.jota.JotaServer;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.ServerEvent;
+import se.trixon.jota.ServerEventListener;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 
@@ -40,11 +44,14 @@ import se.trixon.util.Xlog;
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
 
     private VMID mClientVmid;
+    private String mHost = SystemHelper.getHostname();
+    private final ResourceBundle mJotaBundle = Jota.getBundle();
+    private int mPortClient = Jota.DEFAULT_PORT_CLIENT;
+    private int mPortHost = Jota.DEFAULT_PORT_HOST;
+    private String mRmiNameClient;
     private String mRmiNameServer;
     private ServerCommander mServerCommander;
-    private final ResourceBundle mJotaBundle = Jota.getBundle();
-    private String mHost = SystemHelper.getHostname();
-    private int mPort = Jota.DEFAULT_PORT;
+    private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
 
     public Client(CommandLine cmd) throws RemoteException {
@@ -56,13 +63,83 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         if (cmd.hasOption("port")) {
             String port = cmd.getOptionValue("port");
             try {
-                mPort = Integer.valueOf(port);
+                mPortHost = Integer.valueOf(port);
             } catch (NumberFormatException e) {
-                Xlog.timedErr(String.format(mJotaBundle.getString("invalid_port"), port, Jota.DEFAULT_PORT));
+                Xlog.timedErr(String.format(mJotaBundle.getString("invalid_port"), port, Jota.DEFAULT_PORT_HOST));
             }
         }
 
+        if (cmd.hasOption("client-port")) {
+            String port = cmd.getOptionValue("client-port");
+            try {
+                mPortClient = Integer.valueOf(port);
+            } catch (NumberFormatException e) {
+                Xlog.timedErr(String.format(mJotaBundle.getString("invalid_port"), port, Jota.DEFAULT_PORT_CLIENT));
+            }
+        }
+
+        startRMI();
+
+        if (cmd.hasOption("status")) {
+            execute(Command.DISPLAY_STATUS);
+            Jota.exit();
+        } else if (cmd.hasOption("shutdown")) {
+            execute(Command.SHUTDOWN);
+            Jota.exit();
+        } else if (cmd.hasOption("cron")) {
+            String state = cmd.getOptionValue("cron");
+            if (state.equalsIgnoreCase("on")) {
+                execute(Command.START_CRON);
+            } else if (state.equalsIgnoreCase("off")) {
+                execute(Command.STOP_CRON);
+            } else {
+                Xlog.timedOut("invalid cron argument");
+            }
+            Jota.exit();
+        } else {
+            //displayGui();
+        }
+    }
+
+    @Override
+    public void onServerEvent(ServerEvent serverEvent) throws RemoteException {
+        mServerEventListeners.stream().forEach((serverEventListener) -> {
+            serverEventListener.onServerEvent(serverEvent);
+        });
+    }
+
+    @Override
+    public void onTimeWillTell(Date date) throws RemoteException {
+        System.out.println("timeWillTell");
+        System.out.println(date);
+    }
+
+    private void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
+        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
+        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
+        mClientVmid = new VMID();
+
+        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
+        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
+        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
+        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
+
+        mServerCommander.registerClient(this, SystemHelper.getHostname());
+
+//        mConnectionListeners.stream().forEach((connectionListener) -> {
+//            connectionListener.onConnectionClientConnect();
+//        });
+    }
+
+    private void initCallbackServer() throws RemoteException, MalformedURLException, java.rmi.server.ExportException {
+        mRmiNameClient = JotaHelper.getRmiName(SystemHelper.getHostname(), mPortHost, JotaClient.class);
+        LocateRegistry.createRegistry(mPortClient);
+        Naming.rebind(mRmiNameClient, this);
+    }
+
+    private void startRMI() throws RemoteException {
         try {
+            initCallbackServer();
             connectToServer();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 Xlog.timedOut("Shutting down client jvm...");
@@ -74,69 +151,22 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                     }
                 }
             }));
-        } catch (NotBoundException | MalformedURLException | java.rmi.ConnectException | java.rmi.UnknownHostException ex) {
+        } catch (NotBoundException | MalformedURLException | java.rmi.server.ExportException | java.rmi.ConnectException | java.rmi.UnknownHostException ex) {
             Xlog.timedErr(ex.getLocalizedMessage());
             Jota.exit();
         }
-
-        if (cmd.hasOption("status")) {
-            execute(Command.DISPLAY_STATUS);
-            Jota.exit();
-        } else if (cmd.hasOption("shutdown")) {
-            execute(Command.SHUTDOWN);
-            Jota.exit();
-        } else if (cmd.hasOption("enable")) {
-            execute(Command.START_CRON);
-            Jota.exit();
-        } else if (cmd.hasOption("disable")) {
-            execute(Command.STOP_CRON);
-            Jota.exit();
-        } else {
-            //displayGui();
-        }
     }
 
-    @Override
-    public void onServerEvent(ServerEvent serverEvent) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    boolean addServerEventListener(ServerEventListener serverEventListener) {
+        return mServerEventListeners.add(serverEventListener);
     }
 
-    @Override
-    public void onTimeWillTell(Date date) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
-        //Xlog.timedOut("connectToServer()");
-        mRmiNameServer = JotaHelper.getRmiName(mHost, mPort, JotaServer.class);
-        //Xlog.timedOut(mRmiNameServer);
-        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
-        //mServerOptions = mServerCommander.loadServerOptions();
-        mClientVmid = new VMID();
-
-        String message;
-        message = String.format("server found at %s.", mRmiNameServer);
-        Xlog.timedOut(message);
-        message = "server vmid: " + mServerCommander.getVMID();
-        Xlog.timedOut(message);
-        message = String.format("client connected to %s", mRmiNameServer);
-        Xlog.timedOut(message);
-        message = "client vmid: " + mClientVmid.toString();
-        Xlog.timedOut(message);
-
-        mServerCommander.registerClient(this, SystemHelper.getHostname());
-
-//        mConnectionListeners.stream().forEach((connectionListener) -> {
-//            connectionListener.onConnectionClientConnect();
-//        });
-    }
-
-    public void execute(Command command) {
+    void execute(Command command) {
         Xlog.timedOut(command.getMessage());
         try {
             switch (command) {
                 case DISPLAY_STATUS:
-                    mServerCommander.displayStatus();
+                    Xlog.timedOut(mServerCommander.getStatus());
                     break;
 
                 case START_CRON:
@@ -163,7 +193,11 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         }
     }
 
-    public enum Command {
+    boolean removeServerEventListener(ServerEventListener serverEventListener) {
+        return mServerEventListeners.remove(serverEventListener);
+    }
+
+    enum Command {
 
         DIR_HOME("ls /home"),
         DISPLAY_STATUS("Request status information"),

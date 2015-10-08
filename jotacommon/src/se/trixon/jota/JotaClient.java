@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2015 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,32 +15,10 @@
  */
 package se.trixon.jota;
 
-import java.util.ResourceBundle;
-import se.trixon.util.BundleHelper;
-
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class Jota {
+public class JotaClient {
 
-    public static final int DEFAULT_PORT_CLIENT = 1199;
-    public static final int DEFAULT_PORT_HOST = 1099;
-    private static final ResourceBundle sBundle = BundleHelper.getBundle(Jota.class, "Bundle");
-
-    public static void exit() {
-        exit(0);
-    }
-
-    public static void exit(int status) {
-        System.exit(status);
-    }
-
-    public static ResourceBundle getBundle() {
-        return sBundle;
-    }
-
-    public static String getVersionInfo(String name) {
-        return String.format(sBundle.getString("version_info"), name, sBundle.getString("version"), name);
-    }
 }

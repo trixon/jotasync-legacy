@@ -33,6 +33,7 @@ import se.trixon.util.Xlog;
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class Main {
+
     private final ResourceBundle mJotaBundle = Jota.getBundle();
 
     /**
@@ -53,11 +54,11 @@ public class Main {
                 Client client = new Client(cmd);
             }
         } catch (ParseException ex) {
-            Xlog.timedErr("QQQ"+ex.getMessage());
+            Xlog.timedErr(ex.getMessage());
             System.out.println("Try 'jotaclient --help' for more information.");
         }
     }
-    
+
     private static void displayHelp(Options options) {
         String header = "rsync front end with built in cron\n\n";
         String footer = "\nPlease report issues to patrik@trixon.se";
@@ -75,9 +76,9 @@ public class Main {
         Option help = new Option("?", "help", false, "print this message");
         Option version = new Option("v", "version", false, "print the version information and exit\n");
         Option host = Option.builder("h").longOpt("host").argName("host").hasArg(true).desc("connect to server at host [hostname]").build();
-        Option port = Option.builder("p").longOpt("port").argName("port").hasArg(true).desc("connect to server at port [1099]").build();
-        Option enable = new Option("e", "enable", false, "enable internal cron");
-        Option disable = new Option("d", "disable", false, "disable internal cron");
+        Option portHost = Option.builder("p").longOpt("port").argName("port").hasArg(true).desc("connect to server at port [1099]").build();
+        Option portClient = Option.builder("q").longOpt("client-port").argName("port").hasArg(true).desc("client callback port [1199]\n").build();
+        Option cron = Option.builder("c").longOpt("cron").argName("on|off").hasArg(true).desc("turn internal cron on or off").build();
         Option shutdown = new Option("s", "shutdown", false, "shutdown jotasync");
         Option status = new Option("u", "status", false, "print status information");
 
@@ -85,13 +86,12 @@ public class Main {
         options.addOption(help);
         options.addOption(version);
         options.addOption(host);
-        options.addOption(port);
-        options.addOption(enable);
-        options.addOption(disable);
+        options.addOption(portHost);
+        options.addOption(portClient);
+        options.addOption(cron);
         options.addOption(shutdown);
         options.addOption(status);
 
         return options;
     }
-    
 }
