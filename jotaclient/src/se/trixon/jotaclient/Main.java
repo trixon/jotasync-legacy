@@ -53,7 +53,7 @@ public class Main {
                 Client client = new Client(cmd);
             }
         } catch (ParseException ex) {
-            Xlog.timedErr(ex.getMessage());
+            Xlog.timedErr("QQQ"+ex.getMessage());
             System.out.println("Try 'jotaclient --help' for more information.");
         }
     }

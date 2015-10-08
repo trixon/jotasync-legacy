@@ -23,8 +23,6 @@ import java.rmi.dgc.VMID;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import se.trixon.jota.ClientCallbacks;
 import se.trixon.jota.Jota;
@@ -45,9 +43,9 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private String mRmiNameServer;
     private ServerCommander mServerCommander;
     private final ResourceBundle mJotaBundle = Jota.getBundle();
-
     private String mHost = SystemHelper.getHostname();
     private int mPort = Jota.DEFAULT_PORT;
+    private boolean mShutdownRequested;
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
@@ -67,11 +65,13 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         try {
             connectToServer();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                System.out.println("will run on exit");
+                Xlog.timedOut("Shutting down client jvm...");
                 try {
                     mServerCommander.removeClient(Client.this, SystemHelper.getHostname());
                 } catch (RemoteException ex) {
-                    Xlog.timedErr(ex.getLocalizedMessage());
+                    if (!mShutdownRequested) {
+                        Xlog.timedErr(ex.getLocalizedMessage());
+                    }
                 }
             }));
         } catch (NotBoundException | MalformedURLException | java.rmi.ConnectException | java.rmi.UnknownHostException ex) {
@@ -148,6 +148,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                     break;
 
                 case SHUTDOWN:
+                    mShutdownRequested = true;
                     mServerCommander.shutdown();
                     break;
 
