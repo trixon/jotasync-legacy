@@ -38,6 +38,8 @@ public interface ServerCommander extends Remote {
 //    ServerOptions loadServerOptions() throws RemoteException;
     void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
 
+    void removeClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
+
 //    void saveServerOptions(ServerOptions serverOptions) throws RemoteException;
 //    void setShowing(boolean showing) throws RemoteException;
     void shutdown() throws RemoteException;

@@ -16,7 +16,6 @@
 package se.trixon.jotaclient;
 
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -67,9 +66,16 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
         try {
             connectToServer();
-        } catch (NotBoundException | MalformedURLException | UnknownHostException ex) {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                System.out.println("will run on exit");
+                try {
+                    mServerCommander.removeClient(Client.this, SystemHelper.getHostname());
+                } catch (RemoteException ex) {
+                    Xlog.timedErr(ex.getLocalizedMessage());
+                }
+            }));
+        } catch (NotBoundException | MalformedURLException | java.rmi.ConnectException | java.rmi.UnknownHostException ex) {
             Xlog.timedErr(ex.getLocalizedMessage());
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             Jota.exit();
         }
 
@@ -100,10 +106,10 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.net.UnknownHostException {
-        Xlog.timedOut("connectToServer()");
+    private void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
+        //Xlog.timedOut("connectToServer()");
         mRmiNameServer = JotaHelper.getRmiName(mHost, mPort, JotaServer.class);
-        Xlog.timedOut(mRmiNameServer);
+        //Xlog.timedOut(mRmiNameServer);
         mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
         //mServerOptions = mServerCommander.loadServerOptions();
         mClientVmid = new VMID();

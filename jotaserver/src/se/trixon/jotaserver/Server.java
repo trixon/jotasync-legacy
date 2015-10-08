@@ -68,7 +68,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
 
     @Override
     public void displayStatus() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Xlog.timedOut("TODO: return server status");
     }
 
     @Override
@@ -80,6 +80,12 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     public void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException {
         Xlog.timedOut("registerClient(): " + hostname);
         mClientCallbacks.add(clientCallback);
+    }
+
+    @Override
+    public void removeClient(ClientCallbacks clientCallback, String hostname) throws RemoteException {
+        Xlog.timedOut("unregisterClient(): " + hostname);
+        mClientCallbacks.remove(clientCallback);
     }
 
     @Override
