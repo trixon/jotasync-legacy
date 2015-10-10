@@ -15,7 +15,11 @@
  */
 package se.trixon.jotaclient;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -25,6 +29,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.cli.CommandLine;
 import se.trixon.jota.ClientCallbacks;
 import se.trixon.jota.Jota;
@@ -34,8 +42,10 @@ import se.trixon.jota.JotaServer;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
+import se.trixon.jotasync.ui.MainFrame;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
+import se.trixon.util.swing.SwingHelper;
 
 /**
  *
@@ -53,6 +63,8 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private ServerCommander mServerCommander;
     private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
+    private final ClientOptions mClientOptions = ClientOptions.INSTANCE;
+    private MainFrame mMainFrame = null;
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
@@ -97,7 +109,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             }
             Jota.exit();
         } else {
-            //displayGui();
+            displayGui();
         }
     }
 
@@ -129,6 +141,38 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 //        mConnectionListeners.stream().forEach((connectionListener) -> {
 //            connectionListener.onConnectionClientConnect();
 //        });
+    }
+    private void displayGui() {
+        if (mClientOptions.isForceLookAndFeel()) {
+            try {
+                UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mClientOptions.getLookAndFeel()));
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+                Xlog.timedErr(ex.getMessage());
+            }
+        }
+
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                mMainFrame = new MainFrame();
+            } catch (NotBoundException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RemoteException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            mMainFrame.addWindowListener(new WindowAdapter() {
+
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    super.windowClosing(e);
+                    //mConnectionManager.disconnectClient();
+                }
+            });
+            mMainFrame.setVisible(true);
+        });
     }
 
     private void initCallbackServer() throws RemoteException, MalformedURLException, java.rmi.server.ExportException {
