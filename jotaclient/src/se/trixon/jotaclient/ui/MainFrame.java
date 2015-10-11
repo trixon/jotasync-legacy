@@ -50,6 +50,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import se.trixon.jota.Jota;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
@@ -601,7 +602,7 @@ public class MainFrame extends javax.swing.JFrame  {
     }
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        JOptionPane.showMessageDialog(this, "Jotasync", Dict.ABOUT.getString(), JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, Jota.getVersionInfo("jotaclient"), Dict.ABOUT.getString(), JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
