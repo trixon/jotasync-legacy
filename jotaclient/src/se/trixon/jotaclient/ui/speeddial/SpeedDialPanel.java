@@ -136,8 +136,12 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
             mResetMenuItem = new JMenuItem(Dict.RESET.getString());
             mResetMenuItem.addActionListener((ActionEvent e) -> {
                 mButton.setJobId(-1);
-                mServerCommander.setSpeedDial(mButton.getIndex(), -1);
-                //saveSpeedDial();
+                try {
+                    mServerCommander.setSpeedDial(mButton.getIndex(), -1);
+                    //saveSpeedDial();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             });
             mPopupMenu.add(mResetMenuItem);
             mPopupMenu.add(new JSeparator());
@@ -147,15 +151,23 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
                 JMenuItem menuItem = new JMenuItem(job.toString());
                 menuItem.addActionListener((ActionEvent e) -> {
                     mButton.setJobId(jobId);
-                    mServerCommander.setSpeedDial(mButton.getIndex(), jobId);
-                    //saveSpeedDial();
+                    try {
+                        mServerCommander.setSpeedDial(mButton.getIndex(), jobId);
+                        //saveSpeedDial();
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 });
                 mPopupMenu.add(menuItem);
             }
 
             for (int i = 0; i < mButtons.size(); i++) {
                 SpeedDialButton button = mButtons.get(i);
-                button.setJobId(mServerCommander.getSpeedDial(i));
+                try {
+                    button.setJobId(mServerCommander.getSpeedDial(i));
+                } catch (RemoteException ex) {
+                    Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
