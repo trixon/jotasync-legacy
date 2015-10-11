@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jotaclient.Manager;
 import se.trixon.jotaclient.Options;
-import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
 
@@ -30,57 +29,55 @@ import se.trixon.util.swing.SwingHelper;
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class OptionsPanel extends javax.swing.JPanel {
-    private final Manager mManager=Manager.getInstance();
 
-    private ServerCommander mServerCommander;
-    private final Options mClientOptions = Options.INSTANCE;
+    private final Manager mManager = Manager.getInstance();
+    private final ServerCommander mServerCommander;
+    private final Options mOptions = Options.INSTANCE;
 
     /**
      * Creates new form OptionsPanel
      */
     public OptionsPanel() {
-        mServerCommander=mManager.getServerCommander();
+        mServerCommander = mManager.getServerCommander();
         initComponents();
-        Xlog.timedOut("OptionsPanel()");
 
-        if (mServerCommander==null) {
-                        rsyncFileChooserPanel.setEnabled(false);
-
+        if (mServerCommander == null) {
+            rsyncFileChooserPanel.setEnabled(false);
         }
 
         load();
     }
 
+    void save() {
+        if (mManager.isConnected()) {
+            try {
+                mServerCommander.setRsyncPath(rsyncFileChooserPanel.getPath());
+            } catch (RemoteException ex) {
+                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
-    public void save() {
-//        if (mConnectionManager.isConnected()) {
-//            mServerOptions.setRsync(rsyncFileChooserPanel.getPath());
-//            try {
-//                ConnectionManager.INSTANCE.getServerCommander().saveServerOptions(mServerOptions);
-//            } catch (RemoteException ex) {
-//                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-
-        mClientOptions.setForceLookAndFeel(lafForceCheckBox.isSelected());
-        mClientOptions.setLookAndFeel((String) lafComboBox.getSelectedItem());
-        mClientOptions.setDisplayMennuIcons(menuIconsCheckBox.isSelected());
+        mOptions.setForceLookAndFeel(lafForceCheckBox.isSelected());
+        mOptions.setLookAndFeel((String) lafComboBox.getSelectedItem());
+        mOptions.setDisplayMennuIcons(menuIconsCheckBox.isSelected());
     }
 
     private void load() {
-//        if (mConnectionManager.isConnected()) {
-//            try {
-//                rsyncFileChooserPanel.setPath(mServerOptions.getRsync());
-//            } catch (NullPointerException e) {
-//                rsyncFileChooserPanel.setEnabled(false);
-//            }
-//        }
-        lafForceCheckBox.setSelected(mClientOptions.isForceLookAndFeel());
+        if (mManager.isConnected()) {
+            try {
+                rsyncFileChooserPanel.setPath(mServerCommander.getRsyncPath());
+            } catch (NullPointerException | RemoteException ex) {
+                rsyncFileChooserPanel.setEnabled(false);
+                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        lafForceCheckBox.setSelected(mOptions.isForceLookAndFeel());
         lafComboBox.setModel(SwingHelper.getLookAndFeelComboBoxModel(true));
-        lafComboBox.setSelectedItem(mClientOptions.getLookAndFeel());
+        lafComboBox.setSelectedItem(mOptions.getLookAndFeel());
 
         lafForceCheckBoxActionPerformed(null);
-        menuIconsCheckBox.setSelected(mClientOptions.isDisplayMenuIcons());
+        menuIconsCheckBox.setSelected(mOptions.isDisplayMenuIcons());
     }
 
     /**
@@ -98,7 +95,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         lafComboBox = new javax.swing.JComboBox();
         menuIconsCheckBox = new javax.swing.JCheckBox();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotasync/ui/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/Bundle"); // NOI18N
         rsyncFileChooserPanel.setHeader(bundle.getString("OptionsPanel.rsyncFileChooserPanel.header")); // NOI18N
 
         lafForceCheckBox.setText(bundle.getString("OptionsPanel.lafForceCheckBox.text")); // NOI18N

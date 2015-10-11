@@ -27,6 +27,8 @@ public interface ServerCommander extends Remote {
 
     void dirHome() throws RemoteException;
 
+    String getRsyncPath() throws RemoteException;
+
     long getSpeedDial(int key) throws RemoteException;
 
     String getStatus() throws RemoteException;
@@ -40,6 +42,8 @@ public interface ServerCommander extends Remote {
     void removeClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
 
     void setCronActive(boolean enable) throws RemoteException;
+
+    void setRsyncPath(String path) throws RemoteException;
 
     void setSpeedDial(int key, long jobId) throws RemoteException;
 

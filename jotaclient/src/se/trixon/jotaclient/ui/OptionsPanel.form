@@ -54,14 +54,14 @@
     <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="rsyncFileChooserPanel">
       <Properties>
         <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="se/trixon/jotasync/ui/Bundle.properties" key="OptionsPanel.rsyncFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="se/trixon/jotaclient/ui/Bundle.properties" key="OptionsPanel.rsyncFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="lafForceCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="se/trixon/jotasync/ui/Bundle.properties" key="OptionsPanel.lafForceCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="se/trixon/jotaclient/ui/Bundle.properties" key="OptionsPanel.lafForceCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -80,7 +80,7 @@
     <Component class="javax.swing.JCheckBox" name="menuIconsCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="se/trixon/jotasync/ui/Bundle.properties" key="OptionsPanel.menuIconsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="se/trixon/jotaclient/ui/Bundle.properties" key="OptionsPanel.menuIconsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

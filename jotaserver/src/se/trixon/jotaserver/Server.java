@@ -70,6 +70,11 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
+    public String getRsyncPath() throws RemoteException {
+        return mOptions.getRsyncPath();
+    }
+
+    @Override
     public long getSpeedDial(int key) {
         return mOptions.getSpeedDial(key);
     }
@@ -112,6 +117,11 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public void setCronActive(boolean enable) throws RemoteException {
         mOptions.setCronActive(enable);
+    }
+
+    @Override
+    public void setRsyncPath(String path) throws RemoteException {
+        mOptions.setRsyncPath(path);
     }
 
     @Override
