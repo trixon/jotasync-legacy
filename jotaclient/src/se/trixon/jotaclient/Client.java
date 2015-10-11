@@ -17,9 +17,7 @@ package se.trixon.jotaclient;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -29,8 +27,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.cli.CommandLine;
@@ -56,6 +52,9 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private VMID mClientVmid;
     private String mHost = SystemHelper.getHostname();
     private final ResourceBundle mJotaBundle = Jota.getBundle();
+    private MainFrame mMainFrame = null;
+    private final Manager mManager = Manager.getInstance();
+    private final Options mOptions = Options.INSTANCE;
     private int mPortClient = Jota.DEFAULT_PORT_CLIENT;
     private int mPortHost = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameClient;
@@ -63,33 +62,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private ServerCommander mServerCommander;
     private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
-    private final Options mOptions = Options.INSTANCE;
-    private MainFrame mMainFrame = null;
-    private final Manager mManager=Manager.getInstance();
-
-    public String getHost() {
-        return mHost;
-    }
-
-    public void setHost(String mHost) {
-        this.mHost = mHost;
-    }
-
-    public int getPortClient() {
-        return mPortClient;
-    }
-
-    public void setPortClient(int portClient) {
-        mPortClient = portClient;
-    }
-
-    public int getPortHost() {
-        return mPortHost;
-    }
-
-    public void setPortHost(int portHost) {
-        mPortHost = portHost;
-    }
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
@@ -139,6 +111,50 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         }
     }
 
+    public void execute(Command command) {
+        Xlog.timedOut(command.getMessage());
+        try {
+            switch (command) {
+                case DISPLAY_STATUS:
+                    Xlog.timedOut(mServerCommander.getStatus());
+                    break;
+                    
+                case START_CRON:
+                    mServerCommander.setCronActive(true);
+                    break;
+                    
+                case STOP_CRON:
+                    mServerCommander.setCronActive(false);
+                    break;
+                    
+                case SHUTDOWN:
+                    mShutdownRequested = true;
+                    mServerCommander.shutdown();
+                    break;
+                    
+                case DIR_HOME:
+                    mServerCommander.dirHome();
+                    break;
+            }
+        } catch (RemoteException ex) {
+            if (command != Command.SHUTDOWN) {
+                Xlog.timedErr(ex.getLocalizedMessage());
+            }
+        }
+    }
+    
+    public String getHost() {
+        return mHost;
+    }
+
+    public int getPortClient() {
+        return mPortClient;
+    }
+
+    public int getPortHost() {
+        return mPortHost;
+    }
+    
     @Override
     public void onServerEvent(ServerEvent serverEvent) throws RemoteException {
         mServerEventListeners.stream().forEach((serverEventListener) -> {
@@ -150,6 +166,18 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     public void onTimeWillTell(Date date) throws RemoteException {
         System.out.println("timeWillTell");
         System.out.println(date);
+    }
+    
+    public void setHost(String mHost) {
+        this.mHost = mHost;
+    }
+
+    public void setPortClient(int portClient) {
+        mPortClient = portClient;
+    }
+
+    public void setPortHost(int portHost) {
+        mPortHost = portHost;
     }
 
     private void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
@@ -164,8 +192,9 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
 
         mServerCommander.registerClient(this, SystemHelper.getHostname());
-mManager.connected();
+        mManager.connected();
     }
+
     private void displayGui() {
         if (mOptions.isForceLookAndFeel()) {
             try {
@@ -176,7 +205,7 @@ mManager.connected();
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-                mMainFrame = new MainFrame();
+            mMainFrame = new MainFrame();
             mMainFrame.addWindowListener(new WindowAdapter() {
 
                 @Override
@@ -190,7 +219,7 @@ mManager.connected();
     }
 
     private void initCallbackServer() throws RemoteException, MalformedURLException, java.rmi.server.ExportException {
-        mRmiNameClient = JotaHelper.getRmiName(SystemHelper.getHostname(), mPortHost, JotaClient.class);
+        mRmiNameClient = JotaHelper.getRmiName(SystemHelper.getHostname(), mPortClient, JotaClient.class);
         LocateRegistry.createRegistry(mPortClient);
         Naming.rebind(mRmiNameClient, this);
     }
@@ -219,43 +248,11 @@ mManager.connected();
         return mServerEventListeners.add(serverEventListener);
     }
 
-    public void execute(Command command) {
-        Xlog.timedOut(command.getMessage());
-        try {
-            switch (command) {
-                case DISPLAY_STATUS:
-                    Xlog.timedOut(mServerCommander.getStatus());
-                    break;
-
-                case START_CRON:
-                    mServerCommander.setCronActive(true);
-                    break;
-
-                case STOP_CRON:
-                    mServerCommander.setCronActive(false);
-                    break;
-
-                case SHUTDOWN:
-                    mShutdownRequested = true;
-                    mServerCommander.shutdown();
-                    break;
-
-                case DIR_HOME:
-                    mServerCommander.dirHome();
-                    break;
-            }
-        } catch (RemoteException ex) {
-            if (command != Command.SHUTDOWN) {
-                Xlog.timedErr(ex.getLocalizedMessage());
-            }
-        }
-    }
-
     boolean removeServerEventListener(ServerEventListener serverEventListener) {
         return mServerEventListeners.remove(serverEventListener);
     }
 
-  public   enum Command {
+    public enum Command {
 
         DIR_HOME("ls /home"),
         DISPLAY_STATUS("Request status information"),
