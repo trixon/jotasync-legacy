@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jotasync.ui;
+package se.trixon.jotaclient.ui;
 
 import java.util.ResourceBundle;
 import javax.swing.text.DefaultCaret;
-import se.trixon.jotasync.exec.Launcher;
 import se.trixon.util.BundleHelper;
 
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class ProgressPanel extends javax.swing.JPanel implements Launcher.LauncherListener {
+public class ProgressPanel extends javax.swing.JPanel {
+//public class ProgressPanel extends javax.swing.JPanel implements Launcher.LauncherListener {
 
     private final DefaultCaret mCaret;
     private final String mToolName;
-    private final ResourceBundle mExitValueBundle = BundleHelper.getBundle(Launcher.class, "ExitValues");
+//    private final ResourceBundle mExitValueBundle = BundleHelper.getBundle(Launcher.class, "ExitValues");
 
     /**
      * Creates new form ProgressPanel
@@ -49,34 +49,34 @@ public class ProgressPanel extends javax.swing.JPanel implements Launcher.Launch
         return textArea.getText();
     }
 
-    @Override
-    synchronized public void launcherLog(String string) {
-        textArea.append(string + "\n");
-    }
-
-    @Override
-    public void onLauncherFinished(int exitValue, boolean destroyedByUser) {
-//        progressBar.setIndeterminate(false);
-        if (exitValue == 0) {
-//            launcherLog("Finished successfully");
-//            Message.information(mToolName, "Finished successfully");
-        } else if (destroyedByUser) {
-//            launcherLog("Aborted by user");
-//            Message.warning(mToolName, "Aborted by user");
-        } else {
-//            launcherLog("Finished  with exit value=" + getErrorCode(exitValue));
-//            Message.error(mToolName, String.format("Exited with: %s", getErrorCode(exitValue)));
-        }
-    }
-
-    @Override
-    synchronized public void onLauncherMessage(String message, Launcher.Mode mode) {
-        if (mode == Launcher.Mode.STD) {
-            launcherLog(message);
-        } else {
-            launcherLog("*** " + message + " ***");
-        }
-    }
+//    @Override
+//    synchronized public void launcherLog(String string) {
+//        textArea.append(string + "\n");
+//    }
+//
+//    @Override
+//    public void onLauncherFinished(int exitValue, boolean destroyedByUser) {
+////        progressBar.setIndeterminate(false);
+//        if (exitValue == 0) {
+////            launcherLog("Finished successfully");
+////            Message.information(mToolName, "Finished successfully");
+//        } else if (destroyedByUser) {
+////            launcherLog("Aborted by user");
+////            Message.warning(mToolName, "Aborted by user");
+//        } else {
+////            launcherLog("Finished  with exit value=" + getErrorCode(exitValue));
+////            Message.error(mToolName, String.format("Exited with: %s", getErrorCode(exitValue)));
+//        }
+//    }
+//
+//    @Override
+//    synchronized public void onLauncherMessage(String message, Launcher.Mode mode) {
+//        if (mode == Launcher.Mode.STD) {
+//            launcherLog(message);
+//        } else {
+//            launcherLog("*** " + message + " ***");
+//        }
+//    }
 
     public void reset() {
         progressBar.setIndeterminate(true);
@@ -91,10 +91,10 @@ public class ProgressPanel extends javax.swing.JPanel implements Launcher.Launch
         progressBar.setIndeterminate(false);
     }
 
-    private String getErrorCode(int exitValue) {
-        String key = String.valueOf(exitValue);
-        return mExitValueBundle.containsKey(key) ? mExitValueBundle.getString(key) : String.format(("System code: %s"), key);
-    }
+//    private String getErrorCode(int exitValue) {
+//        String key = String.valueOf(exitValue);
+//        return mExitValueBundle.containsKey(key) ? mExitValueBundle.getString(key) : String.format(("System code: %s"), key);
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.

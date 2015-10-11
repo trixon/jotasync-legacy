@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jotasync.ui;
+package se.trixon.jotaclient.ui;
 
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -50,25 +50,19 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import se.trixon.jotasync.ConnectionManager;
-import se.trixon.jotasync.ConnectionManager.ConnectionListener;
-import se.trixon.jotasync.JotaRunner;
-import se.trixon.jotasync.client.Client;
-import se.trixon.jotasync.client.ClientOptions.ClientOptionsEvent;
-import se.trixon.jotasync.job.Job;
-import se.trixon.jotasync.job.JobManager;
-import se.trixon.jotasync.client.ClientOptions;
-import se.trixon.jotasync.server.ServerCommander;
-import se.trixon.jotasync.server.ServerEvent;
-import se.trixon.jotasync.server.ServerEventListener;
-import se.trixon.jotasync.server.ServerOptions;
-import se.trixon.jotasync.ui.editor.EditorPanel;
-import se.trixon.jotasync.ui.speeddial.SpeedDialButton;
-import se.trixon.jotasync.ui.speeddial.SpeedDialPanel;
+import se.trixon.jota.ServerCommander;
+import se.trixon.jota.ServerEventListener;
+import se.trixon.jota.job.Job;
+import se.trixon.jota.job.JobManager;
+import se.trixon.jotaclient.Client;
+import se.trixon.jotaclient.Manager;
+import se.trixon.jotaclient.Options;
+import se.trixon.jotaclient.Options.ClientOptionsEvent;
+import se.trixon.jotaclient.ui.editor.EditorPanel;
+import se.trixon.jotaclient.ui.speeddial.SpeedDialPanel;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.CircularInt;
 import se.trixon.util.SystemHelper;
-import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.SwingHelper;
@@ -78,7 +72,7 @@ import se.trixon.util.swing.dialogs.Message;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class MainFrame extends javax.swing.JFrame implements ServerEventListener, ConnectionListener, JobManager.JobListener, SpeedDialPanel.SpeedDialListener, JotaRunner.JotaListener {
+public class MainFrame extends javax.swing.JFrame  {
 
     private static final String PROGRESS_PANEL = "progressPanel";
     private static final String DASHBOARD_PANEL = "dashboardPanel";
@@ -89,7 +83,7 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
     private static final int ICON_SIZE_LARGE = 32;
     private static final int ICON_SIZE_SMALL = 16;
     private ActionManager mActionManager;
-    private JotaRunner mJotaRunner;
+//    private JotaRunner mJotaRunner;
     private ProgressPanel mProgressPanel;
     private SpeedDialPanel mSpeedDialPanel;
     private CardLayout mCardLayout;
@@ -98,161 +92,73 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
     private final CircularInt mState = new CircularInt(0, 2);
     private ImageIcon[] mStateIcons;
     private String[] mStateTexts;
-    private final ClientOptions mClientOptions = ClientOptions.INSTANCE;
-    private final ConnectionManager mConnectionManager = ConnectionManager.INSTANCE;
-    private Client mClient = ConnectionManager.INSTANCE.getClient();
+    private final Options mClientOptions = Options.INSTANCE;
+//    private final ConnectionManager mConnectionManager = ConnectionManager.INSTANCE;
+    private Client mClient;// = ConnectionManager.INSTANCE.getClient();
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<Action> mActions = new LinkedList<>();
-    private ServerOptions mServerOptions;
+//    private ServerOptions mServerOptions;
     private ServerCommander mServerCommander;
+    private final Manager mManager=Manager.getInstance();
 
     /**
      * Creates new form MainFrame
-     *
-     * @throws java.rmi.NotBoundException
-     * @throws java.net.MalformedURLException
-     * @throws java.rmi.RemoteException
-     * @throws java.net.UnknownHostException
      */
-    public MainFrame() throws NotBoundException, MalformedURLException, RemoteException, UnknownHostException, IOException {
+    public MainFrame()  {
         initComponents();
         //mConnectionManager.connectClient();
-        mClient = mConnectionManager.getClient();
-        mClient.getJotaManager().load();
+//        mClient = mConnectionManager.getClient();
+//        mClient.getJotaManager().load();
 
-        init();
-        //SwingUtilities.invokeLater(this::showEditor);
-        //loadServerOptions();
-        enableGui(false);
-        mSpeedDialPanel.onConnectionClientDisconnect();
-    }
-
-    @Override
-    public void onConnectionClientConnect() {
-        SwingUtilities.invokeLater(() -> {
-            loadConfiguration();
-            enableGui(true);
-            stateButton.setEnabled(true);
-        });
-    }
-
-    @Override
-    public void onConnectionClientDisconnect() {
-        SwingUtilities.invokeLater(() -> {
-            enableGui(false);
-            stateButton.setEnabled(false);
-        });
-    }
-
-    @Override
-    public void onJobSave() {
-        loadConfiguration();
-    }
-
-    @Override
-    public void onJotaFinished(Job job, int exitValue) {
-        System.out.println("onJotaFinished");
-        mProgressPanel.stop();
-        setRunState(CLOSEABLE);
-        mSelectedJob.setLastRun(System.currentTimeMillis());
-        JobManager.INSTANCE.notifyDataListeners();
-        try {
-            mConnectionManager.getServer().createJotaManager().save();
-        } catch (IOException ex) {
-            Message.error(this, Dict.IO_ERROR_TITLE.getString(), ex.getLocalizedMessage());
-        }
-        stateButton.requestFocus();
-    }
-
-    @Override
-    public void onJotaStarted(Job job) {
-        System.out.println("onJotaStarted");
-        jobEditorButton.setVisible(false);
-        mCardLayout.show(mainPanel, PROGRESS_PANEL);
-        setRunState(STOPPABLE);
-    }
-
-    @Override
-    public void onJotaStopped(Job job) {
-        mProgressPanel.stop();
-        setRunState(CLOSEABLE);
-        stateButton.requestFocus();
-    }
-
-    @Override
-    public void onServerEvent(ServerEvent serverEvent) {
-        //Xlog.timedOut("onServerEvent: " + serverEvent.toString());
-        loadServerOptions();
-
-        switch (serverEvent) {
-            case CRON_CHANGED:
-                mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, mServerOptions.isCronActive());
-                break;
-
-            default:
-                throw new AssertionError();
-        }
-    }
-
-    @Override
-    public void onSpeedDialButtonClicked(SpeedDialButton speedDialButton) {
-        requestJobStart(speedDialButton.getJob());
+//        init();
+//        //SwingUtilities.invokeLater(this::showEditor);
+//        //loadServerOptions();
+//        enableGui(false);
+//        mSpeedDialPanel.onConnectionClientDisconnect();
     }
 
     private void closeWindow() {
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
-    private void connect(String host, int port) throws NotBoundException, MalformedURLException, RemoteException, UnknownHostException {
-        mConnectionManager.setHost(host);
-        mConnectionManager.setPort(port);
-
-        mConnectionManager.connectClient();
-        mServerCommander = mConnectionManager.getServerCommander();
-    }
-
-    private void disconnect() {
-        System.out.println("disconnect");
-        mConnectionManager.disconnectClient();
-    }
 
     private void enableGui(boolean state) {
         boolean cronActive = false;
-        try {
-            cronActive = state && mConnectionManager.getServer().isCronActive();
-        } catch (RemoteException ex) {
-        }
-
-        mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
-
-        mActions.stream().forEach((action) -> {
-            action.setEnabled(state);
-        });
-
-        closeWindowButton.setEnabled(true);
-
-        if (state) {
-            updateWindowTitle();
-        } else {
-            setTitle("Jotasync");
-        }
+//        try {
+//            cronActive = state && mConnectionManager.getServer().isCronActive();
+//        } catch (RemoteException ex) {
+//        }
+//
+//        mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
+//
+//        mActions.stream().forEach((action) -> {
+//            action.setEnabled(state);
+//        });
+//
+//        closeWindowButton.setEnabled(true);
+//
+//        if (state) {
+//            updateWindowTitle();
+//        } else {
+//            setTitle("Jotasync");
+//        }
     }
 
     private void init() {
-        mClientOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
-            String key = evt.getKey();
-            if (key.equalsIgnoreCase(ClientOptions.KEY_MENU_ICONS)) {
-                loadClientOption(ClientOptionsEvent.MENU_ICONS);
-            } else if (key.equalsIgnoreCase(ClientOptions.KEY_FORCE_LOOK_AND_FEEL)
-                    || key.equalsIgnoreCase(ClientOptions.KEY_LOOK_AND_FEEL)) {
-                loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
-            }
-        });
+//        mClientOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
+//            String key = evt.getKey();
+//            if (key.equalsIgnoreCase(ClientOptions.KEY_MENU_ICONS)) {
+//                loadClientOption(ClientOptionsEvent.MENU_ICONS);
+//            } else if (key.equalsIgnoreCase(ClientOptions.KEY_FORCE_LOOK_AND_FEEL)
+//                    || key.equalsIgnoreCase(ClientOptions.KEY_LOOK_AND_FEEL)) {
+//                loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
+//            }
+//        });
 
         mActionManager = new ActionManager();
         mActionManager.initActions();
 
-        JobManager.INSTANCE.addJobListener(this);
+        //JobManager.INSTANCE.addJobListener(this);
         mCardLayout = (CardLayout) (mainPanel.getLayout());
         mSpeedDialPanel = new SpeedDialPanel();
         mProgressPanel = new ProgressPanel();
@@ -260,7 +166,7 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
         mainPanel.add(mSpeedDialPanel, DASHBOARD_PANEL);
         mainPanel.add(mProgressPanel, PROGRESS_PANEL);
 
-        mSpeedDialPanel.addSpeedDialListener(this);
+        //mSpeedDialPanel.addSpeedDialListener(this);
         JobManager.INSTANCE.notifyDataListeners();
 
         mStateTexts = new String[STATES];
@@ -280,10 +186,10 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
 //        closeButton.setVisible(false);
         shutdownServerAndWindowButton.setIcon(Pict.Actions.APPLICATION_EXIT.get(ICON_SIZE_LARGE));
 
-        mConnectionManager.addConnectionListeners(this);
-
-        loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
-        loadClientOption(ClientOptionsEvent.MENU_ICONS);
+//        mConnectionManager.addConnectionListeners(this);
+//
+//        loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
+//        loadClientOption(ClientOptionsEvent.MENU_ICONS);
 
         updateWindowTitle();
         try {
@@ -293,7 +199,7 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
         }
 
 //        mClient.addServerEventListener(this);
-        mConnectionManager.addConnectionListeners(mSpeedDialPanel);
+//        mConnectionManager.addConnectionListeners(mSpeedDialPanel);
         JobManager.INSTANCE.addJobListener(mSpeedDialPanel);
 
     }
@@ -331,35 +237,35 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
 
     }
 
-    private void loadConfiguration() {
-        if (!mConnectionManager.isConnected()) {
-            return;
-        }
+//    private void loadConfiguration() {
+//        if (!mConnectionManager.isConnected()) {
+//            return;
+//        }
+//
+//        boolean hasJob = mConnectionManager.isConnected() && JobManager.INSTANCE.hasJobs();
+//        stateButton.setEnabled(hasJob);
+//
+//        Action cronAction = mActionManager.getAction(ActionManager.CRON);
+//
+//        try {
+//            boolean cronActive = mConnectionManager.getServer().isCronActive();
+//            cronAction.putValue(Action.SELECTED_KEY, cronActive);
+//        } catch (RemoteException ex) {
+//            System.err.println("mConnectionManager: " + mConnectionManager);
+//        }
+//
+//    }
 
-        boolean hasJob = mConnectionManager.isConnected() && JobManager.INSTANCE.hasJobs();
-        stateButton.setEnabled(hasJob);
-
-        Action cronAction = mActionManager.getAction(ActionManager.CRON);
-
-        try {
-            boolean cronActive = mConnectionManager.getServer().isCronActive();
-            cronAction.putValue(Action.SELECTED_KEY, cronActive);
-        } catch (RemoteException ex) {
-            System.err.println("mConnectionManager: " + mConnectionManager);
-        }
-
-    }
-
-    private ServerOptions loadServerOptions() {
-        try {
-            mServerOptions = mServerCommander.loadServerOptions();
-            return mServerOptions;
-        } catch (RemoteException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return null;
-    }
+//    private ServerOptions loadServerOptions() {
+//        try {
+//            mServerOptions = mServerCommander.loadServerOptions();
+//            return mServerOptions;
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        return null;
+//    }
 
     private boolean requestJobStart(Job job) {
         mSelectedJob = job;
@@ -376,16 +282,16 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
 //        Object retval = DialogDisplayer.getDefault().notify(d);
 //        mSimulate = retval == simulate;
 //        if (retval == start || retval == simulate) {
-        mJotaRunner = new JotaRunner(mProgressPanel);
-        mJotaRunner.addJotaListener(this);
-        mJotaRunner.start(job, mSimulate);
+//        mJotaRunner = new JotaRunner(mProgressPanel);
+//        mJotaRunner.addJotaListener(this);
+//        mJotaRunner.start(job, mSimulate);
 //        }
 
         return false;
     }
 
     private void requestJobStop() {
-        mJotaRunner.stop();
+//        mJotaRunner.stop();
         setRunState(CLOSEABLE);
     }
 
@@ -403,8 +309,8 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
         JComboBox hostComboBox = new JComboBox(comboBoxModel);
         hostComboBox.setEditable(true);
 
-        hostComboBox.setSelectedItem(mConnectionManager.getHost());
-        JTextField portTextField = new JTextField(String.valueOf(mConnectionManager.getPort()));
+        hostComboBox.setSelectedItem(mClient.getHost());
+        JTextField portTextField = new JTextField(String.valueOf(mClient.getPortHost()));
         final JComponent[] inputs = new JComponent[]{
             new JLabel(Dict.HOST.getString()),
             hostComboBox,
@@ -422,27 +328,27 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
                 options[0]);
 
         if (retval == 0) {
-            String currentHost = mConnectionManager.getHost();
-            int currentPort = mConnectionManager.getPort();
+            String currentHost = mClient.getHost();
+            int currentPort = mClient.getPortHost();
             String host = (String) hostComboBox.getSelectedItem();
             String portString = portTextField.getText();
 
-            try {
-                int port = Integer.valueOf(portString);
-                disconnect();
-                connect(host, port);
-
-                if (comboBoxModel.getIndexOf(host) == -1) {
-                    comboBoxModel.addElement(host);
-                }
-                mClientOptions.setHosts(SwingHelper.comboBoxModelToString(comboBoxModel));
-            } catch (NumberFormatException e) {
-                Message.error(this, Dict.ERROR.getString(), String.format(Dict.INVALID_PORT.getString(), portString));
-            } catch (NotBoundException | MalformedURLException | RemoteException | UnknownHostException ex) {
-                Message.error(this, Dict.ERROR.getString(), ex.getLocalizedMessage());
-                mConnectionManager.setHost(currentHost);
-                mConnectionManager.setPort(currentPort);
-            }
+//            try {
+//                int port = Integer.valueOf(portString);
+//                disconnect();
+//                connect(host, port);
+//
+//                if (comboBoxModel.getIndexOf(host) == -1) {
+//                    comboBoxModel.addElement(host);
+//                }
+//                mClientOptions.setHosts(SwingHelper.comboBoxModelToString(comboBoxModel));
+//            } catch (NumberFormatException e) {
+//                Message.error(this, Dict.ERROR.getString(), String.format(Dict.INVALID_PORT.getString(), portString));
+//            } catch (NotBoundException | MalformedURLException | RemoteException | UnknownHostException ex) {
+//                Message.error(this, Dict.ERROR.getString(), ex.getLocalizedMessage());
+//                mClient.setHost(currentHost);
+//                mClient.setPortHost(currentPort);
+//            }
         }
     }
 
@@ -459,14 +365,14 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
                 null,
                 null);
 
-        if (retval == JOptionPane.OK_OPTION) {
-            editorPanel.save();
-            try {
-                mConnectionManager.getServer().createJotaManager().save();
-            } catch (IOException ex) {
-                Message.error(this, Dict.IO_ERROR_TITLE.getString(), ex.getLocalizedMessage());
-            }
-        }
+//        if (retval == JOptionPane.OK_OPTION) {
+//            editorPanel.save();
+//            try {
+//                mConnectionManager.getServer().createJotaManager().save();
+//            } catch (IOException ex) {
+//                Message.error(this, Dict.IO_ERROR_TITLE.getString(), ex.getLocalizedMessage());
+//            }
+//        }
     }
 
     private void showOptions() {
@@ -484,12 +390,12 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
 
         if (retval == JOptionPane.OK_OPTION) {
             optionsPanel.save();
-            mSpeedDialPanel.setServerOptions(optionsPanel.getServerOptions());
+//            mSpeedDialPanel.setServerOptions(optionsPanel.getServerOptions());
         }
     }
 
     private void updateWindowTitle() {
-        setTitle(String.format(mBundle.getString("windowTitle"), mConnectionManager.getHost(), mConnectionManager.getPort()));
+//        setTitle(String.format(mBundle.getString("windowTitle"), mConnectionManager.getHost(), mConnectionManager.getPort()));
     }
 
     /**
@@ -684,9 +590,9 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
 
     private void shutdownServerAndWindow() {
         try {
-            if (mConnectionManager.isConnected()) {
-                mClient.execute(Client.Command.SHUTDOWN);
-            }
+//            if (mConnectionManager.isConnected()) {
+//                mClient.execute(Client.Command.SHUTDOWN);
+//            }
         } catch (Exception e) {
             //nvm
         }
@@ -811,7 +717,7 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    disconnect();
+                    //disconnect();
                 }
             };
 
@@ -825,8 +731,13 @@ public class MainFrame extends javax.swing.JFrame implements ServerEventListener
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    loadServerOptions();
-                    boolean nextState = !mServerOptions.isCronActive();
+                    //loadServerOptions();
+                    boolean nextState = false;
+                    try {
+                        nextState = !mServerCommander.isCronActive();
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     putValue(Action.SELECTED_KEY, !nextState);
 
                     Client.Command command = Client.Command.STOP_CRON;

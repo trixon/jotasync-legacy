@@ -21,7 +21,7 @@ import java.util.prefs.Preferences;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public enum ClientOptions {
+public enum Options {
 
     INSTANCE;
     public static final String KEY_FORCE_LOOK_AND_FEEL = "forceLookAndFeel";
@@ -34,7 +34,7 @@ public enum ClientOptions {
     private static final boolean DEFAULT_MENU_ICONS = true;
     private final Preferences mPreferences;
 
-    private ClientOptions() {
+    private Options() {
         mPreferences = Preferences.userNodeForPackage(this.getClass());
     }
 

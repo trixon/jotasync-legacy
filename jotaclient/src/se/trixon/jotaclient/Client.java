@@ -42,7 +42,7 @@ import se.trixon.jota.JotaServer;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
-import se.trixon.jotasync.ui.MainFrame;
+import se.trixon.jotaclient.ui.MainFrame;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 import se.trixon.util.swing.SwingHelper;
@@ -63,11 +63,37 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private ServerCommander mServerCommander;
     private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
-    private final ClientOptions mClientOptions = ClientOptions.INSTANCE;
+    private final Options mOptions = Options.INSTANCE;
     private MainFrame mMainFrame = null;
+    private final Manager mManager=Manager.getInstance();
+
+    public String getHost() {
+        return mHost;
+    }
+
+    public void setHost(String mHost) {
+        this.mHost = mHost;
+    }
+
+    public int getPortClient() {
+        return mPortClient;
+    }
+
+    public void setPortClient(int portClient) {
+        mPortClient = portClient;
+    }
+
+    public int getPortHost() {
+        return mPortHost;
+    }
+
+    public void setPortHost(int portHost) {
+        mPortHost = portHost;
+    }
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
+        mManager.setClient(this);
         if (cmd.hasOption("host")) {
             mHost = cmd.getOptionValue("host");
         }
@@ -129,6 +155,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
         mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
         mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
+        mManager.setServerCommander(mServerCommander);
         mClientVmid = new VMID();
 
         Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
@@ -137,32 +164,19 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
 
         mServerCommander.registerClient(this, SystemHelper.getHostname());
-
-//        mConnectionListeners.stream().forEach((connectionListener) -> {
-//            connectionListener.onConnectionClientConnect();
-//        });
+mManager.connected();
     }
     private void displayGui() {
-        if (mClientOptions.isForceLookAndFeel()) {
+        if (mOptions.isForceLookAndFeel()) {
             try {
-                UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mClientOptions.getLookAndFeel()));
+                UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 Xlog.timedErr(ex.getMessage());
             }
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            try {
                 mMainFrame = new MainFrame();
-            } catch (NotBoundException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (RemoteException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
             mMainFrame.addWindowListener(new WindowAdapter() {
 
                 @Override
@@ -205,7 +219,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         return mServerEventListeners.add(serverEventListener);
     }
 
-    void execute(Command command) {
+    public void execute(Command command) {
         Xlog.timedOut(command.getMessage());
         try {
             switch (command) {
@@ -241,7 +255,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         return mServerEventListeners.remove(serverEventListener);
     }
 
-    enum Command {
+  public   enum Command {
 
         DIR_HOME("ls /home"),
         DISPLAY_STATUS("Request status information"),

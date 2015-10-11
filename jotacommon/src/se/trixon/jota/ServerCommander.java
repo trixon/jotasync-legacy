@@ -25,21 +25,23 @@ import java.rmi.dgc.VMID;
  */
 public interface ServerCommander extends Remote {
 
-//    JotaManager createJotaManager() throws RemoteException;
     void dirHome() throws RemoteException;
 
-    boolean isCronActive() throws RemoteException;
-    String getStatus() throws RemoteException;
+    long getSpeedDial(int key) throws RemoteException;
 
-    void setCronActive(boolean enable) throws RemoteException;
+    String getStatus() throws RemoteException;
 
     VMID getVMID() throws RemoteException;
 
-//    ServerOptions loadServerOptions() throws RemoteException;
+    boolean isCronActive() throws RemoteException;
+
     void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
 
     void removeClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
 
-//    void saveServerOptions(ServerOptions serverOptions) throws RemoteException;
+    void setCronActive(boolean enable) throws RemoteException;
+
+    void setSpeedDial(int key, long jobId) throws RemoteException;
+
     void shutdown() throws RemoteException;
 }

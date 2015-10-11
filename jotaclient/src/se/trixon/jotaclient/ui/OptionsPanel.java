@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jotasync.ui;
+package se.trixon.jotaclient.ui;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import se.trixon.jotasync.ConnectionManager;
-import se.trixon.jotasync.server.ServerCommander;
-import se.trixon.jotasync.client.ClientOptions;
-import se.trixon.jotasync.server.ServerOptions;
+import se.trixon.jota.ServerCommander;
+import se.trixon.jotaclient.Manager;
+import se.trixon.jotaclient.Options;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
@@ -31,41 +30,37 @@ import se.trixon.util.swing.SwingHelper;
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class OptionsPanel extends javax.swing.JPanel {
+    private final Manager mManager=Manager.getInstance();
 
-    private ServerOptions mServerOptions;
-    private ServerCommander mServerCommander = ConnectionManager.INSTANCE.getServerCommander();
-    private final ClientOptions mClientOptions = ClientOptions.INSTANCE;
-    private final ConnectionManager mConnectionManager = ConnectionManager.INSTANCE;
+    private ServerCommander mServerCommander;
+    private final Options mClientOptions = Options.INSTANCE;
 
     /**
      * Creates new form OptionsPanel
      */
     public OptionsPanel() {
+        mServerCommander=mManager.getServerCommander();
         initComponents();
         Xlog.timedOut("OptionsPanel()");
 
-        try {
-            mServerOptions = mServerCommander.loadServerOptions();
-        } catch (RemoteException | NullPointerException ex) {
-            rsyncFileChooserPanel.setEnabled(false);
+        if (mServerCommander==null) {
+                        rsyncFileChooserPanel.setEnabled(false);
+
         }
 
         load();
     }
 
-    public ServerOptions getServerOptions() {
-        return mServerOptions;
-    }
 
     public void save() {
-        if (mConnectionManager.isConnected()) {
-            mServerOptions.setRsync(rsyncFileChooserPanel.getPath());
-            try {
-                ConnectionManager.INSTANCE.getServerCommander().saveServerOptions(mServerOptions);
-            } catch (RemoteException ex) {
-                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        if (mConnectionManager.isConnected()) {
+//            mServerOptions.setRsync(rsyncFileChooserPanel.getPath());
+//            try {
+//                ConnectionManager.INSTANCE.getServerCommander().saveServerOptions(mServerOptions);
+//            } catch (RemoteException ex) {
+//                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
 
         mClientOptions.setForceLookAndFeel(lafForceCheckBox.isSelected());
         mClientOptions.setLookAndFeel((String) lafComboBox.getSelectedItem());
@@ -73,13 +68,13 @@ public class OptionsPanel extends javax.swing.JPanel {
     }
 
     private void load() {
-        if (mConnectionManager.isConnected()) {
-            try {
-                rsyncFileChooserPanel.setPath(mServerOptions.getRsync());
-            } catch (NullPointerException e) {
-                rsyncFileChooserPanel.setEnabled(false);
-            }
-        }
+//        if (mConnectionManager.isConnected()) {
+//            try {
+//                rsyncFileChooserPanel.setPath(mServerOptions.getRsync());
+//            } catch (NullPointerException e) {
+//                rsyncFileChooserPanel.setEnabled(false);
+//            }
+//        }
         lafForceCheckBox.setSelected(mClientOptions.isForceLookAndFeel());
         lafComboBox.setModel(SwingHelper.getLookAndFeelComboBoxModel(true));
         lafComboBox.setSelectedItem(mClientOptions.getLookAndFeel());

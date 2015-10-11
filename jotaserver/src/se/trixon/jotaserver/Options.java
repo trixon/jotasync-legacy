@@ -16,6 +16,8 @@
 package se.trixon.jotaserver;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -33,9 +35,16 @@ enum Options {
     public static final String KEY_SELECTED_JOB = "job";
     public static final String KEY_SPEED_DIAL = "speedDial_";
     private final Preferences mPreferences;
+    private HashMap<Integer, Long> mSpeedDials;
 
     private Options() {
         mPreferences = Preferences.userNodeForPackage(this.getClass());
+        try {
+            mSpeedDials=getSpeedDials();
+        } catch (BackingStoreException ex) {
+            Logger.getLogger(Options.class.getName()).log(Level.SEVERE, null, ex);
+            mSpeedDials=new HashMap<>();
+        }
     }
 
     long getJobId() {
@@ -50,7 +59,10 @@ enum Options {
         return mPreferences.get(KEY_RSYNC_PATH, DEFAULT_RSYNC_PATH);
     }
 
-    HashMap<Integer, Long> getSpeedDials() throws BackingStoreException {
+     long getSpeedDial(int key) {
+        return mSpeedDials.getOrDefault(key, new Long(-1));
+    }
+HashMap<Integer, Long> getSpeedDials() throws BackingStoreException {
         HashMap<Integer, Long> speedDials = new HashMap<>();
         for (String key : mPreferences.keys()) {
             try {
@@ -86,6 +98,10 @@ enum Options {
 
     void setRsyncPath(String value) {
         mPreferences.put(KEY_RSYNC_PATH, value);
+    }
+     void setSpeedDial(int key, long jobId) {
+        mSpeedDials.put(key, jobId);
+        setSpeedDials(mSpeedDials);
     }
 
     void setSpeedDials(HashMap<Integer, Long> speedDials) {

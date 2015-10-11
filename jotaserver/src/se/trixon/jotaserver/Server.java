@@ -70,6 +70,11 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
+    public long getSpeedDial(int key) {
+        return mOptions.getSpeedDial(key);
+    }
+
+    @Override
     public String getStatus() throws RemoteException {
         StringBuilder builder = new StringBuilder("status\n");
         builder.append(String.format("vmid\t%s", mServerVmid.toString())).append("\n");
@@ -107,6 +112,11 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public void setCronActive(boolean enable) throws RemoteException {
         mOptions.setCronActive(enable);
+    }
+
+    @Override
+    public void setSpeedDial(int key, long jobId) {
+        mOptions.setSpeedDial(key, jobId);
     }
 
     @Override
