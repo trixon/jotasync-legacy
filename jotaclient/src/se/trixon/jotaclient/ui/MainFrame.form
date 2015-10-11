@@ -29,9 +29,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="shutdownServerMenuItem">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="shutdownServerAndWindowMenuItem">
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="closeMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="quitMenuItem">
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -183,14 +181,14 @@
         </Component>
         <Component class="javax.swing.JToolBar$Separator" name="jSeparator4">
         </Component>
-        <Component class="javax.swing.JButton" name="closeWindowButton">
+        <Component class="javax.swing.JButton" name="shutdownServerButton">
           <Properties>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="shutdownServerAndWindowButton">
+        <Component class="javax.swing.JButton" name="quitButton">
           <Properties>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>

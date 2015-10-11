@@ -21,10 +21,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -52,7 +48,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import se.trixon.jota.Jota;
 import se.trixon.jota.ServerCommander;
-import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
 import se.trixon.jota.job.JobManager;
 import se.trixon.jotaclient.Client;
@@ -67,13 +62,12 @@ import se.trixon.util.SystemHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.SwingHelper;
-import se.trixon.util.swing.dialogs.Message;
 
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class MainFrame extends javax.swing.JFrame  {
+public class MainFrame extends javax.swing.JFrame {
 
     private static final String PROGRESS_PANEL = "progressPanel";
     private static final String DASHBOARD_PANEL = "dashboardPanel";
@@ -95,23 +89,24 @@ public class MainFrame extends javax.swing.JFrame  {
     private String[] mStateTexts;
     private final Options mOptions = Options.INSTANCE;
 //    private final ConnectionManager mConnectionManager = ConnectionManager.INSTANCE;
-    private Client mClient;// = ConnectionManager.INSTANCE.getClient();
+    private Client mClient;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<Action> mActions = new LinkedList<>();
 //    private ServerOptions mServerOptions;
     private ServerCommander mServerCommander;
-    private final Manager mManager=Manager.getInstance();
+    private final Manager mManager = Manager.getInstance();
 
     /**
      * Creates new form MainFrame
      */
-    public MainFrame()  {
+    public MainFrame() {
         initComponents();
         //mConnectionManager.connectClient();
 //        mClient = mConnectionManager.getClient();
 //        mClient.getJotaManager().load();
 
         init();
+        mClient = mManager.getClient();
 //        //SwingUtilities.invokeLater(this::showEditor);
 //        //loadServerOptions();
 //        enableGui(false);
@@ -121,7 +116,6 @@ public class MainFrame extends javax.swing.JFrame  {
     private void closeWindow() {
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
-
 
     private void enableGui(boolean state) {
         boolean cronActive = false;
@@ -183,15 +177,14 @@ public class MainFrame extends javax.swing.JFrame  {
         setRunState(mState.get());
 
 //        jobEditorButton.setIcon(Pict.Actions.CONFIGURE.get(ICON_SIZE_LARGE));
-        closeWindowButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(ICON_SIZE_LARGE));
+        shutdownServerButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(ICON_SIZE_LARGE));
 //        closeButton.setVisible(false);
-        shutdownServerAndWindowButton.setIcon(Pict.Actions.APPLICATION_EXIT.get(ICON_SIZE_LARGE));
+        quitButton.setIcon(Pict.Actions.APPLICATION_EXIT.get(ICON_SIZE_LARGE));
 
 //        mConnectionManager.addConnectionListeners(this);
 //
 //        loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
 //        loadClientOption(ClientOptionsEvent.MENU_ICONS);
-
         updateWindowTitle();
         try {
             SwingHelper.frameStateRestore(this);
@@ -256,7 +249,6 @@ public class MainFrame extends javax.swing.JFrame  {
 //        }
 //
 //    }
-
 //    private ServerOptions loadServerOptions() {
 //        try {
 //            mServerOptions = mServerCommander.loadServerOptions();
@@ -267,7 +259,6 @@ public class MainFrame extends javax.swing.JFrame  {
 //
 //        return null;
 //    }
-
     private boolean requestJobStart(Job job) {
         mSelectedJob = job;
         mProgressPanel.setProgressString(job.getName());
@@ -287,7 +278,6 @@ public class MainFrame extends javax.swing.JFrame  {
 //        mJotaRunner.addJotaListener(this);
 //        mJotaRunner.start(job, mSimulate);
 //        }
-
         return false;
     }
 
@@ -421,8 +411,8 @@ public class MainFrame extends javax.swing.JFrame  {
         jobEditorButton = new javax.swing.JButton();
         optionsButton = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
-        closeWindowButton = new javax.swing.JButton();
-        shutdownServerAndWindowButton = new javax.swing.JButton();
+        shutdownServerButton = new javax.swing.JButton();
+        quitButton = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         statusPanel = new javax.swing.JPanel();
         statusLabel = new javax.swing.JLabel();
@@ -437,8 +427,7 @@ public class MainFrame extends javax.swing.JFrame  {
         optionsMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         shutdownServerMenuItem = new javax.swing.JMenuItem();
-        shutdownServerAndWindowMenuItem = new javax.swing.JMenuItem();
-        closeMenuItem = new javax.swing.JMenuItem();
+        quitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -514,15 +503,15 @@ public class MainFrame extends javax.swing.JFrame  {
         toolBar.add(optionsButton);
         toolBar.add(jSeparator4);
 
-        closeWindowButton.setFocusable(false);
-        closeWindowButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        closeWindowButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(closeWindowButton);
+        shutdownServerButton.setFocusable(false);
+        shutdownServerButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        shutdownServerButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(shutdownServerButton);
 
-        shutdownServerAndWindowButton.setFocusable(false);
-        shutdownServerAndWindowButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        shutdownServerAndWindowButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(shutdownServerAndWindowButton);
+        quitButton.setFocusable(false);
+        quitButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        quitButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(quitButton);
 
         getContentPane().add(toolBar, java.awt.BorderLayout.PAGE_START);
 
@@ -562,8 +551,7 @@ public class MainFrame extends javax.swing.JFrame  {
         fileMenu.add(optionsMenuItem);
         fileMenu.add(jSeparator2);
         fileMenu.add(shutdownServerMenuItem);
-        fileMenu.add(shutdownServerAndWindowMenuItem);
-        fileMenu.add(closeMenuItem);
+        fileMenu.add(quitMenuItem);
 
         menuBar.add(fileMenu);
 
@@ -589,14 +577,7 @@ public class MainFrame extends javax.swing.JFrame  {
         enableGui(false);
     }
 
-    private void shutdownServerAndWindow() {
-        try {
-//            if (mConnectionManager.isConnected()) {
-//                mClient.execute(Client.Command.SHUTDOWN);
-//            }
-        } catch (Exception e) {
-            //nvm
-        }
+    private void quit() {
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         System.exit(0);
     }
@@ -620,8 +601,6 @@ public class MainFrame extends javax.swing.JFrame  {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JMenuItem closeMenuItem;
-    private javax.swing.JButton closeWindowButton;
     private javax.swing.JButton connectButton;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JCheckBoxMenuItem cronCheckBoxMenuItem;
@@ -642,9 +621,10 @@ public class MainFrame extends javax.swing.JFrame  {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton optionsButton;
     private javax.swing.JMenuItem optionsMenuItem;
+    private javax.swing.JButton quitButton;
+    private javax.swing.JMenuItem quitMenuItem;
     private javax.swing.JButton saveButton;
-    private javax.swing.JButton shutdownServerAndWindowButton;
-    private javax.swing.JMenuItem shutdownServerAndWindowMenuItem;
+    private javax.swing.JButton shutdownServerButton;
     private javax.swing.JMenuItem shutdownServerMenuItem;
     private javax.swing.JMenuItem startLocalServerMenuItem;
     private javax.swing.JButton stateButton;
@@ -658,8 +638,7 @@ public class MainFrame extends javax.swing.JFrame  {
 
         static final String START_LOCAL_SERVER = "startLocalServer";
         static final String SHUTDOWN_SERVER = "shutdownServer";
-        static final String SHUTDOWN_SERVER_AND_WINDOW = "shutdownServerAndWindow";
-        static final String CLOSE_WINDOW = "closeWindow";
+        static final String QUIT = "shutdownServerAndWindow";
         static final String CONNECT = "connect";
         static final String CRON = "cron";
         static final String DISCONNECT = "disconnect";
@@ -782,20 +761,6 @@ public class MainFrame extends javax.swing.JFrame  {
             optionsButton.setAction(action);
             optionsMenuItem.setAction(action);
 
-            //closeWindow
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK);
-            action = new AbstractAction(Dict.CLOSE_WINDOW.getString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    closeWindow();
-                }
-            };
-
-            initAction(action, CLOSE_WINDOW, keyStroke, Pict.Actions.WINDOW_CLOSE, false);
-            closeWindowButton.setAction(action);
-            closeMenuItem.setAction(action);
-
             //startLocalServer
             keyStroke = null;//KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
             String title = String.format(mBundle.getString("startLocalServer"), SystemHelper.getHostname());
@@ -821,20 +786,21 @@ public class MainFrame extends javax.swing.JFrame  {
 
             initAction(action, SHUTDOWN_SERVER, keyStroke, Pict.Actions.SVN_UPDATE, true);
             shutdownServerMenuItem.setAction(action);
+            shutdownServerButton.setAction(action);
 
-            //shutdownServerAndWindow
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK);
-            action = new AbstractAction(Dict.SHUTDOWN_SERVER_AND_WINDOW.getString()) {
+            //exit
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK);
+            action = new AbstractAction(Dict.QUIT.getString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    shutdownServerAndWindow();
+                    quit();
                 }
             };
 
-            initAction(action, SHUTDOWN_SERVER_AND_WINDOW, keyStroke, Pict.Actions.APPLICATION_EXIT, true);
-            shutdownServerAndWindowMenuItem.setAction(action);
-            shutdownServerAndWindowButton.setAction(action);
+            initAction(action, QUIT, keyStroke, Pict.Actions.APPLICATION_EXIT, true);
+            quitMenuItem.setAction(action);
+            quitButton.setAction(action);
 
             for (Component component : toolBar.getComponents()) {
                 if (component instanceof AbstractButton) {

@@ -24,37 +24,47 @@ import se.trixon.jota.ServerCommander;
  */
 public class Manager {
 
-    private ServerCommander mServerCommander;
+    private Client mClient;
     private final HashSet<ConnectionListener> mConnectionListeners = new HashSet<>();
-private Client mClient;
+    private ServerCommander mServerCommander;
 
-    public Client getClient() {
-        return mClient;
-    }
-
-    public void setClient(Client client) {
-       mClient = client;
+    public static Manager getInstance() {
+        return ManagerHolder.INSTANCE;
     }
 
     private Manager() {
     }
+
     public boolean addConnectionListeners(ConnectionListener connectionListener) {
         return mConnectionListeners.add(connectionListener);
+    }
+
+    public void connect() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
+    }
+
+    public void disconnect() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Client getClient() {
+        return mClient;
     }
 
     public ServerCommander getServerCommander() {
         return mServerCommander;
     }
 
-    public void setServerCommander(ServerCommander serverCommander) {
-        mServerCommander = serverCommander;
-    }
-
-    public static Manager getInstance() {
-        return ManagerHolder.INSTANCE;
-    }
     public boolean isConnected() {
         return mServerCommander != null;
+    }
+
+    public void setClient(Client client) {
+        mClient = client;
+    }
+
+    public void setServerCommander(ServerCommander serverCommander) {
+        mServerCommander = serverCommander;
     }
 
     void connected() {
