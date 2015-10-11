@@ -20,8 +20,9 @@ package se.trixon.jotaclient;
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public interface ConnectionListener {
-            void onConnectionClientConnect();
 
-        void onConnectionClientDisconnect();
+    void onConnectionConnect();
+
+    void onConnectionDisconnect();
 
 }

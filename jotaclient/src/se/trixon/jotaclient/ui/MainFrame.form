@@ -15,8 +15,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="disconnectMenuItem">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="startLocalServerMenuItem">
-            </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="cronCheckBoxMenuItem">

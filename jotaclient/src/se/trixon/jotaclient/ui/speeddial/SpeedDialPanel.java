@@ -81,7 +81,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
     }
 
     @Override
-    public void onConnectionClientConnect() {
+    public void onConnectionConnect() {
 //        try {
 //            //TODO Ev flytt till onJobSave
 //            mServerOptions = mRemote.loadServerOptions();
@@ -95,7 +95,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
     }
 
     @Override
-    public void onConnectionClientDisconnect() {
+    public void onConnectionDisconnect() {
         SwingUtilities.invokeLater(() -> {
             SwingHelper.enableComponents(this, false);
             clearConfiguration();

@@ -15,6 +15,9 @@
  */
 package se.trixon.jotaclient;
 
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.HashSet;
 import se.trixon.jota.ServerCommander;
 
@@ -39,12 +42,24 @@ public class Manager {
         return mConnectionListeners.add(connectionListener);
     }
 
-    public void connect() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
+    public void connect(String host, int port) throws NotBoundException, MalformedURLException, RemoteException {
+        mClient.setHost(host);
+        mClient.setPortHost(port);
+        mClient.connectToServer();
+
+        mConnectionListeners.stream().forEach((connectionListener) -> {
+            connectionListener.onConnectionConnect();
+        });
     }
 
     public void disconnect() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (mServerCommander != null) {
+            mServerCommander = null;
+
+            mConnectionListeners.stream().forEach((connectionListener) -> {
+                connectionListener.onConnectionDisconnect();
+            });
+        }
     }
 
     public Client getClient() {
@@ -65,12 +80,6 @@ public class Manager {
 
     public void setServerCommander(ServerCommander serverCommander) {
         mServerCommander = serverCommander;
-    }
-
-    void connected() {
-        mConnectionListeners.stream().forEach((connectionListener) -> {
-            connectionListener.onConnectionClientConnect();
-        });
     }
 
     private static class ManagerHolder {

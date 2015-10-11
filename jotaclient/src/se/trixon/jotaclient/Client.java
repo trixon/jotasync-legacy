@@ -118,20 +118,20 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 case DISPLAY_STATUS:
                     Xlog.timedOut(mServerCommander.getStatus());
                     break;
-                    
+
                 case START_CRON:
                     mServerCommander.setCronActive(true);
                     break;
-                    
+
                 case STOP_CRON:
                     mServerCommander.setCronActive(false);
                     break;
-                    
+
                 case SHUTDOWN:
                     mShutdownRequested = true;
                     mServerCommander.shutdown();
                     break;
-                    
+
                 case DIR_HOME:
                     mServerCommander.dirHome();
                     break;
@@ -142,7 +142,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             }
         }
     }
-    
+
     public String getHost() {
         return mHost;
     }
@@ -154,7 +154,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     public int getPortHost() {
         return mPortHost;
     }
-    
+
     @Override
     public void onServerEvent(ServerEvent serverEvent) throws RemoteException {
         mServerEventListeners.stream().forEach((serverEventListener) -> {
@@ -167,7 +167,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         System.out.println("timeWillTell");
         System.out.println(date);
     }
-    
+
     public void setHost(String mHost) {
         this.mHost = mHost;
     }
@@ -178,21 +178,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
     public void setPortHost(int portHost) {
         mPortHost = portHost;
-    }
-
-    private void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
-        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
-        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
-        mManager.setServerCommander(mServerCommander);
-        mClientVmid = new VMID();
-
-        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
-        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
-        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
-        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
-
-        mServerCommander.registerClient(this, SystemHelper.getHostname());
-        mManager.connected();
     }
 
     private void displayGui() {
@@ -211,7 +196,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 @Override
                 public void windowClosing(WindowEvent e) {
                     super.windowClosing(e);
-                    //mConnectionManager.disconnectClient();
+                    mManager.disconnect();
                 }
             });
             mMainFrame.setVisible(true);
@@ -227,7 +212,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private void startRMI() throws RemoteException {
         try {
             initCallbackServer();
-            connectToServer();
+            mManager.connect(mHost, mPortHost);
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 Xlog.timedOut("Shutting down client jvm...");
                 try {
@@ -246,6 +231,20 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
     boolean addServerEventListener(ServerEventListener serverEventListener) {
         return mServerEventListeners.add(serverEventListener);
+    }
+
+    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
+        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
+        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
+        mManager.setServerCommander(mServerCommander);
+        mClientVmid = new VMID();
+
+        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
+        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
+        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
+        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
+
+        mServerCommander.registerClient(this, SystemHelper.getHostname());
     }
 
     boolean removeServerEventListener(ServerEventListener serverEventListener) {

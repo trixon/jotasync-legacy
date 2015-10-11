@@ -21,6 +21,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -51,6 +53,7 @@ import se.trixon.jota.ServerCommander;
 import se.trixon.jota.job.Job;
 import se.trixon.jota.job.JobManager;
 import se.trixon.jotaclient.Client;
+import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
 import se.trixon.jotaclient.Options;
 import se.trixon.jotaclient.Options.ClientOptionsEvent;
@@ -62,12 +65,13 @@ import se.trixon.util.SystemHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.SwingHelper;
+import se.trixon.util.swing.dialogs.Message;
 
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame implements ConnectionListener {
 
     private static final String PROGRESS_PANEL = "progressPanel";
     private static final String DASHBOARD_PANEL = "dashboardPanel";
@@ -93,7 +97,7 @@ public class MainFrame extends javax.swing.JFrame {
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<Action> mActions = new LinkedList<>();
 //    private ServerOptions mServerOptions;
-    private ServerCommander mServerCommander;
+//    private ServerCommander mServerCommander;
     private final Manager mManager = Manager.getInstance();
 
     /**
@@ -110,7 +114,24 @@ public class MainFrame extends javax.swing.JFrame {
 //        //SwingUtilities.invokeLater(this::showEditor);
 //        //loadServerOptions();
 //        enableGui(false);
-//        mSpeedDialPanel.onConnectionClientDisconnect();
+//        mSpeedDialPanel.onConnectionDisconnect();
+    }
+
+    @Override
+    public void onConnectionConnect() {
+        SwingUtilities.invokeLater(() -> {
+            loadConfiguration();
+            enableGui(true);
+            stateButton.setEnabled(true);
+        });
+    }
+
+    @Override
+    public void onConnectionDisconnect() {
+        SwingUtilities.invokeLater(() -> {
+            enableGui(false);
+            stateButton.setEnabled(false);
+        });
     }
 
     private void closeWindow() {
@@ -119,24 +140,23 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void enableGui(boolean state) {
         boolean cronActive = false;
-//        try {
-//            cronActive = state && mConnectionManager.getServer().isCronActive();
-//        } catch (RemoteException ex) {
-//        }
-//
-//        mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
-//
-//        mActions.stream().forEach((action) -> {
-//            action.setEnabled(state);
-//        });
-//
-//        closeWindowButton.setEnabled(true);
-//
-//        if (state) {
-//            updateWindowTitle();
-//        } else {
-//            setTitle("Jotasync");
-//        }
+        try {
+            cronActive = state && mManager.getServerCommander().isCronActive();
+        } catch (RemoteException ex) {
+        }
+
+        mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
+
+        mActions.stream().forEach((action) -> {
+            action.setEnabled(state);
+        });
+
+        //closeWindowButton.setEnabled(true);
+        if (state) {
+            updateWindowTitle();
+        } else {
+            setTitle("Jotasync");
+        }
     }
 
     private void init() {
@@ -181,10 +201,10 @@ public class MainFrame extends javax.swing.JFrame {
 //        closeButton.setVisible(false);
         quitButton.setIcon(Pict.Actions.APPLICATION_EXIT.get(ICON_SIZE_LARGE));
 
-//        mConnectionManager.addConnectionListeners(this);
-//
-//        loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
-//        loadClientOption(ClientOptionsEvent.MENU_ICONS);
+        mManager.addConnectionListeners(this);
+
+        loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
+        loadClientOption(ClientOptionsEvent.MENU_ICONS);
         updateWindowTitle();
         try {
             SwingHelper.frameStateRestore(this);
@@ -231,24 +251,24 @@ public class MainFrame extends javax.swing.JFrame {
 
     }
 
-//    private void loadConfiguration() {
-//        if (!mConnectionManager.isConnected()) {
-//            return;
-//        }
-//
-//        boolean hasJob = mConnectionManager.isConnected() && JobManager.INSTANCE.hasJobs();
-//        stateButton.setEnabled(hasJob);
-//
-//        Action cronAction = mActionManager.getAction(ActionManager.CRON);
-//
-//        try {
-//            boolean cronActive = mConnectionManager.getServer().isCronActive();
-//            cronAction.putValue(Action.SELECTED_KEY, cronActive);
-//        } catch (RemoteException ex) {
-//            System.err.println("mConnectionManager: " + mConnectionManager);
-//        }
-//
-//    }
+    private void loadConfiguration() {
+        if (!mManager.isConnected()) {
+            return;
+        }
+
+        boolean hasJob = mManager.isConnected() && JobManager.INSTANCE.hasJobs();
+        stateButton.setEnabled(hasJob);
+
+        Action cronAction = mActionManager.getAction(ActionManager.CRON);
+
+        try {
+            boolean cronActive = mManager.getServerCommander().isCronActive();
+            cronAction.putValue(Action.SELECTED_KEY, cronActive);
+        } catch (RemoteException ex) {
+            System.err.println("mManager: " + mManager);
+        }
+
+    }
 //    private ServerOptions loadServerOptions() {
 //        try {
 //            mServerOptions = mServerCommander.loadServerOptions();
@@ -259,6 +279,7 @@ public class MainFrame extends javax.swing.JFrame {
 //
 //        return null;
 //    }
+
     private boolean requestJobStart(Job job) {
         mSelectedJob = job;
         mProgressPanel.setProgressString(job.getName());
@@ -293,7 +314,7 @@ public class MainFrame extends javax.swing.JFrame {
         saveButton.setVisible(state == CLOSEABLE);
     }
 
-    private void showConnect() {
+    private void requestConnect() throws NotBoundException {
         String[] hosts = mOptions.getHosts().split(";");
         Arrays.sort(hosts);
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel(hosts);
@@ -324,22 +345,22 @@ public class MainFrame extends javax.swing.JFrame {
             String host = (String) hostComboBox.getSelectedItem();
             String portString = portTextField.getText();
 
-//            try {
-//                int port = Integer.valueOf(portString);
-//                disconnect();
-//                connect(host, port);
-//
-//                if (comboBoxModel.getIndexOf(host) == -1) {
-//                    comboBoxModel.addElement(host);
-//                }
-//                mClientOptions.setHosts(SwingHelper.comboBoxModelToString(comboBoxModel));
-//            } catch (NumberFormatException e) {
-//                Message.error(this, Dict.ERROR.getString(), String.format(Dict.INVALID_PORT.getString(), portString));
-//            } catch (NotBoundException | MalformedURLException | RemoteException | UnknownHostException ex) {
-//                Message.error(this, Dict.ERROR.getString(), ex.getLocalizedMessage());
-//                mClient.setHost(currentHost);
-//                mClient.setPortHost(currentPort);
-//            }
+            try {
+                int port = Integer.valueOf(portString);
+                mManager.disconnect();
+                mManager.connect(host, port);
+
+                if (comboBoxModel.getIndexOf(host) == -1) {
+                    comboBoxModel.addElement(host);
+                }
+                mOptions.setHosts(SwingHelper.comboBoxModelToString(comboBoxModel));
+            } catch (NumberFormatException e) {
+                Message.error(this, Dict.ERROR.getString(), String.format(Dict.INVALID_PORT.getString(), portString));
+            } catch (NotBoundException | MalformedURLException | RemoteException ex) {
+                Message.error(this, Dict.ERROR.getString(), ex.getLocalizedMessage());
+                mClient.setHost(currentHost);
+                mClient.setPortHost(currentPort);
+            }
         }
     }
 
@@ -386,7 +407,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void updateWindowTitle() {
-//        setTitle(String.format(mBundle.getString("windowTitle"), mConnectionManager.getHost(), mConnectionManager.getPort()));
+        setTitle(String.format(mBundle.getString("windowTitle"), mManager.getClient().getHost(), mManager.getClient().getPortHost()));
     }
 
     /**
@@ -420,7 +441,6 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         connectMenuItem = new javax.swing.JMenuItem();
         disconnectMenuItem = new javax.swing.JMenuItem();
-        startLocalServerMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         cronCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         jobEditorMenuItem = new javax.swing.JMenuItem();
@@ -544,7 +564,6 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenu.setText(Dict.FILE_MENU.getString());
         fileMenu.add(connectMenuItem);
         fileMenu.add(disconnectMenuItem);
-        fileMenu.add(startLocalServerMenuItem);
         fileMenu.add(jSeparator1);
         fileMenu.add(cronCheckBoxMenuItem);
         fileMenu.add(jobEditorMenuItem);
@@ -587,8 +606,8 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        System.err.println("closing");
         SwingHelper.frameStateSave(this);
+        System.exit(0);
     }//GEN-LAST:event_formWindowClosing
 
     private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
@@ -626,7 +645,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton saveButton;
     private javax.swing.JButton shutdownServerButton;
     private javax.swing.JMenuItem shutdownServerMenuItem;
-    private javax.swing.JMenuItem startLocalServerMenuItem;
     private javax.swing.JButton stateButton;
     private javax.swing.JButton statusButton;
     private javax.swing.JLabel statusLabel;
@@ -636,15 +654,14 @@ public class MainFrame extends javax.swing.JFrame {
 
     private class ActionManager {
 
-        static final String START_LOCAL_SERVER = "startLocalServer";
-        static final String SHUTDOWN_SERVER = "shutdownServer";
-        static final String QUIT = "shutdownServerAndWindow";
         static final String CONNECT = "connect";
         static final String CRON = "cron";
         static final String DISCONNECT = "disconnect";
         static final String JOB_EDITOR = "jobeditor";
         static final String JOTA_SMALL_ICON_KEY = "jota_small_icon";
         static final String OPTIONS = "options";
+        static final String QUIT = "shutdownServerAndWindow";
+        static final String SHUTDOWN_SERVER = "shutdownServer";
 
         private ActionManager() {
             initActions();
@@ -683,7 +700,11 @@ public class MainFrame extends javax.swing.JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    showConnect();
+                    try {
+                        requestConnect();
+                    } catch (NotBoundException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             };
 
@@ -697,7 +718,7 @@ public class MainFrame extends javax.swing.JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //disconnect();
+                    mManager.disconnect();
                 }
             };
 
@@ -711,10 +732,9 @@ public class MainFrame extends javax.swing.JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //loadServerOptions();
                     boolean nextState = false;
                     try {
-                        nextState = !mServerCommander.isCronActive();
+                        nextState = !mManager.getServerCommander().isCronActive();
                     } catch (RemoteException ex) {
                         Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -761,19 +781,6 @@ public class MainFrame extends javax.swing.JFrame {
             optionsButton.setAction(action);
             optionsMenuItem.setAction(action);
 
-            //startLocalServer
-            keyStroke = null;//KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
-            String title = String.format(mBundle.getString("startLocalServer"), SystemHelper.getHostname());
-            action = new AbstractAction(title) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                }
-            };
-
-            initAction(action, START_LOCAL_SERVER, keyStroke, Pict.Actions.SVN_COMMIT, false);
-            startLocalServerMenuItem.setAction(action);
-
             //shutdownServer
             keyStroke = null;//KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
             action = new AbstractAction(Dict.SHUTDOWN_SERVER.getString()) {
@@ -788,7 +795,7 @@ public class MainFrame extends javax.swing.JFrame {
             shutdownServerMenuItem.setAction(action);
             shutdownServerButton.setAction(action);
 
-            //exit
+            //quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK);
             action = new AbstractAction(Dict.QUIT.getString()) {
 
@@ -798,7 +805,7 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             };
 
-            initAction(action, QUIT, keyStroke, Pict.Actions.APPLICATION_EXIT, true);
+            initAction(action, QUIT, keyStroke, Pict.Actions.APPLICATION_EXIT, false);
             quitMenuItem.setAction(action);
             quitButton.setAction(action);
 
