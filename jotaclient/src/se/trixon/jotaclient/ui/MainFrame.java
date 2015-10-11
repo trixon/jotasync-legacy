@@ -92,7 +92,7 @@ public class MainFrame extends javax.swing.JFrame  {
     private final CircularInt mState = new CircularInt(0, 2);
     private ImageIcon[] mStateIcons;
     private String[] mStateTexts;
-    private final Options mClientOptions = Options.INSTANCE;
+    private final Options mOptions = Options.INSTANCE;
 //    private final ConnectionManager mConnectionManager = ConnectionManager.INSTANCE;
     private Client mClient;// = ConnectionManager.INSTANCE.getClient();
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
@@ -110,7 +110,7 @@ public class MainFrame extends javax.swing.JFrame  {
 //        mClient = mConnectionManager.getClient();
 //        mClient.getJotaManager().load();
 
-//        init();
+        init();
 //        //SwingUtilities.invokeLater(this::showEditor);
 //        //loadServerOptions();
 //        enableGui(false);
@@ -145,15 +145,15 @@ public class MainFrame extends javax.swing.JFrame  {
     }
 
     private void init() {
-//        mClientOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
-//            String key = evt.getKey();
-//            if (key.equalsIgnoreCase(ClientOptions.KEY_MENU_ICONS)) {
-//                loadClientOption(ClientOptionsEvent.MENU_ICONS);
-//            } else if (key.equalsIgnoreCase(ClientOptions.KEY_FORCE_LOOK_AND_FEEL)
-//                    || key.equalsIgnoreCase(ClientOptions.KEY_LOOK_AND_FEEL)) {
-//                loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
-//            }
-//        });
+        mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
+            String key = evt.getKey();
+            if (key.equalsIgnoreCase(Options.KEY_MENU_ICONS)) {
+                loadClientOption(ClientOptionsEvent.MENU_ICONS);
+            } else if (key.equalsIgnoreCase(Options.KEY_FORCE_LOOK_AND_FEEL)
+                    || key.equalsIgnoreCase(Options.KEY_LOOK_AND_FEEL)) {
+                loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
+            }
+        });
 
         mActionManager = new ActionManager();
         mActionManager.initActions();
@@ -207,10 +207,10 @@ public class MainFrame extends javax.swing.JFrame  {
     private void loadClientOption(ClientOptionsEvent clientOptionEvent) {
         switch (clientOptionEvent) {
             case LOOK_AND_FEEL:
-                if (mClientOptions.isForceLookAndFeel()) {
+                if (mOptions.isForceLookAndFeel()) {
                     SwingUtilities.invokeLater(() -> {
                         try {
-                            UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mClientOptions.getLookAndFeel()));
+                            UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
                             SwingUtilities.updateComponentTreeUI(MainFrame.this);
                         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                             //Xlog.timedErr(ex.getMessage());
@@ -224,7 +224,7 @@ public class MainFrame extends javax.swing.JFrame  {
                 for (Object allKey : actionMap.allKeys()) {
                     Action action = actionMap.get(allKey);
                     Icon icon = null;
-                    if (mClientOptions.isDisplayMenuIcons()) {
+                    if (mOptions.isDisplayMenuIcons()) {
                         icon = (Icon) action.getValue(ActionManager.JOTA_SMALL_ICON_KEY);
                     }
                     action.putValue(Action.SMALL_ICON, icon);
@@ -303,7 +303,7 @@ public class MainFrame extends javax.swing.JFrame  {
     }
 
     private void showConnect() {
-        String[] hosts = mClientOptions.getHosts().split(";");
+        String[] hosts = mOptions.getHosts().split(";");
         Arrays.sort(hosts);
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel(hosts);
         JComboBox hostComboBox = new JComboBox(comboBoxModel);
