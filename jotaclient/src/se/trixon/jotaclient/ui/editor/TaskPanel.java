@@ -287,7 +287,7 @@ public class TaskPanel extends javax.swing.JPanel {
             }
         });
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotasync/ui/editor/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/Bundle"); // NOI18N
         forceSourceSlashCheckBox.setText(bundle.getString("TaskPanel.forceSourceSlashCheckBox.text")); // NOI18N
 
         swapSourceDestButton.setText(bundle.getString("TaskPanel.swapSourceDestButton.text")); // NOI18N

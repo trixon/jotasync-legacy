@@ -145,14 +145,14 @@
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jotasync/ui/editor/Bundle.properties" key="JobPanel.beforeFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.beforeFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="beforeHaltCheckBox">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jotasync/ui/editor/Bundle.properties" key="JobPanel.beforeHaltCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.beforeHaltCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
@@ -199,7 +199,7 @@
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jotasync/ui/editor/Bundle.properties" key="JobPanel.afterSuccessFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.afterSuccessFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
@@ -207,7 +207,7 @@
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jotasync/ui/editor/Bundle.properties" key="JobPanel.afterFailureFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.afterFailureFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>

@@ -147,7 +147,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         tabbedPane.addTab(Dict.DETAILS.getString(), detailsScrollPane);
 
         beforeFileChooserPanel.setCheckBoxMode(true);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotasync/ui/editor/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/Bundle"); // NOI18N
         beforeFileChooserPanel.setHeader(bundle.getString("JobPanel.beforeFileChooserPanel.header")); // NOI18N
 
         beforeHaltCheckBox.setText(bundle.getString("JobPanel.beforeHaltCheckBox.text")); // NOI18N
