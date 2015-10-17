@@ -50,6 +50,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import se.trixon.jota.Jota;
 import se.trixon.jota.ServerCommander;
+import se.trixon.jota.ServerEvent;
+import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
 import se.trixon.jota.job.JobManager;
 import se.trixon.jotaclient.Client;
@@ -71,7 +73,7 @@ import se.trixon.util.swing.dialogs.Message;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class MainFrame extends javax.swing.JFrame implements ConnectionListener {
+public class MainFrame extends javax.swing.JFrame implements ConnectionListener, ServerEventListener {
 
     private static final String PROGRESS_PANEL = "progressPanel";
     private static final String DASHBOARD_PANEL = "dashboardPanel";
@@ -132,6 +134,23 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener 
             enableGui(false);
             stateButton.setEnabled(false);
         });
+    }
+
+    @Override
+    public void onServerEvent(ServerEvent serverEvent) {
+        System.out.println("gui got "+serverEvent);
+        switch (serverEvent) {
+            case CRON_CHANGED:
+                try {
+                    mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, mManager.getServerCommander().isCronActive());
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+
+            default:
+                throw new AssertionError();
+        }
     }
 
     private void closeWindow() {

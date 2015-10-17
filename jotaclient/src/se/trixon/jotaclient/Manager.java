@@ -19,7 +19,10 @@ import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import se.trixon.jota.ServerCommander;
+import se.trixon.util.SystemHelper;
 
 /**
  *
@@ -54,6 +57,11 @@ public class Manager {
 
     public void disconnect() {
         if (mServerCommander != null) {
+            try {
+                mServerCommander.removeClient(mClient, SystemHelper.getHostname());
+            } catch (RemoteException ex) {
+                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+            }
             mServerCommander = null;
 
             mConnectionListeners.stream().forEach((connectionListener) -> {
