@@ -135,7 +135,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public void shutdown() throws RemoteException {
         Xlog.timedOut("shutdown");
-       
+
         mClientCallbacks.stream().forEach((clientCallback) -> {
             try {
                 clientCallback.onServerEvent(ServerEvent.SHUTDOWN);
@@ -143,7 +143,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
                 // nvm
             }
         });
-        
+
         try {
             Naming.unbind(mRmiNameServer);
             Jota.exit(0);
@@ -153,6 +153,14 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     private void intiListeners() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                shutdown();
+            } catch (RemoteException ex) {
+                // nvm
+            }
+        }));
+
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             Xlog.timedOut(String.format(">>> %s on %s key=%s", "preferenceChange", SystemHelper.getHostname(), evt.getKey()));
             HashSet<ClientCallbacks> invalidClientCallbacks = new HashSet<>();
