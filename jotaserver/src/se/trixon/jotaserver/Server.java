@@ -22,8 +22,11 @@ import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
@@ -43,7 +46,7 @@ import se.trixon.util.Xlog;
  */
 public class Server extends UnicastRemoteObject implements ServerCommander {
 
-    private HashSet<ClientCallbacks> mClientCallbacks = new HashSet<>();
+    private Set<ClientCallbacks> mClientCallbacks = Collections.newSetFromMap(new ConcurrentHashMap<ClientCallbacks, Boolean>());
     private final ResourceBundle mJotaBundle = Jota.getBundle();
     private final Options mOptions = Options.INSTANCE;
     private int mPort = Jota.DEFAULT_PORT_HOST;
