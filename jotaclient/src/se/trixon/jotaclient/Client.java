@@ -157,7 +157,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
     @Override
     public void onServerEvent(ServerEvent serverEvent) throws RemoteException {
-        System.out.println("client got "+serverEvent);
         mServerEventListeners.stream().forEach((serverEventListener) -> {
             serverEventListener.onServerEvent(serverEvent);
         });

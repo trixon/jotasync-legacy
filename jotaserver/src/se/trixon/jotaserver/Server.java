@@ -135,9 +135,18 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public void shutdown() throws RemoteException {
         Xlog.timedOut("shutdown");
+       
+        mClientCallbacks.stream().forEach((clientCallback) -> {
+            try {
+                clientCallback.onServerEvent(ServerEvent.SHUTDOWN);
+            } catch (RemoteException ex) {
+                // nvm
+            }
+        });
+        
         try {
             Naming.unbind(mRmiNameServer);
-            Jota.exit();
+            Jota.exit(0);
         } catch (NotBoundException | MalformedURLException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }

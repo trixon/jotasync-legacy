@@ -49,7 +49,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import se.trixon.jota.Jota;
-import se.trixon.jota.ServerCommander;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
@@ -63,7 +62,6 @@ import se.trixon.jotaclient.ui.editor.EditorPanel;
 import se.trixon.jotaclient.ui.speeddial.SpeedDialPanel;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.CircularInt;
-import se.trixon.util.SystemHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.SwingHelper;
@@ -113,8 +111,8 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
         init();
         mClient = mManager.getClient();
+        loadConfiguration();
 //        //SwingUtilities.invokeLater(this::showEditor);
-//        //loadServerOptions();
 //        enableGui(false);
 //        mSpeedDialPanel.onConnectionDisconnect();
     }
@@ -130,22 +128,30 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
     @Override
     public void onConnectionDisconnect() {
+        System.out.println("gui got onConnectionDisconnect()");
         SwingUtilities.invokeLater(() -> {
             enableGui(false);
             stateButton.setEnabled(false);
+            Message.information(this, "Connection lost", "Connection lost due to server shutdown");
         });
     }
 
     @Override
     public void onServerEvent(ServerEvent serverEvent) {
-        System.out.println("gui got "+serverEvent);
+        System.out.println("gui got " + serverEvent);
         switch (serverEvent) {
             case CRON_CHANGED:
                 try {
-                    mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, mManager.getServerCommander().isCronActive());
+                    boolean cronActive = mManager.getServerCommander().isCronActive();
+                    System.out.println("cronActive=" + cronActive);
+                    mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
                 } catch (RemoteException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                break;
+
+            case SHUTDOWN:
+                mManager.disconnect();
                 break;
 
             default:
@@ -217,8 +223,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
 //        jobEditorButton.setIcon(Pict.Actions.CONFIGURE.get(ICON_SIZE_LARGE));
         shutdownServerButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(ICON_SIZE_LARGE));
-//        closeButton.setVisible(false);
-        quitButton.setIcon(Pict.Actions.APPLICATION_EXIT.get(ICON_SIZE_LARGE));
 
         mManager.addConnectionListeners(this);
 
@@ -288,16 +292,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         }
 
     }
-//    private ServerOptions loadServerOptions() {
-//        try {
-//            mServerOptions = mServerCommander.loadServerOptions();
-//            return mServerOptions;
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        return null;
-//    }
 
     private boolean requestJobStart(Job job) {
         mSelectedJob = job;

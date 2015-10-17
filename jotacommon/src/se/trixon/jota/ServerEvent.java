@@ -21,5 +21,6 @@ package se.trixon.jota;
  */
 public enum ServerEvent {
 
-    CRON_CHANGED;
+    CRON_CHANGED,
+    SHUTDOWN;
 }
