@@ -45,14 +45,9 @@ public enum JobManager {
     private static final String KEY_RUN_BEFORE_COMMAND = "runBeforeCommand";
     private static final String KEY_RUN_BEFORE_HALT_ON_ERROR = "runBeforeHaltOnError";
     private static final String KEY_TASKS = "tasks";
-    private final HashSet<JobListener> mJobListeners = new HashSet<>();
     private final LinkedList<Job> mJobs = new LinkedList<>();
 
     private JobManager() {
-    }
-
-    public boolean addJobListener(JobListener jobListener) {
-        return mJobListeners.add(jobListener);
     }
 
     public Object[] getArray() {
@@ -105,16 +100,6 @@ public enum JobManager {
         return getJobs().size() > 0;
     }
 
-    public void notifyDataListeners() {
-        for (JobListener jobListener : mJobListeners) {
-            try {
-                jobListener.onJobSave();
-            } catch (Exception e) {
-                //nvm
-            }
-        }
-    }
-
     public DefaultComboBoxModel populateModel(DefaultComboBoxModel model) {
 
         model.removeAllElements();
@@ -136,7 +121,7 @@ public enum JobManager {
         return model;
     }
 
-    public void setJobs(JSONArray array) {
+    void setJobs(JSONArray array) {
         mJobs.clear();
 
         for (Object arrayItem : array) {
@@ -164,22 +149,14 @@ public enum JobManager {
         }
 
         Collections.sort(mJobs);
-        notifyDataListeners();
     }
 
-    public void setJobs(DefaultListModel model) {
+    void setJobs(DefaultListModel model) {
         mJobs.clear();
 
         for (Object object : model.toArray()) {
             mJobs.add((Job) object);
         }
-
-        notifyDataListeners();
-    }
-
-    public interface JobListener {
-
-        void onJobSave();
 
     }
 }
