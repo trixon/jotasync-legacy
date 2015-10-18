@@ -17,8 +17,6 @@ package se.trixon.jotaclient.ui.editor.task_modules;
 
 import se.trixon.jota.task.Task;
 
-
-
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>

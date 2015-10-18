@@ -67,7 +67,6 @@ public abstract class EditPanel extends javax.swing.JPanel {
                 button.setVisible(false);
             }
         }
-
         //list.setModel(mModel);
     }
 

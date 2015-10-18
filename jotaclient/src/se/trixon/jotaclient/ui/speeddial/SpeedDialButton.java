@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.SwingConstants;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.Manager;
 import se.trixon.jotaclient.ui.editor.JobsPanel;
@@ -96,10 +95,7 @@ public class SpeedDialButton extends JButton {
     }
 
     public void setJobId(long jobId) {
-        String template;
-        //template = "<html><center><h2><b>%s</b></h2></center>%s<br />%s</html>";
-        //template = "<html><center><h2><b>%s</b></h2></center><p>%s</p><p>%s</p></html>";
-        template = "<html><center><h2><b>%s</b></h2>%s<br />%s</center></html>";
+        String template = "<html><center><h2><b>%s</b></h2>%s<br />%s</center></html>";
         mJobId = jobId;
         try {
             mJob = mManager.getServerCommander().getJob(jobId);

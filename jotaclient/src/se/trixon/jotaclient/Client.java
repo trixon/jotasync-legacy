@@ -149,10 +149,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                     mShutdownRequested = true;
                     mServerCommander.shutdown();
                     break;
-
-                case DIR_HOME:
-                    mServerCommander.dirHome();
-                    break;
             }
         } catch (RemoteException ex) {
             if (command != Command.SHUTDOWN) {
@@ -178,12 +174,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         mServerEventListeners.stream().forEach((serverEventListener) -> {
             serverEventListener.onServerEvent(serverEvent);
         });
-    }
-
-    @Override
-    public void onTimeWillTell(Date date) throws RemoteException {
-        System.out.println("timeWillTell");
-        System.out.println(date);
     }
 
     public boolean removeServerEventListener(ServerEventListener serverEventListener) {
@@ -268,7 +258,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
     public enum Command {
 
-        DIR_HOME("ls /home"),
         DISPLAY_STATUS("Request status information"),
         LIST_JOBS("List jobs"),
         LIST_TASKS("List tasks"),

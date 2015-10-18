@@ -38,13 +38,13 @@ public enum JotaManager {
     private static final String KEY_TASKS = "tasks";
     private static final String KEY_VERSION = "version";
     private static final int sVersion = 1;
-    private  final JobManager mJobManager = JobManager.INSTANCE;
-    private  final TaskManager mTaskManager = TaskManager.INSTANCE;
     private final File mDirectory;
     private final File mJobFile;
+    private final JobManager mJobManager = JobManager.INSTANCE;
     private final File mLogDirectory;
     private final File mLogFile;
     private final Preferences mPreferences;
+    private final TaskManager mTaskManager = TaskManager.INSTANCE;
     private int mVersion;
 
     private JotaManager() {
@@ -76,6 +76,10 @@ public enum JotaManager {
         return mJobFile;
     }
 
+    public JobManager getJobManager() {
+        return mJobManager;
+    }
+
     public File getLogDirectory() {
         return mLogDirectory;
     }
@@ -84,16 +88,12 @@ public enum JotaManager {
         return mLogFile;
     }
 
+    public TaskManager getTaskManager() {
+        return mTaskManager;
+    }
+
     public int getVersion() {
         return mVersion;
-    }
-
-    public  JobManager getJobManager() {
-        return mJobManager;
-    }
-
-    public  TaskManager getTaskManager() {
-        return mTaskManager;
     }
 
     public void load() throws IOException {

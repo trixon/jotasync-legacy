@@ -29,8 +29,6 @@ import se.trixon.jota.job.Job;
  */
 public interface ServerCommander extends Remote {
 
-    void dirHome() throws RemoteException;
-
     Job getJob(long jobId) throws RemoteException;
 
     LinkedList<Job> getJobs() throws RemoteException;

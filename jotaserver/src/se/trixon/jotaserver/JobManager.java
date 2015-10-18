@@ -16,7 +16,6 @@
 package se.trixon.jotaserver;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;

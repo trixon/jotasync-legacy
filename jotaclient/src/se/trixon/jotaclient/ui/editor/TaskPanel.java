@@ -16,8 +16,6 @@
 package se.trixon.jotaclient.ui.editor;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.DefaultComboBoxModel;

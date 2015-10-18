@@ -17,7 +17,6 @@ package se.trixon.jota;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Date;
 
 /**
  *
@@ -26,6 +25,4 @@ import java.util.Date;
 public interface ClientCallbacks extends Remote {
 
     void onServerEvent(ServerEvent serverEvent) throws RemoteException;
-
-    void onTimeWillTell(Date date) throws RemoteException;
 }

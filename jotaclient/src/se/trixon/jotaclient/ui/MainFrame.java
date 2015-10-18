@@ -58,7 +58,9 @@ import se.trixon.jotaclient.Manager;
 import se.trixon.jotaclient.Options;
 import se.trixon.jotaclient.Options.ClientOptionsEvent;
 import se.trixon.jotaclient.ui.editor.EditorPanel;
+import se.trixon.jotaclient.ui.speeddial.SpeedDialButton;
 import se.trixon.jotaclient.ui.speeddial.SpeedDialPanel;
+import se.trixon.jotaclient.ui.speeddial.SpeedDialPanel.SpeedDialListener;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.CircularInt;
 import se.trixon.util.Xlog;
@@ -71,7 +73,7 @@ import se.trixon.util.swing.dialogs.Message;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class MainFrame extends javax.swing.JFrame implements ConnectionListener, ServerEventListener {
+public class MainFrame extends javax.swing.JFrame implements ConnectionListener, ServerEventListener, SpeedDialListener {
 
     private static final String PROGRESS_PANEL = "progressPanel";
     private static final String DASHBOARD_PANEL = "dashboardPanel";
@@ -105,8 +107,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         init();
         mClient = mManager.getClient();
         loadConfiguration();
-//        //SwingUtilities.invokeLater(this::showEditor);
-//        enableGui(false);
+        //SwingUtilities.invokeLater(this::showEditor);
         mSpeedDialPanel.onConnectionDisconnect();
         mSpeedDialPanel.onConnectionConnect();
     }
@@ -159,12 +160,14 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         }
     }
 
-    private void closeWindow() {
-        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    @Override
+    public void onSpeedDialButtonClicked(SpeedDialButton speedDialButton) {
+        Xlog.timedOut("onSpeedDialButtonClicked() " + speedDialButton.toString());
     }
 
     private void enableGui(boolean state) {
         boolean cronActive = false;
+
         try {
             cronActive = state && mManager.getServerCommander().isCronActive();
         } catch (RemoteException ex) {
@@ -176,7 +179,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
             action.setEnabled(state);
         });
 
-        //closeWindowButton.setEnabled(true);
         if (state) {
             updateWindowTitle();
         } else {
@@ -198,7 +200,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         mActionManager = new ActionManager();
         mActionManager.initActions();
 
-        //JobManager.INSTANCE.addJobListener(this);
         mCardLayout = (CardLayout) (mainPanel.getLayout());
         mSpeedDialPanel = new SpeedDialPanel();
         mProgressPanel = new ProgressPanel();
@@ -206,8 +207,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         mainPanel.add(mSpeedDialPanel, DASHBOARD_PANEL);
         mainPanel.add(mProgressPanel, PROGRESS_PANEL);
 
-        //mSpeedDialPanel.addSpeedDialListener(this);
-        //JobManager.INSTANCE.notifyDataListeners();
+        mSpeedDialPanel.addSpeedDialListener(this);
         mStateTexts = new String[STATES];
         mStateTexts[STARTABLE] = Dict.START.getString();
         mStateTexts[STOPPABLE] = Dict.STOP.getString();
@@ -220,22 +220,20 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
         setRunState(mState.get());
 
-//        jobEditorButton.setIcon(Pict.Actions.CONFIGURE.get(ICON_SIZE_LARGE));
         shutdownServerButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(ICON_SIZE_LARGE));
 
         mManager.addConnectionListeners(this);
 
         loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
         loadClientOption(ClientOptionsEvent.MENU_ICONS);
+
         updateWindowTitle();
+
         try {
             SwingHelper.frameStateRestore(this);
         } catch (BackingStoreException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-//        mClient.addServerEventListener(this);
-        //JobManager.INSTANCE.addJobListener(mSpeedDialPanel);
     }
 
     private void loadClientOption(ClientOptionsEvent clientOptionEvent) {
@@ -412,7 +410,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
         if (retval == JOptionPane.OK_OPTION) {
             optionsPanel.save();
-//            mSpeedDialPanel.setServerOptions(optionsPanel.getServerOptions());
         }
     }
 
@@ -432,8 +429,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         toolBar = new javax.swing.JToolBar();
         stateButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
-        statusButton = new javax.swing.JButton();
-        dirButton = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         connectButton = new javax.swing.JButton();
         disconnectButton = new javax.swing.JButton();
@@ -480,28 +475,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         saveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(saveButton);
-
-        statusButton.setText("Status");
-        statusButton.setFocusable(false);
-        statusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        statusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        statusButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                statusButtonActionPerformed(evt);
-            }
-        });
-        toolBar.add(statusButton);
-
-        dirButton.setText("ls /home");
-        dirButton.setFocusable(false);
-        dirButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        dirButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        dirButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dirButtonActionPerformed(evt);
-            }
-        });
-        toolBar.add(dirButton);
         toolBar.add(filler1);
 
         connectButton.setFocusable(false);
@@ -608,21 +581,12 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         System.exit(0);
     }//GEN-LAST:event_formWindowClosing
 
-    private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
-        mClient.execute(Client.Command.DISPLAY_STATUS);
-    }//GEN-LAST:event_statusButtonActionPerformed
-
-    private void dirButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dirButtonActionPerformed
-        mClient.execute(Client.Command.DIR_HOME);
-    }//GEN-LAST:event_dirButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JButton connectButton;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JCheckBoxMenuItem cronCheckBoxMenuItem;
     private javax.swing.JToggleButton cronToggleButton;
-    private javax.swing.JButton dirButton;
     private javax.swing.JButton disconnectButton;
     private javax.swing.JMenuItem disconnectMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -644,7 +608,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     private javax.swing.JButton shutdownServerButton;
     private javax.swing.JMenuItem shutdownServerMenuItem;
     private javax.swing.JButton stateButton;
-    private javax.swing.JButton statusButton;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 

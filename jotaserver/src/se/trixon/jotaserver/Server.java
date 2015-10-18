@@ -78,11 +78,6 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public void dirHome() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Job getJob(long jobId) throws RemoteException {
         return mJobManager.getJobById(jobId);
     }
