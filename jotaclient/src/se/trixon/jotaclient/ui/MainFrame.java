@@ -61,6 +61,7 @@ import se.trixon.jotaclient.ui.editor.EditorPanel;
 import se.trixon.jotaclient.ui.speeddial.SpeedDialPanel;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.CircularInt;
+import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.SwingHelper;
@@ -83,6 +84,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     private ActionManager mActionManager;
 //    private JotaRunner mJotaRunner;
     private ProgressPanel mProgressPanel;
+    private boolean mShutdownInProgress;
     private SpeedDialPanel mSpeedDialPanel;
     private CardLayout mCardLayout;
     private Job mSelectedJob;
@@ -118,6 +120,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
     @Override
     public void onConnectionConnect() {
+        mShutdownInProgress = false;
         SwingUtilities.invokeLater(() -> {
             loadConfiguration();
             enableGui(true);
@@ -127,22 +130,22 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
     @Override
     public void onConnectionDisconnect() {
-        System.out.println("gui got onConnectionDisconnect()");
         SwingUtilities.invokeLater(() -> {
             enableGui(false);
             stateButton.setEnabled(false);
-            Message.information(this, "Connection lost", "Connection lost due to server shutdown");
+            if (mShutdownInProgress) {
+                Message.warning(this, "Connection lost", "Connection lost due to server shutdown");
+            }
         });
     }
 
     @Override
     public void onServerEvent(ServerEvent serverEvent) {
-        System.out.println("gui got " + serverEvent);
+        Xlog.timedOut("UI got " + serverEvent);
         switch (serverEvent) {
             case CRON_CHANGED:
                 try {
                     boolean cronActive = mManager.getServerCommander().isCronActive();
-                    System.out.println("cronActive=" + cronActive);
                     mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
                 } catch (RemoteException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -150,6 +153,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
                 break;
 
             case SHUTDOWN:
+                mShutdownInProgress = true;
                 mManager.disconnect();
                 break;
 
