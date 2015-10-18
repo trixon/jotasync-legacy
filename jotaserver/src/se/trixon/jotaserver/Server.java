@@ -110,6 +110,8 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
         builder.append(String.format("  %s%d", StringUtils.rightPad("clients", pad), mClientCallbacks.size())).append("\n");
         builder.append(String.format("  %s%s", StringUtils.rightPad("cron active", pad), mOptions.isCronActive())).append("\n");
         builder.append(String.format("  %s%s", StringUtils.rightPad("rsync", pad), mOptions.getRsyncPath())).append("\n");
+        builder.append(String.format("  %s%d", StringUtils.rightPad("jobs", pad), mJobManager.getJobs().size())).append("\n");
+        builder.append(String.format("  %s%d", StringUtils.rightPad("tasks", pad), mTaskManager.getTasks().size())).append("\n");
         String status = builder.toString();
         Xlog.timedOut(status);
 
