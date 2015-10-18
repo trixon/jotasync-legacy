@@ -449,8 +449,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         shutdownServerButton = new javax.swing.JButton();
         quitButton = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
-        statusPanel = new javax.swing.JPanel();
-        statusLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         connectMenuItem = new javax.swing.JMenuItem();
@@ -547,33 +545,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         quitButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(quitButton);
 
-        getContentPane().add(toolBar, java.awt.BorderLayout.PAGE_START);
-
         mainPanel.setLayout(new java.awt.CardLayout());
-        getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
-
-        statusPanel.setBackground(new java.awt.Color(204, 204, 204));
-
-        statusLabel.setText("status");
-
-        javax.swing.GroupLayout statusPanelLayout = new javax.swing.GroupLayout(statusPanel);
-        statusPanel.setLayout(statusPanelLayout);
-        statusPanelLayout.setHorizontalGroup(
-            statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statusPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(statusLabel)
-                .addGap(427, 427, 427))
-        );
-        statusPanelLayout.setVerticalGroup(
-            statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statusPanelLayout.createSequentialGroup()
-                .addGap(7, 7, 7)
-                .addComponent(statusLabel)
-                .addGap(7, 7, 7))
-        );
-
-        getContentPane().add(statusPanel, java.awt.BorderLayout.PAGE_END);
 
         fileMenu.setText(Dict.FILE_MENU.getString());
         fileMenu.add(connectMenuItem);
@@ -601,6 +573,21 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -661,8 +648,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     private javax.swing.JMenuItem shutdownServerMenuItem;
     private javax.swing.JButton stateButton;
     private javax.swing.JButton statusButton;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JPanel statusPanel;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 
