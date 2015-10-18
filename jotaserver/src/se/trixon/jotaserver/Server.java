@@ -190,6 +190,14 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     public void saveJota() throws RemoteException {
         try {
             mJotaManager.save();
+            mClientCallbacks.stream().forEach((clientCallback) -> {
+                try {
+                    clientCallback.onServerEvent(ServerEvent.JOTA_CHANGED);
+                } catch (RemoteException ex) {
+                    // nvm
+                }
+            });
+
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }

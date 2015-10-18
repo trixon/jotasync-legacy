@@ -117,6 +117,10 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         }
     }
 
+    public boolean addServerEventListener(ServerEventListener serverEventListener) {
+        return mServerEventListeners.add(serverEventListener);
+    }
+
     public void execute(Command command) {
         Xlog.timedOut(command.getMessage());
         try {
@@ -182,6 +186,10 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         System.out.println(date);
     }
 
+    public boolean removeServerEventListener(ServerEventListener serverEventListener) {
+        return mServerEventListeners.remove(serverEventListener);
+    }
+
     public void setHost(String mHost) {
         this.mHost = mHost;
     }
@@ -244,10 +252,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         }
     }
 
-    boolean addServerEventListener(ServerEventListener serverEventListener) {
-        return mServerEventListeners.add(serverEventListener);
-    }
-
     void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
         mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
         mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
@@ -260,10 +264,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
 
         mServerCommander.registerClient(this, SystemHelper.getHostname());
-    }
-
-    boolean removeServerEventListener(ServerEventListener serverEventListener) {
-        return mServerEventListeners.remove(serverEventListener);
     }
 
     public enum Command {

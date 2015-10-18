@@ -32,7 +32,8 @@ import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import se.trixon.jota.ServerCommander;
+import se.trixon.jota.ServerEvent;
+import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
@@ -44,7 +45,7 @@ import se.trixon.util.swing.SwingHelper;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class SpeedDialPanel extends JPanel implements ConnectionListener {
+public class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mResetMenuItem;
@@ -85,6 +86,20 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
             SwingHelper.enableComponents(this, false);
             clearConfiguration();
         });
+    }
+
+    @Override
+    public void onServerEvent(ServerEvent serverEvent) {
+        switch (serverEvent) {
+            case JOTA_CHANGED: {
+                try {
+                    loadConfiguration();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            break;
+        }
     }
 
     private void clearConfiguration() {
@@ -203,7 +218,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
         }
 
         mManager.addConnectionListeners(this);
-//        JobManager.INSTANCE.addJobListener(this);
+        mManager.getClient().addServerEventListener(this);
     }
 
     /**

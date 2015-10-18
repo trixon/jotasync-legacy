@@ -145,6 +145,10 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
                 }
                 break;
 
+            case JOTA_CHANGED:
+                loadConfiguration();
+                break;
+
             case SHUTDOWN:
                 mShutdownInProgress = true;
                 mManager.disconnect();
