@@ -102,7 +102,6 @@ public enum JotaManager {
             mVersion = JsonHelper.getInt(jsonObject, KEY_VERSION);
             JSONArray jobsArray = (JSONArray) jsonObject.get(KEY_JOBS);
             JSONArray tasksArray = (JSONArray) jsonObject.get(KEY_TASKS);
-            Xlog.timedOut("JotaManagerBackend.load(): " + jsonObject.toJSONString());
 
             mTaskManager.setTasks(tasksArray);
             mJobManager.setJobs(jobsArray);
@@ -110,8 +109,6 @@ public enum JotaManager {
     }
 
     public void save() throws IOException {
-        Xlog.timedOut("JotaManagerBackend.save()");
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(KEY_TASKS, mTaskManager.getJsonArray());
         jsonObject.put(KEY_JOBS, mJobManager.getJsonArray());

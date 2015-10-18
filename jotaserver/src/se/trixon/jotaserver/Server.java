@@ -104,13 +104,13 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
 
     @Override
     public String getStatus() throws RemoteException {
-        StringBuilder builder = new StringBuilder("status\n");
+        StringBuilder builder = new StringBuilder("Status\n");
         builder.append(String.format("vmid\t%s", mServerVmid.toString())).append("\n");
         builder.append(String.format("clients\t%d", mClientCallbacks.size())).append("\n");
         builder.append(String.format("cron\t%s", mOptions.isCronActive())).append("\n");
         builder.append(String.format("rsync\t%s", mOptions.getRsyncPath())).append("\n");
         String status = builder.toString();
-        Xlog.timedOut("return " + status);
+        Xlog.timedOut(status);
 
         return status;
     }
@@ -139,7 +139,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
         });
 
         String jobs = builder.toString();
-        Xlog.timedOut("return " + jobs);
+        Xlog.timedOut(jobs);
 
         return jobs;
     }
@@ -153,7 +153,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
         });
 
         String tasks = builder.toString();
-        Xlog.timedOut("return " + tasks);
+        Xlog.timedOut(tasks);
 
         return tasks;
     }
@@ -283,6 +283,9 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
             Naming.rebind(mRmiNameServer, this);
             String message = String.format("started: %s (%s)", mRmiNameServer, mServerVmid.toString());
             Xlog.timedOut(message);
+            listJobs();
+            listTasks();
+            getStatus();
         } catch (IllegalArgumentException e) {
             Xlog.timedErr(e.getLocalizedMessage());
             Jota.exit();
