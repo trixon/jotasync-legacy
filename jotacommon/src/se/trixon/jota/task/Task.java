@@ -16,6 +16,7 @@
 package se.trixon.jota.task;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +26,7 @@ import org.apache.commons.lang3.SystemUtils;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class Task implements Comparable<Task> {
+public class Task implements Comparable<Task>, Serializable {
 
     private String mAdditionalOptions = "";
     private boolean mBackup;

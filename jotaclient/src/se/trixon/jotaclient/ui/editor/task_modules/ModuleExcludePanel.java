@@ -88,7 +88,7 @@ public class ModuleExcludePanel extends ModulePanel {
         panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.PAGE_AXIS));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotasync/ui/editor/task_modules/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/editor/task_modules/Bundle"); // NOI18N
         templatePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ModuleExcludePanel.templatePanel.border.title"))); // NOI18N
         templatePanel.setLayout(new java.awt.GridLayout(1, 2));
 

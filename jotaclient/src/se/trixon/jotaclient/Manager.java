@@ -78,6 +78,16 @@ public class Manager {
         return mServerCommander;
     }
 
+    public boolean hasJobs() {
+        boolean hasJobs = false;
+        try {
+            hasJobs = mServerCommander.hasJobs();
+        } catch (RemoteException ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return hasJobs;
+    }
+
     public boolean isConnected() {
         return mServerCommander != null;
     }

@@ -52,7 +52,6 @@ import se.trixon.jota.Jota;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
-import se.trixon.jota.job.JobManager;
 import se.trixon.jotaclient.Client;
 import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
@@ -207,8 +206,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         mainPanel.add(mProgressPanel, PROGRESS_PANEL);
 
         //mSpeedDialPanel.addSpeedDialListener(this);
-        JobManager.INSTANCE.notifyDataListeners();
-
+        //JobManager.INSTANCE.notifyDataListeners();
         mStateTexts = new String[STATES];
         mStateTexts[STARTABLE] = Dict.START.getString();
         mStateTexts[STOPPABLE] = Dict.STOP.getString();
@@ -237,8 +235,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
 //        mClient.addServerEventListener(this);
 //        mConnectionManager.addConnectionListeners(mSpeedDialPanel);
-        JobManager.INSTANCE.addJobListener(mSpeedDialPanel);
-
+        //JobManager.INSTANCE.addJobListener(mSpeedDialPanel);
     }
 
     private void loadClientOption(ClientOptionsEvent clientOptionEvent) {
@@ -279,7 +276,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
             return;
         }
 
-        boolean hasJob = mManager.isConnected() && JobManager.INSTANCE.hasJobs();
+        boolean hasJob = mManager.isConnected() && mManager.hasJobs();
         stateButton.setEnabled(hasJob);
 
         Action cronAction = mActionManager.getAction(ActionManager.CRON);
@@ -390,14 +387,14 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
                 null,
                 null);
 
-//        if (retval == JOptionPane.OK_OPTION) {
-//            editorPanel.save();
-//            try {
-//                mConnectionManager.getServer().createJotaManager().save();
-//            } catch (IOException ex) {
-//                Message.error(this, Dict.IO_ERROR_TITLE.getString(), ex.getLocalizedMessage());
-//            }
-//        }
+        if (retval == JOptionPane.OK_OPTION) {
+            editorPanel.save();
+            try {
+                mManager.getServerCommander().saveJota();
+            } catch (RemoteException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     private void showOptions() {

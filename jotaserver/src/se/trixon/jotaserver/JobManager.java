@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.job;
+package se.trixon.jotaserver;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,6 +23,7 @@ import javax.swing.DefaultListModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import se.trixon.jota.JsonHelper;
+import se.trixon.jota.job.Job;
 import se.trixon.jota.task.TaskManager;
 
 /**
@@ -119,9 +120,9 @@ public enum JobManager {
 
         model.removeAllElements();
 
-        for (Job job : mJobs) {
+        mJobs.stream().forEach((job) -> {
             model.addElement(job);
-        }
+        });
 
         return model;
     }
@@ -129,9 +130,9 @@ public enum JobManager {
     public DefaultListModel populateModel(DefaultListModel model) {
         model.clear();
 
-        for (Job job : mJobs) {
+        mJobs.stream().forEach((job) -> {
             model.addElement(job);
-        }
+        });
 
         return model;
     }

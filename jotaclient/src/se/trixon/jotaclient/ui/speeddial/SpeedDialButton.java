@@ -16,21 +16,26 @@
 package se.trixon.jotaclient.ui.speeddial;
 
 import java.awt.Dimension;
+import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import se.trixon.jota.job.Job;
-import se.trixon.jota.job.JobManager;
+import se.trixon.jotaclient.Manager;
+import se.trixon.jotaclient.ui.editor.JobsPanel;
 
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class SpeedDialButton extends JButton {
+    private static final Manager mManager = Manager.getInstance();
 
     private int mIndex;
     private Job mJob;
@@ -95,7 +100,12 @@ public class SpeedDialButton extends JButton {
         template = "<html><center><h2><b>%s</b></h2></center><p>%s</p><p>%s</p></html>";
         template = "<html><center><h2><b>%s</b></h2>%s<br />%s</center></html>";
         mJobId = jobId;
-        mJob = JobManager.INSTANCE.getJobById(jobId);
+        try {
+            mJob=mManager.getServerCommander().getJob(jobId);
+        } catch (RemoteException ex) {
+            Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+//        mJob = JobManager.INSTANCE.getJobById(jobId);
         String text = "";
 
         if (mJob != null) {

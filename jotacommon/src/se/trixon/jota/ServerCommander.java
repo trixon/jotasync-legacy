@@ -18,6 +18,10 @@ package se.trixon.jota;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
+import java.util.LinkedList;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import se.trixon.jota.job.Job;
 
 /**
  *
@@ -27,6 +31,10 @@ public interface ServerCommander extends Remote {
 
     void dirHome() throws RemoteException;
 
+    Job getJob(long jobId) throws RemoteException;
+
+    LinkedList<Job> getJobs() throws RemoteException;
+
     String getRsyncPath() throws RemoteException;
 
     long getSpeedDial(int key) throws RemoteException;
@@ -35,13 +43,23 @@ public interface ServerCommander extends Remote {
 
     VMID getVMID() throws RemoteException;
 
+    boolean hasJobs() throws RemoteException;
+
     boolean isCronActive() throws RemoteException;
+
+    DefaultComboBoxModel populateJobModel(DefaultComboBoxModel model) throws RemoteException;
+
+    DefaultListModel populateJobModel(DefaultListModel model) throws RemoteException;
 
     void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
 
     void removeClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
 
+    void saveJota() throws RemoteException;
+
     void setCronActive(boolean enable) throws RemoteException;
+
+    void setJobs(DefaultListModel model) throws RemoteException;
 
     void setRsyncPath(String path) throws RemoteException;
 

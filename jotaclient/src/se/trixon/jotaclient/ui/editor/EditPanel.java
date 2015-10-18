@@ -47,6 +47,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
 
     public void setModel(DefaultListModel model) {
         mModel = model;
+        list.setModel(model);
     }
 
     public void sortModel() {
@@ -67,7 +68,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
             }
         }
 
-        list.setModel(mModel);
+        //list.setModel(mModel);
     }
 
     /**

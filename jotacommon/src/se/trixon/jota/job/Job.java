@@ -15,6 +15,7 @@
  */
 package se.trixon.jota.job;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -26,7 +27,7 @@ import se.trixon.jota.task.TaskManager;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class Job implements Comparable<Job> {
+public class Job implements Comparable<Job>, Serializable {
 
     public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
     private String mDescription = "";

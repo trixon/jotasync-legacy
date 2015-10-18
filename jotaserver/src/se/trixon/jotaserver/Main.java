@@ -15,6 +15,7 @@
  */
 package se.trixon.jotaserver;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import org.apache.commons.cli.CommandLine;
@@ -40,7 +41,7 @@ public class Main {
      * @param args the command line arguments
      * @throws java.rmi.RemoteException
      */
-    public static void main(String[] args) throws RemoteException {
+    public static void main(String[] args) throws RemoteException, IOException {
         System.setProperty("java.rmi.server.hostname", SystemHelper.getHostname());
         Options options = initOptions();
         CommandLineParser parser = new DefaultParser();

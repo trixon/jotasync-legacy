@@ -36,7 +36,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.PanelUI;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.job.Job;
-import se.trixon.jota.job.JobManager;
 import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
 import se.trixon.jotaclient.Options;
@@ -47,7 +46,8 @@ import se.trixon.util.swing.SwingHelper;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class SpeedDialPanel extends JPanel implements ConnectionListener, JobManager.JobListener {
+public class SpeedDialPanel extends JPanel implements ConnectionListener {
+//public class SpeedDialPanel extends JPanel implements ConnectionListener, JobManager.JobListener {
 //public class SpeedDialPanel extends GradientPanel implements JobManager.JobListener {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
@@ -55,7 +55,6 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
     private final JPopupMenu mPopupMenu = new JPopupMenu(Dict.JOB.getString());
     private SpeedDialButton mButton;
     private final HashSet<SpeedDialListener> mSpeedDialListeners = new HashSet<>();
-    private ServerCommander mRemote = Manager.getInstance().getServerCommander();
     //private final ConnectionManager mConnectionManager = ConnectionManager.INSTANCE;
     private final Options mOptions = Options.INSTANCE;
     private final Manager mManager=Manager.getInstance();
@@ -90,7 +89,11 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
 //        }
         SwingUtilities.invokeLater(() -> {
             SwingHelper.enableComponents(this, true);
-            loadConfiguration();
+            try {
+                loadConfiguration();
+            } catch (RemoteException ex) {
+                Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
     }
 
@@ -106,10 +109,10 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
 //        mServerOptions = serverOptions;
 //    }
 
-    @Override
-    public void onJobSave() {
-        loadConfiguration();
-    }
+//    @Override
+//    public void onJobSave() {
+//        loadConfiguration();
+//    }
 
     private void clearConfiguration() {
         Job job = new Job(-1, "", "", "");
@@ -122,12 +125,12 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
         });
     }
 
-    private void loadConfiguration() {
+    private void loadConfiguration() throws RemoteException {
         clearConfiguration();
-        final JobManager mJobManager = JobManager.INSTANCE;
+//        final JobManager mJobManager = JobManager.INSTANCE;
 
-        if (mManager.isConnected() && mJobManager.hasJobs()) {
-            DefaultComboBoxModel model = mJobManager.populateModel((DefaultComboBoxModel) jobsComboBox.getModel());
+        if (mManager.isConnected() && mManager.hasJobs()) {
+            DefaultComboBoxModel model = mManager.getServerCommander().populateJobModel((DefaultComboBoxModel) jobsComboBox.getModel());
             jobsComboBox.setModel(model);
             jobsComboBox.setEnabled(true);
 
@@ -146,7 +149,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
             mPopupMenu.add(mResetMenuItem);
             mPopupMenu.add(new JSeparator());
 
-            for (final Job job : mJobManager.getJobs()) {
+            for (final Job job : mManager.getServerCommander().getJobs()) {
                 final long jobId = job.getId();
                 JMenuItem menuItem = new JMenuItem(job.toString());
                 menuItem.addActionListener((ActionEvent e) -> {
@@ -213,7 +216,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, JobMan
                     @Override
                     public void mousePressed(MouseEvent evt) {
                         SwingUtilities.invokeLater(() -> {
-                            if (JobManager.INSTANCE.hasJobs()) {
+                            if (mManager.hasJobs()) {
                                 mButton = (SpeedDialButton) evt.getSource();
                                 mResetMenuItem.setEnabled(mButton.getJob() != null);
                                 if (!mButton.isEnabled() && evt.getButton() == MouseEvent.BUTTON1 || evt.getButton() == MouseEvent.BUTTON3) {

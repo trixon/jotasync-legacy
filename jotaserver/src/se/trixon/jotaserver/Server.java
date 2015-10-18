@@ -15,6 +15,7 @@
  */
 package se.trixon.jotaserver;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -24,12 +25,15 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import org.apache.commons.cli.CommandLine;
 import se.trixon.jota.ClientCallbacks;
 import se.trixon.jota.Jota;
@@ -37,6 +41,7 @@ import se.trixon.jota.JotaHelper;
 import se.trixon.jota.JotaServer;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.ServerEvent;
+import se.trixon.jota.job.Job;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 
@@ -52,8 +57,10 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     private int mPort = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameServer;
     private VMID mServerVmid;
+    private final JotaManager mJotaManager = JotaManager.INSTANCE;
+    private final JobManager mJobManager = JobManager.INSTANCE;
 
-    public Server(CommandLine cmd) throws RemoteException {
+    public Server(CommandLine cmd) throws RemoteException, IOException {
         super(0);
         if (cmd.hasOption("port")) {
             String port = cmd.getOptionValue("port");
@@ -63,6 +70,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
                 Xlog.timedErr(String.format(mJotaBundle.getString("invalid_port"), port, Jota.DEFAULT_PORT_HOST));
             }
         }
+        mJotaManager.load();
         intiListeners();
         startServer();
     }
@@ -70,6 +78,16 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public void dirHome() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Job getJob(long jobId) throws RemoteException {
+        return mJobManager.getJobById(jobId);
+    }
+
+    @Override
+    public LinkedList<Job> getJobs() throws RemoteException {
+        return mJobManager.getJobs();
     }
 
     @Override
@@ -101,8 +119,23 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
+    public boolean hasJobs() throws RemoteException {
+        return mJobManager.hasJobs();
+    }
+
+    @Override
     public boolean isCronActive() throws RemoteException {
         return mOptions.isCronActive();
+    }
+
+    @Override
+    public DefaultComboBoxModel populateJobModel(DefaultComboBoxModel model) throws RemoteException {
+        return mJobManager.populateModel(model);
+    }
+
+    @Override
+    public DefaultListModel populateJobModel(DefaultListModel model) throws RemoteException {
+        return mJobManager.populateModel(model);
     }
 
     @Override
@@ -118,8 +151,22 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
+    public void saveJota() throws RemoteException {
+        try {
+            mJotaManager.save();
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
     public void setCronActive(boolean enable) throws RemoteException {
         mOptions.setCronActive(enable);
+    }
+
+    @Override
+    public void setJobs(DefaultListModel model) throws RemoteException {
+        mJobManager.setJobs(model);
     }
 
     @Override

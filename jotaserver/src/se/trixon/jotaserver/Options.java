@@ -40,10 +40,10 @@ enum Options {
     private Options() {
         mPreferences = Preferences.userNodeForPackage(this.getClass());
         try {
-            mSpeedDials=getSpeedDials();
+            mSpeedDials = getSpeedDials();
         } catch (BackingStoreException ex) {
             Logger.getLogger(Options.class.getName()).log(Level.SEVERE, null, ex);
-            mSpeedDials=new HashMap<>();
+            mSpeedDials = new HashMap<>();
         }
     }
 
@@ -59,10 +59,11 @@ enum Options {
         return mPreferences.get(KEY_RSYNC_PATH, DEFAULT_RSYNC_PATH);
     }
 
-     long getSpeedDial(int key) {
+    long getSpeedDial(int key) {
         return mSpeedDials.getOrDefault(key, new Long(-1));
     }
-HashMap<Integer, Long> getSpeedDials() throws BackingStoreException {
+
+    HashMap<Integer, Long> getSpeedDials() throws BackingStoreException {
         HashMap<Integer, Long> speedDials = new HashMap<>();
         for (String key : mPreferences.keys()) {
             try {
@@ -77,7 +78,7 @@ HashMap<Integer, Long> getSpeedDials() throws BackingStoreException {
 
         }
 
-         //System.out.println("SpeedDials loaded: " + speedDials.size());
+        //System.out.println("SpeedDials loaded: " + speedDials.size());
         //speedDials.keySet().stream().forEach((key) -> {
         //    System.out.println("loaded speedDial: " + key + " " + speedDials.get(key));
         //});
@@ -99,7 +100,8 @@ HashMap<Integer, Long> getSpeedDials() throws BackingStoreException {
     void setRsyncPath(String value) {
         mPreferences.put(KEY_RSYNC_PATH, value);
     }
-     void setSpeedDial(int key, long jobId) {
+
+    void setSpeedDial(int key, long jobId) {
         mSpeedDials.put(key, jobId);
         setSpeedDials(mSpeedDials);
     }

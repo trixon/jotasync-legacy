@@ -19,13 +19,16 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import se.trixon.jota.job.Job;
-import se.trixon.jota.job.JobManager;
+import se.trixon.jotaclient.Manager;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
@@ -40,6 +43,7 @@ public class JobsPanel extends EditPanel {
     private final ResourceBundle mBundle = BundleHelper.getBundle(JobsPanel.class, "Bundle");
     private final HashSet<JobsListener> mJobsListeners = new HashSet<>();
     private Component mRoot;
+    private final Manager mManager = Manager.getInstance();
 
     public JobsPanel() {
         init();
@@ -56,7 +60,12 @@ public class JobsPanel extends EditPanel {
 
     @Override
     public void save() {
-        JobManager.INSTANCE.setJobs(getModel());
+        try {
+             mManager.getServerCommander().hasJobs();
+            mManager.getServerCommander().setJobs(getModel());
+        } catch (RemoteException ex) {
+            Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void addButtonActionPerformed(ActionEvent evt) {
@@ -119,7 +128,11 @@ public class JobsPanel extends EditPanel {
         removeAllButton.setVisible(true);
 
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setModel(JobManager.INSTANCE.populateModel(getModel()));
+        try {
+            setModel(mManager.getServerCommander().populateJobModel(getModel()));
+        } catch (RemoteException ex) {
+            Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         list.setSelectedIndex(0);
     }
 
