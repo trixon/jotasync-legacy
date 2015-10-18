@@ -37,7 +37,6 @@ public class ActiveTasksPanel extends EditPanel {
     }
 
     private void deactivateButtonActionPerformed(ActionEvent e) {
-        System.out.println(e.toString());
         int[] selectedIndices = list.getSelectedIndices();
 
         if (selectedIndices.length > 0) {

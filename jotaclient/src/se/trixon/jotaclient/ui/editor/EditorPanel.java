@@ -37,7 +37,7 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
     private final TasksPanel mTasksPanel;
     private boolean mTasksSaveable = false;
 
-    /**
+  /**
      * Creates new form EditorPanel
      */
     public EditorPanel() {
@@ -67,13 +67,9 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
     }
 
     private void activateButtonActionPerformed(ActionEvent e) {
-        System.out.println("activateButtonActionPerformed");
-        System.out.println(e.toString());
         if (mJobsPanel.getSelectedJob() != null) {
             List selectedItems = mTasksPanel.list.getSelectedValuesList();
-            System.out.println("num of selected tasks: " + selectedItems.size());
             DefaultListModel activeTasks = mActiveTasksPanel.getModel();
-            System.out.println("num of active tasks: " + activeTasks.size());
 
             for (Object selectedItem : selectedItems) {
                 Task task = (Task) selectedItem;
@@ -104,7 +100,6 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
                     loadActiveTasks();
                 }
             }
-
         });
 
         mActiveTasksPanel.getModel().addListDataListener(new ListDataListener() {
@@ -152,6 +147,7 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
             for (Task task : job.getTasks()) {
                 mActiveTasksPanel.getModel().addElement(task);
             }
+            mActiveTasksPanel.list.setModel(mActiveTasksPanel.getModel());
         }
         mTasksSaveable = true;
     }
