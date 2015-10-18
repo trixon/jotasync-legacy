@@ -35,6 +35,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.ClientCallbacks;
 import se.trixon.jota.Jota;
 import se.trixon.jota.JotaHelper;
@@ -52,13 +53,13 @@ import se.trixon.util.Xlog;
 public class Server extends UnicastRemoteObject implements ServerCommander {
 
     private Set<ClientCallbacks> mClientCallbacks = Collections.newSetFromMap(new ConcurrentHashMap<ClientCallbacks, Boolean>());
+    private final JobManager mJobManager = JobManager.INSTANCE;
     private final ResourceBundle mJotaBundle = Jota.getBundle();
+    private final JotaManager mJotaManager = JotaManager.INSTANCE;
     private final Options mOptions = Options.INSTANCE;
     private int mPort = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameServer;
     private VMID mServerVmid;
-    private final JotaManager mJotaManager = JotaManager.INSTANCE;
-    private final JobManager mJobManager = JobManager.INSTANCE;
     private final TaskManager mTaskManager = TaskManager.INSTANCE;
 
     public Server(CommandLine cmd) throws RemoteException, IOException {
@@ -127,6 +128,34 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public boolean isCronActive() throws RemoteException {
         return mOptions.isCronActive();
+    }
+
+    @Override
+    public String listJobs() throws RemoteException {
+        StringBuilder builder = new StringBuilder(String.format("Found %d job(s).\n", mJobManager.getJobs().size()));
+
+        mJobManager.getJobs().stream().forEach((job) -> {
+            builder.append(String.format("  %s - %s", StringUtils.rightPad(job.getName(), 20), job.getDescription())).append("\n");
+        });
+
+        String jobs = builder.toString();
+        Xlog.timedOut("return " + jobs);
+
+        return jobs;
+    }
+
+    @Override
+    public String listTasks() throws RemoteException {
+        StringBuilder builder = new StringBuilder(String.format("Found %d task(s).\n", mTaskManager.getTasks().size()));
+
+        mTaskManager.getTasks().stream().forEach((task) -> {
+            builder.append(String.format("  %s - %s", StringUtils.rightPad(task.getName(), 20), task.getDescription())).append("\n");
+        });
+
+        String tasks = builder.toString();
+        Xlog.timedOut("return " + tasks);
+
+        return tasks;
     }
 
     @Override

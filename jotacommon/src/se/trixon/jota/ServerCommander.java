@@ -47,6 +47,10 @@ public interface ServerCommander extends Remote {
 
     boolean isCronActive() throws RemoteException;
 
+    String listJobs() throws RemoteException;
+
+    String listTasks() throws RemoteException;
+
     DefaultComboBoxModel populateJobModel(DefaultComboBoxModel model) throws RemoteException;
 
     DefaultListModel populateJobModel(DefaultListModel model) throws RemoteException;

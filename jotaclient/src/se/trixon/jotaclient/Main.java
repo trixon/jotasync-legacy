@@ -79,6 +79,8 @@ public class Main {
         Option portHost = Option.builder("p").longOpt("port").argName("port").hasArg(true).desc("connect to server at port [1099]").build();
         Option portClient = Option.builder("q").longOpt("client-port").argName("port").hasArg(true).desc("client callback port [1199]\n").build();
         Option cron = Option.builder("c").longOpt("cron").argName("on|off").hasArg(true).desc("turn internal cron on or off").build();
+        Option listJobs = new Option("lj", "list-jobs", false, "list jobs");
+        Option listTasks = new Option("lt", "list-tasks", false, "list tasks");
         Option shutdown = new Option("s", "shutdown", false, "shutdown jotasync");
         Option status = new Option("u", "status", false, "print status information");
 
@@ -88,6 +90,8 @@ public class Main {
         options.addOption(host);
         options.addOption(portHost);
         options.addOption(portClient);
+        options.addOption(listJobs);
+        options.addOption(listTasks);
         options.addOption(cron);
         options.addOption(shutdown);
         options.addOption(status);

@@ -106,6 +106,12 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 Xlog.timedOut("invalid cron argument");
             }
             Jota.exit();
+        } else if (cmd.hasOption("list-jobs")) {
+            execute(Command.LIST_JOBS);
+            Jota.exit();
+        } else if (cmd.hasOption("list-tasks")) {
+            execute(Command.LIST_TASKS);
+            Jota.exit();
         } else {
             displayGui();
         }
@@ -117,6 +123,14 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             switch (command) {
                 case DISPLAY_STATUS:
                     Xlog.timedOut(mServerCommander.getStatus());
+                    break;
+
+                case LIST_JOBS:
+                    Xlog.timedOut(mServerCommander.listJobs());
+                    break;
+
+                case LIST_TASKS:
+                    Xlog.timedOut(mServerCommander.listTasks());
                     break;
 
                 case START_CRON:
@@ -256,6 +270,8 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
         DIR_HOME("ls /home"),
         DISPLAY_STATUS("Request status information"),
+        LIST_JOBS("List jobs"),
+        LIST_TASKS("List tasks"),
         SHUTDOWN("Request shutdown"),
         START_CRON("Request start cron"),
         STOP_CRON("Request stop cron");
