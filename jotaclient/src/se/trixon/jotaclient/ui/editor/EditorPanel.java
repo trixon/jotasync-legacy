@@ -67,9 +67,13 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
     }
 
     private void activateButtonActionPerformed(ActionEvent e) {
+        System.out.println("activateButtonActionPerformed");
+        System.out.println(e.toString());
         if (mJobsPanel.getSelectedJob() != null) {
             List selectedItems = mTasksPanel.list.getSelectedValuesList();
+            System.out.println("num of selected tasks: " + selectedItems.size());
             DefaultListModel activeTasks = mActiveTasksPanel.getModel();
+            System.out.println("num of active tasks: " + activeTasks.size());
 
             for (Object selectedItem : selectedItems) {
                 Task task = (Task) selectedItem;

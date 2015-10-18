@@ -16,7 +16,6 @@
 package se.trixon.jotaclient.ui.editor;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.DefaultListModel;
 import se.trixon.jota.task.Task;
 import se.trixon.util.dictionary.Dict;
@@ -38,6 +37,7 @@ public class ActiveTasksPanel extends EditPanel {
     }
 
     private void deactivateButtonActionPerformed(ActionEvent e) {
+        System.out.println(e.toString());
         int[] selectedIndices = list.getSelectedIndices();
 
         if (selectedIndices.length > 0) {
