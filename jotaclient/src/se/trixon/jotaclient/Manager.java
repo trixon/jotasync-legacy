@@ -80,11 +80,15 @@ public class Manager {
 
     public boolean hasJobs() {
         boolean hasJobs = false;
+        
         try {
             hasJobs = mServerCommander.hasJobs();
         } catch (RemoteException ex) {
             Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullPointerException ex) {
+            hasJobs = false;
         }
+        
         return hasJobs;
     }
 

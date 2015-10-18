@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -33,7 +32,6 @@ import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.PanelUI;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.ConnectionListener;
@@ -47,31 +45,21 @@ import se.trixon.util.swing.SwingHelper;
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class SpeedDialPanel extends JPanel implements ConnectionListener {
-//public class SpeedDialPanel extends JPanel implements ConnectionListener, JobManager.JobListener {
-//public class SpeedDialPanel extends GradientPanel implements JobManager.JobListener {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mResetMenuItem;
     private final JPopupMenu mPopupMenu = new JPopupMenu(Dict.JOB.getString());
     private SpeedDialButton mButton;
     private final HashSet<SpeedDialListener> mSpeedDialListeners = new HashSet<>();
-    //private final ConnectionManager mConnectionManager = ConnectionManager.INSTANCE;
     private final Options mOptions = Options.INSTANCE;
-    private final Manager mManager=Manager.getInstance();
-    ServerCommander mServerCommander=mManager.getServerCommander();
+    private final Manager mManager = Manager.getInstance();
 
     /**
      * Creates new form SpeedDialPanel
      */
     public SpeedDialPanel() {
         initComponents();
-//        try {
-//            //TODO Ev flytt till onJobSave
-//            mServerOptions = mRemote.loadServerOptions();
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
+        updateUI();
         init();
     }
 
@@ -81,12 +69,6 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
 
     @Override
     public void onConnectionConnect() {
-//        try {
-//            //TODO Ev flytt till onJobSave
-//            mServerOptions = mRemote.loadServerOptions();
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         SwingUtilities.invokeLater(() -> {
             SwingHelper.enableComponents(this, true);
             try {
@@ -105,15 +87,6 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
         });
     }
 
-//    public void setServerOptions(ServerOptions serverOptions) {
-//        mServerOptions = serverOptions;
-//    }
-
-//    @Override
-//    public void onJobSave() {
-//        loadConfiguration();
-//    }
-
     private void clearConfiguration() {
         Job job = new Job(-1, "", "", "");
         jobsComboBox.removeAllItems();
@@ -127,7 +100,6 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
 
     private void loadConfiguration() throws RemoteException {
         clearConfiguration();
-//        final JobManager mJobManager = JobManager.INSTANCE;
 
         if (mManager.isConnected() && mManager.hasJobs()) {
             DefaultComboBoxModel model = mManager.getServerCommander().populateJobModel((DefaultComboBoxModel) jobsComboBox.getModel());
@@ -140,8 +112,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
             mResetMenuItem.addActionListener((ActionEvent e) -> {
                 mButton.setJobId(-1);
                 try {
-                    mServerCommander.setSpeedDial(mButton.getIndex(), -1);
-                    //saveSpeedDial();
+                    mManager.getServerCommander().setSpeedDial(mButton.getIndex(), -1);
                 } catch (RemoteException ex) {
                     Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -155,8 +126,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
                 menuItem.addActionListener((ActionEvent e) -> {
                     mButton.setJobId(jobId);
                     try {
-                        mServerCommander.setSpeedDial(mButton.getIndex(), jobId);
-                        //saveSpeedDial();
+                        mManager.getServerCommander().setSpeedDial(mButton.getIndex(), jobId);
                     } catch (RemoteException ex) {
                         Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -167,21 +137,13 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
             for (int i = 0; i < mButtons.size(); i++) {
                 SpeedDialButton button = mButtons.get(i);
                 try {
-                    button.setJobId(mServerCommander.getSpeedDial(i));
+                    button.setJobId(mManager.getServerCommander().getSpeedDial(i));
                 } catch (RemoteException ex) {
                     Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
     }
-
-//    private void saveSpeedDial() {
-//        try {
-//            ConnectionManager.INSTANCE.getServerCommander().saveServerOptions(mServerOptions);
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
 
     public void setButtonsVisibility(boolean visible) {
         for (SpeedDialButton button : mButtons) {
@@ -240,7 +202,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener {
             }
         }
 
-//        mConnectionManager.addConnectionListeners(this);
+        mManager.addConnectionListeners(this);
 //        JobManager.INSTANCE.addJobListener(this);
     }
 

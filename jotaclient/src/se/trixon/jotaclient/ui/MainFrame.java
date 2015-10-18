@@ -82,7 +82,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     private static final int ICON_SIZE_LARGE = 32;
     private static final int ICON_SIZE_SMALL = 16;
     private ActionManager mActionManager;
-//    private JotaRunner mJotaRunner;
     private ProgressPanel mProgressPanel;
     private boolean mShutdownInProgress;
     private SpeedDialPanel mSpeedDialPanel;
@@ -93,12 +92,9 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     private ImageIcon[] mStateIcons;
     private String[] mStateTexts;
     private final Options mOptions = Options.INSTANCE;
-//    private final ConnectionManager mConnectionManager = ConnectionManager.INSTANCE;
     private Client mClient;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<Action> mActions = new LinkedList<>();
-//    private ServerOptions mServerOptions;
-//    private ServerCommander mServerCommander;
     private final Manager mManager = Manager.getInstance();
 
     /**
@@ -106,16 +102,13 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
      */
     public MainFrame() {
         initComponents();
-        //mConnectionManager.connectClient();
-//        mClient = mConnectionManager.getClient();
-//        mClient.getJotaManager().load();
-
         init();
         mClient = mManager.getClient();
         loadConfiguration();
 //        //SwingUtilities.invokeLater(this::showEditor);
 //        enableGui(false);
-//        mSpeedDialPanel.onConnectionDisconnect();
+        mSpeedDialPanel.onConnectionDisconnect();
+        mSpeedDialPanel.onConnectionConnect();
     }
 
     @Override
@@ -238,7 +231,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         }
 
 //        mClient.addServerEventListener(this);
-//        mConnectionManager.addConnectionListeners(mSpeedDialPanel);
         //JobManager.INSTANCE.addJobListener(mSpeedDialPanel);
     }
 
@@ -585,8 +577,9 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
         pack();
