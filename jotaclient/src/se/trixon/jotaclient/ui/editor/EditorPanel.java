@@ -62,7 +62,6 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
     }
 
     public void save() {
-        System.out.println("save");
         mJobsPanel.save();
         mTasksPanel.save();
     }

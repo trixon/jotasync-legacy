@@ -121,7 +121,7 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
         prePostPanel.setBorder(null);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/editor/task_modules/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/task_modules/Bundle"); // NOI18N
         preExecuteOnErrorCheckBox.setText(bundle.getString("ModuleExecutePanel.preExecuteOnErrorCheckBox.text")); // NOI18N
 
         preExecutePanel.setHeader(bundle.getString("ModuleExecutePanel.preExecute.text")); // NOI18N

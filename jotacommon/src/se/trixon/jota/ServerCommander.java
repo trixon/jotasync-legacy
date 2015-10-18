@@ -51,6 +51,8 @@ public interface ServerCommander extends Remote {
 
     DefaultListModel populateJobModel(DefaultListModel model) throws RemoteException;
 
+    DefaultListModel populateTaskModel(DefaultListModel model) throws RemoteException;
+
     void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
 
     void removeClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
@@ -64,6 +66,8 @@ public interface ServerCommander extends Remote {
     void setRsyncPath(String path) throws RemoteException;
 
     void setSpeedDial(int key, long jobId) throws RemoteException;
+
+    void setTasks(DefaultListModel model) throws RemoteException;
 
     void shutdown() throws RemoteException;
 }

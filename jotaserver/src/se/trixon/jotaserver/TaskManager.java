@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.task;
+package se.trixon.jotaserver;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -22,7 +22,9 @@ import javax.swing.DefaultListModel;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import se.trixon.jota.Jota;
 import se.trixon.jota.JsonHelper;
+import se.trixon.jota.task.Task;
 
 /**
  *
@@ -31,7 +33,6 @@ import se.trixon.jota.JsonHelper;
 public enum TaskManager {
 
     INSTANCE;
-    public static final String SEPARATOR = ",";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_DEST = "dest";
     private static final String KEY_ID = "id";
@@ -100,7 +101,7 @@ public enum TaskManager {
 
     public List<Task> getTasks(String taskIdsString) {
         List<Task> tasks = new LinkedList<>();
-        String[] taskIds = StringUtils.split(taskIdsString, SEPARATOR);
+        String[] taskIds = StringUtils.split(taskIdsString, Jota.TASK_SEPARATOR);
 
         for (String taskId : taskIds) {
             long id = Long.parseLong(taskId);

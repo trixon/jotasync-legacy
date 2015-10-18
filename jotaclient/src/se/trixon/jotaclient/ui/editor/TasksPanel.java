@@ -19,11 +19,14 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import se.trixon.jota.task.Task;
-import se.trixon.jota.task.TaskManager;
+import se.trixon.jotaclient.Manager;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
@@ -37,6 +40,7 @@ public class TasksPanel extends EditPanel {
 
     private final ResourceBundle mBundle = BundleHelper.getBundle(TasksPanel.class, "Bundle");
     private Component mRoot;
+    private final Manager mManager = Manager.getInstance();
 
     public TasksPanel() {
         init();
@@ -45,7 +49,11 @@ public class TasksPanel extends EditPanel {
 
     @Override
     public void save() {
-        TaskManager.INSTANCE.setTasks(getModel());
+        try {
+            mManager.getServerCommander().setTasks(getModel());
+        } catch (RemoteException ex) {
+            Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void addButtonActionPerformed(ActionEvent evt) {
@@ -110,8 +118,12 @@ public class TasksPanel extends EditPanel {
         editButton.setVisible(true);
         removeButton.setVisible(true);
         removeAllButton.setVisible(true);
-
-        setModel(TaskManager.INSTANCE.populateModel(getModel()));
+        
+        try {
+            setModel(mManager.getServerCommander().populateTaskModel(getModel()));
+        } catch (RemoteException ex) {
+            Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initListeners() {

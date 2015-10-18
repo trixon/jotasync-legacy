@@ -26,6 +26,7 @@ public class Jota {
 
     public static final int DEFAULT_PORT_CLIENT = 1199;
     public static final int DEFAULT_PORT_HOST = 1099;
+    public static final String TASK_SEPARATOR = ",";
     private static final ResourceBundle sBundle = BundleHelper.getBundle(Jota.class, "Bundle");
 
     public static void exit() {

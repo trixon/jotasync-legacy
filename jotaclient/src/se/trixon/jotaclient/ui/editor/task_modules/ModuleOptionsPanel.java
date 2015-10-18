@@ -152,7 +152,7 @@ public class ModuleOptionsPanel extends ModulePanel {
 
         basic1Panel.setLayout(new java.awt.GridLayout(1, 0));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/editor/task_modules/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/task_modules/Bundle"); // NOI18N
         timesCheckBox.setText(bundle.getString("ModuleOptionsPanel.timesCheckBox.text")); // NOI18N
         timesCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.timesCheckBox.toolTipText")); // NOI18N
 

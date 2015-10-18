@@ -20,8 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import org.apache.commons.lang3.StringUtils;
+import se.trixon.jota.Jota;
 import se.trixon.jota.task.Task;
-import se.trixon.jota.task.TaskManager;
 
 /**
  *
@@ -102,7 +102,7 @@ public class Job implements Comparable<Job>, Serializable {
             taskIds[i] = mTasks.get(i).getId();
         }
 
-        return StringUtils.join(taskIds, TaskManager.SEPARATOR);
+        return StringUtils.join(taskIds, Jota.TASK_SEPARATOR);
     }
 
     public boolean isRunAfterFailure() {

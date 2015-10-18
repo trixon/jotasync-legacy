@@ -59,6 +59,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     private VMID mServerVmid;
     private final JotaManager mJotaManager = JotaManager.INSTANCE;
     private final JobManager mJobManager = JobManager.INSTANCE;
+    private final TaskManager mTaskManager = TaskManager.INSTANCE;
 
     public Server(CommandLine cmd) throws RemoteException, IOException {
         super(0);
@@ -139,6 +140,11 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
+    public DefaultListModel populateTaskModel(DefaultListModel model) throws RemoteException {
+        return mTaskManager.populateModel(model);
+    }
+
+    @Override
     public void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException {
         Xlog.timedOut("registerClient(): " + hostname);
         mClientCallbacks.add(clientCallback);
@@ -177,6 +183,11 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public void setSpeedDial(int key, long jobId) {
         mOptions.setSpeedDial(key, jobId);
+    }
+
+    @Override
+    public void setTasks(DefaultListModel model) throws RemoteException {
+        mTaskManager.setTasks(model);
     }
 
     @Override

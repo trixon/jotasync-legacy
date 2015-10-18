@@ -61,7 +61,6 @@ public class JobsPanel extends EditPanel {
     @Override
     public void save() {
         try {
-             mManager.getServerCommander().hasJobs();
             mManager.getServerCommander().setJobs(getModel());
         } catch (RemoteException ex) {
             Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
