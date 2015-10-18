@@ -104,11 +104,12 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
 
     @Override
     public String getStatus() throws RemoteException {
+        int pad = 13;
         StringBuilder builder = new StringBuilder("Status\n");
-        builder.append(String.format("vmid\t%s", mServerVmid.toString())).append("\n");
-        builder.append(String.format("clients\t%d", mClientCallbacks.size())).append("\n");
-        builder.append(String.format("cron\t%s", mOptions.isCronActive())).append("\n");
-        builder.append(String.format("rsync\t%s", mOptions.getRsyncPath())).append("\n");
+        builder.append(String.format("  %s%s", StringUtils.rightPad("vmid", pad), mServerVmid.toString())).append("\n");
+        builder.append(String.format("  %s%d", StringUtils.rightPad("clients", pad), mClientCallbacks.size())).append("\n");
+        builder.append(String.format("  %s%s", StringUtils.rightPad("cron active", pad), mOptions.isCronActive())).append("\n");
+        builder.append(String.format("  %s%s", StringUtils.rightPad("rsync", pad), mOptions.getRsyncPath())).append("\n");
         String status = builder.toString();
         Xlog.timedOut(status);
 
