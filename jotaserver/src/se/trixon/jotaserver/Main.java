@@ -76,7 +76,7 @@ public class Main {
     private static Options initOptions() {
         Option help = new Option("?", "help", false, "print this message");
         Option version = new Option("v", "version", false, "print the version information and exit\n");
-        Option port = Option.builder("p").longOpt("port").argName("port").hasArg(true).desc("connect to server at port [1099]").build();
+        Option port = Option.builder("p").longOpt("port").argName("port").hasArg(true).desc("listen for connection on port [1099]").build();
 
         Options options = new Options();
         options.addOption(help);

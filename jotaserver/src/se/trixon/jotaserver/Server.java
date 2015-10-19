@@ -241,7 +241,6 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
 
     private void intiListeners() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Xlog.timedOut("shutdown hook");
             notifyClientsShutdown();
         }));
 
