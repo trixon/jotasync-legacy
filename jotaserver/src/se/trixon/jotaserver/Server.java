@@ -229,13 +229,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     public void shutdown() throws RemoteException {
         Xlog.timedOut("shutdown");
 
-        mClientCallbacks.stream().forEach((clientCallback) -> {
-            try {
-                clientCallback.onServerEvent(ServerEvent.SHUTDOWN);
-            } catch (RemoteException ex) {
-                // nvm
-            }
-        });
+        notifyClientsShutdown();
 
         try {
             Naming.unbind(mRmiNameServer);
@@ -247,11 +241,8 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
 
     private void intiListeners() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                shutdown();
-            } catch (RemoteException ex) {
-                // nvm
-            }
+            Xlog.timedOut("shutdown hook");
+            notifyClientsShutdown();
         }));
 
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
@@ -276,6 +267,16 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
                 //Remove invalid reference
                 mClientCallbacks.remove(invalidClientCallback);
             });
+        });
+    }
+
+    private void notifyClientsShutdown() {
+        mClientCallbacks.stream().forEach((clientCallback) -> {
+            try {
+                clientCallback.onServerEvent(ServerEvent.SHUTDOWN);
+            } catch (RemoteException ex) {
+                // nvm
+            }
         });
     }
 
