@@ -15,10 +15,6 @@
  */
 package se.trixon.jotaclient.ui;
 
-import java.util.ResourceBundle;
-import javax.swing.text.DefaultCaret;
-import se.trixon.util.BundleHelper;
-
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
@@ -26,27 +22,12 @@ import se.trixon.util.BundleHelper;
 public class ProgressPanel extends javax.swing.JPanel {
 //public class ProgressPanel extends javax.swing.JPanel implements Launcher.LauncherListener {
 
-    private final DefaultCaret mCaret;
-    private final String mToolName;
-//    private final ResourceBundle mExitValueBundle = BundleHelper.getBundle(Launcher.class, "ExitValues");
-
     /**
      * Creates new form ProgressPanel
      */
     public ProgressPanel() {
         initComponents();
-        mToolName = "Jotasync";
         progressBar.setValue(100);
-        mCaret = (DefaultCaret) textArea.getCaret();
-        mCaret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-    }
-
-    public void clear() {
-        textArea.setText("");
-    }
-
-    public String getText() {
-        return textArea.getText();
     }
 
 //    @Override
@@ -77,10 +58,9 @@ public class ProgressPanel extends javax.swing.JPanel {
 //            launcherLog("*** " + message + " ***");
 //        }
 //    }
-
     public void reset() {
         progressBar.setIndeterminate(true);
-        textArea.setText("");
+//        textArea.setText("");
     }
 
     public void setProgressString(String string) {
@@ -95,7 +75,6 @@ public class ProgressPanel extends javax.swing.JPanel {
 //        String key = String.valueOf(exitValue);
 //        return mExitValueBundle.containsKey(key) ? mExitValueBundle.getString(key) : String.format(("System code: %s"), key);
 //    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -106,26 +85,21 @@ public class ProgressPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         progressBar = new javax.swing.JProgressBar();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        textArea = new javax.swing.JTextArea();
+        logPanel = new se.trixon.util.swing.LogPanel();
 
         progressBar.setIndeterminate(true);
         progressBar.setString("sync");
         progressBar.setStringPainted(true);
 
-        textArea.setColumns(20);
-        textArea.setRows(5);
-        jScrollPane1.setViewportView(textArea);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
-                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(logPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -133,15 +107,14 @@ public class ProgressPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(logPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
+    private se.trixon.util.swing.LogPanel logPanel;
     private javax.swing.JProgressBar progressBar;
-    private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
 }
