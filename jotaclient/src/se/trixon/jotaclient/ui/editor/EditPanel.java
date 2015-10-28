@@ -17,8 +17,8 @@ package se.trixon.jotaclient.ui.editor;
 
 import java.awt.Component;
 import java.util.Arrays;
+import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 
@@ -62,8 +62,8 @@ public abstract class EditPanel extends javax.swing.JPanel {
 
     private void init() {
         for (Component component : toolBar.getComponents()) {
-            if (component instanceof JButton) {
-                JButton button = (JButton) component;
+            if (component instanceof AbstractButton) {
+                AbstractButton button = (AbstractButton) component;
                 button.setVisible(false);
             }
         }
@@ -82,6 +82,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
         label = new javax.swing.JLabel();
         toolBar = new javax.swing.JToolBar();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(8, 0), new java.awt.Dimension(8, 0), new java.awt.Dimension(8, 32767));
+        toggleButton = new javax.swing.JToggleButton();
         addButton = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
         copyButton = new javax.swing.JButton();
@@ -104,6 +105,13 @@ public abstract class EditPanel extends javax.swing.JPanel {
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
         toolBar.add(filler1);
+
+        toggleButton.setIcon(Pict.Actions.CHRONOMETER.get(ICON_SIZE));
+        toggleButton.setToolTipText(Dict.SCHEDULE.getString());
+        toggleButton.setFocusable(false);
+        toggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        toggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(toggleButton);
 
         addButton.setIcon(Pict.Actions.LIST_ADD.get(ICON_SIZE));
         addButton.setToolTipText(Dict.ADD.getString());
@@ -231,6 +239,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
     protected javax.swing.JButton removeAllButton;
     protected javax.swing.JButton removeButton;
     protected javax.swing.JScrollPane scrollPane;
+    protected javax.swing.JToggleButton toggleButton;
     protected javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 }

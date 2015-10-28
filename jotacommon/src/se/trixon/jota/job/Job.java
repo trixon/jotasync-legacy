@@ -30,6 +30,7 @@ import se.trixon.jota.task.Task;
 public class Job implements Comparable<Job>, Serializable {
 
     public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
+    private boolean mCronActive;
     private String mDescription = "";
     private String mDetails = "";
     private long mId = System.currentTimeMillis();
@@ -105,6 +106,10 @@ public class Job implements Comparable<Job>, Serializable {
         return StringUtils.join(taskIds, Jota.TASK_SEPARATOR);
     }
 
+    public boolean isCronActive() {
+        return mCronActive;
+    }
+
     public boolean isRunAfterFailure() {
         return mRunAfterFailure;
     }
@@ -135,6 +140,10 @@ public class Job implements Comparable<Job>, Serializable {
 
     public boolean isValid() {
         return !getName().isEmpty();
+    }
+
+    public void setCronActive(boolean cronActive) {
+        mCronActive = cronActive;
     }
 
     public void setDescription(String string) {

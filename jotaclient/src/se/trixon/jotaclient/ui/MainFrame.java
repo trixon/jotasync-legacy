@@ -107,9 +107,9 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         init();
         mClient = mManager.getClient();
         loadConfiguration();
-        //SwingUtilities.invokeLater(this::showEditor);
         mSpeedDialPanel.onConnectionDisconnect();
         mSpeedDialPanel.onConnectionConnect();
+        SwingUtilities.invokeLater(this::showEditor);
     }
 
     @Override

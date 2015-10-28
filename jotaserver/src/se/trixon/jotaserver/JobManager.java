@@ -31,6 +31,7 @@ import se.trixon.jota.job.Job;
 public enum JobManager {
 
     INSTANCE;
+    private static final String KEY_CRON_ACTIVE = "cronActive";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_DETAILS = "details";
     private static final String KEY_ID = "id";
@@ -75,6 +76,9 @@ public enum JobManager {
             object.put(KEY_ID, job.getId());
             object.put(KEY_NAME, job.getName());
             object.put(KEY_DESCRIPTION, job.getDescription());
+
+            object.put(KEY_CRON_ACTIVE, job.isCronActive());
+
             object.put(KEY_DETAILS, job.getDetails());
             object.put(KEY_LAST_RUN, job.getLastRun());
             object.put(KEY_TASKS, job.getTasksString());
@@ -134,6 +138,7 @@ public enum JobManager {
             String taskIds = (String) object.get(KEY_TASKS);
             job.setTasks(TaskManager.INSTANCE.getTasks(taskIds));
 
+            job.setCronActive(JsonHelper.optBoolean(object, KEY_CRON_ACTIVE));
             job.setRunAfterFailure((boolean) object.get(KEY_RUN_AFTER_FAILURE));
             job.setRunAfterFailureCommand((String) object.get(KEY_RUN_AFTER_FAILURE_COMMAND));
 

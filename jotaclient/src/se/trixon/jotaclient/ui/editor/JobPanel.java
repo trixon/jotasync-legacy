@@ -48,6 +48,8 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         job.setRunBefore(beforeFileChooserPanel.isSelected());
         job.setRunBeforeCommand(beforeFileChooserPanel.getPath().trim());
         job.setRunBeforeHaltOnError(beforeHaltCheckBox.isSelected());
+        
+        job.setCronActive(cronPanel.isCronActive());
 
         return job;
     }
@@ -101,6 +103,8 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         beforeFileChooserPanel.setSelected(mJob.isRunBefore());
         beforeHaltCheckBox.setEnabled(mJob.isRunBefore());
         beforeHaltCheckBox.setSelected(mJob.isRunBeforeHaltOnError());
+        
+        cronPanel.setCronActive(job.isCronActive());
     }
 
     private void init() {
@@ -125,6 +129,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         descriptionLabel = new javax.swing.JLabel();
         descriptionTextField = new javax.swing.JTextField();
         tabbedPane = new javax.swing.JTabbedPane();
+        cronPanel = new se.trixon.jotaclient.ui.editor.CronPanel();
         detailsScrollPane = new javax.swing.JScrollPane();
         detailsTextArea = new javax.swing.JTextArea();
         runBeforePanel = new javax.swing.JPanel();
@@ -139,6 +144,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         descriptionLabel.setText(Dict.DESCRIPTION.getString());
 
         tabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabbedPane.addTab(Dict.SCHEDULE.getString(), cronPanel);
 
         detailsTextArea.setColumns(20);
         detailsTextArea.setRows(5);
@@ -244,6 +250,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     private se.trixon.util.swing.dialogs.FileChooserPanel afterSuccessFileChooserPanel;
     private se.trixon.util.swing.dialogs.FileChooserPanel beforeFileChooserPanel;
     private javax.swing.JCheckBox beforeHaltCheckBox;
+    private se.trixon.jotaclient.ui.editor.CronPanel cronPanel;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTextField descriptionTextField;
     private javax.swing.JScrollPane detailsScrollPane;
