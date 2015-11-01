@@ -129,7 +129,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         descriptionLabel = new javax.swing.JLabel();
         descriptionTextField = new javax.swing.JTextField();
         tabbedPane = new javax.swing.JTabbedPane();
-        cronPanel = new se.trixon.jotaclient.ui.editor.CronPanel();
+        cronPanel = new se.trixon.jotaclient.ui.editor.CronEditorPanel();
         detailsScrollPane = new javax.swing.JScrollPane();
         detailsTextArea = new javax.swing.JTextArea();
         runBeforePanel = new javax.swing.JPanel();
@@ -250,7 +250,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     private se.trixon.util.swing.dialogs.FileChooserPanel afterSuccessFileChooserPanel;
     private se.trixon.util.swing.dialogs.FileChooserPanel beforeFileChooserPanel;
     private javax.swing.JCheckBox beforeHaltCheckBox;
-    private se.trixon.jotaclient.ui.editor.CronPanel cronPanel;
+    private se.trixon.jotaclient.ui.editor.CronEditorPanel cronPanel;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTextField descriptionTextField;
     private javax.swing.JScrollPane detailsScrollPane;
