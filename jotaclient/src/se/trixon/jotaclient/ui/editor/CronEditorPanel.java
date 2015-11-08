@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
+import se.trixon.util.swing.dialogs.Message;
 import se.trixon.util.swing.dialogs.cron.CronPanel;
 
 /**
@@ -88,7 +89,7 @@ public class CronEditorPanel extends EditPanel {
                 null);
 
         if (retval == JOptionPane.OK_OPTION) {
-            String modifiedCronString=cronPanel.getCronString();
+            String modifiedCronString = cronPanel.getCronString();
             if (cronPanel.isCronValid()) {
                 if (add) {
                     getModel().addElement(modifiedCronString);
@@ -98,8 +99,8 @@ public class CronEditorPanel extends EditPanel {
                 sortModel();
                 list.setSelectedValue(modifiedCronString, true);
             } else {
-                //showInvalidJobDialog();
-                //edit(modifiedCronString);
+                Message.error(this, "Invalid cron string", modifiedCronString);
+                edit(modifiedCronString);
             }
         }
     }
