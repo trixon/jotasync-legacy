@@ -45,7 +45,7 @@ public class CronEditorPanel extends EditPanel {
         initListeners();
     }
 
-    public String getSelectedJob() {
+    public String getSelectedCronString() {
         return (String) list.getSelectedValue();
     }
 
@@ -65,22 +65,21 @@ public class CronEditorPanel extends EditPanel {
         edit(null);
     }
 
-    private void edit(String job) {
+    private void edit(String cronString) {
         String title;
-        boolean add = job == null;
-        if (job == null) {
-            //job = new Job();
+        boolean add = cronString == null;
+        if (cronString == null) {
             title = Dict.ADD.getString();
         } else {
             title = Dict.EDIT.getString();
         }
 
-        CronPanel jobPanel = new CronPanel();
-        jobPanel.setCronString(job);
-        SwingHelper.makeWindowResizable(jobPanel);
+        CronPanel cronPanel = new CronPanel();
+        cronPanel.setCronString(cronString);
+        SwingHelper.makeWindowResizable(cronPanel);
 
         int retval = JOptionPane.showOptionDialog(mRoot,
-                jobPanel,
+                cronPanel,
                 title,
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
@@ -89,25 +88,25 @@ public class CronEditorPanel extends EditPanel {
                 null);
 
         if (retval == JOptionPane.OK_OPTION) {
-//            Job modifiedJob = jobPanel.getJob();
-//            if (modifiedJob.isValid()) {
-//                if (add) {
-//                    getModel().addElement(modifiedJob);
-//                } else {
-//                    getModel().set(getModel().indexOf(getSelectedJob()), modifiedJob);
-//                }
-//                sortModel();
-//                list.setSelectedValue(modifiedJob, true);
-//            } else {
-//                showInvalidJobDialog();
-//                edit(modifiedJob);
-//            }
+            String modifiedCronString=cronPanel.getCronString();
+            if (cronPanel.isCronValid()) {
+                if (add) {
+                    getModel().addElement(modifiedCronString);
+                } else {
+                    getModel().set(getModel().indexOf(getSelectedCronString()), modifiedCronString);
+                }
+                sortModel();
+                list.setSelectedValue(modifiedCronString, true);
+            } else {
+                //showInvalidJobDialog();
+                //edit(modifiedCronString);
+            }
         }
     }
 
     private void editButtonActionPerformed(ActionEvent evt) {
-        if (getSelectedJob() != null) {
-            edit(getSelectedJob());
+        if (getSelectedCronString() != null) {
+            edit(getSelectedCronString());
         }
     }
 
@@ -122,7 +121,7 @@ public class CronEditorPanel extends EditPanel {
         removeAllButton.setVisible(true);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        //setModel();
+        setModel(getModel());
         list.setSelectedIndex(0);
     }
 
@@ -161,8 +160,8 @@ public class CronEditorPanel extends EditPanel {
     }
 
     private void removeButtonActionPerformed(ActionEvent evt) {
-        if (getSelectedJob() != null) {
-            String message = String.format(mBundle.getString("JobsPanel.message.remove"), getSelectedJob());
+        if (getSelectedCronString() != null) {
+            String message = String.format(mBundle.getString("JobsPanel.message.remove"), getSelectedCronString());
             int retval = JOptionPane.showConfirmDialog(mRoot,
                     message,
                     mBundle.getString("JobsPanel.title.remove"),
@@ -170,7 +169,7 @@ public class CronEditorPanel extends EditPanel {
                     JOptionPane.WARNING_MESSAGE);
 
             if (retval == JOptionPane.OK_OPTION) {
-                getModel().removeElement(getSelectedJob());
+                getModel().removeElement(getSelectedCronString());
             }
         }
     }
