@@ -31,7 +31,9 @@ import se.trixon.jota.job.Job;
 public enum JobManager {
 
     INSTANCE;
+    private final LinkedList<Job> mJobs = new LinkedList<>();
     private static final String KEY_CRON_ACTIVE = "cronActive";
+    private static final String KEY_CRON_ITEMS = "cronItems";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_DETAILS = "details";
     private static final String KEY_ID = "id";
@@ -45,7 +47,6 @@ public enum JobManager {
     private static final String KEY_RUN_BEFORE_COMMAND = "runBeforeCommand";
     private static final String KEY_RUN_BEFORE_HALT_ON_ERROR = "runBeforeHaltOnError";
     private static final String KEY_TASKS = "tasks";
-    private final LinkedList<Job> mJobs = new LinkedList<>();
 
     private JobManager() {
     }
@@ -78,6 +79,7 @@ public enum JobManager {
             object.put(KEY_DESCRIPTION, job.getDescription());
 
             object.put(KEY_CRON_ACTIVE, job.isCronActive());
+            object.put(KEY_CRON_ITEMS, job.getCronItems());
 
             object.put(KEY_DETAILS, job.getDetails());
             object.put(KEY_LAST_RUN, job.getLastRun());
@@ -139,6 +141,7 @@ public enum JobManager {
             job.setTasks(TaskManager.INSTANCE.getTasks(taskIds));
 
             job.setCronActive(JsonHelper.optBoolean(object, KEY_CRON_ACTIVE));
+            job.setCronItems((String) object.get(KEY_CRON_ITEMS));
             job.setRunAfterFailure((boolean) object.get(KEY_RUN_AFTER_FAILURE));
             job.setRunAfterFailureCommand((String) object.get(KEY_RUN_AFTER_FAILURE_COMMAND));
 

@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
@@ -37,6 +38,7 @@ public class CronEditorPanel extends EditPanel {
 
     private final ResourceBundle mBundle = BundleHelper.getBundle(CronEditorPanel.class, "Bundle");
     private Component mRoot;
+    private static final String CRON_ITEM_SEPARATOR = "|";
 
     /**
      * Creates new form CronPanel
@@ -172,6 +174,16 @@ public class CronEditorPanel extends EditPanel {
             if (retval == JOptionPane.OK_OPTION) {
                 getModel().removeElement(getSelectedCronString());
             }
+        }
+    }
+
+    String getCronItems() {
+        return StringUtils.join(getModel().toArray(), CRON_ITEM_SEPARATOR);
+    }
+
+    void setCronItems(String cronItems) {
+        for (String item : StringUtils.split(cronItems, CRON_ITEM_SEPARATOR)) {
+            getModel().addElement(item);
         }
     }
 }

@@ -48,8 +48,9 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         job.setRunBefore(beforeFileChooserPanel.isSelected());
         job.setRunBeforeCommand(beforeFileChooserPanel.getPath().trim());
         job.setRunBeforeHaltOnError(beforeHaltCheckBox.isSelected());
-        
+
         job.setCronActive(cronPanel.isCronActive());
+        job.setCronItems(cronPanel.getCronItems());
 
         return job;
     }
@@ -103,8 +104,9 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         beforeFileChooserPanel.setSelected(mJob.isRunBefore());
         beforeHaltCheckBox.setEnabled(mJob.isRunBefore());
         beforeHaltCheckBox.setSelected(mJob.isRunBeforeHaltOnError());
-        
+
         cronPanel.setCronActive(job.isCronActive());
+        cronPanel.setCronItems(job.getCronItems());
     }
 
     private void init() {

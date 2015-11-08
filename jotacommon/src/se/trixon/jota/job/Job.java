@@ -29,8 +29,8 @@ import se.trixon.jota.task.Task;
  */
 public class Job implements Comparable<Job>, Serializable {
 
-    public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
     private boolean mCronActive;
+    private String mCronItems = "";
     private String mDescription = "";
     private String mDetails = "";
     private long mId = System.currentTimeMillis();
@@ -44,6 +44,7 @@ public class Job implements Comparable<Job>, Serializable {
     private String mRunBeforeCommand = "";
     private boolean mRunBeforeHaltOnError;
     private List<Task> mTasks = new LinkedList<>();
+    public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
     public Job() {
     }
@@ -58,6 +59,10 @@ public class Job implements Comparable<Job>, Serializable {
     @Override
     public int compareTo(Job o) {
         return mName.compareTo(o.getName());
+    }
+
+    public String getCronItems() {
+        return mCronItems;
     }
 
     public String getDescription() {
@@ -144,6 +149,10 @@ public class Job implements Comparable<Job>, Serializable {
 
     public void setCronActive(boolean cronActive) {
         mCronActive = cronActive;
+    }
+
+    public void setCronItems(String cronItems) {
+        mCronItems = cronItems;
     }
 
     public void setDescription(String string) {
