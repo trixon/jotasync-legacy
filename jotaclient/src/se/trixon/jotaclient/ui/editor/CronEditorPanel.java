@@ -15,14 +15,12 @@
  */
 package se.trixon.jotaclient.ui.editor;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
@@ -52,7 +50,7 @@ public class CronEditorPanel extends EditPanel {
     }
 
     public boolean isCronActive() {
-        return toggleButton.isSelected();
+        return checkBox.isSelected();
     }
 
     @Override
@@ -60,7 +58,8 @@ public class CronEditorPanel extends EditPanel {
     }
 
     public void setCronActive(boolean value) {
-        toggleButton.setSelected(value);
+        checkBox.setSelected(value);
+        checkBox.doClick(2);
     }
 
     private void addButtonActionPerformed(ActionEvent evt) {
@@ -114,11 +113,12 @@ public class CronEditorPanel extends EditPanel {
 
     private void init() {
         label.setVisible(false);
-        toggleButton.setVisible(true);
         addButton.setVisible(true);
         editButton.setVisible(true);
         removeButton.setVisible(true);
         removeAllButton.setVisible(true);
+        checkBox.setVisible(true);
+        checkBox.setText(Dict.SCHEDULER.getString());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         setModel(getModel());
@@ -131,6 +131,10 @@ public class CronEditorPanel extends EditPanel {
         removeButton.addActionListener(this::removeButtonActionPerformed);
         removeAllButton.addActionListener(this::removeAllButtonActionPerformed);
 
+        checkBox.addActionListener((java.awt.event.ActionEvent evt) -> {
+            list.setEnabled(checkBox.isSelected());
+        });
+        
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {

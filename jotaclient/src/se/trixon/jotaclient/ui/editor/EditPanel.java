@@ -94,6 +94,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
         copyButton = new javax.swing.JButton();
         removeButton = new javax.swing.JButton();
         removeAllButton = new javax.swing.JButton();
+        checkBox = new javax.swing.JCheckBox();
         moveFirstButton = new javax.swing.JButton();
         moveUpButton = new javax.swing.JButton();
         moveDownButton = new javax.swing.JButton();
@@ -153,6 +154,11 @@ public abstract class EditPanel extends javax.swing.JPanel {
         removeAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         removeAllButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(removeAllButton);
+
+        checkBox.setFocusable(false);
+        checkBox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        checkBox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(checkBox);
 
         moveFirstButton.setIcon(Pict.Actions.GO_TOP.get(ICON_SIZE));
         moveFirstButton.setToolTipText(Dict.MOVE_TOP.getString());
@@ -222,7 +228,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -230,6 +236,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     protected javax.swing.JButton activateButton;
     protected javax.swing.JButton addButton;
+    protected javax.swing.JCheckBox checkBox;
     protected javax.swing.JButton copyButton;
     protected javax.swing.JButton deactivateButton;
     protected javax.swing.JButton editButton;
