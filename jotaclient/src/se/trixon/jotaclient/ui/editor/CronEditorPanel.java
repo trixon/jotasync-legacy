@@ -37,7 +37,6 @@ import se.trixon.util.swing.dialogs.cron.CronPanel;
 public class CronEditorPanel extends EditPanel {
 
     private final ResourceBundle mBundle = BundleHelper.getBundle(CronEditorPanel.class, "Bundle");
-    private Component mRoot;
     private static final String CRON_ITEM_SEPARATOR = "|";
 
     /**
@@ -81,7 +80,7 @@ public class CronEditorPanel extends EditPanel {
         cronPanel.setCronString(cronString);
         SwingHelper.makeWindowResizable(cronPanel);
 
-        int retval = JOptionPane.showOptionDialog(mRoot,
+        int retval = JOptionPane.showOptionDialog(getRoot(),
                 cronPanel,
                 title,
                 JOptionPane.OK_CANCEL_OPTION,
@@ -114,8 +113,6 @@ public class CronEditorPanel extends EditPanel {
     }
 
     private void init() {
-        mRoot = SwingUtilities.getRoot(this);
-
         label.setVisible(false);
         toggleButton.setVisible(true);
         addButton.setVisible(true);
@@ -150,7 +147,7 @@ public class CronEditorPanel extends EditPanel {
 
     private void removeAllButtonActionPerformed(ActionEvent evt) {
         if (!getModel().isEmpty()) {
-            int retval = JOptionPane.showConfirmDialog(mRoot,
+            int retval = JOptionPane.showConfirmDialog(getRoot(),
                     mBundle.getString("JobsPanel.message.removeAll"),
                     mBundle.getString("JobsPanel.title.removeAll"),
                     JOptionPane.OK_CANCEL_OPTION,
@@ -165,7 +162,7 @@ public class CronEditorPanel extends EditPanel {
     private void removeButtonActionPerformed(ActionEvent evt) {
         if (getSelectedCronString() != null) {
             String message = String.format(mBundle.getString("JobsPanel.message.remove"), getSelectedCronString());
-            int retval = JOptionPane.showConfirmDialog(mRoot,
+            int retval = JOptionPane.showConfirmDialog(getRoot(),
                     message,
                     mBundle.getString("JobsPanel.title.remove"),
                     JOptionPane.OK_CANCEL_OPTION,

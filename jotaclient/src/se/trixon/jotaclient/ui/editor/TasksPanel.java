@@ -15,7 +15,6 @@
  */
 package se.trixon.jotaclient.ui.editor;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -24,7 +23,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import se.trixon.jota.task.Task;
 import se.trixon.jotaclient.Manager;
 import se.trixon.util.BundleHelper;
@@ -39,7 +37,6 @@ import se.trixon.util.swing.dialogs.Message;
 public class TasksPanel extends EditPanel {
 
     private final ResourceBundle mBundle = BundleHelper.getBundle(TasksPanel.class, "Bundle");
-    private Component mRoot;
     private final Manager mManager = Manager.getInstance();
 
     public TasksPanel() {
@@ -74,7 +71,7 @@ public class TasksPanel extends EditPanel {
         taskPanel.setTask(task);
         SwingHelper.makeWindowResizable(taskPanel);
 
-        int retval = JOptionPane.showOptionDialog(mRoot,
+        int retval = JOptionPane.showOptionDialog(getRoot(),
                 taskPanel,
                 title,
                 JOptionPane.OK_CANCEL_OPTION,
@@ -111,7 +108,6 @@ public class TasksPanel extends EditPanel {
     }
 
     private void init() {
-        mRoot = SwingUtilities.getRoot(this);
         label.setText(Dict.TASKS_AVAILABLE.getString());
 
         addButton.setVisible(true);
@@ -148,7 +144,7 @@ public class TasksPanel extends EditPanel {
 
     private void removeAllButtonActionPerformed(ActionEvent evt) {
         if (!getModel().isEmpty()) {
-            int retval = JOptionPane.showConfirmDialog(mRoot,
+            int retval = JOptionPane.showConfirmDialog(getRoot(),
                     mBundle.getString("TasksPanel.message.removeAll"),
                     mBundle.getString("TasksPanel.title.removeAll"),
                     JOptionPane.OK_CANCEL_OPTION,
@@ -163,7 +159,7 @@ public class TasksPanel extends EditPanel {
     private void removeButtonActionPerformed(ActionEvent evt) {
         if (getSelectedTask() != null) {
             String message = String.format(mBundle.getString("TasksPanel.message.remove"), getSelectedTask().getName());
-            int retval = JOptionPane.showConfirmDialog(mRoot,
+            int retval = JOptionPane.showConfirmDialog(getRoot(),
                     message,
                     mBundle.getString("TasksPanel.title.remove"),
                     JOptionPane.OK_CANCEL_OPTION,
@@ -177,6 +173,6 @@ public class TasksPanel extends EditPanel {
     }
 
     private void showInvalidTaskDialog() {
-        Message.error(mRoot, Dict.INVALID_INPUT.getString(), mBundle.getString("TasksPanel.invalid"));
+        Message.error(getRoot(), Dict.INVALID_INPUT.getString(), mBundle.getString("TasksPanel.invalid"));
     }
 }

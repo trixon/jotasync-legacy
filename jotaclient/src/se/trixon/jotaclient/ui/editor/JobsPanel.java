@@ -42,7 +42,6 @@ public class JobsPanel extends EditPanel {
 
     private final ResourceBundle mBundle = BundleHelper.getBundle(JobsPanel.class, "Bundle");
     private final HashSet<JobsListener> mJobsListeners = new HashSet<>();
-    private Component mRoot;
     private final Manager mManager = Manager.getInstance();
 
     public JobsPanel() {
@@ -84,8 +83,7 @@ public class JobsPanel extends EditPanel {
         JobPanel jobPanel = new JobPanel();
         jobPanel.setJob(job);
         SwingHelper.makeWindowResizable(jobPanel);
-
-        int retval = JOptionPane.showOptionDialog(mRoot,
+        int retval = JOptionPane.showOptionDialog(getRoot(),
                 jobPanel,
                 title,
                 JOptionPane.OK_CANCEL_OPTION,
@@ -118,7 +116,6 @@ public class JobsPanel extends EditPanel {
     }
 
     private void init() {
-        mRoot = SwingUtilities.getRoot(this);
         label.setText(Dict.JOB.getString());
 
         addButton.setVisible(true);
@@ -175,7 +172,7 @@ public class JobsPanel extends EditPanel {
 
     private void removeAllButtonActionPerformed(ActionEvent evt) {
         if (!getModel().isEmpty()) {
-            int retval = JOptionPane.showConfirmDialog(mRoot,
+            int retval = JOptionPane.showConfirmDialog(getRoot(),
                     mBundle.getString("JobsPanel.message.removeAll"),
                     mBundle.getString("JobsPanel.title.removeAll"),
                     JOptionPane.OK_CANCEL_OPTION,
@@ -191,7 +188,7 @@ public class JobsPanel extends EditPanel {
     private void removeButtonActionPerformed(ActionEvent evt) {
         if (getSelectedJob() != null) {
             String message = String.format(mBundle.getString("JobsPanel.message.remove"), getSelectedJob().getName());
-            int retval = JOptionPane.showConfirmDialog(mRoot,
+            int retval = JOptionPane.showConfirmDialog(getRoot(),
                     message,
                     mBundle.getString("JobsPanel.title.remove"),
                     JOptionPane.OK_CANCEL_OPTION,
@@ -205,7 +202,7 @@ public class JobsPanel extends EditPanel {
     }
 
     private void showInvalidJobDialog() {
-        Message.error(mRoot, Dict.INVALID_INPUT.getString(), mBundle.getString("JobsPanel.invalid"));
+        Message.error(getRoot(), Dict.INVALID_INPUT.getString(), mBundle.getString("JobsPanel.invalid"));
     }
 
     public interface JobsListener {
