@@ -59,7 +59,7 @@ public class CronEditorPanel extends EditPanel {
 
     public void setCronActive(boolean value) {
         checkBox.setSelected(value);
-        checkBox.doClick(2);
+        list.setEnabled(checkBox.isSelected());
     }
 
     private void addButtonActionPerformed(ActionEvent evt) {
@@ -134,7 +134,7 @@ public class CronEditorPanel extends EditPanel {
         checkBox.addActionListener((java.awt.event.ActionEvent evt) -> {
             list.setEnabled(checkBox.isSelected());
         });
-        
+
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
