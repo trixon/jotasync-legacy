@@ -9,3 +9,6 @@
 /jotacommon/dist/
 *~
 
+/jotashared/target/
+/jotaserver/target/
+/jotaclient/target/
