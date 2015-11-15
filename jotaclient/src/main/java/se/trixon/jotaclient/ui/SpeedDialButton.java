@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jotaclient.ui.speeddial;
+package se.trixon.jotaclient.ui;
 
 import java.awt.Dimension;
 import java.rmi.RemoteException;

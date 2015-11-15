@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jotaclient.ui.speeddial;
+package se.trixon.jotaclient.ui;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -206,7 +206,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
                 });
 
                 button.addActionListener((ActionEvent evt) -> {
-                    mSpeedDialListeners.stream().forEach((speedDialListener) -> {
+                    mSpeedDialListeners.stream().forEach((se.trixon.jotaclient.ui.SpeedDialListener speedDialListener) -> {
                         try {
                             speedDialListener.onSpeedDialButtonClicked(mButton);
                         } catch (Exception e) {
@@ -233,15 +233,15 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         java.awt.GridBagConstraints gridBagConstraints;
 
         jobsComboBox = new javax.swing.JComboBox();
-        speedDialButton0 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
-        speedDialButton1 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
-        speedDialButton2 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
-        speedDialButton3 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
-        speedDialButton4 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
-        speedDialButton5 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
-        speedDialButton6 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
-        speedDialButton7 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
-        speedDialButton8 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
+        speedDialButton0 = new se.trixon.jotaclient.ui.SpeedDialButton();
+        speedDialButton1 = new se.trixon.jotaclient.ui.SpeedDialButton();
+        speedDialButton2 = new se.trixon.jotaclient.ui.SpeedDialButton();
+        speedDialButton3 = new se.trixon.jotaclient.ui.SpeedDialButton();
+        speedDialButton4 = new se.trixon.jotaclient.ui.SpeedDialButton();
+        speedDialButton5 = new se.trixon.jotaclient.ui.SpeedDialButton();
+        speedDialButton6 = new se.trixon.jotaclient.ui.SpeedDialButton();
+        speedDialButton7 = new se.trixon.jotaclient.ui.SpeedDialButton();
+        speedDialButton8 = new se.trixon.jotaclient.ui.SpeedDialButton();
 
         setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -308,19 +308,14 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox jobsComboBox;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton0;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton1;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton2;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton3;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton4;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton5;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton6;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton7;
-    private se.trixon.jotaclient.ui.speeddial.SpeedDialButton speedDialButton8;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton0;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton1;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton2;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton3;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton4;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton5;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton6;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton7;
+    private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton8;
     // End of variables declaration//GEN-END:variables
-
-    public interface SpeedDialListener {
-
-        public void onSpeedDialButtonClicked(SpeedDialButton speedDialButton);
-    }
 }
