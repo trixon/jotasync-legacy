@@ -16,6 +16,7 @@
 package se.trixon.jotaclient;
 
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.HashSet;
@@ -45,7 +46,7 @@ public class Manager {
         return mConnectionListeners.add(connectionListener);
     }
 
-    public void connect(String host, int port) throws NotBoundException, MalformedURLException, RemoteException {
+    public void connect(String host, int port) throws NotBoundException, MalformedURLException, RemoteException, SocketException {
         mClient.setHost(host);
         mClient.setPortHost(port);
         mClient.connectToServer();
@@ -80,7 +81,7 @@ public class Manager {
 
     public boolean hasJobs() {
         boolean hasJobs = false;
-        
+
         try {
             hasJobs = mServerCommander.hasJobs();
         } catch (RemoteException ex) {
@@ -88,7 +89,7 @@ public class Manager {
         } catch (NullPointerException ex) {
             hasJobs = false;
         }
-        
+
         return hasJobs;
     }
 

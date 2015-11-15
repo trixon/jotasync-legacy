@@ -18,13 +18,13 @@ package se.trixon.jotaclient;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import javax.swing.UIManager;
@@ -50,6 +50,7 @@ import se.trixon.util.swing.SwingHelper;
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
 
     private VMID mClientVmid;
+    private boolean mExitOnException;
     private String mHost = SystemHelper.getHostname();
     private final ResourceBundle mJotaBundle = Jota.getBundle();
     private MainFrame mMainFrame = null;
@@ -66,12 +67,12 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
         mManager.setClient(this);
-        if (cmd.hasOption("host")) {
-            mHost = cmd.getOptionValue("host");
+        if (cmd.hasOption(Main.OPT_HOST)) {
+            mHost = cmd.getOptionValue(Main.OPT_HOST);
         }
 
-        if (cmd.hasOption("port")) {
-            String port = cmd.getOptionValue("port");
+        if (cmd.hasOption(Main.OPT_PORT)) {
+            String port = cmd.getOptionValue(Main.OPT_PORT);
             try {
                 mPortHost = Integer.valueOf(port);
             } catch (NumberFormatException e) {
@@ -79,8 +80,8 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             }
         }
 
-        if (cmd.hasOption("client-port")) {
-            String port = cmd.getOptionValue("client-port");
+        if (cmd.hasOption(Main.OPT_CLIENT_PORT)) {
+            String port = cmd.getOptionValue(Main.OPT_CLIENT_PORT);
             try {
                 mPortClient = Integer.valueOf(port);
             } catch (NumberFormatException e) {
@@ -88,16 +89,22 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             }
         }
 
+        mExitOnException = cmd.hasOption(Main.OPT_STATUS)
+                || cmd.hasOption(Main.OPT_SHUTDOWN)
+                || cmd.hasOption(Main.OPT_CRON)
+                || cmd.hasOption(Main.OPT_LIST_JOBS)
+                || cmd.hasOption(Main.OPT_LIST_TASKS);
+
         startRMI();
 
-        if (cmd.hasOption("status")) {
+        if (cmd.hasOption(Main.OPT_STATUS)) {
             execute(Command.DISPLAY_STATUS);
             Jota.exit();
-        } else if (cmd.hasOption("shutdown")) {
+        } else if (cmd.hasOption(Main.OPT_SHUTDOWN)) {
             execute(Command.SHUTDOWN);
             Jota.exit();
-        } else if (cmd.hasOption("cron")) {
-            String state = cmd.getOptionValue("cron");
+        } else if (cmd.hasOption(Main.OPT_CRON)) {
+            String state = cmd.getOptionValue(Main.OPT_CRON);
             if (state.equalsIgnoreCase("on")) {
                 execute(Command.START_CRON);
             } else if (state.equalsIgnoreCase("off")) {
@@ -106,10 +113,10 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 Xlog.timedOut("invalid cron argument");
             }
             Jota.exit();
-        } else if (cmd.hasOption("list-jobs")) {
+        } else if (cmd.hasOption(Main.OPT_LIST_JOBS)) {
             execute(Command.LIST_JOBS);
             Jota.exit();
-        } else if (cmd.hasOption("list-tasks")) {
+        } else if (cmd.hasOption(Main.OPT_LIST_TASKS)) {
             execute(Command.LIST_TASKS);
             Jota.exit();
         } else {
@@ -180,8 +187,8 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         return mServerEventListeners.remove(serverEventListener);
     }
 
-    public void setHost(String mHost) {
-        this.mHost = mHost;
+    public void setHost(String host) {
+        mHost = host;
     }
 
     public void setPortClient(int portClient) {
@@ -236,13 +243,15 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                     }
                 }
             }));
-        } catch (NotBoundException | MalformedURLException | java.rmi.server.ExportException | java.rmi.ConnectException | java.rmi.UnknownHostException ex) {
-            Xlog.timedErr(ex.getLocalizedMessage());
-            Jota.exit();
+        } catch (NotBoundException | MalformedURLException | java.rmi.server.ExportException | java.rmi.ConnectException | java.rmi.ConnectIOException | java.rmi.UnknownHostException | SocketException ex) {
+            if (mExitOnException) {
+                Xlog.timedErr(ex.getLocalizedMessage());
+                Jota.exit();
+            }
         }
     }
 
-    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.UnknownHostException {
+    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {
         mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
         mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
         mManager.setServerCommander(mServerCommander);

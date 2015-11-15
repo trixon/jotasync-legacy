@@ -22,6 +22,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -107,9 +108,13 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         init();
         mClient = mManager.getClient();
         loadConfiguration();
-        mSpeedDialPanel.onConnectionDisconnect();
-        mSpeedDialPanel.onConnectionConnect();
-        SwingUtilities.invokeLater(this::showEditor);
+
+        if (mManager.isConnected()) {
+            enableGui(true);
+            mSpeedDialPanel.onConnectionConnect();
+        } else {
+            enableGui(false);
+        }
     }
 
     @Override
@@ -369,7 +374,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
                 mOptions.setHosts(SwingHelper.comboBoxModelToString(comboBoxModel));
             } catch (NumberFormatException e) {
                 Message.error(this, Dict.ERROR.getString(), String.format(Dict.INVALID_PORT.getString(), portString));
-            } catch (NotBoundException | MalformedURLException | RemoteException ex) {
+            } catch (NotBoundException | MalformedURLException | RemoteException | SocketException ex) {
                 Message.error(this, Dict.ERROR.getString(), ex.getLocalizedMessage());
                 mClient.setHost(currentHost);
                 mClient.setPortHost(currentPort);

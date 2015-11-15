@@ -62,6 +62,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         initComponents();
         updateUI();
         init();
+        onConnectionDisconnect();
     }
 
     public boolean addSpeedDialListener(SpeedDialListener speedDialListener) {
@@ -243,8 +244,6 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         speedDialButton8 = new se.trixon.jotaclient.ui.speeddial.SpeedDialButton();
 
         setLayout(new java.awt.GridBagLayout());
-
-        jobsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
