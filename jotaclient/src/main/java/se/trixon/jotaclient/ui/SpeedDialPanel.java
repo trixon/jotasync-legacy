@@ -103,6 +103,10 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         }
     }
 
+    Job getSelectedJob() {
+        return (Job) jobsComboBox.getSelectedItem();
+    }
+
     private void clearConfiguration() {
         Job job = new Job(-1, "", "", "");
         jobsComboBox.removeAllItems();
