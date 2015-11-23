@@ -35,9 +35,12 @@ import se.trixon.jota.Jota;
 import se.trixon.jota.JotaClient;
 import se.trixon.jota.JotaHelper;
 import se.trixon.jota.JotaServer;
+import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
+import se.trixon.jota.job.Job;
+import se.trixon.jota.task.Task;
 import se.trixon.jotaclient.ui.MainFrame;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
@@ -174,6 +177,13 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
     public int getPortHost() {
         return mPortHost;
+    }
+
+    @Override
+    public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) throws RemoteException {
+        mServerEventListeners.stream().forEach((serverEventListener) -> {
+            serverEventListener.onProcessEvent(processEvent, job, task, object);
+        });
     }
 
     @Override

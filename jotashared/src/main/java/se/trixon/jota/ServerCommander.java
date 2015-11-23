@@ -72,4 +72,6 @@ public interface ServerCommander extends Remote {
     void setTasks(DefaultListModel model) throws RemoteException;
 
     void shutdown() throws RemoteException;
+
+    void startJob(Job job) throws RemoteException;
 }

@@ -50,9 +50,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import se.trixon.jota.Jota;
+import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
+import se.trixon.jota.task.Task;
 import se.trixon.jotaclient.Client;
 import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
@@ -133,6 +135,13 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
                 Message.warning(this, "Connection lost", "Connection lost due to server shutdown");
             }
         });
+    }
+
+    @Override
+    public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
+        Xlog.timedOut("onProcessEvent");
+        Xlog.timedOut(processEvent.name());
+        Xlog.timedOut(job.getName());
     }
 
     @Override
@@ -304,6 +313,12 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         String[] options = new String[]{simulate, start};
         String title = "Confirm";
         String message = String.format("<html>Start job <b>%s</b>?</html>", job.getName());
+
+        try {
+            mManager.getServerCommander().startJob(job);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         //NotifyDescriptor d = new NotifyDescriptor(message, title, NotifyDescriptor.DEFAULT_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, start);
         //d.setAdditionalOptions(new String[]{cancel});

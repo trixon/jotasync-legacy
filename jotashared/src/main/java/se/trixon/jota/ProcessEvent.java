@@ -15,16 +15,14 @@
  */
 package se.trixon.jota;
 
-import se.trixon.jota.job.Job;
-import se.trixon.jota.task.Task;
-
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-public interface ServerEventListener {
-
-    void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object);
-
-    void onServerEvent(ServerEvent serverEvent);
+public enum ProcessEvent {
+    STARTED,
+    PROGRESS,
+    FINISHED,
+    ABORTED,
+    FAILED;
 }

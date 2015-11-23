@@ -40,6 +40,7 @@ import se.trixon.jota.ClientCallbacks;
 import se.trixon.jota.Jota;
 import se.trixon.jota.JotaHelper;
 import se.trixon.jota.JotaServer;
+import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.ServerCommander;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.job.Job;
@@ -236,6 +237,14 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
             Jota.exit(0);
         } catch (NotBoundException | MalformedURLException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void startJob(Job job) throws RemoteException {
+        Xlog.timedOut(String.format("Start job: %s", job.getName()));
+        for (ClientCallbacks clientCallback : mClientCallbacks) {
+            clientCallback.onProcessEvent(ProcessEvent.STARTED, job, null, null);
         }
     }
 

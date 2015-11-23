@@ -17,12 +17,16 @@ package se.trixon.jota;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import se.trixon.jota.job.Job;
+import se.trixon.jota.task.Task;
 
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public interface ClientCallbacks extends Remote {
+
+    void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) throws RemoteException;
 
     void onServerEvent(ServerEvent serverEvent) throws RemoteException;
 }

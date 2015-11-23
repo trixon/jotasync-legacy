@@ -32,12 +32,15 @@ import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
+import se.trixon.jota.task.Task;
 import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
 import se.trixon.jotaclient.Options;
+import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
 
@@ -87,6 +90,11 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
             SwingHelper.enableComponents(this, false);
             clearConfiguration();
         });
+    }
+
+    @Override
+    public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
+        Xlog.timedOut("Remember to handle process events in SpeedDial");
     }
 
     @Override
