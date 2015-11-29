@@ -131,7 +131,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         SwingUtilities.invokeLater(() -> {
             enableGui(false);
             stateButton.setEnabled(false);
-            if (mShutdownInProgress) {
+            if (!mShutdownInProgress) {
                 Message.warning(this, "Connection lost", "Connection lost due to server shutdown");
             }
         });
@@ -162,7 +162,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
                 break;
 
             case SHUTDOWN:
-                mShutdownInProgress = true;
                 mManager.disconnect();
                 break;
 
@@ -635,8 +634,8 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     }// </editor-fold>//GEN-END:initComponents
 
     private void shutdownServer() {
+        mShutdownInProgress = true;
         mClient.execute(Client.Command.SHUTDOWN);
-        enableGui(false);
     }
 
     private void quit() {
