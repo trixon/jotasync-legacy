@@ -42,13 +42,14 @@ import se.trixon.jotaclient.Manager;
 import se.trixon.jotaclient.Options;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
+import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.SwingHelper;
 
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener {
+public class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mResetMenuItem;
@@ -57,6 +58,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     private final HashSet<SpeedDialListener> mSpeedDialListeners = new HashSet<>();
     private final Options mOptions = Options.INSTANCE;
     private final Manager mManager = Manager.getInstance();
+    private boolean mSimulate;
 
     /**
      * Creates new form SpeedDialPanel
@@ -75,7 +77,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     @Override
     public void onConnectionConnect() {
         SwingUtilities.invokeLater(() -> {
-            SwingHelper.enableComponents(this, true);
+            SwingHelper.enableComponents(getParent(), true);
             try {
                 loadConfiguration();
             } catch (RemoteException ex) {
@@ -87,7 +89,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     @Override
     public void onConnectionDisconnect() {
         SwingUtilities.invokeLater(() -> {
-            SwingHelper.enableComponents(this, false);
+            SwingHelper.enableComponents(getParent(), false);
             clearConfiguration();
         });
     }
@@ -109,6 +111,11 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
             }
             break;
         }
+    }
+
+    @Override
+    public void onSpeedDialButtonClicked(SpeedDialButton speedDialButton) {
+        requestStartJob(speedDialButton.getJob());
     }
 
     Job getSelectedJob() {
@@ -193,10 +200,12 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     }
 
     private void init() {
+        startButton.setIcon(Pict.Actions.MEDIA_PLAYBACK_START.get(UI.ICON_SIZE_LARGE));
+
         mButtons.clear();
         int index = -1;
 
-        for (Component component : getComponents()) {
+        for (Component component : centerPanel.getComponents()) {
             if (component instanceof SpeedDialButton) {
                 index++;
                 SpeedDialButton button = (SpeedDialButton) component;
@@ -232,6 +241,35 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
+        addSpeedDialListener(this);
+    }
+
+    private boolean requestStartJob(Job job) {
+        Xlog.timedOut("requestStartJob() " + job.toString());
+
+        String start = Dict.START.getString();
+        String simulate = "Simulate";
+        String cancel = Dict.CANCEL.getString();
+        String[] options = new String[]{simulate, start};
+        String title = "Confirm";
+        String message = String.format("<html>Start job <b>%s</b>?</html>", job.getName());
+
+        try {
+            mManager.getServerCommander().startJob(job);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //NotifyDescriptor d = new NotifyDescriptor(message, title, NotifyDescriptor.DEFAULT_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, start);
+        //d.setAdditionalOptions(new String[]{cancel});
+//        Object retval = DialogDisplayer.getDefault().notify(d);
+//        mSimulate = retval == simulate;
+//        if (retval == start || retval == simulate) {
+//        mJotaRunner = new JotaRunner(mProgressPanel);
+//        mJotaRunner.addJotaListener(this);
+//        mJotaRunner.start(job, mSimulate);
+//        }
+        return false;
     }
 
     /**
@@ -244,7 +282,11 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        topPanel = new javax.swing.JPanel();
         jobsComboBox = new javax.swing.JComboBox();
+        toolBar = new javax.swing.JToolBar();
+        startButton = new javax.swing.JButton();
+        centerPanel = new javax.swing.JPanel();
         speedDialButton0 = new se.trixon.jotaclient.ui.SpeedDialButton();
         speedDialButton1 = new se.trixon.jotaclient.ui.SpeedDialButton();
         speedDialButton2 = new se.trixon.jotaclient.ui.SpeedDialButton();
@@ -256,69 +298,110 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         speedDialButton8 = new se.trixon.jotaclient.ui.SpeedDialButton();
 
         setLayout(new java.awt.GridBagLayout());
+
+        topPanel.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        add(jobsComboBox, gridBagConstraints);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        topPanel.add(jobsComboBox, gridBagConstraints);
+
+        toolBar.setFloatable(false);
+        toolBar.setRollover(true);
+
+        startButton.setFocusable(false);
+        startButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        startButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        startButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(startButton);
+
+        topPanel.add(toolBar, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(topPanel, gridBagConstraints);
+
+        centerPanel.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton0, gridBagConstraints);
+        centerPanel.add(speedDialButton0, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton1, gridBagConstraints);
+        centerPanel.add(speedDialButton1, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton2, gridBagConstraints);
+        centerPanel.add(speedDialButton2, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton3, gridBagConstraints);
+        centerPanel.add(speedDialButton3, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton4, gridBagConstraints);
+        centerPanel.add(speedDialButton4, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton5, gridBagConstraints);
+        centerPanel.add(speedDialButton5, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton6, gridBagConstraints);
+        centerPanel.add(speedDialButton6, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton7, gridBagConstraints);
+        centerPanel.add(speedDialButton7, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
-        add(speedDialButton8, gridBagConstraints);
+        centerPanel.add(speedDialButton8, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weighty = 1.0;
+        add(centerPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        requestStartJob(getSelectedJob());
+    }//GEN-LAST:event_startButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel centerPanel;
     private javax.swing.JComboBox jobsComboBox;
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton0;
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton1;
@@ -329,5 +412,8 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton6;
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton7;
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton8;
+    private javax.swing.JButton startButton;
+    private javax.swing.JToolBar toolBar;
+    private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

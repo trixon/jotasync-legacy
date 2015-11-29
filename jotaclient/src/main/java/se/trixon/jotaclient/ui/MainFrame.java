@@ -15,7 +15,6 @@
  */
 package se.trixon.jotaclient.ui;
 
-import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -39,7 +38,6 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.InputMap;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -52,7 +50,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import se.trixon.jota.Jota;
 import se.trixon.jota.ProcessEvent;
-import se.trixon.jota.ProcessState;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
@@ -74,27 +71,17 @@ import se.trixon.util.swing.dialogs.Message;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener, SpeedDialListener {
+public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener {
 
-    private static final String PROGRESS_PANEL = "progressPanel";
-    private static final String DASHBOARD_PANEL = "dashboardPanel";
-    private static final int ICON_SIZE_LARGE = 32;
-    private static final int ICON_SIZE_SMALL = 16;
     private ActionManager mActionManager;
-    private ProgressPanel mProgressPanel;
     private boolean mShutdownInProgress;
     private boolean mServerShutdownRequested;
-    private SpeedDialPanel mSpeedDialPanel;
-    private CardLayout mCardLayout;
-    private Job mSelectedJob;
-    private boolean mSimulate;
-    private JButton[] mRunStateButtons;
-    private ProcessState mProcessState;
     private final Options mOptions = Options.INSTANCE;
     private Client mClient;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<Action> mActions = new LinkedList<>();
     private final Manager mManager = Manager.getInstance();
+    private ProgressPane mProgressPane;
 
     /**
      * Creates new form MainFrame
@@ -107,7 +94,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         if (mManager.isConnected()) {
             enableGui(true);
-            mSpeedDialPanel.onConnectionConnect();
+            mProgressPane.getSpeedDialPanel().onConnectionConnect();
         } else {
             enableGui(false);
         }
@@ -135,11 +122,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
-        if (processEvent == ProcessEvent.STARTED) {
-            setProcessState(ProcessState.CANCELABLE);
-        } else if (processEvent == ProcessEvent.CANCELED || processEvent == ProcessEvent.FINISHED) {
-            setProcessState(ProcessState.CLOSEABLE);
-        }
         Xlog.timedOut("onProcessEvent");
         Xlog.timedOut(processEvent.name());
         Xlog.timedOut(job.getName());
@@ -172,11 +154,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
     }
 
-    @Override
-    public void onSpeedDialButtonClicked(SpeedDialButton speedDialButton) {
-        requestJobStart(speedDialButton.getJob());
-    }
-
     private void enableGui(boolean state) {
         boolean cronActive = false;
 
@@ -199,6 +176,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     }
 
     private void init() {
+        toolBar.setVisible(false);
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             String key = evt.getKey();
             if (key.equalsIgnoreCase(Options.KEY_MENU_ICONS)) {
@@ -212,23 +190,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         mActionManager = new ActionManager();
         mActionManager.initActions();
 
-        mCardLayout = (CardLayout) (mainPanel.getLayout());
-        mSpeedDialPanel = new SpeedDialPanel();
-        mProgressPanel = new ProgressPanel();
-
-        mainPanel.add(mSpeedDialPanel, DASHBOARD_PANEL);
-        mainPanel.add(mProgressPane, PROGRESS_PANEL);
-        mProgressPane.add(mProgressPanel, "images");
-        ProgressPanel mProgressPanel2 = new ProgressPanel();
-
-        mProgressPane.add(mProgressPanel2, "sounds");
-
-        mSpeedDialPanel.addSpeedDialListener(this);
-
-        mRunStateButtons = new JButton[]{startButton, cancelButton, closeButton};
-
-        setProcessState(ProcessState.STARTABLE);
-
+        mProgressPane = new ProgressPane();
+        mainPanel.add(mProgressPane);
         mManager.addConnectionListeners(this);
 
         loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
@@ -282,7 +245,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
 
         boolean hasJob = mManager.isConnected() && mManager.hasJobs();
-        mRunStateButtons[ProcessState.STARTABLE.ordinal()].getAction().setEnabled(hasJob);
 
         Action cronAction = mActionManager.getAction(ActionManager.CRON);
 
@@ -293,56 +255,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             System.err.println("mManager: " + mManager);
         }
 
-    }
-
-    private boolean requestJobStart(Job job) {
-        Xlog.timedOut("requestJobStart() " + job.toString());
-        mSelectedJob = job;
-        mProgressPanel.setProgressString(job.getName());
-        String start = Dict.START.getString();
-        String simulate = "Simulate";
-        String cancel = Dict.CANCEL.getString();
-        String[] options = new String[]{simulate, start};
-        String title = "Confirm";
-        String message = String.format("<html>Start job <b>%s</b>?</html>", job.getName());
-
-        try {
-            mManager.getServerCommander().startJob(job);
-        } catch (RemoteException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //NotifyDescriptor d = new NotifyDescriptor(message, title, NotifyDescriptor.DEFAULT_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, start);
-        //d.setAdditionalOptions(new String[]{cancel});
-//        Object retval = DialogDisplayer.getDefault().notify(d);
-//        mSimulate = retval == simulate;
-//        if (retval == start || retval == simulate) {
-//        mJotaRunner = new JotaRunner(mProgressPanel);
-//        mJotaRunner.addJotaListener(this);
-//        mJotaRunner.start(job, mSimulate);
-//        }
-        return false;
-    }
-
-    private void requestJobCancel() {
-        mSelectedJob = mSpeedDialPanel.getSelectedJob(); //TODO Move this to tabbed pane.
-        try {
-            mManager.getServerCommander().cancelJob(mSelectedJob);
-        } catch (RemoteException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void setProcessState(ProcessState processState) {
-        for (JButton button : mRunStateButtons) {
-            button.getAction().setEnabled(false);
-            button.setVisible(false);
-        }
-
-        mRunStateButtons[processState.ordinal()].setVisible(true);
-        mRunStateButtons[processState.ordinal()].getAction().setEnabled(true);
-        mProcessState = processState;
-        saveButton.setVisible(processState == ProcessState.CLOSEABLE);
     }
 
     private void requestConnect() throws NotBoundException {
@@ -449,17 +361,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mProgressPane = new se.trixon.jotaclient.ui.ProgressPane();
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
         toolBar = new javax.swing.JToolBar();
-        launcherToggleButton = new javax.swing.JToggleButton();
-        logToggleButton = new javax.swing.JToggleButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
-        startButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
-        saveButton = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         connectButton = new javax.swing.JButton();
         disconnectButton = new javax.swing.JButton();
@@ -498,39 +403,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
-
-        buttonGroup1.add(launcherToggleButton);
-        launcherToggleButton.setFocusable(false);
-        launcherToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        launcherToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(launcherToggleButton);
-
-        buttonGroup1.add(logToggleButton);
-        logToggleButton.setFocusable(false);
-        logToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        logToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(logToggleButton);
         toolBar.add(jSeparator5);
-
-        startButton.setFocusable(false);
-        startButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        startButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(startButton);
-
-        cancelButton.setFocusable(false);
-        cancelButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        cancelButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(cancelButton);
-
-        closeButton.setFocusable(false);
-        closeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        closeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(closeButton);
-
-        saveButton.setFocusable(false);
-        saveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(saveButton);
         toolBar.add(filler1);
 
         connectButton.setFocusable(false);
@@ -622,7 +495,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
 
@@ -652,8 +525,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JButton cancelButton;
-    private javax.swing.JButton closeButton;
     private javax.swing.JButton connectButton;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JCheckBoxMenuItem cronCheckBoxMenuItem;
@@ -671,20 +542,15 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JButton jobEditorButton;
     private javax.swing.JMenuItem jobEditorMenuItem;
     private javax.swing.JRadioButtonMenuItem launcherRadioButtonMenuItem;
-    private javax.swing.JToggleButton launcherToggleButton;
     private javax.swing.JRadioButtonMenuItem logRadioButtonMenuItem;
-    private javax.swing.JToggleButton logToggleButton;
-    private se.trixon.jotaclient.ui.ProgressPane mProgressPane;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton optionsButton;
     private javax.swing.JMenuItem optionsMenuItem;
     private javax.swing.JButton quitButton;
     private javax.swing.JMenuItem quitMenuItem;
-    private javax.swing.JButton saveButton;
     private javax.swing.JButton shutdownServerButton;
     private javax.swing.JMenuItem shutdownServerMenuItem;
-    private javax.swing.JButton startButton;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
@@ -724,12 +590,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             if (iconEnum != null) {
                 if (iconEnum instanceof Pict.Actions) {
                     Pict.Actions icon = (Pict.Actions) iconEnum;
-                    action.putValue(Action.LARGE_ICON_KEY, icon.get(ICON_SIZE_LARGE));
-                    action.putValue(JOTA_SMALL_ICON_KEY, icon.get(ICON_SIZE_SMALL));
+                    action.putValue(Action.LARGE_ICON_KEY, icon.get(UI.ICON_SIZE_LARGE));
+                    action.putValue(JOTA_SMALL_ICON_KEY, icon.get(UI.ICON_SIZE_SMALL));
                 } else if (iconEnum instanceof Pict.Apps) {
                     Pict.Apps icon = (Pict.Apps) iconEnum;
-                    action.putValue(Action.LARGE_ICON_KEY, icon.get(ICON_SIZE_LARGE));
-                    action.putValue(JOTA_SMALL_ICON_KEY, icon.get(ICON_SIZE_SMALL));
+                    action.putValue(Action.LARGE_ICON_KEY, icon.get(UI.ICON_SIZE_LARGE));
+                    action.putValue(JOTA_SMALL_ICON_KEY, icon.get(UI.ICON_SIZE_SMALL));
                 }
             }
 
@@ -751,15 +617,15 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    launcherToggleButton.setSelected(true);
+//                    launcherToggleButton.setSelected(true);
                     launcherRadioButtonMenuItem.setSelected(true);
-                    mCardLayout.show(mainPanel, DASHBOARD_PANEL);
+                    //mCardLayout.show(mainPanel, DASHBOARD_PANEL);
                 }
             };
 
             initAction(action, VIEW_LAUNCHER, keyStroke, Pict.Actions.GO_HOME, true);
             launcherRadioButtonMenuItem.setAction(action);
-            launcherToggleButton.setAction(action);
+//            launcherToggleButton.setAction(action);
 
             //view log
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_MASK);
@@ -767,15 +633,15 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    logToggleButton.setSelected(true);
+//                    logToggleButton.setSelected(true);
                     logRadioButtonMenuItem.setSelected(true);
-                    mCardLayout.show(mainPanel, PROGRESS_PANEL);
+                    //mCardLayout.show(mainPanel, PROGRESS_PANEL);
                 }
             };
 
             initAction(action, VIEW_LOG, keyStroke, Pict.Apps.UTILITIES_LOG_VIEWER, true);
             logRadioButtonMenuItem.setAction(action);
-            logToggleButton.setAction(action);
+//            logToggleButton.setAction(action);
 
             //start
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.CTRL_MASK);
@@ -783,12 +649,11 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    requestJobStart(mSpeedDialPanel.getSelectedJob());
                 }
             };
 
             initAction(action, START, keyStroke, Pict.Actions.MEDIA_PLAYBACK_START, true);
-            startButton.setAction(action);
+//            startButton.setAction(action);
 
             //cancel
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, InputEvent.CTRL_MASK);
@@ -796,12 +661,11 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    requestJobCancel();
                 }
             };
 
             initAction(action, CANCEL, keyStroke, Pict.Actions.MEDIA_PLAYBACK_STOP, true);
-            cancelButton.setAction(action);
+//            cancelButton.setAction(action);
 
             //save
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
@@ -813,7 +677,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             };
 
             initAction(action, SAVE, keyStroke, Pict.Actions.DOCUMENT_SAVE, true);
-            saveButton.setAction(action);
+//            saveButton.setAction(action);
 
             //close
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
@@ -821,12 +685,11 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setProcessState(ProcessState.STARTABLE);
                 }
             };
 
             initAction(action, CLOSE, keyStroke, Pict.Actions.WINDOW_CLOSE, true);
-            closeButton.setAction(action);
+//            closeButton.setAction(action);
 
             //connect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK);

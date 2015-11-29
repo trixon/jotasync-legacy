@@ -15,17 +15,53 @@
  */
 package se.trixon.jotaclient.ui;
 
+import java.util.HashMap;
+import javax.swing.JTabbedPane;
+import se.trixon.jota.ProcessEvent;
+import se.trixon.jota.ServerEvent;
+import se.trixon.jota.ServerEventListener;
+import se.trixon.jota.job.Job;
+import se.trixon.jota.task.Task;
+import se.trixon.util.icon.Pict;
+
 /**
  *
  * @author Patrik Karlsson
  */
-public class ProgressPane extends javax.swing.JTabbedPane {
+public class ProgressPane extends JTabbedPane implements ServerEventListener {
+
+    private SpeedDialPanel mSpeedDialPanel;
+//    private final HashMap<Job,ProgressPanel> jobMap=new HashMap<>();
 
     /**
      * Creates new form ProgressPane
      */
     public ProgressPane() {
         initComponents();
+        init();
+    }
+
+    public SpeedDialPanel getSpeedDialPanel() {
+        return mSpeedDialPanel;
+    }
+
+    @Override
+    public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
+    }
+
+    @Override
+    public void onServerEvent(ServerEvent serverEvent) {
+    }
+
+    private void init() {
+        mSpeedDialPanel = new SpeedDialPanel();
+        add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(UI.ICON_SIZE_LARGE));
+
+        ProgressPanel progressPanel = new ProgressPanel();
+        add(progressPanel, "images");
+
+        ProgressPanel mProgressPanel2 = new ProgressPanel();
+        add(mProgressPanel2, "sounds");
     }
 
     /**

@@ -15,6 +15,13 @@
  */
 package se.trixon.jotaclient.ui;
 
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import se.trixon.jota.job.Job;
+import se.trixon.jotaclient.Manager;
+import se.trixon.util.icon.Pict;
+
 /**
  *
  * @author Patrik Karlsson <patrik@trixon.se>
@@ -22,11 +29,15 @@ package se.trixon.jotaclient.ui;
 public class ProgressPanel extends javax.swing.JPanel {
 //public class ProgressPanel extends javax.swing.JPanel implements Launcher.LauncherListener {
 
+    private Job mJob;
+    private final Manager mManager = Manager.getInstance();
+
     /**
      * Creates new form ProgressPanel
      */
     public ProgressPanel() {
         initComponents();
+        init();
         progressBar.setValue(100);
     }
 
@@ -71,6 +82,12 @@ public class ProgressPanel extends javax.swing.JPanel {
         progressBar.setIndeterminate(false);
     }
 
+    private void init() {
+        cancelButton.setIcon(Pict.Actions.PROCESS_STOP.get(UI.ICON_SIZE_LARGE));
+        saveButton.setIcon(Pict.Actions.DOCUMENT_SAVE.get(UI.ICON_SIZE_LARGE));
+        closeButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(UI.ICON_SIZE_LARGE));
+    }
+
 //    private String getErrorCode(int exitValue) {
 //        String key = String.valueOf(exitValue);
 //        return mExitValueBundle.containsKey(key) ? mExitValueBundle.getString(key) : String.format(("System code: %s"), key);
@@ -83,38 +100,92 @@ public class ProgressPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         progressBar = new javax.swing.JProgressBar();
+        toolBar = new javax.swing.JToolBar();
+        saveButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         logPanel = new se.trixon.util.swing.LogPanel();
+
+        setLayout(new java.awt.GridBagLayout());
 
         progressBar.setIndeterminate(true);
         progressBar.setString("sync");
         progressBar.setStringPainted(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        add(progressBar, gridBagConstraints);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(logPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(logPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        toolBar.setFloatable(false);
+        toolBar.setRollover(true);
+
+        saveButton.setFocusable(false);
+        saveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(saveButton);
+
+        cancelButton.setFocusable(false);
+        cancelButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        cancelButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(cancelButton);
+
+        closeButton.setFocusable(false);
+        closeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        closeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(closeButton);
+
+        add(toolBar, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(logPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        try {
+            mManager.getServerCommander().cancelJob(mJob);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+    }//GEN-LAST:event_closeButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private se.trixon.util.swing.LogPanel logPanel;
     private javax.swing.JProgressBar progressBar;
+    private javax.swing.JButton saveButton;
+    private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 }
