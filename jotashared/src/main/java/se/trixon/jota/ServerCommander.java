@@ -29,6 +29,8 @@ import se.trixon.jota.job.Job;
  */
 public interface ServerCommander extends Remote {
 
+    void cancelJob(Job job) throws RemoteException;
+
     Job getJob(long jobId) throws RemoteException;
 
     LinkedList<Job> getJobs() throws RemoteException;
@@ -74,4 +76,5 @@ public interface ServerCommander extends Remote {
     void shutdown() throws RemoteException;
 
     void startJob(Job job) throws RemoteException;
+
 }

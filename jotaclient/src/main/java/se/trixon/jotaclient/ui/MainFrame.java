@@ -38,10 +38,11 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -51,6 +52,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import se.trixon.jota.Jota;
 import se.trixon.jota.ProcessEvent;
+import se.trixon.jota.ProcessState;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
@@ -62,7 +64,6 @@ import se.trixon.jotaclient.Options;
 import se.trixon.jotaclient.Options.ClientOptionsEvent;
 import se.trixon.jotaclient.ui.editor.EditorPanel;
 import se.trixon.util.BundleHelper;
-import se.trixon.util.CircularInt;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
@@ -73,26 +74,22 @@ import se.trixon.util.swing.dialogs.Message;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class MainFrame extends javax.swing.JFrame implements ConnectionListener, ServerEventListener, SpeedDialListener {
+public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener, SpeedDialListener {
 
     private static final String PROGRESS_PANEL = "progressPanel";
     private static final String DASHBOARD_PANEL = "dashboardPanel";
-    private static final int STATES = 3;
-    private static final int STARTABLE = 0;
-    private static final int STOPPABLE = 1;
-    private static final int CLOSEABLE = 2;
     private static final int ICON_SIZE_LARGE = 32;
     private static final int ICON_SIZE_SMALL = 16;
     private ActionManager mActionManager;
     private ProgressPanel mProgressPanel;
     private boolean mShutdownInProgress;
+    private boolean mServerShutdownRequested;
     private SpeedDialPanel mSpeedDialPanel;
     private CardLayout mCardLayout;
     private Job mSelectedJob;
     private boolean mSimulate;
-    private final CircularInt mState = new CircularInt(0, 2);
-    private ImageIcon[] mStateIcons;
-    private String[] mStateTexts;
+    private JButton[] mRunStateButtons;
+    private ProcessState mProcessState;
     private final Options mOptions = Options.INSTANCE;
     private Client mClient;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
@@ -118,11 +115,11 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
     @Override
     public void onConnectionConnect() {
+        mServerShutdownRequested = false;
         mShutdownInProgress = false;
         SwingUtilities.invokeLater(() -> {
             loadConfiguration();
             enableGui(true);
-            stateButton.setEnabled(true);
         });
     }
 
@@ -130,8 +127,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     public void onConnectionDisconnect() {
         SwingUtilities.invokeLater(() -> {
             enableGui(false);
-            stateButton.setEnabled(false);
-            if (!mShutdownInProgress) {
+            if (mShutdownInProgress && !mServerShutdownRequested) {
                 Message.warning(this, "Connection lost", "Connection lost due to server shutdown");
             }
         });
@@ -139,6 +135,11 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
+        if (processEvent == ProcessEvent.STARTED) {
+            setProcessState(ProcessState.CANCELABLE);
+        } else if (processEvent == ProcessEvent.CANCELED || processEvent == ProcessEvent.FINISHED) {
+            setProcessState(ProcessState.CLOSEABLE);
+        }
         Xlog.timedOut("onProcessEvent");
         Xlog.timedOut(processEvent.name());
         Xlog.timedOut(job.getName());
@@ -162,6 +163,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
                 break;
 
             case SHUTDOWN:
+                mShutdownInProgress = true;
                 mManager.disconnect();
                 break;
 
@@ -222,19 +224,10 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         mProgressPane.add(mProgressPanel2, "sounds");
 
         mSpeedDialPanel.addSpeedDialListener(this);
-        mStateTexts = new String[STATES];
-        mStateTexts[STARTABLE] = Dict.START.getString();
-        mStateTexts[STOPPABLE] = Dict.STOP.getString();
-        mStateTexts[CLOSEABLE] = Dict.CLOSE.getString();
 
-        mStateIcons = new ImageIcon[STATES];
-        mStateIcons[STARTABLE] = Pict.Actions.ARROW_RIGHT.get(ICON_SIZE_LARGE);
-        mStateIcons[STOPPABLE] = Pict.Actions.PROCESS_STOP.get(ICON_SIZE_LARGE);
-        mStateIcons[CLOSEABLE] = Pict.Actions.WINDOW_CLOSE.get(ICON_SIZE_LARGE);
+        mRunStateButtons = new JButton[]{startButton, cancelButton, closeButton};
 
-        setRunState(mState.get());
-
-        shutdownServerButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(ICON_SIZE_LARGE));
+        setProcessState(ProcessState.STARTABLE);
 
         mManager.addConnectionListeners(this);
 
@@ -289,7 +282,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         }
 
         boolean hasJob = mManager.isConnected() && mManager.hasJobs();
-        stateButton.setEnabled(hasJob);
+        mRunStateButtons[ProcessState.STARTABLE.ordinal()].getAction().setEnabled(hasJob);
 
         Action cronAction = mActionManager.getAction(ActionManager.CRON);
 
@@ -331,16 +324,25 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         return false;
     }
 
-    private void requestJobStop() {
-//        mJotaRunner.stop();
-        setRunState(CLOSEABLE);
+    private void requestJobCancel() {
+        mSelectedJob = mSpeedDialPanel.getSelectedJob(); //TODO Move this to tabbed pane.
+        try {
+            mManager.getServerCommander().cancelJob(mSelectedJob);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private void setRunState(int state) {
-        mState.set(state);
-        stateButton.setToolTipText(mStateTexts[state]);
-        stateButton.setIcon(mStateIcons[state]);
-        //saveButton.setVisible(state == CLOSEABLE);
+    private void setProcessState(ProcessState processState) {
+        for (JButton button : mRunStateButtons) {
+            button.getAction().setEnabled(false);
+            button.setVisible(false);
+        }
+
+        mRunStateButtons[processState.ordinal()].setVisible(true);
+        mRunStateButtons[processState.ordinal()].getAction().setEnabled(true);
+        mProcessState = processState;
+        saveButton.setVisible(processState == ProcessState.CLOSEABLE);
     }
 
     private void requestConnect() throws NotBoundException {
@@ -455,10 +457,9 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         logToggleButton = new javax.swing.JToggleButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
         startButton = new javax.swing.JButton();
-        stopButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
-        stateButton = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         connectButton = new javax.swing.JButton();
         disconnectButton = new javax.swing.JButton();
@@ -516,10 +517,10 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         startButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(startButton);
 
-        stopButton.setFocusable(false);
-        stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        stopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(stopButton);
+        cancelButton.setFocusable(false);
+        cancelButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        cancelButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(cancelButton);
 
         closeButton.setFocusable(false);
         closeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -530,11 +531,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         saveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(saveButton);
-
-        stateButton.setFocusable(false);
-        stateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        stateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(stateButton);
         toolBar.add(filler1);
 
         connectButton.setFocusable(false);
@@ -634,7 +630,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     }// </editor-fold>//GEN-END:initComponents
 
     private void shutdownServer() {
-        mShutdownInProgress = true;
+        mServerShutdownRequested = true;
         mClient.execute(Client.Command.SHUTDOWN);
     }
 
@@ -656,6 +652,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeButton;
     private javax.swing.JButton connectButton;
     private javax.swing.JMenuItem connectMenuItem;
@@ -688,8 +685,6 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
     private javax.swing.JButton shutdownServerButton;
     private javax.swing.JMenuItem shutdownServerMenuItem;
     private javax.swing.JButton startButton;
-    private javax.swing.JButton stateButton;
-    private javax.swing.JButton stopButton;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
@@ -707,7 +702,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
         static final String SHUTDOWN_SERVER = "shutdownServer";
         static final String SAVE = "start";
         static final String START = "save";
-        static final String STOP = "stop";
+        static final String CANCEL = "cancel";
         static final String VIEW_LAUNCHER = "viewHome";
         static final String VIEW_LOG = "viewLog";
 
@@ -795,17 +790,18 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
             initAction(action, START, keyStroke, Pict.Actions.MEDIA_PLAYBACK_START, true);
             startButton.setAction(action);
 
-            //stop
+            //cancel
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, InputEvent.CTRL_MASK);
-            action = new AbstractAction(Dict.STOP.getString()) {
+            action = new AbstractAction(Dict.CANCEL.getString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    requestJobCancel();
                 }
             };
 
-            initAction(action, STOP, keyStroke, Pict.Actions.MEDIA_PLAYBACK_STOP, true);
-            stopButton.setAction(action);
+            initAction(action, CANCEL, keyStroke, Pict.Actions.MEDIA_PLAYBACK_STOP, true);
+            cancelButton.setAction(action);
 
             //save
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
@@ -825,6 +821,7 @@ public class MainFrame extends javax.swing.JFrame implements ConnectionListener,
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    setProcessState(ProcessState.STARTABLE);
                 }
             };
 

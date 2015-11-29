@@ -19,10 +19,6 @@ package se.trixon.jota;
  *
  * @author Patrik Karlsson
  */
-public enum ProcessEvent {
-    STARTED,
-    PROGRESS,
-    FINISHED,
-    CANCELED,
-    FAILED;
+public enum ProcessState {
+    STARTABLE, CANCELABLE, CLOSEABLE;
 }

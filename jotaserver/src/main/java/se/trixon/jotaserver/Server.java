@@ -79,6 +79,14 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
+    public void cancelJob(Job job) throws RemoteException {
+        Xlog.timedOut(String.format("Cancel job: %s", job.getName()));
+        for (ClientCallbacks clientCallback : mClientCallbacks) {
+            clientCallback.onProcessEvent(ProcessEvent.CANCELED, job, null, null);
+        }
+    }
+
+    @Override
     public Job getJob(long jobId) throws RemoteException {
         return mJobManager.getJobById(jobId);
     }
