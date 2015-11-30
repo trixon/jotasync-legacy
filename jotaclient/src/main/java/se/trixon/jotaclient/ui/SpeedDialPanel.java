@@ -201,6 +201,10 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
 
     private void init() {
         startButton.setIcon(Pict.Actions.MEDIA_PLAYBACK_START.get(UI.ICON_SIZE_LARGE));
+        menuButton.setIcon(Pict.Actions.FORMAT_JUSTIFY_FILL.get(UI.ICON_SIZE_LARGE));
+        
+        startButton.setToolTipText(Dict.START.getString());
+        menuButton.setToolTipText(Dict.MENU.getString());
 
         mButtons.clear();
         int index = -1;
@@ -286,6 +290,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         jobsComboBox = new javax.swing.JComboBox();
         toolBar = new javax.swing.JToolBar();
         startButton = new javax.swing.JButton();
+        menuButton = new javax.swing.JButton();
         centerPanel = new javax.swing.JPanel();
         speedDialButton0 = new se.trixon.jotaclient.ui.SpeedDialButton();
         speedDialButton1 = new se.trixon.jotaclient.ui.SpeedDialButton();
@@ -319,6 +324,11 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
             }
         });
         toolBar.add(startButton);
+
+        menuButton.setFocusable(false);
+        menuButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        menuButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(menuButton);
 
         topPanel.add(toolBar, new java.awt.GridBagConstraints());
 
@@ -403,6 +413,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel centerPanel;
     private javax.swing.JComboBox jobsComboBox;
+    private javax.swing.JButton menuButton;
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton0;
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton1;
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton2;
