@@ -127,7 +127,7 @@ public class SpeedDialButton extends JButton {
     }
 
     private void init() {
-        setMinimumSize(new Dimension(220, 128));
-        setPreferredSize(new Dimension(220, 128));
+        setMinimumSize(new Dimension(210, 128));
+        setPreferredSize(new Dimension(210, 128));
     }
 }
