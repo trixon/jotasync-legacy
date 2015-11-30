@@ -191,6 +191,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         mProgressPane = new ProgressPane();
         mainPanel.add(mProgressPane);
+        mProgressPane.initActions();
         mManager.addConnectionListeners(this);
 
         loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
@@ -556,7 +557,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     private class ActionManager {
 
-        static final String CLOSE = "close";
         static final String CONNECT = "connect";
         static final String CRON = "cron";
         static final String DISCONNECT = "disconnect";
@@ -565,11 +565,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         static final String OPTIONS = "options";
         static final String QUIT = "shutdownServerAndWindow";
         static final String SHUTDOWN_SERVER = "shutdownServer";
-        static final String SAVE = "start";
-        static final String START = "save";
-        static final String CANCEL = "cancel";
-        static final String VIEW_LAUNCHER = "viewHome";
-        static final String VIEW_LOG = "viewLog";
 
         private ActionManager() {
             initActions();
@@ -609,86 +604,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         private void initActions() {
             AbstractAction action;
             KeyStroke keyStroke;
-
-            //view launcher
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_MASK);
-            action = new AbstractAction("Launcher") {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-//                    launcherToggleButton.setSelected(true);
-                    launcherRadioButtonMenuItem.setSelected(true);
-                    //mCardLayout.show(mainPanel, DASHBOARD_PANEL);
-                }
-            };
-
-            initAction(action, VIEW_LAUNCHER, keyStroke, Pict.Actions.GO_HOME, true);
-            launcherRadioButtonMenuItem.setAction(action);
-//            launcherToggleButton.setAction(action);
-
-            //view log
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_MASK);
-            action = new AbstractAction("Log") {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-//                    logToggleButton.setSelected(true);
-                    logRadioButtonMenuItem.setSelected(true);
-                    //mCardLayout.show(mainPanel, PROGRESS_PANEL);
-                }
-            };
-
-            initAction(action, VIEW_LOG, keyStroke, Pict.Apps.UTILITIES_LOG_VIEWER, true);
-            logRadioButtonMenuItem.setAction(action);
-//            logToggleButton.setAction(action);
-
-            //start
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.CTRL_MASK);
-            action = new AbstractAction(Dict.START.getString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                }
-            };
-
-            initAction(action, START, keyStroke, Pict.Actions.MEDIA_PLAYBACK_START, true);
-//            startButton.setAction(action);
-
-            //cancel
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, InputEvent.CTRL_MASK);
-            action = new AbstractAction(Dict.CANCEL.getString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                }
-            };
-
-            initAction(action, CANCEL, keyStroke, Pict.Actions.MEDIA_PLAYBACK_STOP, true);
-//            cancelButton.setAction(action);
-
-            //save
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
-            action = new AbstractAction(Dict.SAVE.getString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                }
-            };
-
-            initAction(action, SAVE, keyStroke, Pict.Actions.DOCUMENT_SAVE, true);
-//            saveButton.setAction(action);
-
-            //close
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
-            action = new AbstractAction(Dict.CLOSE.getString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                }
-            };
-
-            initAction(action, CLOSE, keyStroke, Pict.Actions.WINDOW_CLOSE, true);
-//            closeButton.setAction(action);
 
             //connect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK);

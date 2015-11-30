@@ -15,8 +15,16 @@
  */
 package se.trixon.jotaclient.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
@@ -61,6 +69,35 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
 
     @Override
     public void onServerEvent(ServerEvent serverEvent) {
+    }
+
+    private void displayTab(int index) {
+        try {
+            setSelectedIndex(index);
+        } catch (IndexOutOfBoundsException e) {
+            // nvm
+        }
+    }
+
+    void initActions() {
+        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = getRootPane().getActionMap();
+
+        for (int i = 0; i < 10; i++) {
+            KeyStroke keyStroke = KeyStroke.getKeyStroke(0x31 + i, InputEvent.CTRL_MASK);
+            String key = "key_" + i;
+            final int tabIndex = i;
+            AbstractAction action = new AbstractAction("Launcher") {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    displayTab(tabIndex);
+                }
+            };
+            inputMap.put(keyStroke, key);
+            actionMap.put(key, action);
+
+        }
     }
 
     void close(Job job) {
