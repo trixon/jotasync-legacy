@@ -122,9 +122,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
-        Xlog.timedOut("onProcessEvent");
-        Xlog.timedOut(processEvent.name());
-        Xlog.timedOut(job.getName());
+        // nvm
     }
 
     @Override
@@ -176,6 +174,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     }
 
     private void init() {
+        menuBar.setVisible(false);
         toolBar.setVisible(false);
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             String key = evt.getKey();

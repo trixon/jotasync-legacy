@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.Manager;
+import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 
 /**
@@ -34,10 +35,12 @@ public class ProgressPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form ProgressPanel
+     * @param job
      */
-    public ProgressPanel() {
+    public ProgressPanel(Job job) {
         initComponents();
         init();
+        mJob = job;
         progressBar.setValue(100);
     }
 
@@ -69,23 +72,33 @@ public class ProgressPanel extends javax.swing.JPanel {
 //            launcherLog("*** " + message + " ***");
 //        }
 //    }
-    public void reset() {
-        progressBar.setIndeterminate(true);
-//        textArea.setText("");
-    }
 
-    public void setProgressString(String string) {
-        progressBar.setString(string);
-    }
-
-    public void stop() {
+    void cancel() {
         progressBar.setIndeterminate(false);
+        saveButton.setEnabled(true);
+        cancelButton.setVisible(false);
+        closeButton.setVisible(true);
+    }
+
+    void start() {
+        progressBar.setIndeterminate(true);
+        //textArea.setText("");
+
+        saveButton.setEnabled(false);
+        cancelButton.setVisible(true);
+        closeButton.setVisible(false);
     }
 
     private void init() {
-        cancelButton.setIcon(Pict.Actions.PROCESS_STOP.get(UI.ICON_SIZE_LARGE));
         saveButton.setIcon(Pict.Actions.DOCUMENT_SAVE.get(UI.ICON_SIZE_LARGE));
+        cancelButton.setIcon(Pict.Actions.PROCESS_STOP.get(UI.ICON_SIZE_LARGE));
         closeButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(UI.ICON_SIZE_LARGE));
+        menuButton.setIcon(Pict.Actions.FORMAT_JUSTIFY_FILL.get(UI.ICON_SIZE_LARGE));
+
+        saveButton.setToolTipText(Dict.SAVE.getString());
+        cancelButton.setToolTipText(Dict.CANCEL.getString());
+        closeButton.setToolTipText(Dict.CLOSE.getString());
+        menuButton.setToolTipText(Dict.MENU.getString());
     }
 
 //    private String getErrorCode(int exitValue) {
@@ -107,13 +120,12 @@ public class ProgressPanel extends javax.swing.JPanel {
         saveButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
+        menuButton = new javax.swing.JButton();
         logPanel = new se.trixon.util.swing.LogPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
         progressBar.setIndeterminate(true);
-        progressBar.setString("sync");
-        progressBar.setStringPainted(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -154,6 +166,11 @@ public class ProgressPanel extends javax.swing.JPanel {
         });
         toolBar.add(closeButton);
 
+        menuButton.setFocusable(false);
+        menuButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        menuButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(menuButton);
+
         add(toolBar, new java.awt.GridBagConstraints());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -178,12 +195,14 @@ public class ProgressPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+        ((ProgressPane) getParent()).close(mJob);
     }//GEN-LAST:event_closeButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeButton;
     private se.trixon.util.swing.LogPanel logPanel;
+    private javax.swing.JButton menuButton;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JButton saveButton;
     private javax.swing.JToolBar toolBar;

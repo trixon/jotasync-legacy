@@ -22,6 +22,7 @@ import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
 import se.trixon.jota.task.Task;
+import se.trixon.jotaclient.Manager;
 import se.trixon.util.icon.Pict;
 
 /**
@@ -31,7 +32,8 @@ import se.trixon.util.icon.Pict;
 public class ProgressPane extends JTabbedPane implements ServerEventListener {
 
     private SpeedDialPanel mSpeedDialPanel;
-//    private final HashMap<Job,ProgressPanel> jobMap=new HashMap<>();
+    private final HashMap<Long, ProgressPanel> mJobMap = new HashMap<>();
+    private final Manager mManager = Manager.getInstance();
 
     /**
      * Creates new form ProgressPane
@@ -47,21 +49,47 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
 
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
+        ProgressPanel panel = getPanel(job);
+
+        if (processEvent == ProcessEvent.STARTED) {
+            panel.start();
+            setSelectedComponent(panel);
+        } else if (processEvent == ProcessEvent.CANCELED) {
+            panel.cancel();
+        }
     }
 
     @Override
     public void onServerEvent(ServerEvent serverEvent) {
     }
 
+    void close(Job job) {
+        ProgressPanel panel = getPanel(job);
+        mJobMap.remove(job.getId());
+        remove(panel);
+    }
+
+    private ProgressPanel getPanel(Job job) {
+        ProgressPanel panel;
+
+        if (mJobMap.containsKey(job.getId())) {
+            panel = mJobMap.get(job.getId());
+        } else {
+            panel = new ProgressPanel(job);
+            add(panel, job.getName());
+            mJobMap.put(job.getId(), panel);
+            setSelectedComponent(panel);
+        }
+
+        return panel;
+    }
+
     private void init() {
         mSpeedDialPanel = new SpeedDialPanel();
         add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(UI.ICON_SIZE_LARGE));
 
-        ProgressPanel progressPanel = new ProgressPanel();
-        add(progressPanel, "images");
-
-        ProgressPanel mProgressPanel2 = new ProgressPanel();
-        add(mProgressPanel2, "sounds");
+        //mManager.addConnectionListeners(this);
+        mManager.getClient().addServerEventListener(this);
     }
 
     /**
