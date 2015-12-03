@@ -28,8 +28,8 @@ import se.trixon.util.icon.Pict;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class ProgressPanel extends javax.swing.JPanel implements ProgressItem{
-//public class ProgressPanel extends javax.swing.JPanel implements Launcher.LauncherListener {
+public class TabItem extends javax.swing.JPanel implements TabListener{
+//public class TabItem extends javax.swing.JPanel implements Launcher.LauncherListener {
 
     private Job mJob;
     private final Manager mManager = Manager.getInstance();
@@ -39,7 +39,7 @@ public class ProgressPanel extends javax.swing.JPanel implements ProgressItem{
      *
      * @param job
      */
-    public ProgressPanel(Job job) {
+    public TabItem(Job job) {
         initComponents();
         init();
         mJob = job;
@@ -201,7 +201,7 @@ public class ProgressPanel extends javax.swing.JPanel implements ProgressItem{
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-        ((ProgressPane) getParent()).close(mJob);
+        ((TabHolder) getParent()).close(mJob);
     }//GEN-LAST:event_closeButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

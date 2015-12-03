@@ -85,7 +85,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<Action> mActions = new LinkedList<>();
     private final Manager mManager = Manager.getInstance();
-    private ProgressPane mProgressPane;
+    private TabHolder mTabHolder;
 
     /**
      * Creates new form MainFrame
@@ -99,7 +99,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         if (mManager.isConnected()) {
             enableGui(true);
-            mProgressPane.getSpeedDialPanel().onConnectionConnect();
+            mTabHolder.getSpeedDialPanel().onConnectionConnect();
         } else {
             enableGui(false);
         }
@@ -194,9 +194,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         mActionManager = new ActionManager();
         mActionManager.initActions();
 
-        mProgressPane = new ProgressPane();
-        mainPanel.add(mProgressPane);
-        mProgressPane.initActions();
+        mTabHolder = new TabHolder();
+        mainPanel.add(mTabHolder);
+        mTabHolder.initActions();
         mManager.addConnectionListeners(this);
 
         loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);

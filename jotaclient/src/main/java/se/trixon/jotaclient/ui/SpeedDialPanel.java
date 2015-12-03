@@ -50,7 +50,7 @@ import se.trixon.util.swing.SwingHelper;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, ProgressItem {
+public class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, TabListener {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mResetMenuItem;

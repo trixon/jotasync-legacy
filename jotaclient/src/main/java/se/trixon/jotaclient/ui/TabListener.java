@@ -21,7 +21,7 @@ import javax.swing.JButton;
  *
  * @author Patrik Karlsson
  */
-public interface ProgressItem {
+public interface TabListener {
 
     public JButton getMenuButton();
 }

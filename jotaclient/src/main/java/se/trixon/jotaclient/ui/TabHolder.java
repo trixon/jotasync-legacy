@@ -24,7 +24,6 @@ import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
@@ -41,17 +40,17 @@ import se.trixon.util.icon.Pict;
  *
  * @author Patrik Karlsson
  */
-public class ProgressPane extends JTabbedPane implements ServerEventListener {
+public class TabHolder extends JTabbedPane implements ServerEventListener {
 
     private SpeedDialPanel mSpeedDialPanel;
-    private final HashMap<Long, ProgressPanel> mJobMap = new HashMap<>();
+    private final HashMap<Long, TabItem> mJobMap = new HashMap<>();
     private final Manager mManager = Manager.getInstance();
     private ActionListener mMenuActionListener;
 
     /**
      * Creates new form ProgressPane
      */
-    public ProgressPane() {
+    public TabHolder() {
         initComponents();
         init();
     }
@@ -62,7 +61,7 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
 
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
-        ProgressPanel panel = getPanel(job);
+        TabItem panel = getPanel(job);
 
         if (processEvent == ProcessEvent.STARTED) {
             panel.start();
@@ -155,18 +154,18 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
     }
 
     void close(Job job) {
-        ProgressPanel panel = getPanel(job);
+        TabItem panel = getPanel(job);
         mJobMap.remove(job.getId());
         remove(panel);
     }
 
-    private ProgressPanel getPanel(Job job) {
-        ProgressPanel panel;
+    private TabItem getPanel(Job job) {
+        TabItem panel;
 
         if (mJobMap.containsKey(job.getId())) {
             panel = mJobMap.get(job.getId());
         } else {
-            panel = new ProgressPanel(job);
+            panel = new TabItem(job);
             panel.getMenuButton().addActionListener(mMenuActionListener);
 
             add(panel, job.getName());
@@ -186,7 +185,7 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
 
         mMenuActionListener = (ActionEvent e) -> {
 
-            Component component = ((ProgressItem) getSelectedComponent()).getMenuButton();
+            Component component = ((TabListener) getSelectedComponent()).getMenuButton();
             JPopupMenu popupMenu = MainFrame.getPopupMenu();
 
             if (popupMenu.isVisible()) {
