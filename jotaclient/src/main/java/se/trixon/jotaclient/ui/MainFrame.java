@@ -38,11 +38,14 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.InputMap;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -73,6 +76,7 @@ import se.trixon.util.swing.dialogs.Message;
  */
 public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener {
 
+    private static JPopupMenu sPopupMenu;
     private ActionManager mActionManager;
     private boolean mShutdownInProgress;
     private boolean mServerShutdownRequested;
@@ -89,6 +93,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     public MainFrame() {
         initComponents();
         init();
+        initPopupMenu();
         mClient = mManager.getClient();
         loadConfiguration();
 
@@ -206,6 +211,25 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
     }
 
+    public static JPopupMenu getPopupMenu() {
+        return sPopupMenu;
+    }
+
+    private void initPopupMenu() {
+        sPopupMenu = new JPopupMenu(Dict.MENU.getString());
+        sPopupMenu.add(mActionManager.getAction(ActionManager.CONNECT));
+        sPopupMenu.add(mActionManager.getAction(ActionManager.DISCONNECT));
+        sPopupMenu.add(new JSeparator());
+        sPopupMenu.add(new JCheckBoxMenuItem(mActionManager.getAction(ActionManager.CRON)));
+        sPopupMenu.add(mActionManager.getAction(ActionManager.JOB_EDITOR));
+        sPopupMenu.add(mActionManager.getAction(ActionManager.OPTIONS));
+        sPopupMenu.add(new JSeparator());
+        sPopupMenu.add(mActionManager.getAction(ActionManager.ABOUT));
+        sPopupMenu.add(new JSeparator());
+        sPopupMenu.add(mActionManager.getAction(ActionManager.SHUTDOWN_SERVER));
+        sPopupMenu.add(mActionManager.getAction(ActionManager.QUIT));
+    }
+
     private void loadClientOption(ClientOptionsEvent clientOptionEvent) {
         switch (clientOptionEvent) {
             case LOOK_AND_FEEL:
@@ -214,6 +238,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                         try {
                             UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
                             SwingUtilities.updateComponentTreeUI(MainFrame.this);
+                            SwingUtilities.updateComponentTreeUI(sPopupMenu);
                         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                             //Xlog.timedErr(ex.getMessage());
                         }
@@ -557,6 +582,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     private class ActionManager {
 
+        static final String ABOUT = "about";
         static final String CONNECT = "connect";
         static final String CRON = "cron";
         static final String DISCONNECT = "disconnect";
@@ -691,6 +717,18 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             initAction(action, OPTIONS, keyStroke, Pict.Actions.CONFIGURE, false);
             optionsButton.setAction(action);
             optionsMenuItem.setAction(action);
+
+            //about
+            keyStroke = null;
+            action = new AbstractAction(Dict.ABOUT.getString()) {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(MainFrame.this, Jota.getVersionInfo("jotaclient"), Dict.ABOUT.getString(), JOptionPane.INFORMATION_MESSAGE);
+                }
+            };
+
+            initAction(action, ABOUT, keyStroke, null, false);
 
             //shutdownServer
             keyStroke = null;//KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);

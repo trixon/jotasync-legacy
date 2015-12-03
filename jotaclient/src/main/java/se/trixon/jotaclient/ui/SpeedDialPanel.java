@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -49,7 +50,7 @@ import se.trixon.util.swing.SwingHelper;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener {
+public class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, ProgressItem {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mResetMenuItem;
@@ -75,6 +76,11 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     }
 
     @Override
+    public JButton getMenuButton() {
+        return menuButton;
+    }
+
+    @Override
     public void onConnectionConnect() {
         SwingUtilities.invokeLater(() -> {
             SwingHelper.enableComponents(getParent(), true);
@@ -91,6 +97,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         SwingUtilities.invokeLater(() -> {
             SwingHelper.enableComponents(getParent(), false);
             clearConfiguration();
+            menuButton.setEnabled(true);
         });
     }
 
@@ -202,7 +209,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     private void init() {
         startButton.setIcon(Pict.Actions.MEDIA_PLAYBACK_START.get(UI.ICON_SIZE_LARGE));
         menuButton.setIcon(Pict.Actions.FORMAT_JUSTIFY_FILL.get(UI.ICON_SIZE_LARGE));
-        
+
         startButton.setToolTipText(Dict.START.getString());
         menuButton.setToolTipText(Dict.MENU.getString());
 

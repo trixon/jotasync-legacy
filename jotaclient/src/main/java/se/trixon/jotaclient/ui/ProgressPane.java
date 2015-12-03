@@ -15,14 +15,18 @@
  */
 package se.trixon.jotaclient.ui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import se.trixon.jota.ProcessEvent;
@@ -42,6 +46,7 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
     private SpeedDialPanel mSpeedDialPanel;
     private final HashMap<Long, ProgressPanel> mJobMap = new HashMap<>();
     private final Manager mManager = Manager.getInstance();
+    private ActionListener mMenuActionListener;
 
     /**
      * Creates new form ProgressPane
@@ -79,6 +84,14 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
         }
     }
 
+    private void displayTabNext() {
+        System.out.println("next");
+    }
+
+    private void displayTabPrev() {
+        System.out.println("prev");
+    }
+
     void initActions() {
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = getRootPane().getActionMap();
@@ -87,7 +100,7 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(0x31 + i, InputEvent.CTRL_MASK);
             String key = "key_" + i;
             final int tabIndex = i;
-            AbstractAction action = new AbstractAction("Launcher") {
+            AbstractAction action = new AbstractAction("Tab") {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -96,8 +109,49 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
             };
             inputMap.put(keyStroke, key);
             actionMap.put(key, action);
-
         }
+
+        AbstractAction action = new AbstractAction("TabNext") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayTabNext();
+            }
+        };
+
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_MASK);
+        String key = "nextTab";
+        inputMap.put(keyStroke, key);
+        actionMap.put(key, action);
+
+        action = new AbstractAction("TabPrev") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayTabPrev();
+            }
+
+        };
+
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK);
+        key = "prevTab";
+        inputMap.put(keyStroke, key);
+        actionMap.put(key, action);
+
+        action = new AbstractAction("DisplayMenu") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mMenuActionListener.actionPerformed(null);
+            }
+        };
+
+        key = "DisplayMenu";
+        actionMap.put(key, action);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK);
+        inputMap.put(keyStroke, key);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
+        inputMap.put(keyStroke, key);
     }
 
     void close(Job job) {
@@ -113,6 +167,8 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
             panel = mJobMap.get(job.getId());
         } else {
             panel = new ProgressPanel(job);
+            panel.getMenuButton().addActionListener(mMenuActionListener);
+
             add(panel, job.getName());
             mJobMap.put(job.getId(), panel);
             setSelectedComponent(panel);
@@ -127,6 +183,24 @@ public class ProgressPane extends JTabbedPane implements ServerEventListener {
 
         //mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
+
+        mMenuActionListener = (ActionEvent e) -> {
+
+            Component component = ((ProgressItem) getSelectedComponent()).getMenuButton();
+            JPopupMenu popupMenu = MainFrame.getPopupMenu();
+
+            if (popupMenu.isVisible()) {
+                popupMenu.setVisible(false);
+            } else {
+                popupMenu.show(component, component.getWidth() - popupMenu.getWidth(), component.getHeight());
+
+                int x = component.getLocationOnScreen().x + component.getWidth() - popupMenu.getWidth();
+                int y = component.getLocationOnScreen().y + component.getHeight();
+
+                popupMenu.setLocation(x, y);
+            }
+        };
+        mSpeedDialPanel.getMenuButton().addActionListener(mMenuActionListener);
     }
 
     /**

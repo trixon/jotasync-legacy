@@ -18,6 +18,7 @@ package se.trixon.jotaclient.ui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.Manager;
 import se.trixon.util.dictionary.Dict;
@@ -27,7 +28,7 @@ import se.trixon.util.icon.Pict;
  *
  * @author Patrik Karlsson <patrik@trixon.se>
  */
-public class ProgressPanel extends javax.swing.JPanel {
+public class ProgressPanel extends javax.swing.JPanel implements ProgressItem{
 //public class ProgressPanel extends javax.swing.JPanel implements Launcher.LauncherListener {
 
     private Job mJob;
@@ -35,6 +36,7 @@ public class ProgressPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form ProgressPanel
+     *
      * @param job
      */
     public ProgressPanel(Job job) {
@@ -42,6 +44,11 @@ public class ProgressPanel extends javax.swing.JPanel {
         init();
         mJob = job;
         progressBar.setValue(100);
+    }
+
+    @Override
+    public JButton getMenuButton() {
+        return menuButton;
     }
 
 //    @Override
@@ -72,7 +79,6 @@ public class ProgressPanel extends javax.swing.JPanel {
 //            launcherLog("*** " + message + " ***");
 //        }
 //    }
-
     void cancel() {
         progressBar.setIndeterminate(false);
         saveButton.setEnabled(true);
