@@ -583,6 +583,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private class ActionManager {
 
         static final String ABOUT = "about";
+        static final String CLOSE_TAB = "closeTab";
         static final String CONNECT = "connect";
         static final String CRON = "cron";
         static final String DISCONNECT = "disconnect";
@@ -757,6 +758,19 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             initAction(action, QUIT, keyStroke, Pict.Actions.APPLICATION_EXIT, false);
             quitMenuItem.setAction(action);
             quitButton.setAction(action);
+
+            //close tab
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
+            action = new AbstractAction(Dict.TAB_CLOSE.getString()) {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mTabHolder.closeTab();
+                }
+            };
+
+            initAction(action, CLOSE_TAB, keyStroke, Pict.Actions.WINDOW_CLOSE, true);
+            //closeMenuItem.setAction(action);
 
             for (Component component : toolBar.getComponents()) {
                 if (component instanceof AbstractButton) {

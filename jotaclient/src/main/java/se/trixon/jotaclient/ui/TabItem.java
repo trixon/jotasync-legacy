@@ -47,6 +47,10 @@ public class TabItem extends JPanel implements TabListener {
         progressBar.setValue(100);
     }
 
+    public Job getJob() {
+        return mJob;
+    }
+
     @Override
     public JButton getMenuButton() {
         return menuButton;

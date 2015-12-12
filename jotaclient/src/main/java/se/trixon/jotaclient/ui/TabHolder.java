@@ -103,6 +103,12 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
         System.out.println("prev");
     }
 
+    void closeTab() {
+        if (getSelectedComponent() instanceof TabItem) {
+            close(((TabItem)getSelectedComponent()).getJob());
+        }
+    }
+
     void initActions() {
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = getRootPane().getActionMap();
