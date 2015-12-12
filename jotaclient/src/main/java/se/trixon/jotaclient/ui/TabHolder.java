@@ -61,13 +61,25 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
 
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
-        TabItem panel = getPanel(job);
+        TabItem tabItem = getTabItem(job);
 
-        if (processEvent == ProcessEvent.STARTED) {
-            panel.start();
-            setSelectedComponent(panel);
-        } else if (processEvent == ProcessEvent.CANCELED) {
-            panel.cancel();
+        if (null != processEvent) switch (processEvent) {
+            case STARTED:
+                tabItem.start();
+                setSelectedComponent(tabItem);
+                break;
+            case OUT:
+            case ERR:
+                tabItem.log(processEvent, (String) object);
+                break;
+            case CANCELED:
+                tabItem.enableSave();
+                break;
+            case FINISHED:
+                tabItem.enableSave();
+                break;
+            default:
+                break;
         }
     }
 
@@ -154,26 +166,26 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
     }
 
     void close(Job job) {
-        TabItem panel = getPanel(job);
+        TabItem panel = getTabItem(job);
         mJobMap.remove(job.getId());
         remove(panel);
     }
 
-    private TabItem getPanel(Job job) {
-        TabItem panel;
+    private TabItem getTabItem(Job job) {
+        TabItem tabItem;
 
         if (mJobMap.containsKey(job.getId())) {
-            panel = mJobMap.get(job.getId());
+            tabItem = mJobMap.get(job.getId());
         } else {
-            panel = new TabItem(job);
-            panel.getMenuButton().addActionListener(mMenuActionListener);
+            tabItem = new TabItem(job);
+            tabItem.getMenuButton().addActionListener(mMenuActionListener);
 
-            add(panel, job.getName());
-            mJobMap.put(job.getId(), panel);
-            setSelectedComponent(panel);
+            add(tabItem, job.getName());
+            mJobMap.put(job.getId(), tabItem);
+            setSelectedComponent(tabItem);
         }
 
-        return panel;
+        return tabItem;
     }
 
     private void init() {

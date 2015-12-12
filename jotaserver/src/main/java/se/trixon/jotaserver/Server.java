@@ -15,7 +15,9 @@
  */
 package se.trixon.jotaserver;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -250,10 +252,55 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
 
     @Override
     public void startJob(Job job) throws RemoteException {
-        Xlog.timedOut(String.format("Start job: %s", job.getName()));
+        Xlog.timedOut(String.format("Job started: %s", job.getName()));
         for (ClientCallbacks clientCallback : mClientCallbacks) {
             clientCallback.onProcessEvent(ProcessEvent.STARTED, job, null, null);
         }
+
+        new Thread(() -> {
+            try {
+//        ProcessBuilder processBuilder = new ProcessBuilder("rsync", "--version");
+                ProcessBuilder processBuilder = new ProcessBuilder("/home/pata/bin/ticktock.sh");
+                Process process = processBuilder.start();
+
+                new Thread(() -> {
+                    try {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()), 1);
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            for (ClientCallbacks clientCallback : mClientCallbacks) {
+                                clientCallback.onProcessEvent(ProcessEvent.OUT, job, null, line);
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace(System.err);
+                    }
+                }).start();
+
+                new Thread(() -> {
+                    try {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()), 1);
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            for (ClientCallbacks clientCallback : mClientCallbacks) {
+                                clientCallback.onProcessEvent(ProcessEvent.ERR, job, null, line);
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace(System.err);
+                    }
+                }).start();
+
+                process.waitFor();
+
+                for (ClientCallbacks clientCallback : mClientCallbacks) {
+                    clientCallback.onProcessEvent(ProcessEvent.FINISHED, job, null, null);
+                }
+                Xlog.timedOut(String.format("Job finished: %s", job.getName()));
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }).start();
     }
 
     private void intiListeners() {

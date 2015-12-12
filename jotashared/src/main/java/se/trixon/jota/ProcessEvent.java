@@ -21,7 +21,8 @@ package se.trixon.jota;
  */
 public enum ProcessEvent {
     STARTED,
-    PROGRESS,
+    OUT,
+    ERR,
     FINISHED,
     CANCELED,
     FAILED;

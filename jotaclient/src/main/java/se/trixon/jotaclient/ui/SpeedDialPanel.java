@@ -103,7 +103,9 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
 
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
-        Xlog.timedOut("Remember to handle process events in SpeedDial");
+        if (processEvent != ProcessEvent.OUT && processEvent != ProcessEvent.ERR) {
+            Xlog.timedOut("Remember to handle process events in SpeedDial");
+        }
     }
 
     @Override

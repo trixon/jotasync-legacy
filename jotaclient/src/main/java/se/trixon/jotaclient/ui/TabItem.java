@@ -19,6 +19,8 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JPanel;
+import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.Manager;
 import se.trixon.util.dictionary.Dict;
@@ -26,12 +28,11 @@ import se.trixon.util.icon.Pict;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-public class TabItem extends javax.swing.JPanel implements TabListener{
-//public class TabItem extends javax.swing.JPanel implements Launcher.LauncherListener {
+public class TabItem extends JPanel implements TabListener {
 
-    private Job mJob;
+    private final Job mJob;
     private final Manager mManager = Manager.getInstance();
 
     /**
@@ -51,10 +52,14 @@ public class TabItem extends javax.swing.JPanel implements TabListener{
         return menuButton;
     }
 
-//    @Override
-//    synchronized public void launcherLog(String string) {
-//        textArea.append(string + "\n");
-//    }
+    synchronized public void log(ProcessEvent processEvent, String string) {
+        StringBuilder builder = new StringBuilder(string).append("\n");
+        if (processEvent == ProcessEvent.ERR) {
+            builder.insert(0, "E: ");
+        }
+
+        logPanel.getTextArea().append(builder.toString());
+    }
 //
 //    @Override
 //    public void onLauncherFinished(int exitValue, boolean destroyedByUser) {
@@ -70,25 +75,17 @@ public class TabItem extends javax.swing.JPanel implements TabListener{
 ////            Message.error(mToolName, String.format("Exited with: %s", getErrorCode(exitValue)));
 //        }
 //    }
-//
-//    @Override
-//    synchronized public void onLauncherMessage(String message, Launcher.Mode mode) {
-//        if (mode == Launcher.Mode.STD) {
-//            launcherLog(message);
-//        } else {
-//            launcherLog("*** " + message + " ***");
-//        }
-//    }
-    void cancel() {
+
+    void enableSave() {
         progressBar.setIndeterminate(false);
         saveButton.setEnabled(true);
         cancelButton.setVisible(false);
         closeButton.setVisible(true);
     }
 
-    void start() {
+   synchronized void start() {
+        logPanel.clear();
         progressBar.setIndeterminate(true);
-        //textArea.setText("");
 
         saveButton.setEnabled(false);
         cancelButton.setVisible(true);
