@@ -200,6 +200,7 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
             }
         };
         mSpeedDialPanel.getMenuButton().addActionListener(mMenuActionListener);
+        setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
     }
 
     /**
