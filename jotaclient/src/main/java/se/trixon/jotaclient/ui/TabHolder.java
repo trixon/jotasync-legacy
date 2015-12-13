@@ -73,6 +73,7 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
                 tabItem.log(processEvent, (String) object);
                 break;
             case CANCELED:
+                tabItem.log(ProcessEvent.OUT, "\n\nJob interrupted.");
                 tabItem.enableSave();
                 break;
             case FINISHED:
