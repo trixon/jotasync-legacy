@@ -103,8 +103,18 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
 
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
-        if (processEvent != ProcessEvent.OUT && processEvent != ProcessEvent.ERR) {
-            Xlog.timedOut("Remember to handle process events in SpeedDial");
+        switch (processEvent) {
+            case ERR:
+            case OUT:
+            case STARTED:
+                updateButton(job, false);
+                break;
+            case CANCELED:
+            case FINISHED:
+                updateButton(job, true);
+                break;
+            default:
+                break;
         }
     }
 
@@ -125,6 +135,18 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     @Override
     public void onSpeedDialButtonClicked(SpeedDialButton speedDialButton) {
         requestStartJob(speedDialButton.getJob());
+    }
+
+    private void updateButton(Job job, boolean state) {
+        if (startButton.isEnabled() != state && job.getId() == ((Job) jobsComboBox.getSelectedItem()).getId()) {
+            startButton.setEnabled(state);
+        }
+
+        for (SpeedDialButton button : mButtons) {
+            if (button.getJobId() == job.getId()) {
+                button.setEnabled(state);
+            }
+        }
     }
 
     Job getSelectedJob() {
@@ -314,6 +336,12 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         setLayout(new java.awt.GridBagLayout());
 
         topPanel.setLayout(new java.awt.GridBagLayout());
+
+        jobsComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jobsComboBoxActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -418,6 +446,10 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         requestStartJob(getSelectedJob());
     }//GEN-LAST:event_startButtonActionPerformed
+
+    private void jobsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jobsComboBoxActionPerformed
+        startButton.setEnabled(true);
+    }//GEN-LAST:event_jobsComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel centerPanel;
