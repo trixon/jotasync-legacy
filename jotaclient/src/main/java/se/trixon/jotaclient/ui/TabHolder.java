@@ -33,6 +33,7 @@ import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
 import se.trixon.jota.task.Task;
+import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
 import se.trixon.util.icon.Pict;
 
@@ -40,10 +41,10 @@ import se.trixon.util.icon.Pict;
  *
  * @author Patrik Karlsson
  */
-public class TabHolder extends JTabbedPane implements ServerEventListener {
+public class TabHolder extends JTabbedPane implements ConnectionListener, ServerEventListener {
 
     private SpeedDialPanel mSpeedDialPanel;
-    private final HashMap<Long, TabItem> mJobMap = new HashMap<>();
+    private HashMap<Long, TabItem> mJobMap = new HashMap<>();
     private final Manager mManager = Manager.getInstance();
     private ActionListener mMenuActionListener;
 
@@ -60,10 +61,27 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
     }
 
     @Override
+    public void onConnectionConnect() {
+        // nvm
+    }
+
+    @Override
+    public void onConnectionDisconnect() {
+        setSelectedComponent(mSpeedDialPanel);
+        
+        mJobMap.entrySet().stream().forEach((entry) -> {
+            TabItem tabItem = entry.getValue();
+            remove(tabItem);
+        });
+        
+        mJobMap = new HashMap<>();
+    }
+
+    @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
         TabItem tabItem = getTabItem(job);
 
-        if (null != processEvent) switch (processEvent) {
+        switch (processEvent) {
             case STARTED:
                 tabItem.start();
                 setSelectedComponent(tabItem);
@@ -106,7 +124,7 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
 
     void closeTab() {
         if (getSelectedComponent() instanceof TabItem) {
-            close(((TabItem)getSelectedComponent()).getJob());
+            close(((TabItem) getSelectedComponent()).getJob());
         }
     }
 
@@ -178,7 +196,7 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
         remove(panel);
     }
 
-    private TabItem getTabItem(Job job) {
+    private synchronized TabItem getTabItem(Job job) {
         TabItem tabItem;
 
         if (mJobMap.containsKey(job.getId())) {
@@ -199,7 +217,7 @@ public class TabHolder extends JTabbedPane implements ServerEventListener {
         mSpeedDialPanel = new SpeedDialPanel();
         add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(UI.ICON_SIZE_LARGE));
 
-        //mManager.addConnectionListeners(this);
+        mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
 
         mMenuActionListener = (ActionEvent e) -> {
