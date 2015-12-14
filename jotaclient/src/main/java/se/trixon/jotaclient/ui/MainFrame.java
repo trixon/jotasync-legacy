@@ -176,7 +176,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     }
 
     private void init() {
-        toolBar.setVisible(false);
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             String key = evt.getKey();
             if (key.equalsIgnoreCase(Options.KEY_MENU_ICONS)) {
@@ -381,18 +380,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         shutdownServerMenuItem = new javax.swing.JMenuItem();
         quitMenuItem = new javax.swing.JMenuItem();
-        toolBar = new javax.swing.JToolBar();
-        jSeparator5 = new javax.swing.JToolBar.Separator();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        connectButton = new javax.swing.JButton();
-        disconnectButton = new javax.swing.JButton();
-        cronToggleButton = new javax.swing.JToggleButton();
-        jSeparator3 = new javax.swing.JToolBar.Separator();
-        jobEditorButton = new javax.swing.JButton();
-        optionsButton = new javax.swing.JButton();
-        jSeparator4 = new javax.swing.JToolBar.Separator();
-        shutdownServerButton = new javax.swing.JButton();
-        quitButton = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
 
         sPopupMenu.add(connectMenuItem);
@@ -422,62 +409,18 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             }
         });
 
-        toolBar.setFloatable(false);
-        toolBar.setRollover(true);
-        toolBar.add(jSeparator5);
-        toolBar.add(filler1);
-
-        connectButton.setFocusable(false);
-        connectButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        connectButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(connectButton);
-
-        disconnectButton.setFocusable(false);
-        disconnectButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        disconnectButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(disconnectButton);
-
-        cronToggleButton.setFocusable(false);
-        cronToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        cronToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(cronToggleButton);
-        toolBar.add(jSeparator3);
-
-        jobEditorButton.setFocusable(false);
-        jobEditorButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jobEditorButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(jobEditorButton);
-
-        optionsButton.setFocusable(false);
-        optionsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        optionsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(optionsButton);
-        toolBar.add(jSeparator4);
-
-        shutdownServerButton.setFocusable(false);
-        shutdownServerButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        shutdownServerButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(shutdownServerButton);
-
-        quitButton.setFocusable(false);
-        quitButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        quitButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(quitButton);
-
         mainPanel.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addGap(14, 14, 14)
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
@@ -508,30 +451,18 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JButton connectButton;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JCheckBoxMenuItem cronCheckBoxMenuItem;
-    private javax.swing.JToggleButton cronToggleButton;
-    private javax.swing.JButton disconnectButton;
     private javax.swing.JMenuItem disconnectMenuItem;
-    private javax.swing.Box.Filler filler1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
-    private javax.swing.JButton jobEditorButton;
     private javax.swing.JMenuItem jobEditorMenuItem;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JButton optionsButton;
     private javax.swing.JMenuItem optionsMenuItem;
-    private javax.swing.JButton quitButton;
     private javax.swing.JMenuItem quitMenuItem;
     private static javax.swing.JPopupMenu sPopupMenu;
-    private javax.swing.JButton shutdownServerButton;
     private javax.swing.JMenuItem shutdownServerMenuItem;
-    private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 
     private class ActionManager {
@@ -602,7 +533,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             initAction(action, CONNECT, keyStroke, Pict.Actions.NETWORK_CONNECT, false);
             connectMenuItem.setAction(action);
-            connectButton.setAction(action);
 
             //disconnect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK);
@@ -615,7 +545,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             };
 
             initAction(action, DISCONNECT, keyStroke, Pict.Actions.NETWORK_DISCONNECT, true);
-            disconnectButton.setAction(action);
             disconnectMenuItem.setAction(action);
 
             //cron
@@ -643,7 +572,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             initAction(action, CRON, keyStroke, Pict.Actions.CHRONOMETER, true);
             action.putValue(Action.SELECTED_KEY, false);
             cronCheckBoxMenuItem.setAction(action);
-            cronToggleButton.setAction(action);
 
             //jobEditor
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_J, InputEvent.CTRL_MASK);
@@ -656,7 +584,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             };
 
             initAction(action, JOB_EDITOR, keyStroke, Pict.Actions.DOCUMENT_EDIT, true);
-            jobEditorButton.setAction(action);
             jobEditorMenuItem.setAction(action);
 
             //options
@@ -670,7 +597,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             };
 
             initAction(action, OPTIONS, keyStroke, Pict.Actions.CONFIGURE, false);
-            optionsButton.setAction(action);
             optionsMenuItem.setAction(action);
 
             //about
@@ -697,7 +623,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             initAction(action, SHUTDOWN_SERVER, keyStroke, Pict.Actions.SVN_UPDATE, true);
             shutdownServerMenuItem.setAction(action);
-            shutdownServerButton.setAction(action);
 
             //quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK);
@@ -711,7 +636,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             initAction(action, QUIT, keyStroke, Pict.Actions.APPLICATION_EXIT, false);
             quitMenuItem.setAction(action);
-            quitButton.setAction(action);
 
             //close tab
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
@@ -724,11 +648,11 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             };
 
             initAction(action, CLOSE_TAB, keyStroke, Pict.Actions.WINDOW_CLOSE, true);
-            //closeMenuItem.setAction(action);
+//            closeMenuItem.setAction(action);
 
-            for (Component component : toolBar.getComponents()) {
+            for (Component component : sPopupMenu.getComponents()) {
                 if (component instanceof AbstractButton) {
-                    ((AbstractButton) component).setHideActionText(true);
+                    ((AbstractButton) component).setToolTipText(null);
                 }
             }
         }
