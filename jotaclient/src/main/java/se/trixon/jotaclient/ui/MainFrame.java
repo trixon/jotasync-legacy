@@ -38,14 +38,12 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.InputMap;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -76,7 +74,7 @@ import se.trixon.util.swing.dialogs.Message;
  */
 public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener {
 
-    private static JPopupMenu sPopupMenu;
+//    private static JPopupMenu sPopupMenu;
     private ActionManager mActionManager;
     private boolean mShutdownInProgress;
     private boolean mServerShutdownRequested;
@@ -93,7 +91,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     public MainFrame() {
         initComponents();
         init();
-        initPopupMenu();
         mClient = mManager.getClient();
         loadConfiguration();
 
@@ -179,7 +176,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     }
 
     private void init() {
-        menuBar.setVisible(false);
         toolBar.setVisible(false);
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             String key = evt.getKey();
@@ -213,21 +209,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     public static JPopupMenu getPopupMenu() {
         return sPopupMenu;
-    }
-
-    private void initPopupMenu() {
-        sPopupMenu = new JPopupMenu(Dict.MENU.getString());
-        sPopupMenu.add(mActionManager.getAction(ActionManager.CONNECT));
-        sPopupMenu.add(mActionManager.getAction(ActionManager.DISCONNECT));
-        sPopupMenu.add(new JSeparator());
-        sPopupMenu.add(new JCheckBoxMenuItem(mActionManager.getAction(ActionManager.CRON)));
-        sPopupMenu.add(mActionManager.getAction(ActionManager.JOB_EDITOR));
-        sPopupMenu.add(mActionManager.getAction(ActionManager.OPTIONS));
-        sPopupMenu.add(new JSeparator());
-        sPopupMenu.add(mActionManager.getAction(ActionManager.ABOUT));
-        sPopupMenu.add(new JSeparator());
-        sPopupMenu.add(mActionManager.getAction(ActionManager.SHUTDOWN_SERVER));
-        sPopupMenu.add(mActionManager.getAction(ActionManager.QUIT));
     }
 
     private void loadClientOption(ClientOptionsEvent clientOptionEvent) {
@@ -388,6 +369,18 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
+        sPopupMenu = new javax.swing.JPopupMenu();
+        connectMenuItem = new javax.swing.JMenuItem();
+        disconnectMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        cronCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
+        jobEditorMenuItem = new javax.swing.JMenuItem();
+        optionsMenuItem = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        aboutMenuItem = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JPopupMenu.Separator();
+        shutdownServerMenuItem = new javax.swing.JMenuItem();
+        quitMenuItem = new javax.swing.JMenuItem();
         toolBar = new javax.swing.JToolBar();
         jSeparator5 = new javax.swing.JToolBar.Separator();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -401,22 +394,25 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         shutdownServerButton = new javax.swing.JButton();
         quitButton = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        connectMenuItem = new javax.swing.JMenuItem();
-        disconnectMenuItem = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        cronCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
-        jobEditorMenuItem = new javax.swing.JMenuItem();
-        optionsMenuItem = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        shutdownServerMenuItem = new javax.swing.JMenuItem();
-        quitMenuItem = new javax.swing.JMenuItem();
-        viewMenu = new javax.swing.JMenu();
-        launcherRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
-        logRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        aboutMenuItem = new javax.swing.JMenuItem();
+
+        sPopupMenu.add(connectMenuItem);
+        sPopupMenu.add(disconnectMenuItem);
+        sPopupMenu.add(jSeparator1);
+        sPopupMenu.add(cronCheckBoxMenuItem);
+        sPopupMenu.add(jobEditorMenuItem);
+        sPopupMenu.add(optionsMenuItem);
+        sPopupMenu.add(jSeparator2);
+
+        aboutMenuItem.setText(Dict.ABOUT.getString());
+        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuItemActionPerformed(evt);
+            }
+        });
+        sPopupMenu.add(aboutMenuItem);
+        sPopupMenu.add(jSeparator6);
+        sPopupMenu.add(shutdownServerMenuItem);
+        sPopupMenu.add(quitMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Jotasync");
@@ -470,44 +466,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         mainPanel.setLayout(new java.awt.CardLayout());
 
-        fileMenu.setText(Dict.FILE_MENU.getString());
-        fileMenu.add(connectMenuItem);
-        fileMenu.add(disconnectMenuItem);
-        fileMenu.add(jSeparator1);
-        fileMenu.add(cronCheckBoxMenuItem);
-        fileMenu.add(jobEditorMenuItem);
-        fileMenu.add(optionsMenuItem);
-        fileMenu.add(jSeparator2);
-        fileMenu.add(shutdownServerMenuItem);
-        fileMenu.add(quitMenuItem);
-
-        menuBar.add(fileMenu);
-
-        viewMenu.setText(Dict.VIEW.getString());
-
-        buttonGroup2.add(launcherRadioButtonMenuItem);
-        launcherRadioButtonMenuItem.setSelected(true);
-        viewMenu.add(launcherRadioButtonMenuItem);
-
-        buttonGroup2.add(logRadioButtonMenuItem);
-        viewMenu.add(logRadioButtonMenuItem);
-
-        menuBar.add(viewMenu);
-
-        helpMenu.setText(Dict.HELP.getString());
-
-        aboutMenuItem.setText(Dict.ABOUT.getString());
-        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aboutMenuItemActionPerformed(evt);
-            }
-        });
-        helpMenu.add(aboutMenuItem);
-
-        menuBar.add(helpMenu);
-
-        setJMenuBar(menuBar);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -556,28 +514,24 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JToggleButton cronToggleButton;
     private javax.swing.JButton disconnectButton;
     private javax.swing.JMenuItem disconnectMenuItem;
-    private javax.swing.JMenu fileMenu;
     private javax.swing.Box.Filler filler1;
-    private javax.swing.JMenu helpMenu;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JToolBar.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JButton jobEditorButton;
     private javax.swing.JMenuItem jobEditorMenuItem;
-    private javax.swing.JRadioButtonMenuItem launcherRadioButtonMenuItem;
-    private javax.swing.JRadioButtonMenuItem logRadioButtonMenuItem;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton optionsButton;
     private javax.swing.JMenuItem optionsMenuItem;
     private javax.swing.JButton quitButton;
     private javax.swing.JMenuItem quitMenuItem;
+    private static javax.swing.JPopupMenu sPopupMenu;
     private javax.swing.JButton shutdownServerButton;
     private javax.swing.JMenuItem shutdownServerMenuItem;
     private javax.swing.JToolBar toolBar;
-    private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 
     private class ActionManager {
