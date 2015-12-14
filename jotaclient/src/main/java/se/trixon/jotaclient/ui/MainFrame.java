@@ -190,7 +190,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         mActionManager.initActions();
 
         mTabHolder = new TabHolder();
-        mainPanel.add(mTabHolder);
+        this.add(mTabHolder);
         mTabHolder.initActions();
         mManager.addConnectionListeners(this);
 
@@ -380,7 +380,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         shutdownServerMenuItem = new javax.swing.JMenuItem();
         quitMenuItem = new javax.swing.JMenuItem();
-        mainPanel = new javax.swing.JPanel();
 
         sPopupMenu.add(connectMenuItem);
         sPopupMenu.add(disconnectMenuItem);
@@ -408,22 +407,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 formWindowClosing(evt);
             }
         });
-
-        mainPanel.setLayout(new java.awt.CardLayout());
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
-        );
+        getContentPane().setLayout(new java.awt.CardLayout());
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -458,7 +442,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JMenuItem jobEditorMenuItem;
-    private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuItem optionsMenuItem;
     private javax.swing.JMenuItem quitMenuItem;
     private static javax.swing.JPopupMenu sPopupMenu;
