@@ -124,7 +124,10 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
     void closeTab() {
         if (getSelectedComponent() instanceof TabItem) {
-            close(((TabItem) getSelectedComponent()).getJob());
+            TabItem tabItem = (TabItem) getSelectedComponent();
+            if (tabItem.isClosable()) {
+                close(tabItem.getJob());
+            }
         }
     }
 
@@ -187,6 +190,24 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK);
         inputMap.put(keyStroke, key);
         keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
+        inputMap.put(keyStroke, key);
+
+        action = new AbstractAction("Cancel") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (getSelectedComponent() instanceof TabItem) {
+                    TabItem tabItem = (TabItem) getSelectedComponent();
+                    if (tabItem.isCancelable()) {
+                        tabItem.cancel();
+                    }
+                }
+            }
+        };
+
+        key = "Cancel";
+        actionMap.put(key, action);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         inputMap.put(keyStroke, key);
     }
 

@@ -80,11 +80,19 @@ public class TabItem extends JPanel implements TabListener {
 //        }
 //    }
 
+    void cancel() {
+        cancelButtonActionPerformed(null);
+    }
+
     void enableSave() {
         progressBar.setIndeterminate(false);
         saveButton.setEnabled(true);
         cancelButton.setVisible(false);
         closeButton.setVisible(true);
+    }
+
+    boolean isCancelable() {
+        return cancelButton.isVisible() && cancelButton.isEnabled();
     }
 
     boolean isClosable() {
