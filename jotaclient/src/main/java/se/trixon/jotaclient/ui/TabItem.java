@@ -87,7 +87,11 @@ public class TabItem extends JPanel implements TabListener {
         closeButton.setVisible(true);
     }
 
-   synchronized void start() {
+    boolean isClosable() {
+        return closeButton.isVisible() && closeButton.isEnabled();
+    }
+
+    synchronized void start() {
         logPanel.clear();
         progressBar.setIndeterminate(true);
 

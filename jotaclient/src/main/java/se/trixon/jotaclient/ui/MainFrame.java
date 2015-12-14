@@ -366,8 +366,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
         sPopupMenu = new javax.swing.JPopupMenu();
         connectMenuItem = new javax.swing.JMenuItem();
         disconnectMenuItem = new javax.swing.JMenuItem();
@@ -378,6 +376,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         aboutMenuItem = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
+        closeMenuItem = new javax.swing.JMenuItem();
         shutdownServerMenuItem = new javax.swing.JMenuItem();
         quitMenuItem = new javax.swing.JMenuItem();
 
@@ -397,6 +396,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         });
         sPopupMenu.add(aboutMenuItem);
         sPopupMenu.add(jSeparator6);
+
+        closeMenuItem.setText("jMenuItem1");
+        sPopupMenu.add(closeMenuItem);
         sPopupMenu.add(shutdownServerMenuItem);
         sPopupMenu.add(quitMenuItem);
 
@@ -433,8 +435,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JCheckBoxMenuItem cronCheckBoxMenuItem;
     private javax.swing.JMenuItem disconnectMenuItem;
@@ -631,7 +632,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             };
 
             initAction(action, CLOSE_TAB, keyStroke, Pict.Actions.WINDOW_CLOSE, true);
-//            closeMenuItem.setAction(action);
+            closeMenuItem.setAction(action);
 
             for (Component component : sPopupMenu.getComponents()) {
                 if (component instanceof AbstractButton) {

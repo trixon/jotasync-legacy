@@ -68,12 +68,12 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     @Override
     public void onConnectionDisconnect() {
         setSelectedComponent(mSpeedDialPanel);
-        
+
         mJobMap.entrySet().stream().forEach((entry) -> {
             TabItem tabItem = entry.getValue();
             remove(tabItem);
         });
-        
+
         mJobMap = new HashMap<>();
     }
 
@@ -224,6 +224,12 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
             Component component = ((TabListener) getSelectedComponent()).getMenuButton();
             JPopupMenu popupMenu = MainFrame.getPopupMenu();
+
+            boolean closable = false;
+            if (getSelectedComponent() instanceof TabItem) {
+                closable = ((TabItem) getSelectedComponent()).isClosable();
+            }
+            popupMenu.getComponent(popupMenu.getComponentCount() - 3).setEnabled(closable);
 
             if (popupMenu.isVisible()) {
                 popupMenu.setVisible(false);
