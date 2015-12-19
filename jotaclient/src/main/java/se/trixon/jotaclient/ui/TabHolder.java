@@ -17,9 +17,10 @@ package se.trixon.jotaclient.ui;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -46,7 +47,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private SpeedDialPanel mSpeedDialPanel;
     private HashMap<Long, TabItem> mJobMap = new HashMap<>();
     private final Manager mManager = Manager.getInstance();
-    private ActionListener mMenuActionListener;
+    private MouseAdapter mMenuMouseAdapter;
 
     /**
      * Creates new form ProgressPane
@@ -181,7 +182,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                mMenuActionListener.actionPerformed(null);
+                mMenuMouseAdapter.mousePressed(null);
             }
         };
 
@@ -224,7 +225,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             tabItem = mJobMap.get(job.getId());
         } else {
             tabItem = new TabItem(job);
-            tabItem.getMenuButton().addActionListener(mMenuActionListener);
+            tabItem.getMenuButton().addMouseListener(mMenuMouseAdapter);
 
             add(tabItem, job.getName());
             mJobMap.put(job.getId(), tabItem);
@@ -240,30 +241,34 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
+        mMenuMouseAdapter = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e == null || e.getButton() == MouseEvent.BUTTON1) {
+                    Component component = ((TabListener) getSelectedComponent()).getMenuButton();
+                    JPopupMenu popupMenu = MainFrame.getPopupMenu();
 
-        mMenuActionListener = (ActionEvent e) -> {
+                    boolean closable = false;
+                    if (getSelectedComponent() instanceof TabItem) {
+                        closable = ((TabItem) getSelectedComponent()).isClosable();
+                    }
+                    popupMenu.getComponent(popupMenu.getComponentCount() - 3).setEnabled(closable);
 
-            Component component = ((TabListener) getSelectedComponent()).getMenuButton();
-            JPopupMenu popupMenu = MainFrame.getPopupMenu();
+                    if (popupMenu.isVisible()) {
+                        popupMenu.setVisible(false);
+                    } else {
+                        popupMenu.show(component, component.getWidth() - popupMenu.getWidth(), component.getHeight());
 
-            boolean closable = false;
-            if (getSelectedComponent() instanceof TabItem) {
-                closable = ((TabItem) getSelectedComponent()).isClosable();
-            }
-            popupMenu.getComponent(popupMenu.getComponentCount() - 3).setEnabled(closable);
+                        int x = component.getLocationOnScreen().x + component.getWidth() - popupMenu.getWidth();
+                        int y = component.getLocationOnScreen().y + component.getHeight();
 
-            if (popupMenu.isVisible()) {
-                popupMenu.setVisible(false);
-            } else {
-                popupMenu.show(component, component.getWidth() - popupMenu.getWidth(), component.getHeight());
-
-                int x = component.getLocationOnScreen().x + component.getWidth() - popupMenu.getWidth();
-                int y = component.getLocationOnScreen().y + component.getHeight();
-
-                popupMenu.setLocation(x, y);
+                        popupMenu.setLocation(x, y);
+                    }
+                }
             }
         };
-        mSpeedDialPanel.getMenuButton().addActionListener(mMenuActionListener);
+
+        mSpeedDialPanel.getMenuButton().addMouseListener(mMenuMouseAdapter);
         setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
     }
 

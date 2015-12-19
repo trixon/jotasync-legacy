@@ -232,7 +232,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
 
     private void init() {
         startButton.setIcon(Pict.Actions.MEDIA_PLAYBACK_START.get(UI.ICON_SIZE_LARGE));
-        menuButton.setIcon(Pict.Actions.FORMAT_JUSTIFY_FILL.get(UI.ICON_SIZE_LARGE));
+        menuButton.setIcon(Pict.Custom.MENU.get(UI.ICON_SIZE_LARGE));
 
         startButton.setToolTipText(Dict.START.getString());
         menuButton.setToolTipText(Dict.MENU.getString());

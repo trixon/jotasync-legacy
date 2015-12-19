@@ -112,7 +112,7 @@ public class TabItem extends JPanel implements TabListener {
         saveButton.setIcon(Pict.Actions.DOCUMENT_SAVE.get(UI.ICON_SIZE_LARGE));
         cancelButton.setIcon(Pict.Actions.PROCESS_STOP.get(UI.ICON_SIZE_LARGE));
         closeButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(UI.ICON_SIZE_LARGE));
-        menuButton.setIcon(Pict.Actions.FORMAT_JUSTIFY_FILL.get(UI.ICON_SIZE_LARGE));
+        menuButton.setIcon(Pict.Custom.MENU.get(UI.ICON_SIZE_LARGE));
 
         saveButton.setToolTipText(Dict.SAVE.getString());
         cancelButton.setToolTipText(Dict.CANCEL.getString());
