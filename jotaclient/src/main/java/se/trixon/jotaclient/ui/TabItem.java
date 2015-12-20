@@ -15,16 +15,24 @@
  */
 package se.trixon.jotaclient.ui;
 
+import java.io.File;
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.io.FileUtils;
 import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.Manager;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
+import se.trixon.util.swing.dialogs.Message;
+import se.trixon.util.swing.dialogs.SimpleDialog;
 
 /**
  *
@@ -34,9 +42,10 @@ public class TabItem extends JPanel implements TabListener {
 
     private final Job mJob;
     private final Manager mManager = Manager.getInstance();
+    private long mTimeFinished;
 
     /**
-     * Creates new form ProgressPanel
+     * Creates new form TabItem
      *
      * @param job
      */
@@ -89,6 +98,12 @@ public class TabItem extends JPanel implements TabListener {
         saveButton.setEnabled(true);
         cancelButton.setVisible(false);
         closeButton.setVisible(true);
+        mTimeFinished = System.currentTimeMillis();
+    }
+
+    private String getFinishedTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        return simpleDateFormat.format(new Date(mTimeFinished));
     }
 
     boolean isCancelable() {
@@ -203,6 +218,23 @@ public class TabItem extends JPanel implements TabListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        String ext = "log";
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Log file (*.log)", ext);
+
+        SimpleDialog.clearFilters();
+        SimpleDialog.addFilter(filter);
+        SimpleDialog.setFilter(filter);
+        SimpleDialog.setParent(this);
+
+        String filename = String.format("%s_%s.%s", mJob.getName(), getFinishedTime(), ext);
+        SimpleDialog.setSelectedFile(new File(filename));
+        if (SimpleDialog.saveFile(new String[]{ext})) {
+            try {
+                FileUtils.writeStringToFile(SimpleDialog.getPath(), logPanel.getText());
+            } catch (IOException ex) {
+                Message.error(this, Dict.IO_ERROR_TITLE.toString(), ex.getLocalizedMessage());
+            }
+        }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
