@@ -29,12 +29,14 @@ import se.trixon.jota.task.Task;
  */
 public class Job implements Comparable<Job>, Serializable {
 
+    public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
     private boolean mCronActive;
     private String mCronItems = "";
     private String mDescription = "";
     private String mDetails = "";
     private long mId = System.currentTimeMillis();
     private long mLastRun = -1;
+    private int mLastRunExitCode = -1;
     private String mName = "";
     private boolean mRunAfterFailure;
     private String mRunAfterFailureCommand = "";
@@ -44,7 +46,6 @@ public class Job implements Comparable<Job>, Serializable {
     private String mRunBeforeCommand = "";
     private boolean mRunBeforeHaltOnError;
     private List<Task> mTasks = new LinkedList<>();
-    public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
     public Job() {
     }
@@ -79,6 +80,10 @@ public class Job implements Comparable<Job>, Serializable {
 
     public long getLastRun() {
         return mLastRun;
+    }
+
+    public int getLastRunExitCode() {
+        return mLastRunExitCode;
     }
 
     public String getName() {
@@ -169,6 +174,10 @@ public class Job implements Comparable<Job>, Serializable {
 
     public void setLastRun(long lastRun) {
         mLastRun = lastRun;
+    }
+
+    public void setLastRunExitCode(int lastRunExitCode) {
+        mLastRunExitCode = lastRunExitCode;
     }
 
     public void setName(String name) {

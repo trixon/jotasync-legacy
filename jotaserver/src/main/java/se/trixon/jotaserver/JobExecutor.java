@@ -66,9 +66,7 @@ public class JobExecutor extends Thread {
 //                mCurrentProcess.waitFor();
             }
 
-            JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
-            JotaManager.INSTANCE.save();
-
+            updateJobStatus(0);
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {
                 try {
                     clientCallback.onProcessEvent(ProcessEvent.FINISHED, mJob, null, null);
@@ -79,6 +77,7 @@ public class JobExecutor extends Thread {
             Xlog.timedOut(String.format("Job finished: %s", mJob.getName()));
         } catch (InterruptedException ex) {
             mCurrentProcess.destroy();
+            updateJobStatus(99);
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {
                 try {
                     clientCallback.onProcessEvent(ProcessEvent.CANCELED, mJob, null, null);
@@ -88,6 +87,16 @@ public class JobExecutor extends Thread {
             });
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updateJobStatus(int exitCode) {
+        JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
+        JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRunExitCode(exitCode);
+        try {
+            JotaManager.INSTANCE.save();
+        } catch (IOException ex) {
+            Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

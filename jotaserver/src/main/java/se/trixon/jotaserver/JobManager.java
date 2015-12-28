@@ -38,6 +38,7 @@ public enum JobManager {
     private static final String KEY_DETAILS = "details";
     private static final String KEY_ID = "id";
     private static final String KEY_LAST_RUN = "lastRun";
+    private static final String KEY_LAST_RUN_EXIT_CODE = "lastRunExitCode";
     private static final String KEY_NAME = "name";
     private static final String KEY_RUN_AFTER_FAILURE = "runAfterFailure";
     private static final String KEY_RUN_AFTER_FAILURE_COMMAND = "runAfterFailureCommand";
@@ -83,6 +84,7 @@ public enum JobManager {
 
             object.put(KEY_DETAILS, job.getDetails());
             object.put(KEY_LAST_RUN, job.getLastRun());
+            object.put(KEY_LAST_RUN_EXIT_CODE, job.getLastRunExitCode());
             object.put(KEY_TASKS, job.getTasksString());
 
             object.put(KEY_RUN_AFTER_FAILURE, job.isRunAfterFailure());
@@ -137,6 +139,7 @@ public enum JobManager {
             job.setDescription((String) object.get(KEY_DESCRIPTION));
             job.setDetails((String) object.get(KEY_DETAILS));
             job.setLastRun(JsonHelper.getLong(object, KEY_LAST_RUN));
+            job.setLastRunExitCode(JsonHelper.getInt(object, KEY_LAST_RUN_EXIT_CODE));
             String taskIds = (String) object.get(KEY_TASKS);
             job.setTasks(TaskManager.INSTANCE.getTasks(taskIds));
 
@@ -164,6 +167,5 @@ public enum JobManager {
         for (Object object : model.toArray()) {
             mJobs.add((Job) object);
         }
-
     }
 }

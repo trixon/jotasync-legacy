@@ -112,7 +112,7 @@ public class SpeedDialButton extends JButton {
             setText(text);
             return;
         }
-        String template = "<html><center><h2><b>%s</b></h2><p><i>%s</i></p><br />%s</center></html>";
+        String template = "<html><center><h2><b>%s</b></h2><p><i>%s</i></p><br />%s %s</center></html>";
         Job job;
         try {
             job = mManager.getServerCommander().getJob(mJobId);
@@ -131,7 +131,8 @@ public class SpeedDialButton extends JButton {
 
         String name = mJob.getName();
         String desc = mJob.getDescription();
-        text = String.format(template, name, desc, lastRunText);
+        String status = job.getLastRunExitCode() == 0 ? "☺" : "☹";
+        text = String.format(template, name, desc, lastRunText, status);
         setText(text);
     }
 
