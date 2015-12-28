@@ -37,6 +37,7 @@ import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
 import se.trixon.jota.job.Job;
+import se.trixon.jota.job.JobComboBoxRenderer;
 import se.trixon.jota.task.Task;
 import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
@@ -107,12 +108,16 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         switch (processEvent) {
             case ERR:
             case OUT:
+                updateButtons(job, false);
+                break;
             case STARTED:
-                updateButton(job, false);
+                updateButtons(job, false);
+                updateCaptions(job);
                 break;
             case CANCELED:
             case FINISHED:
-                updateButton(job, true);
+                updateButtons(job, true);
+                updateCaptions(job);
                 break;
             default:
                 break;
@@ -138,19 +143,38 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         requestStartJob(speedDialButton.getJob());
     }
 
-    private void updateButton(Job job, boolean state) {
-        if (startButton.isEnabled() != state && job.getId() == ((Job) jobsComboBox.getSelectedItem()).getId()) {
-            startButton.setEnabled(state);
-        }
+    private void updateButtons(Job job, boolean state) {
+        SwingUtilities.invokeLater(() -> {
+            if (startButton.isEnabled() != state && job.getId() == ((Job) jobsComboBox.getSelectedItem()).getId()) {
+                startButton.setEnabled(state);
+            }
 
-        for (SpeedDialButton button : mButtons) {
-            if (button.getJobId() == job.getId()) {
-                button.setEnabled(state);
-                if (state) {
+            for (SpeedDialButton button : mButtons) {
+                if (button.getJobId() == job.getId()) {
+                    button.setEnabled(state);
+                }
+            }
+        });
+    }
+
+    private void updateCaptions(Job job) {
+        SwingUtilities.invokeLater(() -> {
+            int index = jobsComboBox.getSelectedIndex();
+            try {
+                loadConfiguration();
+                jobsComboBox.setSelectedIndex(index);
+            } catch (RemoteException ex) {
+                Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+
+            }
+
+            for (SpeedDialButton button : mButtons) {
+                if (button.getJobId() == job.getId()) {
                     button.updateText();
                 }
             }
-        }
+        });
     }
 
     Job getSelectedJob() {
@@ -175,7 +199,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
             DefaultComboBoxModel model = mManager.getServerCommander().populateJobModel((DefaultComboBoxModel) jobsComboBox.getModel());
             jobsComboBox.setModel(model);
             jobsComboBox.setEnabled(true);
-
+            jobsComboBox.setRenderer(new JobComboBoxRenderer());
             mPopupMenu.removeAll();
 
             mResetMenuItem = new JMenuItem(Dict.RESET.getString());
@@ -193,6 +217,8 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
             for (final Job job : mManager.getServerCommander().getJobs()) {
                 final long jobId = job.getId();
                 JMenuItem menuItem = new JMenuItem(job.toString());
+                menuItem.setFont(menuItem.getFont().deriveFont(menuItem.getFont().getStyle() & ~java.awt.Font.BOLD));
+
                 menuItem.addActionListener((ActionEvent e) -> {
                     mButton.setJobId(jobId);
                     try {
@@ -344,6 +370,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
 
         topPanel.setLayout(new java.awt.GridBagLayout());
 
+        jobsComboBox.setFont(jobsComboBox.getFont().deriveFont(jobsComboBox.getFont().getStyle() & ~java.awt.Font.BOLD));
         jobsComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jobsComboBoxActionPerformed(evt);

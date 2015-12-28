@@ -17,8 +17,6 @@ package se.trixon.jotaclient.ui;
 
 import java.awt.Dimension;
 import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -106,38 +104,24 @@ public class SpeedDialButton extends JButton {
         setEnabled(mJob != null);
     }
 
+    private void init() {
+        setMinimumSize(new Dimension(210, 128));
+        setPreferredSize(new Dimension(210, 128));
+    }
+
     void updateText() {
         String text = "";
+
         if (mJob == null) {
             setText(text);
             return;
         }
-        String template = "<html><center><h2><b>%s</b></h2><p><i>%s</i></p><br />%s %s</center></html>";
-        Job job;
+
         try {
-            job = mManager.getServerCommander().getJob(mJobId);
+            Job job = mManager.getServerCommander().getJob(mJobId);
+            setText(job.getCaption(true));
         } catch (RemoteException ex) {
             setText(text);
-            return;
         }
-
-        long lastRun = job.getLastRun();
-        String lastRunText = "-";
-
-        if (lastRun > 0) {
-            Date date = new Date(lastRun);
-            lastRunText = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(date);
-        }
-
-        String name = mJob.getName();
-        String desc = mJob.getDescription();
-        String status = job.getLastRunExitCode() == 0 ? "☺" : "☹";
-        text = String.format(template, name, desc, lastRunText, status);
-        setText(text);
-    }
-
-    private void init() {
-        setMinimumSize(new Dimension(210, 128));
-        setPreferredSize(new Dimension(210, 128));
     }
 }

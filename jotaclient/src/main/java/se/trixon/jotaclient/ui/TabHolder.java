@@ -270,7 +270,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private void init() {
         setFocusTraversalKeysEnabled(false);
         mSpeedDialPanel = new SpeedDialPanel();
-        add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(24));
+        add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(UI.ICON_SIZE_LARGE));
 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);

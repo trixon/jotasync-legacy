@@ -21,6 +21,6 @@ package se.trixon.jotaclient.ui;
  */
 public class UI {
 
-    public static final int ICON_SIZE_LARGE = 32;
+    public static final int ICON_SIZE_LARGE = 24;
     public static final int ICON_SIZE_SMALL = 16;
 }

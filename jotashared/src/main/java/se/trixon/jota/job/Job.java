@@ -16,6 +16,8 @@
 package se.trixon.jota.job;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -62,6 +64,25 @@ public class Job implements Comparable<Job>, Serializable {
         return mName.compareTo(o.getName());
     }
 
+    public String getCaption(boolean verbose) {
+        String caption;
+        if (verbose) {
+            String template = "<html><center><h2><b>%s</b></h2><p><i>%s</i></p><br />%s %s</center></html>";
+            caption = String.format(template, mName, mDescription, getLastRunDateTime("-"), getLastRunStatus());
+        } else {
+            String template = "<html><b>%s</b><i>%s</i> %s %s</html>";
+            String description = mDescription;
+            if (StringUtils.isEmpty(description)) {
+                description = "&nbsp;";
+            } else {
+                description = String.format("(%s)", description);
+            }
+            caption = String.format(template, mName, description, getLastRunDateTime(""), getLastRunStatus());
+        }
+
+        return caption;
+    }
+
     public String getCronItems() {
         return mCronItems;
     }
@@ -82,8 +103,31 @@ public class Job implements Comparable<Job>, Serializable {
         return mLastRun;
     }
 
+    public String getLastRunDateTime(String replacement) {
+        String lastRunDateTime = replacement;
+
+        if (mLastRun > 0) {
+            Date date = new Date(mLastRun);
+            lastRunDateTime = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(date);
+        }
+
+        return lastRunDateTime;
+    }
+
     public int getLastRunExitCode() {
         return mLastRunExitCode;
+    }
+
+    public String getLastRunStatus() {
+        String status = "";
+        if (mLastRun > 0) {
+            status = getLastRunExitCode() == 0 ? "☺" : "☹";
+            //if (isRunnning()) {
+            //    status = "∞";
+            //}
+        }
+
+        return status;
     }
 
     public String getName() {
@@ -233,6 +277,7 @@ public class Job implements Comparable<Job>, Serializable {
             if (StringUtils.isEmpty(description)) {
                 description = "&nbsp;";
             }
+
             return String.format("<html><b>%s</b><br /><i>%s</i></html>", mName, description);
         }
     }
