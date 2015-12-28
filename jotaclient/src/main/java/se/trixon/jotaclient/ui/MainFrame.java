@@ -70,11 +70,10 @@ import se.trixon.util.swing.dialogs.Message;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener {
 
-//    private static JPopupMenu sPopupMenu;
     private ActionManager mActionManager;
     private boolean mShutdownInProgress;
     private boolean mServerShutdownRequested;

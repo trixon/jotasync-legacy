@@ -154,6 +154,7 @@ public class TabItem extends JPanel implements TabListener {
         saveButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
         menuButton = new javax.swing.JButton();
         logPanel = new se.trixon.util.swing.LogPanel();
 
@@ -167,6 +168,7 @@ public class TabItem extends JPanel implements TabListener {
         gridBagConstraints.weightx = 1.0;
         add(progressBar, gridBagConstraints);
 
+        toolBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
 
@@ -199,6 +201,7 @@ public class TabItem extends JPanel implements TabListener {
             }
         });
         toolBar.add(closeButton);
+        toolBar.add(jSeparator1);
 
         menuButton.setFocusable(false);
         menuButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -252,6 +255,7 @@ public class TabItem extends JPanel implements TabListener {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeButton;
+    private javax.swing.JToolBar.Separator jSeparator1;
     private se.trixon.util.swing.LogPanel logPanel;
     private javax.swing.JButton menuButton;
     private javax.swing.JProgressBar progressBar;

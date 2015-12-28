@@ -48,7 +48,7 @@ import se.trixon.util.swing.SwingHelper;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, TabListener {
 
@@ -97,6 +97,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         SwingUtilities.invokeLater(() -> {
             SwingHelper.enableComponents(getParent(), false);
             clearConfiguration();
+            startButton.setEnabled(false);
             menuButton.setEnabled(true);
         });
     }
@@ -208,6 +209,8 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
                     Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        } else {
+            startButton.setEnabled(false);
         }
     }
 
@@ -321,6 +324,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         jobsComboBox = new javax.swing.JComboBox();
         toolBar = new javax.swing.JToolBar();
         startButton = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
         menuButton = new javax.swing.JButton();
         centerPanel = new javax.swing.JPanel();
         speedDialButton0 = new se.trixon.jotaclient.ui.SpeedDialButton();
@@ -349,6 +353,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         gridBagConstraints.weightx = 1.0;
         topPanel.add(jobsComboBox, gridBagConstraints);
 
+        toolBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
 
@@ -361,6 +366,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
             }
         });
         toolBar.add(startButton);
+        toolBar.add(jSeparator1);
 
         menuButton.setFocusable(false);
         menuButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -453,6 +459,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel centerPanel;
+    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JComboBox jobsComboBox;
     private javax.swing.JButton menuButton;
     private se.trixon.jotaclient.ui.SpeedDialButton speedDialButton0;

@@ -237,7 +237,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
     private void init() {
         mSpeedDialPanel = new SpeedDialPanel();
-        add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(UI.ICON_SIZE_LARGE));
+        add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(24));
 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
@@ -269,7 +269,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         };
 
         mSpeedDialPanel.getMenuButton().addMouseListener(mMenuMouseAdapter);
-        setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
+        //setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
     }
 
     /**
