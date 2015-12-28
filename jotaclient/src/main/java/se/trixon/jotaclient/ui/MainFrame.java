@@ -403,8 +403,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         });
         sPopupMenu.add(aboutMenuItem);
         sPopupMenu.add(jSeparator6);
-
-        saveMenuItem.setText("jMenuItem1");
         sPopupMenu.add(saveMenuItem);
 
         closeMenuItem.setText("jMenuItem1");

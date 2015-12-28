@@ -127,14 +127,6 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         }
     }
 
-    private void displayTabNext() {
-        System.out.println("next");
-    }
-
-    private void displayTabPrev() {
-        System.out.println("prev");
-    }
-
     private synchronized void updateTitle(Job job, String format) {
         SwingUtilities.invokeLater(() -> {
 
@@ -191,7 +183,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayTabNext();
+                displayTab(getSelectedIndex() + 1);
             }
         };
 
@@ -204,12 +196,12 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayTabPrev();
+                displayTab(Math.max(getSelectedIndex() - 1, 0));
             }
 
         };
 
-        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK);
         key = "prevTab";
         inputMap.put(keyStroke, key);
         actionMap.put(key, action);
@@ -276,6 +268,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     }
 
     private void init() {
+        setFocusTraversalKeysEnabled(false);
         mSpeedDialPanel = new SpeedDialPanel();
         add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(24));
 
