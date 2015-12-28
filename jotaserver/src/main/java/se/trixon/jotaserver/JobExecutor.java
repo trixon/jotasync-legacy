@@ -56,13 +56,13 @@ public class JobExecutor extends Thread {
                 //
 
                 //ProcessBuilder processBuilder = new ProcessBuilder("rsync", "--version");
-                ProcessBuilder processBuilder = new ProcessBuilder("/home/pata/bin/ticktock.sh");
-                mCurrentProcess = processBuilder.start();
-
-                new ProcessLogThread(mCurrentProcess.getInputStream(), ProcessEvent.OUT).start();
-                new ProcessLogThread(mCurrentProcess.getErrorStream(), ProcessEvent.ERR).start();
-
-                mCurrentProcess.waitFor();
+//                ProcessBuilder processBuilder = new ProcessBuilder("/home/pata/bin/ticktock.sh");
+//                mCurrentProcess = processBuilder.start();
+//
+//                new ProcessLogThread(mCurrentProcess.getInputStream(), ProcessEvent.OUT).start();
+//                new ProcessLogThread(mCurrentProcess.getErrorStream(), ProcessEvent.ERR).start();
+//
+//                mCurrentProcess.waitFor();
             }
 
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {
