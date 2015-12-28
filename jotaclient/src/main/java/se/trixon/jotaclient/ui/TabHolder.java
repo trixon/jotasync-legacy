@@ -23,6 +23,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -37,6 +38,7 @@ import se.trixon.jota.job.Job;
 import se.trixon.jota.task.Task;
 import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
+import se.trixon.jotaclient.ui.MainFrame.ActionManager;
 import se.trixon.util.icon.Pict;
 
 /**
@@ -45,10 +47,13 @@ import se.trixon.util.icon.Pict;
  */
 public class TabHolder extends JTabbedPane implements ConnectionListener, ServerEventListener {
 
+    private ActionManager mActionManager;
+    private Action mCloseAction;
     private SpeedDialPanel mSpeedDialPanel;
     private HashMap<Long, TabItem> mJobMap = new HashMap<>();
     private final Manager mManager = Manager.getInstance();
     private MouseAdapter mMenuMouseAdapter;
+    private Action mSaveAction;
 
     /**
      * Creates new form ProgressPane
@@ -88,6 +93,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
                 tabItem.start();
                 setSelectedComponent(tabItem);
                 updateTitle(job, "b");
+                updateActionStates();
                 break;
             case OUT:
             case ERR:
@@ -97,10 +103,12 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
                 tabItem.log(ProcessEvent.OUT, "\n\nJob interrupted.");
                 tabItem.enableSave();
                 updateTitle(job, "i");
+                updateActionStates();
                 break;
             case FINISHED:
                 tabItem.enableSave();
                 updateTitle(job, "normal");
+                updateActionStates();
                 break;
             default:
                 break;
@@ -147,9 +155,22 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         }
     }
 
+    void saveTab() {
+        if (getSelectedComponent() instanceof TabItem) {
+            TabItem tabItem = (TabItem) getSelectedComponent();
+            if (tabItem.isClosable()) {
+                tabItem.save();
+            }
+        }
+    }
+
     void initActions() {
+        mActionManager = ((MainFrame) SwingUtilities.getRoot(this)).getActionManager();
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = getRootPane().getActionMap();
+
+        mCloseAction = mActionManager.getAction(ActionManager.CLOSE_TAB);
+        mSaveAction = mActionManager.getAction(ActionManager.SAVE_TAB);
 
         for (int i = 0; i < 10; i++) {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(0x31 + i, InputEvent.CTRL_MASK);
@@ -241,6 +262,10 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         } else {
             tabItem = new TabItem(job);
             tabItem.getMenuButton().addMouseListener(mMenuMouseAdapter);
+            tabItem.getSaveButton().setAction(mSaveAction);
+            tabItem.getSaveButton().setText(null);
+            tabItem.getCloseButton().setAction(mCloseAction);
+            tabItem.getCloseButton().setText(null);
 
             add(tabItem, job.getName());
             mJobMap.put(job.getId(), tabItem);
@@ -263,12 +288,6 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
                     Component component = ((TabListener) getSelectedComponent()).getMenuButton();
                     JPopupMenu popupMenu = MainFrame.getPopupMenu();
 
-                    boolean closable = false;
-                    if (getSelectedComponent() instanceof TabItem) {
-                        closable = ((TabItem) getSelectedComponent()).isClosable();
-                    }
-                    popupMenu.getComponent(popupMenu.getComponentCount() - 3).setEnabled(closable);
-
                     if (popupMenu.isVisible()) {
                         popupMenu.setVisible(false);
                     } else {
@@ -287,6 +306,22 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         //setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
     }
 
+    private void updateActionStates() {
+        try {
+            mCloseAction.setEnabled(false);
+            mSaveAction.setEnabled(false);
+
+            if (getSelectedComponent() instanceof TabItem) {
+                TabItem tabItem = (TabItem) getSelectedComponent();
+                if (tabItem.isClosable()) {
+                    mCloseAction.setEnabled(true);
+                    mSaveAction.setEnabled(true);
+                }
+            }
+        } catch (NullPointerException e) {
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -297,6 +332,11 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private void initComponents() {
 
         setFont(getFont().deriveFont((getFont().getStyle() & ~java.awt.Font.ITALIC) & ~java.awt.Font.BOLD));
+        addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                formStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -309,6 +349,10 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_formStateChanged
+        updateActionStates();
+    }//GEN-LAST:event_formStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

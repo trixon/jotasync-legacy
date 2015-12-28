@@ -40,6 +40,7 @@ import se.trixon.util.swing.dialogs.SimpleDialog;
  */
 public class TabItem extends JPanel implements TabListener {
 
+    private boolean mClosable;
     private final Job mJob;
     private final Manager mManager = Manager.getInstance();
     private long mTimeFinished;
@@ -60,9 +61,17 @@ public class TabItem extends JPanel implements TabListener {
         return mJob;
     }
 
+    public JButton getCloseButton() {
+        return closeButton;
+    }
+
     @Override
     public JButton getMenuButton() {
         return menuButton;
+    }
+
+    public JButton getSaveButton() {
+        return saveButton;
     }
 
     synchronized public void log(ProcessEvent processEvent, String string) {
@@ -90,7 +99,11 @@ public class TabItem extends JPanel implements TabListener {
 //    }
 
     void cancel() {
-        cancelButtonActionPerformed(null);
+        try {
+            mManager.getServerCommander().cancelJob(mJob);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     void enableSave() {
@@ -99,6 +112,7 @@ public class TabItem extends JPanel implements TabListener {
         cancelButton.setVisible(false);
         closeButton.setVisible(true);
         mTimeFinished = System.currentTimeMillis();
+        mClosable = true;
     }
 
     private String getFinishedTime() {
@@ -111,7 +125,28 @@ public class TabItem extends JPanel implements TabListener {
     }
 
     boolean isClosable() {
-        return closeButton.isVisible() && closeButton.isEnabled();
+        //return closeButton.isVisible() && closeButton.isEnabled();
+        return mClosable;
+    }
+
+    void save() {
+        String ext = "log";
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Log file (*.log)", ext);
+
+        SimpleDialog.clearFilters();
+        SimpleDialog.addFilter(filter);
+        SimpleDialog.setFilter(filter);
+        SimpleDialog.setParent(this);
+
+        String filename = String.format("%s_%s.%s", mJob.getName(), getFinishedTime(), ext);
+        SimpleDialog.setSelectedFile(new File(filename));
+        if (SimpleDialog.saveFile(new String[]{ext})) {
+            try {
+                FileUtils.writeStringToFile(SimpleDialog.getPath(), logPanel.getText());
+            } catch (IOException ex) {
+                Message.error(this, Dict.IO_ERROR_TITLE.toString(), ex.getLocalizedMessage());
+            }
+        }
     }
 
     synchronized void start() {
@@ -121,19 +156,16 @@ public class TabItem extends JPanel implements TabListener {
         saveButton.setEnabled(false);
         cancelButton.setVisible(true);
         closeButton.setVisible(false);
+        mClosable = false;
     }
 
     private void init() {
-        saveButton.setIcon(Pict.Actions.DOCUMENT_SAVE.get(UI.ICON_SIZE_LARGE));
         cancelButton.setIcon(Pict.Actions.PROCESS_STOP.get(UI.ICON_SIZE_LARGE));
-        closeButton.setIcon(Pict.Actions.WINDOW_CLOSE.get(UI.ICON_SIZE_LARGE));
         menuButton.setIcon(Pict.Custom.MENU.get(UI.ICON_SIZE_LARGE));
 
-        saveButton.setToolTipText(Dict.SAVE.getString());
         cancelButton.setToolTipText(Dict.CANCEL.getString());
-        closeButton.setToolTipText(Dict.CLOSE.getString());
         menuButton.setToolTipText(Dict.MENU.getString());
-        
+
         closeButton.setVisible(false);
     }
 
@@ -177,11 +209,6 @@ public class TabItem extends JPanel implements TabListener {
         saveButton.setFocusable(false);
         saveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
-            }
-        });
         toolBar.add(saveButton);
 
         cancelButton.setFocusable(false);
@@ -197,11 +224,6 @@ public class TabItem extends JPanel implements TabListener {
         closeButton.setFocusable(false);
         closeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         closeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        closeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeButtonActionPerformed(evt);
-            }
-        });
         toolBar.add(closeButton);
         toolBar.add(jSeparator1);
 
@@ -222,37 +244,9 @@ public class TabItem extends JPanel implements TabListener {
         add(logPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        String ext = "log";
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Log file (*.log)", ext);
-
-        SimpleDialog.clearFilters();
-        SimpleDialog.addFilter(filter);
-        SimpleDialog.setFilter(filter);
-        SimpleDialog.setParent(this);
-
-        String filename = String.format("%s_%s.%s", mJob.getName(), getFinishedTime(), ext);
-        SimpleDialog.setSelectedFile(new File(filename));
-        if (SimpleDialog.saveFile(new String[]{ext})) {
-            try {
-                FileUtils.writeStringToFile(SimpleDialog.getPath(), logPanel.getText());
-            } catch (IOException ex) {
-                Message.error(this, Dict.IO_ERROR_TITLE.toString(), ex.getLocalizedMessage());
-            }
-        }
-    }//GEN-LAST:event_saveButtonActionPerformed
-
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        try {
-            mManager.getServerCommander().cancelJob(mJob);
-        } catch (RemoteException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        cancel();
     }//GEN-LAST:event_cancelButtonActionPerformed
-
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-        ((TabHolder) getParent()).close(mJob);
-    }//GEN-LAST:event_closeButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

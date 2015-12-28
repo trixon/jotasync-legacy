@@ -37,6 +37,11 @@
         </MenuItem>
         <Component class="javax.swing.JPopupMenu$Separator" name="jSeparator6">
         </Component>
+        <MenuItem class="javax.swing.JMenuItem" name="saveMenuItem">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jMenuItem1"/>
+          </Properties>
+        </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="closeMenuItem">
           <Properties>
             <Property name="text" type="java.lang.String" value="jMenuItem1"/>

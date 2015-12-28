@@ -153,6 +153,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
     }
 
+    ActionManager getActionManager() {
+        return mActionManager;
+    }
+
     private void enableGui(boolean state) {
         boolean cronActive = false;
 
@@ -166,6 +170,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         mActions.stream().forEach((action) -> {
             action.setEnabled(state);
         });
+
+        mActionManager.getAction(ActionManager.CLOSE_TAB).setEnabled(false);
+        mActionManager.getAction(ActionManager.SAVE_TAB).setEnabled(false);
 
         if (state) {
             updateWindowTitle();
@@ -189,7 +196,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         mActionManager.initActions();
 
         mTabHolder = new TabHolder();
-        this.add(mTabHolder);
+        add(mTabHolder);
         mTabHolder.initActions();
         mManager.addConnectionListeners(this);
 
@@ -375,6 +382,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         aboutMenuItem = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
+        saveMenuItem = new javax.swing.JMenuItem();
         closeMenuItem = new javax.swing.JMenuItem();
         shutdownServerMenuItem = new javax.swing.JMenuItem();
         quitMenuItem = new javax.swing.JMenuItem();
@@ -395,6 +403,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         });
         sPopupMenu.add(aboutMenuItem);
         sPopupMenu.add(jSeparator6);
+
+        saveMenuItem.setText("jMenuItem1");
+        sPopupMenu.add(saveMenuItem);
 
         closeMenuItem.setText("jMenuItem1");
         sPopupMenu.add(closeMenuItem);
@@ -445,10 +456,11 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JMenuItem optionsMenuItem;
     private javax.swing.JMenuItem quitMenuItem;
     private static javax.swing.JPopupMenu sPopupMenu;
+    private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenuItem shutdownServerMenuItem;
     // End of variables declaration//GEN-END:variables
 
-    private class ActionManager {
+    class ActionManager {
 
         static final String ABOUT = "about";
         static final String CLOSE_TAB = "closeTab";
@@ -459,13 +471,14 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         static final String JOTA_SMALL_ICON_KEY = "jota_small_icon";
         static final String OPTIONS = "options";
         static final String QUIT = "shutdownServerAndWindow";
+        static final String SAVE_TAB = "saveTab";
         static final String SHUTDOWN_SERVER = "shutdownServer";
 
         private ActionManager() {
             initActions();
         }
 
-        private Action getAction(String key) {
+        Action getAction(String key) {
             return getRootPane().getActionMap().get(key);
         }
 
@@ -531,7 +544,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             disconnectMenuItem.setAction(action);
 
             //cron
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK);
             action = new AbstractAction(mBundle.getString("schedule")) {
 
                 @Override
@@ -619,6 +632,19 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             initAction(action, QUIT, keyStroke, Pict.Actions.APPLICATION_EXIT, false);
             quitMenuItem.setAction(action);
+
+            //save tab
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
+            action = new AbstractAction(Dict.SAVE.getString()) {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mTabHolder.saveTab();
+                }
+            };
+
+            initAction(action, SAVE_TAB, keyStroke, Pict.Actions.DOCUMENT_SAVE, true);
+            saveMenuItem.setAction(action);
 
             //close tab
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
