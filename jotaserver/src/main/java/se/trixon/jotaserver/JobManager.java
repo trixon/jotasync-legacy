@@ -26,7 +26,7 @@ import se.trixon.jota.job.Job;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public enum JobManager {
 

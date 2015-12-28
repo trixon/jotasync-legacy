@@ -34,6 +34,7 @@ import se.trixon.util.Xlog;
 public class JobExecutor extends Thread {
 
     private final Job mJob;
+    private long mLastRun;
     private final Server mServer;
     private Process mCurrentProcess;
 
@@ -44,17 +45,17 @@ public class JobExecutor extends Thread {
 
     @Override
     public void run() {
+        mLastRun = System.currentTimeMillis();
         try {
             boolean success = runPre();
             if (success) {
                 //
                 // run all tasks
                 //
-                
+
                 //
                 // run Post
                 //
-
                 //ProcessBuilder processBuilder = new ProcessBuilder("rsync", "--version");
 //                ProcessBuilder processBuilder = new ProcessBuilder("/home/pata/bin/ticktock.sh");
 //                mCurrentProcess = processBuilder.start();
@@ -64,6 +65,9 @@ public class JobExecutor extends Thread {
 //
 //                mCurrentProcess.waitFor();
             }
+
+            JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
+            JotaManager.INSTANCE.save();
 
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {
                 try {

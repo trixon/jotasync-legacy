@@ -25,7 +25,7 @@ import se.trixon.jota.task.Task;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class Job implements Comparable<Job>, Serializable {
 

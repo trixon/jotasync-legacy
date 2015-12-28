@@ -29,7 +29,7 @@ import se.trixon.util.Xlog;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public enum JotaManager {
 

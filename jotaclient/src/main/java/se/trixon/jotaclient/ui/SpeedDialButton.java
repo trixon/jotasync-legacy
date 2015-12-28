@@ -17,10 +17,8 @@ package se.trixon.jotaclient.ui;
 
 import java.awt.Dimension;
 import java.rmi.RemoteException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -32,7 +30,7 @@ import se.trixon.jotaclient.ui.editor.JobsPanel;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class SpeedDialButton extends JButton {
 
@@ -95,7 +93,6 @@ public class SpeedDialButton extends JButton {
     }
 
     public void setJobId(long jobId) {
-        String template = "<html><center><h2><b>%s</b></h2>%s<br />%s</center></html>";
         mJobId = jobId;
         try {
             mJob = mManager.getServerCommander().getJob(jobId);
@@ -104,26 +101,38 @@ public class SpeedDialButton extends JButton {
         } catch (NullPointerException ex) {
             mJob = null;
         }
+
+        updateText();
+        setEnabled(mJob != null);
+    }
+
+    void updateText() {
         String text = "";
-
-        if (mJob != null) {
-            long lastRun = mJob.getLastRun();
-            String lastRunText = "-";
-
-            if (lastRun > 0) {
-                Date date = new Date(lastRun);
-                DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-                //lastRunText = formatter.format(date);
-                lastRunText = new SimpleDateFormat("yyyy-MM-dd HH.mm").format(date);
-            }
-
-            String name = mJob.getName();
-            String desc = mJob.getDescription();
-            text = String.format(template, name, desc, lastRunText);
+        if (mJob == null) {
+            setText(text);
+            return;
+        }
+        String template = "<html><center><h2><b>%s</b></h2><p><i>%s</i></p><br />%s</center></html>";
+        Job job;
+        try {
+            job = mManager.getServerCommander().getJob(mJobId);
+        } catch (RemoteException ex) {
+            setText(text);
+            return;
         }
 
+        long lastRun = job.getLastRun();
+        String lastRunText = "-";
+
+        if (lastRun > 0) {
+            Date date = new Date(lastRun);
+            lastRunText = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(date);
+        }
+
+        String name = mJob.getName();
+        String desc = mJob.getDescription();
+        text = String.format(template, name, desc, lastRunText);
         setText(text);
-        setEnabled(mJob != null);
     }
 
     private void init() {

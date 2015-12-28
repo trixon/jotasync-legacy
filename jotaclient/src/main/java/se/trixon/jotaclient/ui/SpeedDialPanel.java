@@ -146,6 +146,9 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         for (SpeedDialButton button : mButtons) {
             if (button.getJobId() == job.getId()) {
                 button.setEnabled(state);
+                if (state) {
+                    button.updateText();
+                }
             }
         }
     }
