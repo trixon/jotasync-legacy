@@ -133,6 +133,8 @@ public class TabItem extends JPanel implements TabListener {
         cancelButton.setToolTipText(Dict.CANCEL.getString());
         closeButton.setToolTipText(Dict.CLOSE.getString());
         menuButton.setToolTipText(Dict.MENU.getString());
+        
+        closeButton.setVisible(false);
     }
 
 //    private String getErrorCode(int exitValue) {
