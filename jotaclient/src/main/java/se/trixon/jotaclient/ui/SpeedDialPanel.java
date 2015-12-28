@@ -283,7 +283,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     }
 
     private boolean requestStartJob(Job job) {
-        Xlog.timedOut("requestStartJob() " + job.toString());
+        Xlog.timedOut("requestStartJob() " + job.getName());
 
         String start = Dict.START.getString();
         String simulate = "Simulate";
