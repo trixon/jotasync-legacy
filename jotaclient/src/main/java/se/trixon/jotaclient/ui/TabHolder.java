@@ -29,6 +29,7 @@ import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.ServerEvent;
 import se.trixon.jota.ServerEventListener;
@@ -86,6 +87,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             case STARTED:
                 tabItem.start();
                 setSelectedComponent(tabItem);
+                updateTitle(job, "b");
                 break;
             case OUT:
             case ERR:
@@ -94,9 +96,11 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             case CANCELED:
                 tabItem.log(ProcessEvent.OUT, "\n\nJob interrupted.");
                 tabItem.enableSave();
+                updateTitle(job, "i");
                 break;
             case FINISHED:
                 tabItem.enableSave();
+                updateTitle(job, "normal");
                 break;
             default:
                 break;
@@ -121,6 +125,17 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
     private void displayTabPrev() {
         System.out.println("prev");
+    }
+
+    private synchronized void updateTitle(Job job, String format) {
+        SwingUtilities.invokeLater(() -> {
+
+            int index = indexOfComponent(getTabItem(job));
+            try {
+                setTitleAt(index, String.format("<html><%s>%s</%s></html>", format, job.getName(), format));
+            } catch (Exception e) {
+            }
+        });
     }
 
     void closeTab() {
@@ -280,6 +295,8 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        setFont(getFont().deriveFont((getFont().getStyle() & ~java.awt.Font.ITALIC) & ~java.awt.Font.BOLD));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
