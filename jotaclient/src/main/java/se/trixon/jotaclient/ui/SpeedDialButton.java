@@ -107,6 +107,7 @@ public class SpeedDialButton extends JButton {
     private void init() {
         setMinimumSize(new Dimension(210, 128));
         setPreferredSize(new Dimension(210, 128));
+        setFont(getFont().deriveFont(getFont().getStyle() & ~java.awt.Font.BOLD));
     }
 
     void updateText() {
