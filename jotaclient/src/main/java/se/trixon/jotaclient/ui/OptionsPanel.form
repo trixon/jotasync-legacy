@@ -21,12 +21,13 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="rsyncFileChooserPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="lafComboBox" max="32767" attributes="0"/>
+                  <Component id="lafForceCheckBox" alignment="0" pref="359" max="32767" attributes="0"/>
+                  <Component id="menuIconsCheckBox" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="lafLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="lafForceCheckBox" alignment="0" pref="359" max="32767" attributes="0"/>
-                  <Component id="menuIconsCheckBox" max="32767" attributes="0"/>
+                  <Component id="customColorsCheckBox" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -45,6 +46,8 @@
               <Component id="lafComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="menuIconsCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="customColorsCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -81,6 +84,13 @@
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="se/trixon/jotaclient/ui/Bundle.properties" key="OptionsPanel.menuIconsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="customColorsCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="se/trixon/jotaclient/ui/Bundle.properties" key="OptionsPanel.customColorsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

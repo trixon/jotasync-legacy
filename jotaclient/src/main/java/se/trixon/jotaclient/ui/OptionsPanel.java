@@ -29,7 +29,7 @@ import se.trixon.util.swing.SwingHelper;
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class OptionsPanel extends javax.swing.JPanel {
-
+    
     private final Manager mManager = Manager.getInstance();
     private final ServerCommander mServerCommander;
     private final Options mOptions = Options.INSTANCE;
@@ -40,14 +40,14 @@ public class OptionsPanel extends javax.swing.JPanel {
     public OptionsPanel() {
         mServerCommander = mManager.getServerCommander();
         initComponents();
-
+        
         if (mServerCommander == null) {
             rsyncFileChooserPanel.setEnabled(false);
         }
-
+        
         load();
     }
-
+    
     void save() {
         if (mManager.isConnected()) {
             try {
@@ -56,12 +56,13 @@ public class OptionsPanel extends javax.swing.JPanel {
                 Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         mOptions.setForceLookAndFeel(lafForceCheckBox.isSelected());
         mOptions.setLookAndFeel((String) lafComboBox.getSelectedItem());
-        mOptions.setDisplayMennuIcons(menuIconsCheckBox.isSelected());
+        mOptions.setDisplayMenuIcons(menuIconsCheckBox.isSelected());
+        mOptions.setCustomColors(customColorsCheckBox.isSelected());
     }
-
+    
     private void load() {
         if (mManager.isConnected()) {
             try {
@@ -71,13 +72,14 @@ public class OptionsPanel extends javax.swing.JPanel {
                 Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         lafForceCheckBox.setSelected(mOptions.isForceLookAndFeel());
         lafComboBox.setModel(SwingHelper.getLookAndFeelComboBoxModel(true));
         lafComboBox.setSelectedItem(mOptions.getLookAndFeel());
-
+        
         lafForceCheckBoxActionPerformed(null);
         menuIconsCheckBox.setSelected(mOptions.isDisplayMenuIcons());
+        customColorsCheckBox.setSelected(mOptions.isCustomColors());
     }
 
     /**
@@ -94,6 +96,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         lafLabel = new javax.swing.JLabel();
         lafComboBox = new javax.swing.JComboBox();
         menuIconsCheckBox = new javax.swing.JCheckBox();
+        customColorsCheckBox = new javax.swing.JCheckBox();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/Bundle"); // NOI18N
         rsyncFileChooserPanel.setHeader(bundle.getString("OptionsPanel.rsyncFileChooserPanel.header")); // NOI18N
@@ -109,6 +112,8 @@ public class OptionsPanel extends javax.swing.JPanel {
 
         menuIconsCheckBox.setText(bundle.getString("OptionsPanel.menuIconsCheckBox.text")); // NOI18N
 
+        customColorsCheckBox.setText(bundle.getString("OptionsPanel.customColorsCheckBox.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -118,11 +123,12 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(rsyncFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lafComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lafForceCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(menuIconsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lafLabel)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(lafForceCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
-                    .addComponent(menuIconsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(customColorsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -138,6 +144,8 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(menuIconsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(customColorsCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -149,6 +157,7 @@ public class OptionsPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox customColorsCheckBox;
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JCheckBox lafForceCheckBox;
     private javax.swing.JLabel lafLabel;

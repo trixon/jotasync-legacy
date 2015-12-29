@@ -15,6 +15,7 @@
  */
 package se.trixon.jotaclient.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
@@ -22,8 +23,10 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.Manager;
+import se.trixon.jotaclient.Options;
 import se.trixon.jotaclient.ui.editor.JobsPanel;
 
 /**
@@ -108,6 +111,26 @@ public class SpeedDialButton extends JButton {
         setMinimumSize(new Dimension(210, 128));
         setPreferredSize(new Dimension(210, 128));
         setFont(getFont().deriveFont(getFont().getStyle() & ~java.awt.Font.BOLD));
+    }
+
+    void updateColor() {
+        if (mJob == null || !Options.INSTANCE.isCustomColors()) {
+            setBackground(null);
+            setForeground(null);
+        } else {
+            try {
+                Job job = mManager.getServerCommander().getJob(mJobId);
+                //if (StringUtils.isNotBlank(job.getColorBackground())) {
+                //    setBackground(Color.decode(job.getColorBackground()));
+                //}
+                if (StringUtils.isNotBlank(job.getColorForeground())) {
+                    setForeground(Color.decode(job.getColorForeground()));
+                }
+            } catch (RemoteException | NumberFormatException ex) {
+                setBackground(null);
+                setForeground(null);
+            }
+        }
     }
 
     void updateText() {

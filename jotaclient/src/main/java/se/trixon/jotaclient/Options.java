@@ -24,6 +24,8 @@ import java.util.prefs.Preferences;
 public enum Options {
 
     INSTANCE;
+    public static final boolean DEFAULT_CUSTOM_COLORS = false;
+    public static final String KEY_CUSTOM_COLORS = "customColors";
     public static final String KEY_FORCE_LOOK_AND_FEEL = "forceLookAndFeel";
     public static final String KEY_HOSTS = "hosts";
     public static final String KEY_LOOK_AND_FEEL = "lookAndFeel";
@@ -50,6 +52,10 @@ public enum Options {
         return mPreferences;
     }
 
+    public boolean isCustomColors() {
+        return mPreferences.getBoolean(KEY_CUSTOM_COLORS, DEFAULT_CUSTOM_COLORS);
+    }
+
     public boolean isDisplayMenuIcons() {
         return mPreferences.getBoolean(KEY_MENU_ICONS, DEFAULT_MENU_ICONS);
     }
@@ -58,7 +64,11 @@ public enum Options {
         return mPreferences.getBoolean(KEY_FORCE_LOOK_AND_FEEL, DEFAULT_FORCE_LOOK_AND_FEEL);
     }
 
-    public void setDisplayMennuIcons(boolean value) {
+    public void setCustomColors(boolean value) {
+        mPreferences.putBoolean(KEY_CUSTOM_COLORS, value);
+    }
+
+    public void setDisplayMenuIcons(boolean value) {
         mPreferences.putBoolean(KEY_MENU_ICONS, value);
     }
 

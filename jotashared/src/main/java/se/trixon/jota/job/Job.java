@@ -32,6 +32,8 @@ import se.trixon.jota.task.Task;
 public class Job implements Comparable<Job>, Serializable {
 
     public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
+    private String mColorBackground;
+    private String mColorForeground;
     private boolean mCronActive;
     private String mCronItems = "";
     private String mDescription = "";
@@ -81,6 +83,14 @@ public class Job implements Comparable<Job>, Serializable {
         }
 
         return caption;
+    }
+
+    public String getColorBackground() {
+        return mColorBackground;
+    }
+
+    public String getColorForeground() {
+        return mColorForeground;
     }
 
     public String getCronItems() {
@@ -194,6 +204,14 @@ public class Job implements Comparable<Job>, Serializable {
 
     public boolean isValid() {
         return !getName().isEmpty();
+    }
+
+    public void setColorBackground(String colorBackground) {
+        mColorBackground = colorBackground;
+    }
+
+    public void setColorForeground(String colorForeground) {
+        mColorForeground = colorForeground;
     }
 
     public void setCronActive(boolean cronActive) {

@@ -15,10 +15,14 @@
  */
 package se.trixon.jotaclient.ui.editor;
 
+import java.awt.Color;
 import java.io.File;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.job.Job;
+import se.trixon.util.GraphicsHelper;
 import se.trixon.util.swing.dialogs.FileChooserPanel;
 import se.trixon.util.dictionary.Dict;
+import se.trixon.util.swing.dialogs.SimpleDialog;
 
 /**
  *
@@ -51,6 +55,14 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
 
         job.setCronActive(cronPanel.isCronActive());
         job.setCronItems(cronPanel.getCronItems());
+
+        if (!previewButton.getBackground().equals(resetButton.getBackground())) {
+            job.setColorBackground(GraphicsHelper.colorToString(previewButton.getBackground()));
+        }
+
+        //if (!previewButton.getForeground().equals(resetButton.getForeground())) {
+        job.setColorForeground(GraphicsHelper.colorToString(previewButton.getForeground()));
+        //}
 
         return job;
     }
@@ -107,6 +119,14 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
 
         cronPanel.setCronActive(job.isCronActive());
         cronPanel.setCronItems(job.getCronItems());
+
+        if (StringUtils.isNotBlank(job.getColorBackground())) {
+            previewButton.setBackground(Color.decode(job.getColorBackground()));
+        }
+
+        if (StringUtils.isNotBlank(job.getColorForeground())) {
+            previewButton.setForeground(Color.decode(job.getColorForeground()));
+        }
     }
 
     private void init() {
@@ -132,14 +152,19 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         descriptionTextField = new javax.swing.JTextField();
         tabbedPane = new javax.swing.JTabbedPane();
         cronPanel = new se.trixon.jotaclient.ui.editor.CronEditorPanel();
-        detailsScrollPane = new javax.swing.JScrollPane();
-        detailsTextArea = new javax.swing.JTextArea();
         runBeforePanel = new javax.swing.JPanel();
         beforeFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         beforeHaltCheckBox = new javax.swing.JCheckBox();
         runAfterPanel = new javax.swing.JPanel();
         afterSuccessFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         afterFailureFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        jPanel1 = new javax.swing.JPanel();
+        previewButton = new javax.swing.JButton();
+        colorButton = new javax.swing.JButton();
+        backgroundButton = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
+        detailsScrollPane = new javax.swing.JScrollPane();
+        detailsTextArea = new javax.swing.JTextArea();
 
         nameLabel.setText(Dict.NAME.getString());
 
@@ -147,12 +172,6 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
 
         tabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.addTab(Dict.SCHEDULE.getString(), cronPanel);
-
-        detailsTextArea.setColumns(20);
-        detailsTextArea.setRows(5);
-        detailsScrollPane.setViewportView(detailsTextArea);
-
-        tabbedPane.addTab(Dict.DETAILS.getString(), detailsScrollPane);
 
         beforeFileChooserPanel.setCheckBoxMode(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/Bundle"); // NOI18N
@@ -167,7 +186,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
             .addGroup(runBeforePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(runBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(beforeFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+                    .addComponent(beforeFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
                     .addGroup(runBeforePanelLayout.createSequentialGroup()
                         .addComponent(beforeHaltCheckBox)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -180,7 +199,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
                 .addComponent(beforeFileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(beforeHaltCheckBox)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab(Dict.RUN_BEFORE.getString(), runBeforePanel);
@@ -198,7 +217,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
             .addGroup(runAfterPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(runAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(afterSuccessFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+                    .addComponent(afterSuccessFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
                     .addComponent(afterFailureFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -214,17 +233,76 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
 
         tabbedPane.addTab(Dict.RUN_AFTER.getString(), runAfterPanel);
 
+        previewButton.setText("Lorem Ipsum"); // NOI18N
+
+        colorButton.setText(Dict.FOREGROUND.toString());
+        colorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                colorButtonActionPerformed(evt);
+            }
+        });
+
+        backgroundButton.setText(Dict.BACKGROUND.toString());
+        backgroundButton.setEnabled(false);
+        backgroundButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backgroundButtonActionPerformed(evt);
+            }
+        });
+
+        resetButton.setText(Dict.RESET.toString());
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(previewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(colorButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(backgroundButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resetButton)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(previewButton)
+                    .addComponent(resetButton)
+                    .addComponent(backgroundButton)
+                    .addComponent(colorButton))
+                .addContainerGap(95, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab(Dict.APPEARANCE.toString(), jPanel1);
+
+        detailsTextArea.setColumns(20);
+        detailsTextArea.setRows(5);
+        detailsScrollPane.setViewportView(detailsTextArea);
+
+        tabbedPane.addTab(Dict.NOTE.toString(), detailsScrollPane);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tabbedPane)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(nameTextField)
+                    .addComponent(descriptionTextField)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nameLabel)
                             .addComponent(descriptionLabel))
@@ -243,22 +321,42 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabbedPane))
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        previewButton.setBackground(null);
+        previewButton.setForeground(null);
+    }//GEN-LAST:event_resetButtonActionPerformed
+
+    private void backgroundButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backgroundButtonActionPerformed
+        SimpleDialog.setParent(this);
+        previewButton.setBackground(SimpleDialog.selectColor(previewButton.getBackground()));
+    }//GEN-LAST:event_backgroundButtonActionPerformed
+
+    private void colorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorButtonActionPerformed
+        SimpleDialog.setParent(this);
+        previewButton.setForeground(SimpleDialog.selectColor(previewButton.getForeground()));
+    }//GEN-LAST:event_colorButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private se.trixon.util.swing.dialogs.FileChooserPanel afterFailureFileChooserPanel;
     private se.trixon.util.swing.dialogs.FileChooserPanel afterSuccessFileChooserPanel;
+    private javax.swing.JButton backgroundButton;
     private se.trixon.util.swing.dialogs.FileChooserPanel beforeFileChooserPanel;
     private javax.swing.JCheckBox beforeHaltCheckBox;
+    private javax.swing.JButton colorButton;
     private se.trixon.jotaclient.ui.editor.CronEditorPanel cronPanel;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTextField descriptionTextField;
     private javax.swing.JScrollPane detailsScrollPane;
     private javax.swing.JTextArea detailsTextArea;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
+    private javax.swing.JButton previewButton;
+    private javax.swing.JButton resetButton;
     private javax.swing.JPanel runAfterPanel;
     private javax.swing.JPanel runBeforePanel;
     private javax.swing.JTabbedPane tabbedPane;

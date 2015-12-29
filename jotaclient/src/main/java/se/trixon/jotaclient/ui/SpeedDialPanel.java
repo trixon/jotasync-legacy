@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
@@ -234,6 +235,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
                 SpeedDialButton button = mButtons.get(i);
                 try {
                     button.setJobId(mManager.getServerCommander().getSpeedDial(i));
+                    button.updateColor();
                 } catch (RemoteException ex) {
                     Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -309,6 +311,21 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
         addSpeedDialListener(this);
+        Options.INSTANCE.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
+            if (evt.getKey().equalsIgnoreCase(Options.KEY_CUSTOM_COLORS)) {
+                if (mManager.isConnected() && mManager.hasJobs()) {
+                    for (int i = 0; i < mButtons.size(); i++) {
+                        SpeedDialButton button = mButtons.get(i);
+                        try {
+                            button.setJobId(mManager.getServerCommander().getSpeedDial(i));
+                            button.updateColor();
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private boolean requestStartJob(Job job) {

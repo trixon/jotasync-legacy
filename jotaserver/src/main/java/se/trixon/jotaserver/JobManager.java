@@ -31,7 +31,8 @@ import se.trixon.jota.job.Job;
 public enum JobManager {
 
     INSTANCE;
-    private final LinkedList<Job> mJobs = new LinkedList<>();
+    private static final String KEY_COLOR_BACKGROUND = "colorBackground";
+    private static final String KEY_COLOR_FOREGROUND = "colorForeground";
     private static final String KEY_CRON_ACTIVE = "cronActive";
     private static final String KEY_CRON_ITEMS = "cronItems";
     private static final String KEY_DESCRIPTION = "description";
@@ -48,6 +49,7 @@ public enum JobManager {
     private static final String KEY_RUN_BEFORE_COMMAND = "runBeforeCommand";
     private static final String KEY_RUN_BEFORE_HALT_ON_ERROR = "runBeforeHaltOnError";
     private static final String KEY_TASKS = "tasks";
+    private final LinkedList<Job> mJobs = new LinkedList<>();
 
     private JobManager() {
     }
@@ -96,6 +98,9 @@ public enum JobManager {
             object.put(KEY_RUN_BEFORE, job.isRunBefore());
             object.put(KEY_RUN_BEFORE_COMMAND, job.getRunBeforeCommand());
             object.put(KEY_RUN_BEFORE_HALT_ON_ERROR, job.isRunBeforeHaltOnError());
+
+            object.put(KEY_COLOR_BACKGROUND, job.getColorBackground());
+            object.put(KEY_COLOR_FOREGROUND, job.getColorForeground());
 
             array.add(object);
         }
@@ -154,6 +159,9 @@ public enum JobManager {
             job.setRunBefore((boolean) object.get(KEY_RUN_BEFORE));
             job.setRunBeforeCommand((String) object.get(KEY_RUN_BEFORE_COMMAND));
             job.setRunBeforeHaltOnError((boolean) object.get(KEY_RUN_BEFORE_HALT_ON_ERROR));
+
+            job.setColorBackground(JsonHelper.optString(object, KEY_COLOR_BACKGROUND));
+            job.setColorForeground(JsonHelper.optString(object, KEY_COLOR_FOREGROUND));
 
             mJobs.add(job);
         }
