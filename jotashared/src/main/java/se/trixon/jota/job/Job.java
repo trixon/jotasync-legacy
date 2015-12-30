@@ -41,6 +41,10 @@ public class Job implements Comparable<Job>, Serializable {
     private long mId = System.currentTimeMillis();
     private long mLastRun = -1;
     private int mLastRunExitCode = -1;
+    private boolean mLogErrors = true;
+    private int mLogMode = 0;
+    private boolean mLogOutput = true;
+    private boolean mLogSeparateErrors = true;
     private String mName = "";
     private boolean mRunAfterFailure;
     private String mRunAfterFailureCommand = "";
@@ -113,15 +117,19 @@ public class Job implements Comparable<Job>, Serializable {
         return mLastRun;
     }
 
-    public String getLastRunDateTime(String replacement) {
+    public String getLastRunDateTime(String replacement, long lastRun) {
         String lastRunDateTime = replacement;
 
-        if (mLastRun > 0) {
-            Date date = new Date(mLastRun);
+        if (lastRun > 0) {
+            Date date = new Date(lastRun);
             lastRunDateTime = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(date);
         }
 
         return lastRunDateTime;
+    }
+
+    public String getLastRunDateTime(String replacement) {
+        return getLastRunDateTime(replacement, mLastRun);
     }
 
     public int getLastRunExitCode() {
@@ -138,6 +146,10 @@ public class Job implements Comparable<Job>, Serializable {
         }
 
         return status;
+    }
+
+    public int getLogMode() {
+        return mLogMode;
     }
 
     public String getName() {
@@ -172,6 +184,18 @@ public class Job implements Comparable<Job>, Serializable {
 
     public boolean isCronActive() {
         return mCronActive;
+    }
+
+    public boolean isLogErrors() {
+        return mLogErrors;
+    }
+
+    public boolean isLogOutput() {
+        return mLogOutput;
+    }
+
+    public boolean isLogSeparateErrors() {
+        return mLogSeparateErrors;
     }
 
     public boolean isRunAfterFailure() {
@@ -240,6 +264,22 @@ public class Job implements Comparable<Job>, Serializable {
 
     public void setLastRunExitCode(int lastRunExitCode) {
         mLastRunExitCode = lastRunExitCode;
+    }
+
+    public void setLogErrors(boolean logErrors) {
+        mLogErrors = logErrors;
+    }
+
+    public void setLogMode(int logMode) {
+        mLogMode = logMode;
+    }
+
+    public void setLogOutput(boolean logOutput) {
+        mLogOutput = logOutput;
+    }
+
+    public void setLogSeparateErrors(boolean logSeparateErrors) {
+        mLogSeparateErrors = logSeparateErrors;
     }
 
     public void setName(String name) {

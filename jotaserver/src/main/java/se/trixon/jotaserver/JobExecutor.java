@@ -16,12 +16,14 @@
 package se.trixon.jotaserver;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import se.trixon.jota.ClientCallbacks;
 import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.job.Job;
@@ -33,14 +35,19 @@ import se.trixon.util.Xlog;
  */
 public class JobExecutor extends Thread {
 
+    private final StringBuffer errBuffer;
+    private Process mCurrentProcess;
     private final Job mJob;
     private long mLastRun;
     private final Server mServer;
-    private Process mCurrentProcess;
+    private final StringBuffer outBuffer;
 
     JobExecutor(Server server, Job job) {
         mJob = job;
         mServer = server;
+
+        errBuffer = new StringBuffer();
+        outBuffer = new StringBuffer();
     }
 
     @Override
@@ -88,16 +95,8 @@ public class JobExecutor extends Thread {
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
 
-    private void updateJobStatus(int exitCode) {
-        JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
-        JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRunExitCode(exitCode);
-        try {
-            JotaManager.INSTANCE.save();
-        } catch (IOException ex) {
-            Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        writelogs();
     }
 
     private boolean runPre() throws IOException, InterruptedException {
@@ -119,6 +118,47 @@ public class JobExecutor extends Thread {
         return result;
     }
 
+    private void updateJobStatus(int exitCode) {
+        JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
+        JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRunExitCode(exitCode);
+        try {
+            JotaManager.INSTANCE.save();
+        } catch (IOException ex) {
+            Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void writelogs() {
+        File directory = JotaManager.INSTANCE.getLogDirectory();
+        String outFile = String.format("%s.log", mJob.getName());
+        String errFile = String.format("%s.err", mJob.getName());
+
+        int logMode = mJob.getLogMode();
+        if (logMode == 2) {
+            outFile = String.format("%s %s.log", mJob.getName(), mJob.getLastRunDateTime("", mLastRun));
+            errFile = String.format("%s %s.err", mJob.getName(), mJob.getLastRunDateTime("", mLastRun));
+        }
+
+        boolean append = logMode == 0;
+
+        try {
+            File file = new File(directory, outFile);
+            
+            if (mJob.isLogOutput() || mJob.isLogErrors() && !mJob.isLogSeparateErrors()) {
+                FileUtils.writeStringToFile(file, outBuffer.toString(), append);
+                Xlog.timedOut("Write log: " + file.getAbsolutePath());
+            }
+            
+            if (mJob.isLogErrors() && mJob.isLogSeparateErrors()) {
+                file = new File(directory, errFile);
+                FileUtils.writeStringToFile(file, errBuffer.toString(), append);
+                Xlog.timedOut("Write log: " + file.getAbsolutePath());
+            }
+        } catch (IOException ex) {
+            Xlog.timedErr(ex.getLocalizedMessage());
+        }
+    }
+
     class ProcessLogThread extends Thread {
 
         private final InputStream mInputStream;
@@ -134,7 +174,22 @@ public class JobExecutor extends Thread {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream), 1);
                 String line;
+                
                 while ((line = reader.readLine()) != null) {
+                    if (mJob.isLogSeparateErrors()) {
+                        if (mJob.isLogOutput() && mProcessEvent == ProcessEvent.OUT) {
+                            outBuffer.append(line + System.lineSeparator());//Append will screw up sync
+                        } else if (mJob.isLogErrors() && mProcessEvent == ProcessEvent.ERR) {
+                            errBuffer.append(line + System.lineSeparator());//Append will screw up sync
+                        }
+                    } else if (!mJob.isLogSeparateErrors()) {
+                        if (mJob.isLogOutput() && mProcessEvent == ProcessEvent.OUT) {
+                            outBuffer.append(line + System.lineSeparator());//Append will screw up sync
+                        } else if (mJob.isLogErrors() && mProcessEvent == ProcessEvent.ERR) {
+                            outBuffer.append(line + System.lineSeparator());//Append will screw up sync
+                        }
+                    }
+
                     for (ClientCallbacks clientCallback : mServer.getClientCallbacks()) {
                         clientCallback.onProcessEvent(mProcessEvent, mJob, null, line);
                     }

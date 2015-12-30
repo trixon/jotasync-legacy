@@ -40,6 +40,10 @@ public enum JobManager {
     private static final String KEY_ID = "id";
     private static final String KEY_LAST_RUN = "lastRun";
     private static final String KEY_LAST_RUN_EXIT_CODE = "lastRunExitCode";
+    private static final String KEY_LOG_ERRORS = "logErrors";
+    private static final String KEY_LOG_MODE = "logMode";
+    private static final String KEY_LOG_OUTPUT = "logOutput";
+    private static final String KEY_LOG_SEPARATE_ERRORS = "logSeparateErrors";
     private static final String KEY_NAME = "name";
     private static final String KEY_RUN_AFTER_FAILURE = "runAfterFailure";
     private static final String KEY_RUN_AFTER_FAILURE_COMMAND = "runAfterFailureCommand";
@@ -102,6 +106,11 @@ public enum JobManager {
             object.put(KEY_COLOR_BACKGROUND, job.getColorBackground());
             object.put(KEY_COLOR_FOREGROUND, job.getColorForeground());
 
+            object.put(KEY_LOG_OUTPUT, job.isLogOutput());
+            object.put(KEY_LOG_ERRORS, job.isLogErrors());
+            object.put(KEY_LOG_SEPARATE_ERRORS, job.isLogSeparateErrors());
+            object.put(KEY_LOG_MODE, job.getLogMode());
+
             array.add(object);
         }
 
@@ -162,6 +171,11 @@ public enum JobManager {
 
             job.setColorBackground(JsonHelper.optString(object, KEY_COLOR_BACKGROUND));
             job.setColorForeground(JsonHelper.optString(object, KEY_COLOR_FOREGROUND));
+
+            job.setLogOutput((boolean) object.get(KEY_LOG_OUTPUT));
+            job.setLogErrors((boolean) object.get(KEY_LOG_ERRORS));
+            job.setLogSeparateErrors((boolean) object.get(KEY_LOG_SEPARATE_ERRORS));
+            job.setLogMode(JsonHelper.getInt(object, KEY_LOG_MODE));
 
             mJobs.add(job);
         }

@@ -63,6 +63,19 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         //if (!previewButton.getForeground().equals(resetButton.getForeground())) {
         job.setColorForeground(GraphicsHelper.colorToString(previewButton.getForeground()));
         //}
+        int logMode = 0;
+        if (logAppendRadioButton.isSelected()) {
+            logMode = 0;
+        } else if (logReplaceRadioButton.isSelected()) {
+            logMode = 1;
+        } else if (logUniqueRadioButton.isSelected()) {
+            logMode = 2;
+        }
+
+        job.setLogOutput(logOutputCheckBox.isSelected());
+        job.setLogErrors(logErrorsCheckBox.isSelected());
+        job.setLogSeparateErrors(logSeparateCheckBox.isSelected());
+        job.setLogMode(logMode);
 
         return job;
     }
@@ -127,6 +140,20 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         if (StringUtils.isNotBlank(job.getColorForeground())) {
             previewButton.setForeground(Color.decode(job.getColorForeground()));
         }
+
+        int logMode = job.getLogMode();
+
+        if (logMode == 0) {
+            logAppendRadioButton.setSelected(true);
+        } else if (logMode == 1) {
+            logReplaceRadioButton.setSelected(true);
+        } else if (logMode == 2) {
+            logUniqueRadioButton.setSelected(true);
+        }
+
+        logOutputCheckBox.setSelected(mJob.isLogOutput());
+        logErrorsCheckBox.setSelected(mJob.isLogErrors());
+        logSeparateCheckBox.setSelected(mJob.isLogSeparateErrors());
     }
 
     private void init() {
@@ -146,6 +173,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        logButtonGroup = new javax.swing.ButtonGroup();
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         descriptionLabel = new javax.swing.JLabel();
@@ -158,7 +186,14 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         runAfterPanel = new javax.swing.JPanel();
         afterSuccessFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         afterFailureFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        jPanel1 = new javax.swing.JPanel();
+        logPanel = new javax.swing.JPanel();
+        logOutputCheckBox = new javax.swing.JCheckBox();
+        logErrorsCheckBox = new javax.swing.JCheckBox();
+        logSeparateCheckBox = new javax.swing.JCheckBox();
+        logAppendRadioButton = new javax.swing.JRadioButton();
+        logReplaceRadioButton = new javax.swing.JRadioButton();
+        logUniqueRadioButton = new javax.swing.JRadioButton();
+        appearancePanel = new javax.swing.JPanel();
         previewButton = new javax.swing.JButton();
         colorButton = new javax.swing.JButton();
         backgroundButton = new javax.swing.JButton();
@@ -186,7 +221,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
             .addGroup(runBeforePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(runBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(beforeFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+                    .addComponent(beforeFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(runBeforePanelLayout.createSequentialGroup()
                         .addComponent(beforeHaltCheckBox)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -199,7 +234,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
                 .addComponent(beforeFileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(beforeHaltCheckBox)
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab(Dict.RUN_BEFORE.getString(), runBeforePanel);
@@ -217,7 +252,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
             .addGroup(runAfterPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(runAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(afterSuccessFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+                    .addComponent(afterSuccessFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(afterFailureFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -232,6 +267,58 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         );
 
         tabbedPane.addTab(Dict.RUN_AFTER.getString(), runAfterPanel);
+
+        logOutputCheckBox.setText(Dict.LOG_OUTPUT.toString());
+
+        logErrorsCheckBox.setText(Dict.LOG_ERRORS.toString());
+
+        logSeparateCheckBox.setText(Dict.LOG_SEPARATE_ERRORS.toString());
+
+        logButtonGroup.add(logAppendRadioButton);
+        logAppendRadioButton.setText(Dict.APPEND.toString());
+
+        logButtonGroup.add(logReplaceRadioButton);
+        logReplaceRadioButton.setText(Dict.REPLACE.toString());
+
+        logButtonGroup.add(logUniqueRadioButton);
+        logUniqueRadioButton.setText(Dict.UNIQUE.toString());
+
+        javax.swing.GroupLayout logPanelLayout = new javax.swing.GroupLayout(logPanel);
+        logPanel.setLayout(logPanelLayout);
+        logPanelLayout.setHorizontalGroup(
+            logPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(logPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(logPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logSeparateCheckBox)
+                    .addComponent(logErrorsCheckBox)
+                    .addComponent(logOutputCheckBox))
+                .addGap(18, 18, 18)
+                .addGroup(logPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logAppendRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                    .addComponent(logReplaceRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(logUniqueRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        logPanelLayout.setVerticalGroup(
+            logPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, logPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(logPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(logOutputCheckBox)
+                    .addComponent(logAppendRadioButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(logPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logErrorsCheckBox)
+                    .addComponent(logReplaceRadioButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(logPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(logSeparateCheckBox)
+                    .addComponent(logUniqueRadioButton))
+                .addContainerGap(40, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab(Dict.LOG.toString(), logPanel);
 
         previewButton.setText("Lorem Ipsum"); // NOI18N
 
@@ -257,11 +344,11 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout appearancePanelLayout = new javax.swing.GroupLayout(appearancePanel);
+        appearancePanel.setLayout(appearancePanelLayout);
+        appearancePanelLayout.setHorizontalGroup(
+            appearancePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(appearancePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(previewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -272,19 +359,19 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
                 .addComponent(resetButton)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        appearancePanelLayout.setVerticalGroup(
+            appearancePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(appearancePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(appearancePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(previewButton)
                     .addComponent(resetButton)
                     .addComponent(backgroundButton)
                     .addComponent(colorButton))
-                .addContainerGap(95, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tabbedPane.addTab(Dict.APPEARANCE.toString(), jPanel1);
+        tabbedPane.addTab(Dict.APPEARANCE.toString(), appearancePanel);
 
         detailsTextArea.setColumns(20);
         detailsTextArea.setRows(5);
@@ -306,8 +393,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nameLabel)
                             .addComponent(descriptionLabel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -343,6 +429,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private se.trixon.util.swing.dialogs.FileChooserPanel afterFailureFileChooserPanel;
     private se.trixon.util.swing.dialogs.FileChooserPanel afterSuccessFileChooserPanel;
+    private javax.swing.JPanel appearancePanel;
     private javax.swing.JButton backgroundButton;
     private se.trixon.util.swing.dialogs.FileChooserPanel beforeFileChooserPanel;
     private javax.swing.JCheckBox beforeHaltCheckBox;
@@ -352,7 +439,14 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     private javax.swing.JTextField descriptionTextField;
     private javax.swing.JScrollPane detailsScrollPane;
     private javax.swing.JTextArea detailsTextArea;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton logAppendRadioButton;
+    private javax.swing.ButtonGroup logButtonGroup;
+    private javax.swing.JCheckBox logErrorsCheckBox;
+    private javax.swing.JCheckBox logOutputCheckBox;
+    private javax.swing.JPanel logPanel;
+    private javax.swing.JRadioButton logReplaceRadioButton;
+    private javax.swing.JCheckBox logSeparateCheckBox;
+    private javax.swing.JRadioButton logUniqueRadioButton;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JButton previewButton;
