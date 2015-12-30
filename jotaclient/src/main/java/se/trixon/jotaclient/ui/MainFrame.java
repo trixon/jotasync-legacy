@@ -62,6 +62,7 @@ import se.trixon.jotaclient.Options;
 import se.trixon.jotaclient.Options.ClientOptionsEvent;
 import se.trixon.jotaclient.ui.editor.EditorPanel;
 import se.trixon.util.BundleHelper;
+import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
@@ -510,9 +511,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         private void initActions() {
             AbstractAction action;
             KeyStroke keyStroke;
+            int commandMask = SystemHelper.getCommandMask();
 
             //connect
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask);
             action = new AbstractAction(Dict.CONNECT_TO_SERVER.getString()) {
 
                 @Override
@@ -529,7 +531,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             connectMenuItem.setAction(action);
 
             //disconnect
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask);
             action = new AbstractAction(Dict.DISCONNECT.getString()) {
 
                 @Override
@@ -542,7 +544,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             disconnectMenuItem.setAction(action);
 
             //cron
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, commandMask);
             action = new AbstractAction(mBundle.getString("schedule")) {
 
                 @Override
@@ -568,7 +570,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             cronCheckBoxMenuItem.setAction(action);
 
             //jobEditor
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_J, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_J, commandMask);
             action = new AbstractAction(mBundle.getString("jobEditor")) {
 
                 @Override
@@ -581,7 +583,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             jobEditorMenuItem.setAction(action);
 
             //options
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_P, commandMask);
             action = new AbstractAction(Dict.OPTIONS.getString()) {
 
                 @Override
@@ -606,7 +608,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             initAction(action, ABOUT, keyStroke, null, false);
 
             //shutdownServer
-            keyStroke = null;//KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
+            keyStroke = null;//KeyStroke.getKeyStroke(KeyEvent.VK_W, commandMask);
             action = new AbstractAction(Dict.SHUTDOWN_SERVER.getString()) {
 
                 @Override
@@ -619,7 +621,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             shutdownServerMenuItem.setAction(action);
 
             //quit
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask);
             action = new AbstractAction(Dict.QUIT.getString()) {
 
                 @Override
@@ -632,7 +634,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             quitMenuItem.setAction(action);
 
             //save tab
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, commandMask);
             action = new AbstractAction(Dict.SAVE.getString()) {
 
                 @Override
@@ -645,7 +647,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             saveMenuItem.setAction(action);
 
             //close tab
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK);
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, commandMask);
             action = new AbstractAction(Dict.TAB_CLOSE.getString()) {
 
                 @Override

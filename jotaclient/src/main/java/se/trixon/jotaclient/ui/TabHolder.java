@@ -39,6 +39,7 @@ import se.trixon.jota.task.Task;
 import se.trixon.jotaclient.ConnectionListener;
 import se.trixon.jotaclient.Manager;
 import se.trixon.jotaclient.ui.MainFrame.ActionManager;
+import se.trixon.util.SystemHelper;
 import se.trixon.util.icon.Pict;
 
 /**
@@ -160,12 +161,13 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         mActionManager = ((MainFrame) SwingUtilities.getRoot(this)).getActionManager();
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = getRootPane().getActionMap();
+        int commandMask = SystemHelper.getCommandMask();
 
         mCloseAction = mActionManager.getAction(ActionManager.CLOSE_TAB);
         mSaveAction = mActionManager.getAction(ActionManager.SAVE_TAB);
 
         for (int i = 0; i < 10; i++) {
-            KeyStroke keyStroke = KeyStroke.getKeyStroke(0x31 + i, InputEvent.CTRL_MASK);
+            KeyStroke keyStroke = KeyStroke.getKeyStroke(0x31 + i, commandMask);
             String key = "key_" + i;
             final int tabIndex = i;
             AbstractAction action = new AbstractAction("Tab") {
@@ -187,7 +189,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             }
         };
 
-        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_MASK);
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, commandMask);
         String key = "nextTab";
         inputMap.put(keyStroke, key);
         actionMap.put(key, action);
@@ -201,7 +203,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
         };
 
-        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, commandMask + InputEvent.SHIFT_MASK);
         key = "prevTab";
         inputMap.put(keyStroke, key);
         actionMap.put(key, action);
@@ -216,7 +218,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
         key = "DisplayMenu";
         actionMap.put(key, action);
-        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, commandMask);
         inputMap.put(keyStroke, key);
         keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
         inputMap.put(keyStroke, key);
