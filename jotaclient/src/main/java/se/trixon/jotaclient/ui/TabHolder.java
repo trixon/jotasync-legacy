@@ -107,6 +107,9 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
                 updateActionStates();
                 break;
             case FINISHED:
+                if (object != null) {
+                    tabItem.log(ProcessEvent.OUT, (String) object);
+                }
                 tabItem.enableSave();
                 updateTitle(job, "normal");
                 updateActionStates();

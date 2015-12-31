@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FileUtils;
 import se.trixon.jota.ProcessEvent;
@@ -75,12 +76,14 @@ public class TabItem extends JPanel implements TabListener {
     }
 
     synchronized public void log(ProcessEvent processEvent, String string) {
-        StringBuilder builder = new StringBuilder(string).append("\n");
-        if (processEvent == ProcessEvent.ERR) {
-            builder.insert(0, "E: ");
-        }
+        SwingUtilities.invokeLater(() -> {
+            StringBuilder builder = new StringBuilder(string).append("\n");
+            if (processEvent == ProcessEvent.ERR) {
+                builder.insert(0, "E: ");
+            }
 
-        logPanel.getTextArea().append(builder.toString());
+            logPanel.getTextArea().append(builder.toString());
+        });
     }
 //
 //    @Override
