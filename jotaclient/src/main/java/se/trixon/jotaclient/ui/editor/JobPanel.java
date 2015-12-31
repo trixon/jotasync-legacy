@@ -77,6 +77,9 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         job.setLogSeparateErrors(logSeparateCheckBox.isSelected());
         job.setLogMode(logMode);
 
+        job.setLastRun(mJob.getLastRun());
+        job.setLastRunExitCode(mJob.getLastRunExitCode());
+
         return job;
     }
 
