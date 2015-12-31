@@ -15,12 +15,14 @@
  */
 package se.trixon.jota;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import se.trixon.util.BundleHelper;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class Jota {
 
@@ -40,10 +42,13 @@ public class Jota {
     public static ResourceBundle getBundle() {
         return sBundle;
     }
-public static void hello(){
-    System.out.println("hello");
-}
+
     public static String getVersionInfo(String name) {
         return String.format(sBundle.getString("version_info"), name, sBundle.getString("version"), name);
+    }
+
+    public static String millisToDateTime(long timestamp) {
+        Date date = new Date(timestamp);
+        return new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(date);
     }
 }

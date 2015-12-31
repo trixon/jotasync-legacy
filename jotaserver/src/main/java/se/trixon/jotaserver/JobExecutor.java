@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import se.trixon.jota.ClientCallbacks;
+import se.trixon.jota.Jota;
 import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.job.Job;
 import se.trixon.util.Xlog;
@@ -35,19 +36,19 @@ import se.trixon.util.Xlog;
  */
 public class JobExecutor extends Thread {
 
-    private final StringBuffer errBuffer;
     private Process mCurrentProcess;
+    private final StringBuffer mErrBuffer;
     private final Job mJob;
     private long mLastRun;
+    private final StringBuffer mOutBuffer;
     private final Server mServer;
-    private final StringBuffer outBuffer;
 
     JobExecutor(Server server, Job job) {
         mJob = job;
         mServer = server;
 
-        errBuffer = new StringBuffer();
-        outBuffer = new StringBuffer();
+        mErrBuffer = new StringBuffer();
+        mOutBuffer = new StringBuffer();
     }
 
     @Override
@@ -143,15 +144,15 @@ public class JobExecutor extends Thread {
 
         try {
             File file = new File(directory, outFile);
-            
+
             if (mJob.isLogOutput() || mJob.isLogErrors() && !mJob.isLogSeparateErrors()) {
-                FileUtils.writeStringToFile(file, outBuffer.toString(), append);
+                FileUtils.writeStringToFile(file, mOutBuffer.toString(), append);
                 Xlog.timedOut("Write log: " + file.getAbsolutePath());
             }
-            
+
             if (mJob.isLogErrors() && mJob.isLogSeparateErrors()) {
                 file = new File(directory, errFile);
-                FileUtils.writeStringToFile(file, errBuffer.toString(), append);
+                FileUtils.writeStringToFile(file, mErrBuffer.toString(), append);
                 Xlog.timedOut("Write log: " + file.getAbsolutePath());
             }
         } catch (IOException ex) {
@@ -163,10 +164,14 @@ public class JobExecutor extends Thread {
 
         private final InputStream mInputStream;
         private final ProcessEvent mProcessEvent;
+        private String mDateTimePrefix = "";
 
         public ProcessLogThread(InputStream inputStream, ProcessEvent processEvent) {
             mInputStream = inputStream;
             mProcessEvent = processEvent;
+            if (mJob.getLogMode() == 0) {
+                mDateTimePrefix = Jota.millisToDateTime(mLastRun) + " ";
+            }
         }
 
         @Override
@@ -174,19 +179,19 @@ public class JobExecutor extends Thread {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream), 1);
                 String line;
-                
+
                 while ((line = reader.readLine()) != null) {
                     if (mJob.isLogSeparateErrors()) {
                         if (mJob.isLogOutput() && mProcessEvent == ProcessEvent.OUT) {
-                            outBuffer.append(line + System.lineSeparator());//Append will screw up sync
+                            mOutBuffer.append(mDateTimePrefix + line + System.lineSeparator());//Append will screw up sync
                         } else if (mJob.isLogErrors() && mProcessEvent == ProcessEvent.ERR) {
-                            errBuffer.append(line + System.lineSeparator());//Append will screw up sync
+                            mErrBuffer.append(mDateTimePrefix + line + System.lineSeparator());//Append will screw up sync
                         }
                     } else if (!mJob.isLogSeparateErrors()) {
                         if (mJob.isLogOutput() && mProcessEvent == ProcessEvent.OUT) {
-                            outBuffer.append(line + System.lineSeparator());//Append will screw up sync
+                            mOutBuffer.append(mDateTimePrefix + line + System.lineSeparator());//Append will screw up sync
                         } else if (mJob.isLogErrors() && mProcessEvent == ProcessEvent.ERR) {
-                            outBuffer.append(line + System.lineSeparator());//Append will screw up sync
+                            mOutBuffer.append(mDateTimePrefix + line + System.lineSeparator());//Append will screw up sync
                         }
                     }
 
