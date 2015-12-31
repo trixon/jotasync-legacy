@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -90,14 +92,11 @@ public class JobExecutor extends Thread {
         boolean result = true;
 
         if (mJob.isRunBefore() && StringUtils.isNoneEmpty(mJob.getRunBeforeCommand())) {
-            send(ProcessEvent.OUT, "run before...");
-            ProcessBuilder processBuilder = new ProcessBuilder(mJob.getRunBeforeCommand());
-            mCurrentProcess = processBuilder.start();
+            send(ProcessEvent.OUT, "run before job...");
+            ArrayList<String> command = new ArrayList<>();
+            command.add(mJob.getRunBeforeCommand());
+            runProcess(command);
 
-            new ProcessLogThread(mCurrentProcess.getInputStream(), ProcessEvent.OUT).start();
-            new ProcessLogThread(mCurrentProcess.getErrorStream(), ProcessEvent.ERR).start();
-
-            mCurrentProcess.waitFor();
             if (mJob.isRunBeforeHaltOnError()) {
                 result = mCurrentProcess.exitValue() == 0;
             }
@@ -105,9 +104,9 @@ public class JobExecutor extends Thread {
             Thread.sleep(100);
 
             if (mCurrentProcess.exitValue() == 0) {
-                send(ProcessEvent.OUT, "before OK");
+                send(ProcessEvent.OUT, "before job OK");
             } else {
-                send(ProcessEvent.OUT, "before failed");
+                send(ProcessEvent.OUT, "before job failed");
             }
 
             send(ProcessEvent.OUT, "");
@@ -116,23 +115,71 @@ public class JobExecutor extends Thread {
         return result;
     }
 
-    private boolean runTask(Task task) {
+    private boolean runBeforeTask(Task task) throws IOException, InterruptedException {
         boolean result = true;
-        send(ProcessEvent.OUT, "Run task: " + task.getName());
+        send(ProcessEvent.OUT, "runBeforeTask");
+        send(ProcessEvent.OUT, ""+task.isRunBefore());
+        send(ProcessEvent.OUT, task.getRunBeforeCommand());
+        send(ProcessEvent.OUT, "");
+        send(ProcessEvent.OUT, "");
+        if (task.isRunBefore() && StringUtils.isNoneEmpty(task.getRunBeforeCommand())) {
+            send(ProcessEvent.OUT, "run before task...");
+            ArrayList<String> command = new ArrayList<>();
+            command.add(task.getRunBeforeCommand());
+            runProcess(command);
+
+            if (task.isRunBeforeHaltOnError()) {
+                result = mCurrentProcess.exitValue() == 0;
+            }
+
+            Thread.sleep(100);
+
+            if (mCurrentProcess.exitValue() == 0) {
+                send(ProcessEvent.OUT, "before task OK");
+            } else {
+                send(ProcessEvent.OUT, "before task failed");
+            }
+
+            send(ProcessEvent.OUT, "");
+        }
+
+        return result;
+    }
+
+    private void runProcess(List<String> command) throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        mCurrentProcess = processBuilder.start();
+
+        new ProcessLogThread(mCurrentProcess.getInputStream(), ProcessEvent.OUT).start();
+        new ProcessLogThread(mCurrentProcess.getErrorStream(), ProcessEvent.ERR).start();
+
+        mCurrentProcess.waitFor();
+    }
+
+    private int runRsync() {
+        int result = 0;
 
         try {
-            //ProcessBuilder processBuilder = new ProcessBuilder("rsync", "--version");
-            ProcessBuilder processBuilder = new ProcessBuilder("echo", "rsync");
-            mCurrentProcess = processBuilder.start();
+            ArrayList<String> command = new ArrayList<>();
+            command.add("echo");
+            command.add("rsync");
+            runProcess(command);
 
-            new ProcessLogThread(mCurrentProcess.getInputStream(), ProcessEvent.OUT).start();
-            new ProcessLogThread(mCurrentProcess.getErrorStream(), ProcessEvent.ERR).start();
-
-            mCurrentProcess.waitFor();
             Thread.sleep(500);
             send(ProcessEvent.OUT, "");
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
+    }
+
+    private boolean runTask(Task task) throws IOException, InterruptedException {
+        boolean result = true;
+
+        send(ProcessEvent.OUT, "Run task: " + task.getName());
+        if (runBeforeTask(task)) {
+            runRsync();
         }
 
         return result;
@@ -144,10 +191,13 @@ public class JobExecutor extends Thread {
         send(ProcessEvent.OUT, "begin to run all tasks");
 
         for (Task task : mJob.getTasks()) {
-            runTask(task);
+
             try {
+                if (!runTask(task)) {
+                    break;
+                }
                 Thread.sleep(500);
-            } catch (InterruptedException ex) {
+            } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

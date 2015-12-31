@@ -15,16 +15,14 @@
  */
 package se.trixon.jota.task;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class Task implements Comparable<Task>, Serializable {
 
@@ -66,11 +64,11 @@ public class Task implements Comparable<Task>, Serializable {
     private boolean mPostExecute;
     private String mPostExecuteCommand = "";
     private boolean mPostExecuteOnError;
-    private boolean mPreExecute;
-    private String mPreExecuteCommand = "";
-    private boolean mPreOnError;
     private boolean mProgress = true;
     private boolean mProtectArgs;
+    private boolean mRunBefore;
+    private String mRunBeforeCommand = "";
+    private boolean mRunBeforeHaltOnError;
     private boolean mSizeOnly;
     private String mSource = System.getProperty("user.home");
     private boolean mTimes;
@@ -250,8 +248,8 @@ public class Task implements Comparable<Task>, Serializable {
         return mPostExecuteCommand;
     }
 
-    public String getPreExecuteCommand() {
-        return mPreExecuteCommand;
+    public String getRunBeforeCommand() {
+        return mRunBeforeCommand;
     }
 
     public String getSource() {
@@ -378,20 +376,20 @@ public class Task implements Comparable<Task>, Serializable {
         return mPostExecuteOnError;
     }
 
-    public boolean isPreExecute() {
-        return mPreExecute;
-    }
-
-    public boolean isPreOnError() {
-        return mPreOnError;
-    }
-
     public boolean isProgress() {
         return mProgress;
     }
 
     public boolean isProtectArgs() {
         return mProtectArgs;
+    }
+
+    public boolean isRunBefore() {
+        return mRunBefore;
+    }
+
+    public boolean isRunBeforeHaltOnError() {
+        return mRunBeforeHaltOnError;
     }
 
     public boolean isSizeOnly() {
@@ -562,24 +560,24 @@ public class Task implements Comparable<Task>, Serializable {
         mPostExecuteOnError = postOnError;
     }
 
-    public void setPreExecute(boolean preExecute) {
-        mPreExecute = preExecute;
-    }
-
-    public void setPreExecuteCommand(String preCommand) {
-        mPreExecuteCommand = preCommand;
-    }
-
-    public void setPreOnError(boolean preOnError) {
-        mPreOnError = preOnError;
-    }
-
     public void setProgress(boolean progress) {
         mProgress = progress;
     }
 
     public void setProtectArgs(boolean protectArgs) {
         mProtectArgs = protectArgs;
+    }
+
+    public void setRunBefore(boolean value) {
+        mRunBefore = value;
+    }
+
+    public void setRunBeforeCommand(String value) {
+        mRunBeforeCommand = value;
+    }
+
+    public void setRunBeforeHaltOnError(boolean value) {
+        mRunBeforeHaltOnError = value;
     }
 
     public void setSizeOnly(boolean sizeOnly) {

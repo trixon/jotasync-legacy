@@ -17,13 +17,12 @@ package se.trixon.jotaclient.ui.editor.task_modules;
 
 import se.trixon.jota.task.Task;
 import se.trixon.util.dictionary.Dict;
-
 import java.io.File;
 import se.trixon.util.swing.dialogs.FileChooserPanel;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.FileChooserButtonListener {
 
@@ -38,16 +37,16 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     @Override
     public void loadTask(Task task) {
         postExecutePanel.setPath(task.getPostExecuteCommand());
-        preExecutePanel.setPath(task.getPreExecuteCommand());
+        runBeforePanel.setPath(task.getRunBeforeCommand());
 
         postExecuteOnErrorCheckBox.setSelected(task.isPostOnError());
         postExecutePanel.setSelected(task.isPostExecute());
-        preExecuteOnErrorCheckBox.setSelected(task.isPreOnError());
-        preExecutePanel.setSelected(task.isPreExecute());
+        runBeforeHaltOnErrorCheckBox.setSelected(task.isRunBeforeHaltOnError());
+        runBeforePanel.setSelected(task.isRunBefore());
+        runBeforePanel.setEnabled(runBeforePanel.isSelected());
 
         postExecuteOnErrorCheckBox.setEnabled(task.isPostExecute());
-        preExecuteOnErrorCheckBox.setEnabled(task.isPreExecute());
-
+        runBeforeHaltOnErrorCheckBox.setEnabled(task.isRunBefore());
     }
 
     @Override
@@ -56,8 +55,8 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
     @Override
     public void onFileChooserCheckBoxChange(FileChooserPanel fileChooserPanel, boolean isSelected) {
-        if (fileChooserPanel == preExecutePanel) {
-            preExecuteOnErrorCheckBox.setEnabled(isSelected);
+        if (fileChooserPanel == runBeforePanel) {
+            runBeforeHaltOnErrorCheckBox.setEnabled(isSelected);
         } else if (fileChooserPanel == postExecutePanel) {
             postExecuteOnErrorCheckBox.setEnabled(isSelected);
         }
@@ -78,11 +77,11 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     @Override
     public Task saveTask(Task task) {
         task.setPostExecuteCommand(postExecutePanel.getPath());
-        task.setPreExecuteCommand(preExecutePanel.getPath());
+        task.setRunBeforeCommand(runBeforePanel.getPath());
         task.setPostExecute(postExecutePanel.isSelected());
         task.setPostOnError(postExecuteOnErrorCheckBox.isSelected());
-        task.setPreExecute(preExecutePanel.isSelected());
-        task.setPreOnError(preExecuteOnErrorCheckBox.isSelected());
+        task.setRunBefore(runBeforePanel.isSelected());
+        task.setRunBeforeHaltOnError(runBeforeHaltOnErrorCheckBox.isSelected());
 
         return task;
     }
@@ -90,9 +89,9 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     private void init() {
         mTitle = Dict.RUN.getString();
 
-        preExecutePanel.setButtonListener(this);
-        preExecutePanel.setCheckBoxMode(true);
-        preExecutePanel.setEnabled(false);
+        runBeforePanel.setButtonListener(this);
+        runBeforePanel.setCheckBoxMode(true);
+        runBeforePanel.setEnabled(false);
         //preExecutePanel.setHeader(NbBundle.getMessage(ModuleExecutePanel.class, "ModuleExecutePanel.preExecute.text")); // NOI18N
 
         postExecutePanel.setButtonListener(this);
@@ -112,8 +111,8 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
         prePostScrollPane = new javax.swing.JScrollPane();
         prePostPanel = new javax.swing.JPanel();
-        preExecuteOnErrorCheckBox = new javax.swing.JCheckBox();
-        preExecutePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        runBeforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
+        runBeforePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         postExecutePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         postExecuteOnErrorCheckBox = new javax.swing.JCheckBox();
 
@@ -122,9 +121,9 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
         prePostPanel.setBorder(null);
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/task_modules/Bundle"); // NOI18N
-        preExecuteOnErrorCheckBox.setText(bundle.getString("ModuleExecutePanel.preExecuteOnErrorCheckBox.text")); // NOI18N
+        runBeforeHaltOnErrorCheckBox.setText(bundle.getString("ModuleExecutePanel.runBeforeHaltOnErrorCheckBox.text")); // NOI18N
 
-        preExecutePanel.setHeader(bundle.getString("ModuleExecutePanel.preExecute.text")); // NOI18N
+        runBeforePanel.setHeader(bundle.getString("ModuleExecutePanel.preExecute.text")); // NOI18N
 
         postExecutePanel.setHeader(bundle.getString("ModuleExecutePanel.postExecute.text")); // NOI18N
 
@@ -134,20 +133,20 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
         prePostPanel.setLayout(prePostPanelLayout);
         prePostPanelLayout.setHorizontalGroup(
             prePostPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(preExecutePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(runBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(postExecutePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(prePostPanelLayout.createSequentialGroup()
                 .addGroup(prePostPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(preExecuteOnErrorCheckBox)
+                    .addComponent(runBeforeHaltOnErrorCheckBox)
                     .addComponent(postExecuteOnErrorCheckBox))
                 .addContainerGap())
         );
         prePostPanelLayout.setVerticalGroup(
             prePostPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(prePostPanelLayout.createSequentialGroup()
-                .addComponent(preExecutePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(runBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(preExecuteOnErrorCheckBox)
+                .addComponent(runBeforeHaltOnErrorCheckBox)
                 .addGap(18, 18, 18)
                 .addComponent(postExecutePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -163,9 +162,9 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox postExecuteOnErrorCheckBox;
     private se.trixon.util.swing.dialogs.FileChooserPanel postExecutePanel;
-    private javax.swing.JCheckBox preExecuteOnErrorCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel preExecutePanel;
     private javax.swing.JPanel prePostPanel;
     private javax.swing.JScrollPane prePostScrollPane;
+    private javax.swing.JCheckBox runBeforeHaltOnErrorCheckBox;
+    private se.trixon.util.swing.dialogs.FileChooserPanel runBeforePanel;
     // End of variables declaration//GEN-END:variables
 }
