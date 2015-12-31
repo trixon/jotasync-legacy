@@ -15,7 +15,6 @@
  */
 package se.trixon.jotaclient.ui.editor;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -26,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import se.trixon.jota.job.Job;
 import se.trixon.jotaclient.Manager;
 import se.trixon.util.BundleHelper;
@@ -36,7 +34,7 @@ import se.trixon.util.swing.dialogs.Message;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class JobsPanel extends EditPanel {
 
@@ -94,7 +92,7 @@ public class JobsPanel extends EditPanel {
 
         if (retval == JOptionPane.OK_OPTION) {
             Job modifiedJob = jobPanel.getJob();
-            if (modifiedJob.isValid()) {
+            if (modifiedJob.isValid() && !jobExists(modifiedJob)) {
                 if (add) {
                     getModel().addElement(modifiedJob);
                 } else {
@@ -144,6 +142,20 @@ public class JobsPanel extends EditPanel {
                 listMouseClicked(evt);
             }
         });
+    }
+
+    private boolean jobExists(Job job) {
+        boolean result = false;
+
+        for (Object object : getModel().toArray()) {
+            Job existingJob = (Job) object;
+            if (existingJob.getName().equalsIgnoreCase(job.getName()) && existingJob.getId() != job.getId()) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 
     private void listMouseClicked(java.awt.event.MouseEvent evt) {

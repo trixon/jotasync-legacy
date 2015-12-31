@@ -28,7 +28,7 @@ import se.trixon.jota.task.Task;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsListener {
 
