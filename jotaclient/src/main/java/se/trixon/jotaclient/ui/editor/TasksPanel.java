@@ -19,6 +19,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,10 +40,25 @@ public class TasksPanel extends EditPanel {
 
     private final ResourceBundle mBundle = BundleHelper.getBundle(TasksPanel.class, "Bundle");
     private final Manager mManager = Manager.getInstance();
+    private final HashSet<TasksListener> mTaskListeners = new HashSet<>();
 
     public TasksPanel() {
         init();
         initListeners();
+    }
+
+    public boolean addTasksListener(TasksListener tasksListener) {
+        return mTaskListeners.add(tasksListener);
+    }
+
+    public ArrayList<Task> getTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        for (Object object : getModel().toArray()) {
+            tasks.add((Task) object);
+        }
+
+        return tasks;
     }
 
     @Override
@@ -90,6 +107,7 @@ public class TasksPanel extends EditPanel {
                 }
                 sortModel();
                 list.setSelectedValue(modifiedTask, true);
+                notifyTaskListenersChanged();
             } else {
                 showInvalidTaskDialog();
                 edit(modifiedTask);
@@ -114,7 +132,7 @@ public class TasksPanel extends EditPanel {
         editButton.setVisible(true);
         removeButton.setVisible(true);
         removeAllButton.setVisible(true);
-        
+
         try {
             setModel(mManager.getServerCommander().populateTaskModel(getModel()));
         } catch (RemoteException ex) {
@@ -142,6 +160,15 @@ public class TasksPanel extends EditPanel {
         }
     }
 
+    private void notifyTaskListenersChanged() {
+        for (TasksListener tasksListener : mTaskListeners) {
+            try {
+                tasksListener.onTaskChanged();
+            } catch (Exception e) {
+            }
+        }
+    }
+
     private void removeAllButtonActionPerformed(ActionEvent evt) {
         if (!getModel().isEmpty()) {
             int retval = JOptionPane.showConfirmDialog(getRoot(),
@@ -152,6 +179,7 @@ public class TasksPanel extends EditPanel {
 
             if (retval == JOptionPane.OK_OPTION) {
                 getModel().removeAllElements();
+                notifyTaskListenersChanged();
             }
         }
     }
@@ -168,11 +196,17 @@ public class TasksPanel extends EditPanel {
             if (retval == JOptionPane.OK_OPTION) {
                 getModel().removeElement(getSelectedTask());
                 sortModel();
+                notifyTaskListenersChanged();
             }
         }
     }
 
     private void showInvalidTaskDialog() {
         Message.error(getRoot(), Dict.INVALID_INPUT.getString(), mBundle.getString("TasksPanel.invalid"));
+    }
+
+    public interface TasksListener {
+
+        public void onTaskChanged();
     }
 }

@@ -17,14 +17,17 @@ package se.trixon.jotaclient.ui.editor;
 
 import java.awt.event.ActionEvent;
 import javax.swing.DefaultListModel;
+import se.trixon.jota.job.Job;
 import se.trixon.jota.task.Task;
 import se.trixon.util.dictionary.Dict;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class ActiveTasksPanel extends EditPanel {
+
+    private Job mJob;
 
     public ActiveTasksPanel() {
         init();
@@ -33,7 +36,11 @@ public class ActiveTasksPanel extends EditPanel {
 
     @Override
     public void save() {
-        // nvm
+        mJob.setTasks(getModel());
+    }
+
+    public void setJob(Job job) {
+        mJob = job;
     }
 
     private void deactivateButtonActionPerformed(ActionEvent e) {
@@ -44,6 +51,7 @@ public class ActiveTasksPanel extends EditPanel {
                 selectedIndices = list.getSelectedIndices();
                 getModel().removeElementAt(selectedIndices[i]);
             }
+            save();
         }
     }
 
@@ -107,6 +115,7 @@ public class ActiveTasksPanel extends EditPanel {
 
             model.add(destinationIndex, selectedTask);
             list.setSelectedIndex(destinationIndex);
+            save();
         }
     }
 

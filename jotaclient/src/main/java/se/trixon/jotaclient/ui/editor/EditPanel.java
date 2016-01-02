@@ -16,7 +16,6 @@
 package se.trixon.jotaclient.ui.editor;
 
 import java.awt.Component;
-import java.awt.Window;
 import java.util.Arrays;
 import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
@@ -26,7 +25,7 @@ import se.trixon.util.icon.Pict;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public abstract class EditPanel extends javax.swing.JPanel {
 

@@ -19,10 +19,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
+import javax.swing.JPanel;
 import se.trixon.jota.job.Job;
 import se.trixon.jota.task.Task;
 
@@ -30,14 +30,13 @@ import se.trixon.jota.task.Task;
  *
  * @author Patrik Karlsson
  */
-public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsListener {
+public class EditorPanel extends JPanel implements JobsPanel.JobsListener, TasksPanel.TasksListener {
 
     private final ActiveTasksPanel mActiveTasksPanel;
     private final JobsPanel mJobsPanel;
     private final TasksPanel mTasksPanel;
-    private boolean mTasksSaveable = false;
 
-  /**
+    /**
      * Creates new form EditorPanel
      */
     public EditorPanel() {
@@ -61,6 +60,12 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
         loadActiveTasks();
     }
 
+    @Override
+    public void onTaskChanged() {
+        updateTasksInJobs();
+        loadActiveTasks();
+    }
+
     public void save() {
         mJobsPanel.save();
         mTasksPanel.save();
@@ -73,15 +78,27 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
 
             for (Object selectedItem : selectedItems) {
                 Task task = (Task) selectedItem;
-                if (!activeTasks.contains(task)) {
+                boolean missing = true;
+
+                for (Object object : activeTasks.toArray()) {
+                    Task activeTask = (Task) object;
+                    if (task.getId() == activeTask.getId()) {
+                        missing = false;
+                        break;
+                    }
+                }
+
+                if (missing) {
                     activeTasks.addElement(task);
                 }
             }
+            mActiveTasksPanel.save();
         }
     }
 
     private void init() {
         mJobsPanel.addJobsListener(this);
+        mTasksPanel.addTasksListener(this);
         add(mJobsPanel);
         add(mActiveTasksPanel);
         add(mTasksPanel);
@@ -101,60 +118,48 @@ public class EditorPanel extends javax.swing.JPanel implements JobsPanel.JobsLis
                 }
             }
         });
+    }
 
-        mActiveTasksPanel.getModel().addListDataListener(new ListDataListener() {
+    private void updateTasksInJobs() {
+        ArrayList<Task> existingTasks = mTasksPanel.getTasks();
+        for (Job job : mJobsPanel.getJobs()) {
+            ArrayList<Task> tasksToRemoveFromJob = new ArrayList<>();
 
-            @Override
-            public void contentsChanged(ListDataEvent e) {
-                saveActiveTasks();
+            for (Task jobTask : job.getTasks()) {
+                boolean exist = false;
+
+                for (Task existingTask : existingTasks) {
+                    if (jobTask.getId() == existingTask.getId()) {
+                        exist = true;
+                        break;
+                    }
+                }
+
+                if (!exist) {
+                    tasksToRemoveFromJob.add(jobTask);
+                }
             }
 
-            @Override
-            public void intervalAdded(ListDataEvent e) {
-                saveActiveTasks();
-            }
-
-            @Override
-            public void intervalRemoved(ListDataEvent e) {
-                saveActiveTasks();
-            }
-        });
-
-        mTasksPanel.getModel().addListDataListener(new ListDataListener() {
-
-            @Override
-            public void contentsChanged(ListDataEvent e) {
-                loadActiveTasks();
-            }
-
-            @Override
-            public void intervalAdded(ListDataEvent e) {
-                loadActiveTasks();
-            }
-
-            @Override
-            public void intervalRemoved(ListDataEvent e) {
-                loadActiveTasks();
-            }
-        });
+            job.getTasks().removeAll(tasksToRemoveFromJob);
+        }
     }
 
     private void loadActiveTasks() {
-        mTasksSaveable = false;
         mActiveTasksPanel.getModel().clear();
         if (!mJobsPanel.list.isSelectionEmpty()) {
             Job job = mJobsPanel.getSelectedJob();
+            mActiveTasksPanel.setJob(job);
             for (Task task : job.getTasks()) {
+                for (Object object : mTasksPanel.getModel().toArray()) {
+                    Task existingTask = (Task) object;
+                    if (task.getId() == existingTask.getId()) {
+                        task.setName(existingTask.getName());
+                        break;
+                    }
+                }
                 mActiveTasksPanel.getModel().addElement(task);
             }
             mActiveTasksPanel.list.setModel(mActiveTasksPanel.getModel());
-        }
-        mTasksSaveable = true;
-    }
-
-    private void saveActiveTasks() {
-        if (mTasksSaveable) {
-            mJobsPanel.getSelectedJob().setTasks(mActiveTasksPanel.getModel());
         }
     }
 

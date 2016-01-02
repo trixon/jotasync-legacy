@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -49,6 +50,16 @@ public class JobsPanel extends EditPanel {
 
     public boolean addJobsListener(JobsListener jobsListener) {
         return mJobsListeners.add(jobsListener);
+    }
+
+    public ArrayList<Job> getJobs() {
+        ArrayList<Job> jobs = new ArrayList<>();
+
+        for (Object object : getModel().toArray()) {
+            jobs.add((Job) object);
+        }
+
+        return jobs;
     }
 
     public Job getSelectedJob() {
