@@ -40,6 +40,7 @@ public enum JotaManager {
     private static final int sVersion = 1;
     private final File mDirectory;
     private final File mJobFile;
+    private final File mJobBakFile;
     private final JobManager mJobManager = JobManager.INSTANCE;
     private final File mLogDirectory;
     private final File mLogFile;
@@ -51,6 +52,7 @@ public enum JotaManager {
         mDirectory = new File(System.getProperty("user.home"), ".config/jotasync");
         mLogDirectory = new File(mDirectory, "log");
         mJobFile = new File(mDirectory, "jobs.json");
+        mJobBakFile = new File(mDirectory, "jobs.bak");
         mLogFile = new File(mDirectory, "jotasync.log");
 
         mPreferences = Preferences.userNodeForPackage(this.getClass());
@@ -114,9 +116,9 @@ public enum JotaManager {
         jsonObject.put(KEY_JOBS, mJobManager.getJsonArray());
         jsonObject.put(KEY_VERSION, sVersion);
 
+        String tag = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String jsonString = jsonObject.toJSONString();
         FileUtils.writeStringToFile(mJobFile, jsonString);
-        String tag = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        mPreferences.put(tag, jsonString);
+        FileUtils.writeStringToFile(mJobBakFile, String.format("%s=%s\n", tag, jsonString), true);
     }
 }
