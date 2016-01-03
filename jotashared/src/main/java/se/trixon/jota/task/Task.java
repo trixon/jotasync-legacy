@@ -34,6 +34,7 @@ public class Task implements Comparable<Task>, Serializable {
     private boolean mDelete;
     private String mDescription = "";
     private String mDestination = System.getProperty("user.home");
+    private String mDetails = "";
     private boolean mDevices;
     private boolean mDirs;
     private boolean mDryRun = true;
@@ -46,6 +47,7 @@ public class Task implements Comparable<Task>, Serializable {
     private boolean mExcludeTemplateSystemMountDirs;
     private boolean mExcludeTemplateTemp;
     private boolean mExcludeTemplateTrash;
+    private final ExecuteSection mExecuteSection;
     private boolean mExisting;
     private boolean mGroup;
     private boolean mHardLinks;
@@ -61,14 +63,9 @@ public class Task implements Comparable<Task>, Serializable {
     private boolean mOwner;
     private boolean mPartialProgress;
     private boolean mPerms;
-    private boolean mPostExecute;
-    private String mPostExecuteCommand = "";
     private boolean mPostExecuteOnError;
     private boolean mProgress = true;
     private boolean mProtectArgs;
-    private boolean mRunBefore;
-    private String mRunBeforeCommand = "";
-    private boolean mRunBeforeHaltOnError;
     private boolean mSizeOnly;
     private String mSource = System.getProperty("user.home");
     private boolean mTimes;
@@ -77,6 +74,7 @@ public class Task implements Comparable<Task>, Serializable {
     private boolean mVerbose = true;
 
     public Task() {
+        mExecuteSection = new ExecuteSection();
     }
 
     public List<String> build() {
@@ -228,8 +226,16 @@ public class Task implements Comparable<Task>, Serializable {
         return mDestination;
     }
 
+    public String getDetails() {
+        return mDetails;
+    }
+
     public String getEnvironment() {
         return mEnvironment;
+    }
+
+    public ExecuteSection getExecuteSection() {
+        return mExecuteSection;
     }
 
     public String getHistory() {
@@ -242,14 +248,6 @@ public class Task implements Comparable<Task>, Serializable {
 
     public String getName() {
         return mName;
-    }
-
-    public String getPostExecuteCommand() {
-        return mPostExecuteCommand;
-    }
-
-    public String getRunBeforeCommand() {
-        return mRunBeforeCommand;
     }
 
     public String getSource() {
@@ -368,10 +366,6 @@ public class Task implements Comparable<Task>, Serializable {
         return mPerms;
     }
 
-    public boolean isPostExecute() {
-        return mPostExecute;
-    }
-
     public boolean isPostOnError() {
         return mPostExecuteOnError;
     }
@@ -382,14 +376,6 @@ public class Task implements Comparable<Task>, Serializable {
 
     public boolean isProtectArgs() {
         return mProtectArgs;
-    }
-
-    public boolean isRunBefore() {
-        return mRunBefore;
-    }
-
-    public boolean isRunBeforeHaltOnError() {
-        return mRunBeforeHaltOnError;
     }
 
     public boolean isSizeOnly() {
@@ -438,6 +424,10 @@ public class Task implements Comparable<Task>, Serializable {
 
     public void setDestination(String destination) {
         mDestination = destination;
+    }
+
+    public void setDetails(String string) {
+        mDetails = string;
     }
 
     public void setDevices(boolean devices) {
@@ -548,14 +538,6 @@ public class Task implements Comparable<Task>, Serializable {
         mPerms = perms;
     }
 
-    public void setPostExecute(boolean postExecute) {
-        mPostExecute = postExecute;
-    }
-
-    public void setPostExecuteCommand(String postCommand) {
-        mPostExecuteCommand = postCommand;
-    }
-
     public void setPostOnError(boolean postOnError) {
         mPostExecuteOnError = postOnError;
     }
@@ -566,18 +548,6 @@ public class Task implements Comparable<Task>, Serializable {
 
     public void setProtectArgs(boolean protectArgs) {
         mProtectArgs = protectArgs;
-    }
-
-    public void setRunBefore(boolean value) {
-        mRunBefore = value;
-    }
-
-    public void setRunBeforeCommand(String value) {
-        mRunBeforeCommand = value;
-    }
-
-    public void setRunBeforeHaltOnError(boolean value) {
-        mRunBeforeHaltOnError = value;
     }
 
     public void setSizeOnly(boolean sizeOnly) {
@@ -620,6 +590,101 @@ public class Task implements Comparable<Task>, Serializable {
     private void add(String command) {
         if (!mCommand.contains(command)) {
             mCommand.add(command);
+        }
+    }
+
+    public class ExecuteSection implements Serializable {
+
+        public static final String KEY_RUN_AFTER = "runAfter";
+        public static final String KEY_RUN_AFTER_COMMAND = "runAfterCommand";
+        public static final String KEY_RUN_AFTER_FAILURE = "runAfterFailure";
+        public static final String KEY_RUN_AFTER_FAILURE_COMMAND = "runAfterFailureCommand";
+        public static final String KEY_RUN_AFTER_SUCCESS = "runAfterSuccess";
+        public static final String KEY_RUN_AFTER_SUCCESS_COMMAND = "runAfterSuccessCommand";
+        public static final String KEY_RUN_BEFORE = "runBefore";
+        public static final String KEY_RUN_BEFORE_COMMAND = "runBeforeCommand";
+        public static final String KEY_RUN_BEFORE_HALT_ON_ERROR = "runBeforeHaltOnError";
+
+        private boolean mRunAfter;
+        private String mRunAfterCommand = "";
+        private String mRunAfterFailureCommand = "";
+        private String mRunAfterSuccessCommand = "";
+        private boolean mRunAfterFailure;
+        private boolean mRunAfterSuccess;
+        private boolean mRunBefore;
+        private String mRunBeforeCommand = "";
+        private boolean mRunBeforeHaltOnError;
+
+        public String getRunAfterCommand() {
+            return mRunAfterCommand;
+        }
+
+        public String getRunAfterFailureCommand() {
+            return mRunAfterFailureCommand;
+        }
+
+        public String getRunAfterSuccessCommand() {
+            return mRunAfterSuccessCommand;
+        }
+
+        public String getRunBeforeCommand() {
+            return mRunBeforeCommand;
+        }
+
+        public boolean isRunAfter() {
+            return mRunAfter;
+        }
+
+        public boolean isRunAfterFailure() {
+            return mRunAfterFailure;
+        }
+
+        public boolean isRunAfterSuccess() {
+            return mRunAfterSuccess;
+        }
+
+        public boolean isRunBefore() {
+            return mRunBefore;
+        }
+
+        public boolean isRunBeforeHaltOnError() {
+            return mRunBeforeHaltOnError;
+        }
+
+        public void setRunAfter(boolean value) {
+            mRunAfter = value;
+        }
+
+        public void setRunAfterFailure(boolean value) {
+            mRunAfterFailure = value;
+        }
+
+        public void setRunAfterSuccess(boolean value) {
+            mRunAfterSuccess = value;
+        }
+
+        public void setRunAfterCommand(String value) {
+            mRunAfterCommand = value;
+        }
+
+        public void setRunAfterFailureCommand(String value) {
+            mRunAfterFailureCommand = value;
+        }
+
+        public void setRunAfterSuccessCommand(String value) {
+            mRunAfterSuccessCommand = value;
+        }
+
+        public void setRunBefore(boolean value) {
+            mRunBefore = value;
+        }
+
+        public void setRunBeforeCommand(String value) {
+            mRunBeforeCommand = value;
+        }
+
+        public void setRunBeforeHaltOnError(boolean value) {
+            mRunBeforeHaltOnError = value;
         }
     }
 }

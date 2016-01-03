@@ -36,17 +36,25 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
     @Override
     public void loadTask(Task task) {
-        postExecutePanel.setPath(task.getPostExecuteCommand());
-        runBeforePanel.setPath(task.getRunBeforeCommand());
+        Task.ExecuteSection execute = task.getExecuteSection();
+        runBeforeHaltOnErrorCheckBox.setEnabled(execute.isRunBefore());
+        runBeforeHaltOnErrorCheckBox.setSelected(execute.isRunBeforeHaltOnError());
 
-        postExecuteOnErrorCheckBox.setSelected(task.isPostOnError());
-        postExecutePanel.setSelected(task.isPostExecute());
-        runBeforeHaltOnErrorCheckBox.setSelected(task.isRunBeforeHaltOnError());
-        runBeforePanel.setSelected(task.isRunBefore());
+        runBeforePanel.setSelected(execute.isRunBefore());
+        runBeforePanel.setPath(execute.getRunBeforeCommand());
         runBeforePanel.setEnabled(runBeforePanel.isSelected());
 
-        postExecuteOnErrorCheckBox.setEnabled(task.isPostExecute());
-        runBeforeHaltOnErrorCheckBox.setEnabled(task.isRunBefore());
+        runAfterFailurePanel.setSelected(execute.isRunAfterFailure());
+        runAfterFailurePanel.setPath(execute.getRunAfterFailureCommand());
+        runAfterFailurePanel.setEnabled(runAfterFailurePanel.isSelected());
+
+        runAfterSuccessPanel.setSelected(execute.isRunAfterSuccess());
+        runAfterSuccessPanel.setPath(execute.getRunAfterSuccessCommand());
+        runAfterSuccessPanel.setEnabled(runAfterSuccessPanel.isSelected());
+
+        runAfterPanel.setSelected(execute.isRunAfter());
+        runAfterPanel.setPath(execute.getRunAfterCommand());
+        runAfterPanel.setEnabled(runAfterPanel.isSelected());
     }
 
     @Override
@@ -57,8 +65,6 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     public void onFileChooserCheckBoxChange(FileChooserPanel fileChooserPanel, boolean isSelected) {
         if (fileChooserPanel == runBeforePanel) {
             runBeforeHaltOnErrorCheckBox.setEnabled(isSelected);
-        } else if (fileChooserPanel == postExecutePanel) {
-            postExecuteOnErrorCheckBox.setEnabled(isSelected);
         }
     }
 
@@ -76,12 +82,19 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
     @Override
     public Task saveTask(Task task) {
-        task.setPostExecuteCommand(postExecutePanel.getPath());
-        task.setRunBeforeCommand(runBeforePanel.getPath());
-        task.setPostExecute(postExecutePanel.isSelected());
-        task.setPostOnError(postExecuteOnErrorCheckBox.isSelected());
-        task.setRunBefore(runBeforePanel.isSelected());
-        task.setRunBeforeHaltOnError(runBeforeHaltOnErrorCheckBox.isSelected());
+        Task.ExecuteSection execute = task.getExecuteSection();
+        execute.setRunBefore(runBeforePanel.isSelected());
+        execute.setRunBeforeCommand(runBeforePanel.getPath());
+        execute.setRunBeforeHaltOnError(runBeforeHaltOnErrorCheckBox.isSelected());
+
+        execute.setRunAfterFailure(runAfterFailurePanel.isSelected());
+        execute.setRunAfterFailureCommand(runAfterFailurePanel.getPath());
+
+        execute.setRunAfterSuccess(runAfterSuccessPanel.isSelected());
+        execute.setRunAfterSuccessCommand(runAfterSuccessPanel.getPath());
+
+        execute.setRunAfter(runAfterPanel.isSelected());
+        execute.setRunAfterCommand(runAfterPanel.getPath());
 
         return task;
     }
@@ -90,14 +103,11 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
         mTitle = Dict.RUN.getString();
 
         runBeforePanel.setButtonListener(this);
-        runBeforePanel.setCheckBoxMode(true);
         runBeforePanel.setEnabled(false);
-        //preExecutePanel.setHeader(NbBundle.getMessage(ModuleExecutePanel.class, "ModuleExecutePanel.preExecute.text")); // NOI18N
 
-        postExecutePanel.setButtonListener(this);
-        postExecutePanel.setCheckBoxMode(true);
-        postExecutePanel.setEnabled(false);
-        //postExecutePanel.setHeader(NbBundle.getMessage(ModuleExecutePanel.class, "ModuleExecutePanel.postExecute.text")); // NOI18N
+        runAfterFailurePanel.setEnabled(false);
+        runAfterSuccessPanel.setEnabled(false);
+        runAfterPanel.setEnabled(false);
     }
 
     /**
@@ -111,35 +121,45 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
         prePostScrollPane = new javax.swing.JScrollPane();
         prePostPanel = new javax.swing.JPanel();
-        runBeforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
         runBeforePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        postExecutePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        postExecuteOnErrorCheckBox = new javax.swing.JCheckBox();
+        runBeforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
+        jSeparator1 = new javax.swing.JSeparator();
+        runAfterFailurePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        runAfterSuccessPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        runAfterPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         prePostPanel.setBorder(null);
 
+        runBeforePanel.setCheckBoxMode(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/task_modules/Bundle"); // NOI18N
+        runBeforePanel.setHeader(bundle.getString("ModuleExecutePanel.runBefore.text")); // NOI18N
+
         runBeforeHaltOnErrorCheckBox.setText(bundle.getString("ModuleExecutePanel.runBeforeHaltOnErrorCheckBox.text")); // NOI18N
 
-        runBeforePanel.setHeader(bundle.getString("ModuleExecutePanel.preExecute.text")); // NOI18N
+        runAfterFailurePanel.setCheckBoxMode(true);
+        runAfterFailurePanel.setHeader(bundle.getString("ModuleExecutePanel.runAfterFailurePanel.header")); // NOI18N
 
-        postExecutePanel.setHeader(bundle.getString("ModuleExecutePanel.postExecute.text")); // NOI18N
+        runAfterSuccessPanel.setCheckBoxMode(true);
+        runAfterSuccessPanel.setHeader(bundle.getString("ModuleExecutePanel.runAfterSuccessPanel.header")); // NOI18N
 
-        postExecuteOnErrorCheckBox.setText(bundle.getString("ModuleExecutePanel.postExecuteOnErrorCheckBox.text")); // NOI18N
+        runAfterPanel.setCheckBoxMode(true);
+        runAfterPanel.setHeader(bundle.getString("ModuleExecutePanel.runAfterPanel.header")); // NOI18N
 
         javax.swing.GroupLayout prePostPanelLayout = new javax.swing.GroupLayout(prePostPanel);
         prePostPanel.setLayout(prePostPanelLayout);
         prePostPanelLayout.setHorizontalGroup(
             prePostPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(runBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(postExecutePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(runBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+            .addComponent(runAfterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(prePostPanelLayout.createSequentialGroup()
-                .addGroup(prePostPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(runBeforeHaltOnErrorCheckBox)
-                    .addComponent(postExecuteOnErrorCheckBox))
+                .addContainerGap()
+                .addComponent(jSeparator1)
                 .addContainerGap())
+            .addComponent(runAfterFailurePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(runAfterSuccessPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(runBeforeHaltOnErrorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         prePostPanelLayout.setVerticalGroup(
             prePostPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,10 +167,14 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
                 .addComponent(runBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(runBeforeHaltOnErrorCheckBox)
-                .addGap(18, 18, 18)
-                .addComponent(postExecutePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(postExecuteOnErrorCheckBox)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(runAfterFailurePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(runAfterSuccessPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(runAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -160,10 +184,12 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox postExecuteOnErrorCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel postExecutePanel;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel prePostPanel;
     private javax.swing.JScrollPane prePostScrollPane;
+    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterFailurePanel;
+    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterPanel;
+    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterSuccessPanel;
     private javax.swing.JCheckBox runBeforeHaltOnErrorCheckBox;
     private se.trixon.util.swing.dialogs.FileChooserPanel runBeforePanel;
     // End of variables declaration//GEN-END:variables

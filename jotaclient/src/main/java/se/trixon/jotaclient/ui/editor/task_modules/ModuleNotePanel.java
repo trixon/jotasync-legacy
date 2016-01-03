@@ -18,35 +18,35 @@ package se.trixon.jotaclient.ui.editor.task_modules;
 import se.trixon.jota.task.Task;
 import se.trixon.util.dictionary.Dict;
 
-
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-public class ModuleDescriptionPanel extends ModulePanel {
+public class ModuleNotePanel extends ModulePanel {
 
     /**
      * Creates new form ModulePanel
      */
-    public ModuleDescriptionPanel() {
+    public ModuleNotePanel() {
         initComponents();
         init();
     }
 
     @Override
     public void loadTask(Task task) {
-        descriptionTextArea.setText(task.getDescription());
+        detailsTextArea.setText(task.getDetails());
+        detailsTextArea.setCaretPosition(0);
     }
 
     @Override
     public Task saveTask(Task task) {
-        task.setDescription(descriptionTextArea.getText());
+        task.setDetails(detailsTextArea.getText());
 
         return task;
     }
 
     private void init() {
-        mTitle = Dict.DESCRIPTION.getString();
+        mTitle = Dict.NOTE.toString();
     }
 
     /**
@@ -59,11 +59,11 @@ public class ModuleDescriptionPanel extends ModulePanel {
     private void initComponents() {
 
         descriptionScrollPane = new javax.swing.JScrollPane();
-        descriptionTextArea = new javax.swing.JTextArea();
+        detailsTextArea = new javax.swing.JTextArea();
 
-        descriptionTextArea.setColumns(20);
-        descriptionTextArea.setRows(5);
-        descriptionScrollPane.setViewportView(descriptionTextArea);
+        detailsTextArea.setColumns(20);
+        detailsTextArea.setRows(5);
+        descriptionScrollPane.setViewportView(detailsTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -79,6 +79,6 @@ public class ModuleDescriptionPanel extends ModulePanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane descriptionScrollPane;
-    private javax.swing.JTextArea descriptionTextArea;
+    private javax.swing.JTextArea detailsTextArea;
     // End of variables declaration//GEN-END:variables
 }

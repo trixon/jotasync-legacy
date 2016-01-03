@@ -24,27 +24,25 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import se.trixon.jota.task.Task;
 import se.trixon.jota.task.TaskVerifier;
-import se.trixon.jotaclient.ui.editor.task_modules.ModuleDescriptionPanel;
+import se.trixon.jotaclient.ui.editor.task_modules.ModuleNotePanel;
 import se.trixon.jotaclient.ui.editor.task_modules.ModuleEnvironmentPanel;
 import se.trixon.jotaclient.ui.editor.task_modules.ModuleExcludePanel;
 import se.trixon.jotaclient.ui.editor.task_modules.ModuleExecutePanel;
 import se.trixon.jotaclient.ui.editor.task_modules.ModuleIncludePanel;
-import se.trixon.jotaclient.ui.editor.task_modules.ModuleLogPanel;
 import se.trixon.jotaclient.ui.editor.task_modules.ModuleOptionsPanel;
 import se.trixon.jotaclient.ui.editor.task_modules.ModulePanel;
 import se.trixon.util.dictionary.Dict;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class TaskPanel extends javax.swing.JPanel {
 
     private Task mTask = new Task();
-//    private DialogDescriptor mDialogDescriptor;
     private Mode mMode;
-    private final ModuleDescriptionPanel mModuleDescriptionPanel = new ModuleDescriptionPanel();
-    private final ModuleLogPanel mModuleLogPanel = new ModuleLogPanel();
+    private final ModuleNotePanel mModuleNotePanel = new ModuleNotePanel();
+//    private final ModuleLogPanel mModuleLogPanel = new ModuleLogPanel();
     private final ModuleEnvironmentPanel mModuleEnvironmentPanel = new ModuleEnvironmentPanel();
     private final ModuleIncludePanel mModuleIncludePanel = new ModuleIncludePanel();
     private final ModuleExcludePanel mModuleExcludePanel = new ModuleExcludePanel();
@@ -108,14 +106,14 @@ public class TaskPanel extends javax.swing.JPanel {
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeBackup.text"),
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeSync.text")}));
 
-        addModulePanel(mModuleDescriptionPanel);
-        addModulePanel(mModuleExcludePanel);
-        addModulePanel(mModuleIncludePanel);
-        addModulePanel(mModuleEnvironmentPanel);
-        addModulePanel(mModuleOptionsPanel);
         addModulePanel(mModuleExecutePanel);
-        addModulePanel(mModuleLogPanel);
+        addModulePanel(mModuleNotePanel);
 
+//        addModulePanel(mModuleExcludePanel);
+//        addModulePanel(mModuleIncludePanel);
+//        addModulePanel(mModuleEnvironmentPanel);
+//        addModulePanel(mModuleOptionsPanel);
+//        addModulePanel(mModuleLogPanel);
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof ModulePanel) {
                 ModulePanel modulePanel = (ModulePanel) component;

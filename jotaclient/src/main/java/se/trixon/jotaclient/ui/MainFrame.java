@@ -17,7 +17,6 @@ package se.trixon.jotaclient.ui;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
@@ -100,6 +99,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         } else {
             enableGui(false);
         }
+        showEditor();
     }
 
     @Override
