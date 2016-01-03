@@ -24,8 +24,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import se.trixon.jota.Jota;
 import se.trixon.jota.JsonHelper;
+import se.trixon.jota.task.ExcludeSection;
 import se.trixon.jota.task.Task;
-import se.trixon.jota.task.Task.ExecuteSection;
+import se.trixon.jota.task.ExecuteSection;
 
 /**
  *
@@ -41,9 +42,6 @@ public enum TaskManager {
     private static final String KEY_NAME = "name";
     private static final String KEY_SOURCE = "source";
     private static final String KEY_TYPE = "type";
-    private static final String SECTION_ENVIRONMENT = "environment";
-    private static final String SECTION_EXCLUDE = "exclude";
-    private static final String SECTION_EXECUTE = "execute";
     private final LinkedList<Task> mTasks = new LinkedList<>();
 
     private TaskManager() {
@@ -71,9 +69,6 @@ public enum TaskManager {
 
         for (Task task : mTasks) {
             JSONObject object = new JSONObject();
-            JSONObject environmentObject = new JSONObject();
-            JSONObject excludeObject = new JSONObject();
-            JSONObject executeObject = new JSONObject();
 
             object.put(KEY_ID, task.getId());
             object.put(KEY_NAME, task.getName());
@@ -83,24 +78,8 @@ public enum TaskManager {
             object.put(KEY_DESCRIPTION, task.getDescription());
             object.put(KEY_DETAILS, task.getDetails());
 
-            object.put(SECTION_ENVIRONMENT, environmentObject);
-            object.put(SECTION_EXCLUDE, excludeObject);
-
-            ExecuteSection executeSection = task.getExecuteSection();
-            executeObject.put(ExecuteSection.KEY_RUN_BEFORE, executeSection.isRunBefore());
-            executeObject.put(ExecuteSection.KEY_RUN_BEFORE_COMMAND, executeSection.getRunBeforeCommand());
-            executeObject.put(ExecuteSection.KEY_RUN_BEFORE_HALT_ON_ERROR, executeSection.isRunBeforeHaltOnError());
-
-            executeObject.put(ExecuteSection.KEY_RUN_AFTER_FAILURE, executeSection.isRunAfterFailure());
-            executeObject.put(ExecuteSection.KEY_RUN_AFTER_FAILURE_COMMAND, executeSection.getRunAfterFailureCommand());
-
-            executeObject.put(ExecuteSection.KEY_RUN_AFTER_SUCCESS, executeSection.isRunAfterSuccess());
-            executeObject.put(ExecuteSection.KEY_RUN_AFTER_SUCCESS_COMMAND, executeSection.getRunAfterSuccessCommand());
-
-            executeObject.put(ExecuteSection.KEY_RUN_AFTER, executeSection.isRunAfter());
-            executeObject.put(ExecuteSection.KEY_RUN_AFTER_COMMAND, executeSection.getRunAfterCommand());
-
-            object.put(SECTION_EXECUTE, executeObject);
+            object.put(ExecuteSection.KEY, task.getExecuteSection().getJson());
+            object.put(ExcludeSection.KEY, task.getExcludeSection().getJson());
 
             array.add(object);
         }
@@ -168,8 +147,6 @@ public enum TaskManager {
 
         for (Object arrayItem : array) {
             JSONObject object = (JSONObject) arrayItem;
-            JSONObject environmentObject = (JSONObject) object.get(SECTION_ENVIRONMENT);
-            JSONObject excludeObject = (JSONObject) object.get(SECTION_EXCLUDE);
 
             Task task = new Task();
             task.setId(JsonHelper.getLong(object, KEY_ID));
@@ -180,21 +157,8 @@ public enum TaskManager {
             task.setDestination((String) object.get(KEY_DEST));
             task.setDetails((String) object.get(KEY_DETAILS));
 
-            JSONObject executeObject = (JSONObject) object.get(SECTION_EXECUTE);
-            ExecuteSection executeSection = task.getExecuteSection();
-
-            executeSection.setRunBefore((boolean) executeObject.get(ExecuteSection.KEY_RUN_BEFORE));
-            executeSection.setRunBeforeCommand((String) executeObject.get(ExecuteSection.KEY_RUN_BEFORE_COMMAND));
-            executeSection.setRunBeforeHaltOnError((boolean) executeObject.get(ExecuteSection.KEY_RUN_BEFORE_HALT_ON_ERROR));
-
-            executeSection.setRunAfter((boolean) executeObject.get(ExecuteSection.KEY_RUN_AFTER));
-            executeSection.setRunAfterCommand((String) executeObject.get(ExecuteSection.KEY_RUN_AFTER_COMMAND));
-
-            executeSection.setRunAfterFailure((boolean) executeObject.get(ExecuteSection.KEY_RUN_AFTER_FAILURE));
-            executeSection.setRunAfterFailureCommand((String) executeObject.get(ExecuteSection.KEY_RUN_AFTER_FAILURE_COMMAND));
-
-            executeSection.setRunAfterSuccess((boolean) executeObject.get(ExecuteSection.KEY_RUN_AFTER_SUCCESS));
-            executeSection.setRunAfterSuccessCommand((String) executeObject.get(ExecuteSection.KEY_RUN_AFTER_SUCCESS_COMMAND));
+            task.getExecuteSection().setJson((JSONObject) object.get(ExecuteSection.KEY));
+            task.getExcludeSection().setJson((JSONObject) object.get(ExcludeSection.KEY));
 
             mTasks.add(task);
         }

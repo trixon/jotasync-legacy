@@ -18,6 +18,7 @@ package se.trixon.jotaclient.ui.editor.task_modules;
 import se.trixon.jota.task.Task;
 import se.trixon.util.dictionary.Dict;
 import java.io.File;
+import se.trixon.jota.task.ExecuteSection;
 import se.trixon.util.swing.dialogs.FileChooserPanel;
 
 /**
@@ -36,24 +37,25 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
     @Override
     public void loadTask(Task task) {
-        Task.ExecuteSection execute = task.getExecuteSection();
-        runBeforeHaltOnErrorCheckBox.setEnabled(execute.isRunBefore());
-        runBeforeHaltOnErrorCheckBox.setSelected(execute.isRunBeforeHaltOnError());
+        ExecuteSection executeSection = task.getExecuteSection();
 
-        runBeforePanel.setSelected(execute.isRunBefore());
-        runBeforePanel.setPath(execute.getRunBeforeCommand());
+        runBeforeHaltOnErrorCheckBox.setEnabled(executeSection.isRunBefore());
+        runBeforeHaltOnErrorCheckBox.setSelected(executeSection.isRunBeforeHaltOnError());
+
+        runBeforePanel.setSelected(executeSection.isRunBefore());
+        runBeforePanel.setPath(executeSection.getRunBeforeCommand());
         runBeforePanel.setEnabled(runBeforePanel.isSelected());
 
-        runAfterFailurePanel.setSelected(execute.isRunAfterFailure());
-        runAfterFailurePanel.setPath(execute.getRunAfterFailureCommand());
+        runAfterFailurePanel.setSelected(executeSection.isRunAfterFailure());
+        runAfterFailurePanel.setPath(executeSection.getRunAfterFailureCommand());
         runAfterFailurePanel.setEnabled(runAfterFailurePanel.isSelected());
 
-        runAfterSuccessPanel.setSelected(execute.isRunAfterSuccess());
-        runAfterSuccessPanel.setPath(execute.getRunAfterSuccessCommand());
+        runAfterSuccessPanel.setSelected(executeSection.isRunAfterSuccess());
+        runAfterSuccessPanel.setPath(executeSection.getRunAfterSuccessCommand());
         runAfterSuccessPanel.setEnabled(runAfterSuccessPanel.isSelected());
 
-        runAfterPanel.setSelected(execute.isRunAfter());
-        runAfterPanel.setPath(execute.getRunAfterCommand());
+        runAfterPanel.setSelected(executeSection.isRunAfter());
+        runAfterPanel.setPath(executeSection.getRunAfterCommand());
         runAfterPanel.setEnabled(runAfterPanel.isSelected());
     }
 
@@ -82,19 +84,20 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
     @Override
     public Task saveTask(Task task) {
-        Task.ExecuteSection execute = task.getExecuteSection();
-        execute.setRunBefore(runBeforePanel.isSelected());
-        execute.setRunBeforeCommand(runBeforePanel.getPath());
-        execute.setRunBeforeHaltOnError(runBeforeHaltOnErrorCheckBox.isSelected());
+        ExecuteSection executeSection = task.getExecuteSection();
 
-        execute.setRunAfterFailure(runAfterFailurePanel.isSelected());
-        execute.setRunAfterFailureCommand(runAfterFailurePanel.getPath());
+        executeSection.setRunBefore(runBeforePanel.isSelected());
+        executeSection.setRunBeforeCommand(runBeforePanel.getPath());
+        executeSection.setRunBeforeHaltOnError(runBeforeHaltOnErrorCheckBox.isSelected());
 
-        execute.setRunAfterSuccess(runAfterSuccessPanel.isSelected());
-        execute.setRunAfterSuccessCommand(runAfterSuccessPanel.getPath());
+        executeSection.setRunAfterFailure(runAfterFailurePanel.isSelected());
+        executeSection.setRunAfterFailureCommand(runAfterFailurePanel.getPath());
 
-        execute.setRunAfter(runAfterPanel.isSelected());
-        execute.setRunAfterCommand(runAfterPanel.getPath());
+        executeSection.setRunAfterSuccess(runAfterSuccessPanel.isSelected());
+        executeSection.setRunAfterSuccessCommand(runAfterSuccessPanel.getPath());
+
+        executeSection.setRunAfter(runAfterPanel.isSelected());
+        executeSection.setRunAfterCommand(runAfterPanel.getPath());
 
         return task;
     }

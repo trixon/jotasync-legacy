@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.Jota;
 import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.job.Job;
+import se.trixon.jota.task.ExecuteSection;
 import se.trixon.jota.task.Task;
 import se.trixon.util.Xlog;
 
@@ -117,19 +118,19 @@ public class JobExecutor extends Thread {
 
     private boolean runBeforeTask(Task task) throws IOException, InterruptedException {
         boolean result = true;
-        Task.ExecuteSection execute = task.getExecuteSection();
+        ExecuteSection executeSection = task.getExecuteSection();
         send(ProcessEvent.OUT, "runBeforeTask");
-        send(ProcessEvent.OUT, "" + execute.isRunBefore());
-        send(ProcessEvent.OUT, execute.getRunBeforeCommand());
+        send(ProcessEvent.OUT, "" + executeSection.isRunBefore());
+        send(ProcessEvent.OUT, executeSection.getRunBeforeCommand());
         send(ProcessEvent.OUT, "");
         send(ProcessEvent.OUT, "");
-        if (execute.isRunBefore() && StringUtils.isNoneEmpty(execute.getRunBeforeCommand())) {
+        if (executeSection.isRunBefore() && StringUtils.isNoneEmpty(executeSection.getRunBeforeCommand())) {
             send(ProcessEvent.OUT, "run before task...");
             ArrayList<String> command = new ArrayList<>();
-            command.add(execute.getRunBeforeCommand());
+            command.add(executeSection.getRunBeforeCommand());
             runProcess(command);
 
-            if (execute.isRunBeforeHaltOnError()) {
+            if (executeSection.isRunBeforeHaltOnError()) {
                 result = mCurrentProcess.exitValue() == 0;
             }
 

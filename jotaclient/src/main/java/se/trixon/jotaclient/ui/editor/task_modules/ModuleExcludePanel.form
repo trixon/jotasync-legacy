@@ -47,7 +47,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Templates">
+                    <TitledBorder title="&lt;ModuleExcludePanel.templatePanel.border.title&gt;">
                       <ResourceString PropertyName="titleX" bundle="se/trixon/jotasync/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.templatePanel.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </TitledBorder>
                   </Border>

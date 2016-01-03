@@ -15,12 +15,13 @@
  */
 package se.trixon.jotaclient.ui.editor.task_modules;
 
+import se.trixon.jota.task.ExcludeSection;
 import se.trixon.jota.task.Task;
 import se.trixon.util.dictionary.Dict;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class ModuleExcludePanel extends ModulePanel {
 
@@ -34,26 +35,30 @@ public class ModuleExcludePanel extends ModulePanel {
 
     @Override
     public void loadTask(Task task) {
-        backupCheckBox.setSelected(task.isExcludeTemplateBackup());
-        cacheCheckBox.setSelected(task.isExcludeTemplateCache());
-        gvfsCheckBox.setSelected(task.isExcludeTemplateGvfs());
-        lostFoundCheckBox.setSelected(task.isExcludeTemplateLostFound());
-        sysDirsCheckBox.setSelected(task.isExcludeTemplateSystemDirs());
-        sysMountsCheckBox.setSelected(task.isExcludeTemplateSystemMountDirs());
-        tempCheckBox.setSelected(task.isExcludeTemplateTemp());
-        trashCheckBox.setSelected(task.isExcludeTemplateTrash());
+        ExcludeSection excludeSection = task.getExcludeSection();
+
+        backupCheckBox.setSelected(excludeSection.isExcludeTemplateBackup());
+        cacheCheckBox.setSelected(excludeSection.isExcludeTemplateCache());
+        gvfsCheckBox.setSelected(excludeSection.isExcludeTemplateGvfs());
+        lostFoundCheckBox.setSelected(excludeSection.isExcludeTemplateLostFound());
+        sysDirsCheckBox.setSelected(excludeSection.isExcludeTemplateSystemDirs());
+        sysMountsCheckBox.setSelected(excludeSection.isExcludeTemplateSystemMountDirs());
+        tempCheckBox.setSelected(excludeSection.isExcludeTemplateTemp());
+        trashCheckBox.setSelected(excludeSection.isExcludeTemplateTrash());
     }
 
     @Override
     public Task saveTask(Task task) {
-        task.setExcludeTemplateBackup(backupCheckBox.isSelected());
-        task.setExcludeTemplateCache(cacheCheckBox.isSelected());
-        task.setExcludeTemplateGvfs(gvfsCheckBox.isSelected());
-        task.setExcludeTemplateLostFound(lostFoundCheckBox.isSelected());
-        task.setExcludeTemplateSystemDirs(sysDirsCheckBox.isSelected());
-        task.setExcludeTemplateSystemMountDirs(sysMountsCheckBox.isSelected());
-        task.setExcludeTemplateTemp(tempCheckBox.isSelected());
-        task.setExcludeTemplateTrash(trashCheckBox.isSelected());
+        ExcludeSection excludeSection = task.getExcludeSection();
+
+        excludeSection.setExcludeTemplateBackup(backupCheckBox.isSelected());
+        excludeSection.setExcludeTemplateCache(cacheCheckBox.isSelected());
+        excludeSection.setExcludeTemplateGvfs(gvfsCheckBox.isSelected());
+        excludeSection.setExcludeTemplateLostFound(lostFoundCheckBox.isSelected());
+        excludeSection.setExcludeTemplateSystemDirs(sysDirsCheckBox.isSelected());
+        excludeSection.setExcludeTemplateSystemMountDirs(sysMountsCheckBox.isSelected());
+        excludeSection.setExcludeTemplateTemp(tempCheckBox.isSelected());
+        excludeSection.setExcludeTemplateTrash(trashCheckBox.isSelected());
 
         return task;
     }
