@@ -110,8 +110,7 @@ public class ModuleOptionsPanel extends ModulePanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scrollPane = new javax.swing.JScrollPane();
-        panel = new javax.swing.JPanel();
+        tabbedPane = new javax.swing.JTabbedPane();
         basicPanel = new javax.swing.JPanel();
         basic1Panel = new javax.swing.JPanel();
         basic11Panel = new javax.swing.JPanel();
@@ -120,7 +119,6 @@ public class ModuleOptionsPanel extends ModulePanel {
         basic12Panel = new javax.swing.JPanel();
         permsCheckBox = new javax.swing.JCheckBox();
         groupCheckBox = new javax.swing.JCheckBox();
-        basicSeparator = new javax.swing.JSeparator();
         basic2Panel = new javax.swing.JPanel();
         basic21Panel = new javax.swing.JPanel();
         verboseCheckBox = new javax.swing.JCheckBox();
@@ -132,8 +130,7 @@ public class ModuleOptionsPanel extends ModulePanel {
         progressCheckBox = new javax.swing.JCheckBox();
         sizeOnlyCheckBox = new javax.swing.JCheckBox();
         modifyWindowCheckBox = new javax.swing.JCheckBox();
-        jPanel1 = new javax.swing.JPanel();
-        advanced1Panel = new javax.swing.JPanel();
+        advancedPanel = new javax.swing.JPanel();
         advanced11Panel = new javax.swing.JPanel();
         checksumCheckBox = new javax.swing.JCheckBox();
         devicesCheckBox = new javax.swing.JCheckBox();
@@ -153,8 +150,7 @@ public class ModuleOptionsPanel extends ModulePanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        panel.setAlignmentX(0.5F);
-        panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.PAGE_AXIS));
+        tabbedPane.setTabPlacement(javax.swing.JTabbedPane.LEFT);
 
         basic1Panel.setLayout(new java.awt.GridLayout(1, 0));
 
@@ -301,33 +297,25 @@ public class ModuleOptionsPanel extends ModulePanel {
         basicPanel.setLayout(basicPanelLayout);
         basicPanelLayout.setHorizontalGroup(
             basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 550, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
             .addGroup(basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, basicPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(basicSeparator)
-                        .addComponent(basic1Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(basic2Panel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE))
-                    .addContainerGap()))
+                .addComponent(basic2Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(basic1Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         basicPanelLayout.setVerticalGroup(
             basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 264, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
             .addGroup(basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(basicPanelLayout.createSequentialGroup()
-                    .addContainerGap()
                     .addComponent(basic1Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(basicSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(basic2Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        panel.add(basicPanel);
+        tabbedPane.addTab(Dict.BASIC.toString(), basicPanel);
 
-        advanced1Panel.setLayout(new java.awt.GridLayout(1, 0));
+        advancedPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         checksumCheckBox.setText(bundle.getString("ModuleOptionsPanel.checksumCheckBox.text")); // NOI18N
         checksumCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.checksumCheckBox.toolTipText")); // NOI18N
@@ -379,7 +367,7 @@ public class ModuleOptionsPanel extends ModulePanel {
                 .addGap(0, 0, 0))
         );
 
-        advanced1Panel.add(advanced11Panel);
+        advancedPanel.add(advanced11Panel);
 
         compressCheckBox.setText(bundle.getString("ModuleOptionsPanel.compressCheckBox.text")); // NOI18N
         compressCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.compressCheckBox.toolTipText")); // NOI18N
@@ -431,43 +419,17 @@ public class ModuleOptionsPanel extends ModulePanel {
                 .addContainerGap())
         );
 
-        advanced1Panel.add(advanced12Panel);
+        advancedPanel.add(advanced12Panel);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 562, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(advanced1Panel, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 222, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(advanced1Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-
-        panel.add(jPanel1);
-
-        additionalScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ModuleOptionsPanel.additionalScrollPane.border.title"))); // NOI18N
-        additionalScrollPane.setEnabled(false);
+        tabbedPane.addTab(Dict.ADVANCED.toString(), advancedPanel);
 
         additionalOptionsTextArea.setColumns(20);
         additionalOptionsTextArea.setRows(5);
         additionalScrollPane.setViewportView(additionalOptionsTextArea);
 
-        panel.add(additionalScrollPane);
+        tabbedPane.addTab(Dict.MANUAL.toString(), additionalScrollPane);
 
-        scrollPane.setViewportView(panel);
-
-        add(scrollPane, java.awt.BorderLayout.CENTER);
+        add(tabbedPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -475,7 +437,7 @@ public class ModuleOptionsPanel extends ModulePanel {
     private javax.swing.JScrollPane additionalScrollPane;
     private javax.swing.JPanel advanced11Panel;
     private javax.swing.JPanel advanced12Panel;
-    private javax.swing.JPanel advanced1Panel;
+    private javax.swing.JPanel advancedPanel;
     private javax.swing.JCheckBox backupCheckBox;
     private javax.swing.JPanel basic11Panel;
     private javax.swing.JPanel basic12Panel;
@@ -484,7 +446,6 @@ public class ModuleOptionsPanel extends ModulePanel {
     private javax.swing.JPanel basic22Panel;
     private javax.swing.JPanel basic2Panel;
     private javax.swing.JPanel basicPanel;
-    private javax.swing.JSeparator basicSeparator;
     private javax.swing.JCheckBox checksumCheckBox;
     private javax.swing.JCheckBox compressCheckBox;
     private javax.swing.JCheckBox deleteCheckBox;
@@ -495,19 +456,17 @@ public class ModuleOptionsPanel extends ModulePanel {
     private javax.swing.JCheckBox hardlinksCheckBox;
     private javax.swing.JCheckBox ignoreExistingCheckBox;
     private javax.swing.JCheckBox itemizeChangesCheckBox;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JCheckBox linksCheckBox;
     private javax.swing.JCheckBox modifyWindowCheckBox;
     private javax.swing.JCheckBox numericIdsCheckBox;
     private javax.swing.JCheckBox oneFileSystemCheckBox;
     private javax.swing.JCheckBox ownerCheckBox;
-    private javax.swing.JPanel panel;
     private javax.swing.JCheckBox partialProgressCheckBox;
     private javax.swing.JCheckBox permsCheckBox;
     private javax.swing.JCheckBox progressCheckBox;
     private javax.swing.JCheckBox protectArgsCheckBox;
-    private javax.swing.JScrollPane scrollPane;
     private javax.swing.JCheckBox sizeOnlyCheckBox;
+    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JCheckBox timesCheckBox;
     private javax.swing.JCheckBox updateCheckBox;
     private javax.swing.JCheckBox verboseCheckBox;

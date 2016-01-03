@@ -76,27 +76,26 @@ public class ModuleExcludePanel extends ModulePanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scrollPane = new javax.swing.JScrollPane();
-        panel = new javax.swing.JPanel();
+        tabbedPane = new javax.swing.JTabbedPane();
         templatePanel = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        template1Panel = new javax.swing.JPanel();
         tempCheckBox = new javax.swing.JCheckBox();
         backupCheckBox = new javax.swing.JCheckBox();
         cacheCheckBox = new javax.swing.JCheckBox();
         trashCheckBox = new javax.swing.JCheckBox();
-        jPanel4 = new javax.swing.JPanel();
+        template2Panel = new javax.swing.JPanel();
         sysMountsCheckBox = new javax.swing.JCheckBox();
         sysDirsCheckBox = new javax.swing.JCheckBox();
         lostFoundCheckBox = new javax.swing.JCheckBox();
         gvfsCheckBox = new javax.swing.JCheckBox();
 
-        panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.PAGE_AXIS));
+        setLayout(new java.awt.BorderLayout());
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/task_modules/Bundle"); // NOI18N
-        templatePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ModuleExcludePanel.templatePanel.border.title"))); // NOI18N
+        tabbedPane.setTabPlacement(javax.swing.JTabbedPane.LEFT);
+
         templatePanel.setLayout(new java.awt.GridLayout(1, 2));
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/task_modules/Bundle"); // NOI18N
         tempCheckBox.setText(bundle.getString("ModuleExcludePanel.tempCheckBox.text")); // NOI18N
 
         backupCheckBox.setText(bundle.getString("ModuleExcludePanel.backupCheckBox.text")); // NOI18N
@@ -105,22 +104,22 @@ public class ModuleExcludePanel extends ModulePanel {
 
         trashCheckBox.setText(bundle.getString("ModuleExcludePanel.trashCheckBox.text")); // NOI18N
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout template1PanelLayout = new javax.swing.GroupLayout(template1Panel);
+        template1Panel.setLayout(template1PanelLayout);
+        template1PanelLayout.setHorizontalGroup(
+            template1PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, template1PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(template1PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(trashCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(backupCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tempCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cacheCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        template1PanelLayout.setVerticalGroup(
+            template1PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(template1PanelLayout.createSequentialGroup()
                 .addComponent(tempCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(backupCheckBox)
@@ -131,7 +130,7 @@ public class ModuleExcludePanel extends ModulePanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        templatePanel.add(jPanel3);
+        templatePanel.add(template1Panel);
 
         sysMountsCheckBox.setText(bundle.getString("ModuleExcludePanel.sysMountsCheckBox.text")); // NOI18N
 
@@ -141,22 +140,22 @@ public class ModuleExcludePanel extends ModulePanel {
 
         gvfsCheckBox.setText(bundle.getString("ModuleExcludePanel.gvfsCheckBox.text")); // NOI18N
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        javax.swing.GroupLayout template2PanelLayout = new javax.swing.GroupLayout(template2Panel);
+        template2Panel.setLayout(template2PanelLayout);
+        template2PanelLayout.setHorizontalGroup(
+            template2PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(template2PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(template2PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sysMountsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(sysDirsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lostFoundCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(gvfsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        template2PanelLayout.setVerticalGroup(
+            template2PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(template2PanelLayout.createSequentialGroup()
                 .addComponent(sysMountsCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sysDirsCheckBox)
@@ -167,36 +166,24 @@ public class ModuleExcludePanel extends ModulePanel {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        templatePanel.add(jPanel4);
+        templatePanel.add(template2Panel);
 
-        panel.add(templatePanel);
+        tabbedPane.addTab(Dict.TEMPLATES.toString(), templatePanel);
 
-        scrollPane.setViewportView(panel);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPane)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPane)
-        );
+        add(tabbedPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox backupCheckBox;
     private javax.swing.JCheckBox cacheCheckBox;
     private javax.swing.JCheckBox gvfsCheckBox;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JCheckBox lostFoundCheckBox;
-    private javax.swing.JPanel panel;
-    private javax.swing.JScrollPane scrollPane;
     private javax.swing.JCheckBox sysDirsCheckBox;
     private javax.swing.JCheckBox sysMountsCheckBox;
+    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JCheckBox tempCheckBox;
+    private javax.swing.JPanel template1Panel;
+    private javax.swing.JPanel template2Panel;
     private javax.swing.JPanel templatePanel;
     private javax.swing.JCheckBox trashCheckBox;
     // End of variables declaration//GEN-END:variables

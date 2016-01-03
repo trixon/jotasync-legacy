@@ -117,7 +117,7 @@ public class TaskPanel extends javax.swing.JPanel {
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof ModulePanel) {
                 ModulePanel modulePanel = (ModulePanel) component;
-                modulePanel.setBorder(new EmptyBorder(8, 8, 8, 8));
+                //modulePanel.setBorder(new EmptyBorder(8, 8, 8, 8));
             }
         }
 
@@ -327,7 +327,6 @@ public class TaskPanel extends javax.swing.JPanel {
 
         topPanel.add(sourceDestPanel);
 
-        tabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 tabbedPaneStateChanged(evt);

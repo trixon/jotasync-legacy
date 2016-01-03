@@ -122,8 +122,7 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        prePostScrollPane = new javax.swing.JScrollPane();
-        prePostPanel = new javax.swing.JPanel();
+        runPanel = new javax.swing.JPanel();
         runBeforePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         runBeforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
@@ -133,7 +132,7 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-        prePostPanel.setBorder(null);
+        runPanel.setBorder(null);
 
         runBeforePanel.setCheckBoxMode(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/task_modules/Bundle"); // NOI18N
@@ -150,13 +149,13 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
         runAfterPanel.setCheckBoxMode(true);
         runAfterPanel.setHeader(bundle.getString("ModuleExecutePanel.runAfterPanel.header")); // NOI18N
 
-        javax.swing.GroupLayout prePostPanelLayout = new javax.swing.GroupLayout(prePostPanel);
-        prePostPanel.setLayout(prePostPanelLayout);
-        prePostPanelLayout.setHorizontalGroup(
-            prePostPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(runBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+        javax.swing.GroupLayout runPanelLayout = new javax.swing.GroupLayout(runPanel);
+        runPanel.setLayout(runPanelLayout);
+        runPanelLayout.setHorizontalGroup(
+            runPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(runBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
             .addComponent(runAfterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(prePostPanelLayout.createSequentialGroup()
+            .addGroup(runPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSeparator1)
                 .addContainerGap())
@@ -164,9 +163,9 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
             .addComponent(runAfterSuccessPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(runBeforeHaltOnErrorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        prePostPanelLayout.setVerticalGroup(
-            prePostPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(prePostPanelLayout.createSequentialGroup()
+        runPanelLayout.setVerticalGroup(
+            runPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runPanelLayout.createSequentialGroup()
                 .addComponent(runBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(runBeforeHaltOnErrorCheckBox)
@@ -181,19 +180,16 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
                 .addContainerGap())
         );
 
-        prePostScrollPane.setViewportView(prePostPanel);
-
-        add(prePostScrollPane);
+        add(runPanel);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JPanel prePostPanel;
-    private javax.swing.JScrollPane prePostScrollPane;
     private se.trixon.util.swing.dialogs.FileChooserPanel runAfterFailurePanel;
     private se.trixon.util.swing.dialogs.FileChooserPanel runAfterPanel;
     private se.trixon.util.swing.dialogs.FileChooserPanel runAfterSuccessPanel;
     private javax.swing.JCheckBox runBeforeHaltOnErrorCheckBox;
     private se.trixon.util.swing.dialogs.FileChooserPanel runBeforePanel;
+    private javax.swing.JPanel runPanel;
     // End of variables declaration//GEN-END:variables
 }
