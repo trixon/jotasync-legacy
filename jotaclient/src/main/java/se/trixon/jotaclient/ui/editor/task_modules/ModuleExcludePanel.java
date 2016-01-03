@@ -37,28 +37,28 @@ public class ModuleExcludePanel extends ModulePanel {
     public void loadTask(Task task) {
         ExcludeSection excludeSection = task.getExcludeSection();
 
-        backupCheckBox.setSelected(excludeSection.isExcludeTemplateBackup());
-        cacheCheckBox.setSelected(excludeSection.isExcludeTemplateCache());
-        gvfsCheckBox.setSelected(excludeSection.isExcludeTemplateGvfs());
-        lostFoundCheckBox.setSelected(excludeSection.isExcludeTemplateLostFound());
-        sysDirsCheckBox.setSelected(excludeSection.isExcludeTemplateSystemDirs());
-        sysMountsCheckBox.setSelected(excludeSection.isExcludeTemplateSystemMountDirs());
-        tempCheckBox.setSelected(excludeSection.isExcludeTemplateTemp());
-        trashCheckBox.setSelected(excludeSection.isExcludeTemplateTrash());
+        backupCheckBox.setSelected(excludeSection.isTemplateBackup());
+        cacheCheckBox.setSelected(excludeSection.isTemplateCache());
+        gvfsCheckBox.setSelected(excludeSection.isTemplateGvfs());
+        lostFoundCheckBox.setSelected(excludeSection.isTemplateLostFound());
+        sysDirsCheckBox.setSelected(excludeSection.isTemplateSystemDirs());
+        sysMountsCheckBox.setSelected(excludeSection.isTemplateSystemMountDirs());
+        tempCheckBox.setSelected(excludeSection.isTemplateTemp());
+        trashCheckBox.setSelected(excludeSection.isTemplateTrash());
     }
 
     @Override
     public Task saveTask(Task task) {
         ExcludeSection excludeSection = task.getExcludeSection();
 
-        excludeSection.setExcludeTemplateBackup(backupCheckBox.isSelected());
-        excludeSection.setExcludeTemplateCache(cacheCheckBox.isSelected());
-        excludeSection.setExcludeTemplateGvfs(gvfsCheckBox.isSelected());
-        excludeSection.setExcludeTemplateLostFound(lostFoundCheckBox.isSelected());
-        excludeSection.setExcludeTemplateSystemDirs(sysDirsCheckBox.isSelected());
-        excludeSection.setExcludeTemplateSystemMountDirs(sysMountsCheckBox.isSelected());
-        excludeSection.setExcludeTemplateTemp(tempCheckBox.isSelected());
-        excludeSection.setExcludeTemplateTrash(trashCheckBox.isSelected());
+        excludeSection.setTemplateBackup(backupCheckBox.isSelected());
+        excludeSection.setTemplateCache(cacheCheckBox.isSelected());
+        excludeSection.setTemplateGvfs(gvfsCheckBox.isSelected());
+        excludeSection.setTemplateLostFound(lostFoundCheckBox.isSelected());
+        excludeSection.setTemplateSystemDirs(sysDirsCheckBox.isSelected());
+        excludeSection.setTemplateSystemMountDirs(sysMountsCheckBox.isSelected());
+        excludeSection.setTemplateTemp(tempCheckBox.isSelected());
+        excludeSection.setTemplateTrash(trashCheckBox.isSelected());
 
         return task;
     }

@@ -26,49 +26,25 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Task implements Comparable<Task>, Serializable {
 
-    private String mAdditionalOptions = "";
-    private boolean mBackup;
-    private boolean mChecksum;
     private final List<String> mCommand = new ArrayList<>();
-    private boolean mCompress;
-    private boolean mDelete;
     private String mDescription = "";
     private String mDestination = System.getProperty("user.home");
     private String mDetails = "";
-    private boolean mDevices;
-    private boolean mDirs;
     private boolean mDryRun = true;
     private String mEnvironment = "";
     private final ExcludeSection mExcludeSection;
     private final ExecuteSection mExecuteSection;
-    private boolean mExisting;
-    private boolean mGroup;
-    private boolean mHardLinks;
     private String mHistory = "";
     private long mId = System.currentTimeMillis();
-    private boolean mIgnoreExisting;
-    private boolean mItemizeChanges;
-    private boolean mLinks;
-    private boolean mModifyWindow;
     private String mName = "";
-    private boolean mNumericIds;
-    private boolean mOneFileSystem;
-    private boolean mOwner;
-    private boolean mPartialProgress;
-    private boolean mPerms;
-    private boolean mPostExecuteOnError;
-    private boolean mProgress = true;
-    private boolean mProtectArgs;
-    private boolean mSizeOnly;
+    private final OptionSection mOptionSection;
     private String mSource = System.getProperty("user.home");
-    private boolean mTimes;
     private int mType = 0;
-    private boolean mUpdate;
-    private boolean mVerbose = true;
 
     public Task() {
         mExecuteSection = new ExecuteSection();
         mExcludeSection = new ExcludeSection();
+        mOptionSection = new OptionSection();
     }
 
     public List<String> build() {
@@ -84,83 +60,8 @@ public class Task implements Comparable<Task>, Serializable {
         if (mDryRun) {
             add("--dry-run");
         }
-        if (mTimes) {
-            add("--times");
-        }
-        if (mOwner) {
-            add("--owner");
-        }
-        if (mPerms) {
-            add("--perms");
-        }
-        if (mGroup) {
-            add("--group");
-        }
-        if (mDelete) {
-            add("--delete");
-        }
-        if (mVerbose) {
-            add("--verbose");
-        }
-        if (mIgnoreExisting) {
-            add("--ignore-existing");
-        }
-        if (mUpdate) {
-            add("--update");
-        }
-        if (mOneFileSystem) {
-            add("--one-file-system");
-        }
-        if (mProgress) {
-            add("--progress");
-        }
-        if (mSizeOnly) {
-            add("--size-only");
-        }
-        if (mModifyWindow) {
-            add("--modify-window=1");
-        }
-        if (mChecksum) {
-            add("--checksum");
-        }
-        if (mDevices) {
-            add("--devices");
-            add("--specials");
-        }
-        if (mPartialProgress) {
-            add("--partial");
-            add("--progress");
-        }
-        if (mLinks) {
-            add("--links");
-        }
-        if (mBackup) {
-            add("--backup");
-        }
-        if (mDirs) {
-            add("--dirs");
-        } else {
-            add("--recursive");
-        }
-        if (mCompress) {
-            add("--compress");
-        }
-        if (mExisting) {
-            add("--existing");
-        }
-        if (mNumericIds) {
-            add("--numeric-ids");
-        }
-        if (mHardLinks) {
-            add("--hard-links");
-        }
-        if (mItemizeChanges) {
-            add("--itemize-changes");
-        }
-        if (mProtectArgs) {
-            add("--protect-args");
-        }
 
+        mCommand.addAll(mOptionSection.getCommand());
         mCommand.addAll(mExcludeSection.getCommand());
 
         add(mSource);
@@ -172,10 +73,6 @@ public class Task implements Comparable<Task>, Serializable {
     @Override
     public int compareTo(Task o) {
         return mName.compareTo(o.getName());
-    }
-
-    public String getAdditionalOptions() {
-        return mAdditionalOptions;
     }
 
     public String getCommandAsString() {
@@ -219,6 +116,10 @@ public class Task implements Comparable<Task>, Serializable {
         return mName;
     }
 
+    public OptionSection getOptionSection() {
+        return mOptionSection;
+    }
+
     public String getSource() {
         return mSource;
     }
@@ -227,132 +128,12 @@ public class Task implements Comparable<Task>, Serializable {
         return mType;
     }
 
-    public boolean isBackup() {
-        return mBackup;
-    }
-
-    public boolean isChecksum() {
-        return mChecksum;
-    }
-
-    public boolean isCompress() {
-        return mCompress;
-    }
-
-    public boolean isDelete() {
-        return mDelete;
-    }
-
-    public boolean isDevices() {
-        return mDevices;
-    }
-
-    public boolean isDirs() {
-        return mDirs;
-    }
-
     public boolean isDryRun() {
         return mDryRun;
     }
 
-    public boolean isExisting() {
-        return mExisting;
-    }
-
-    public boolean isGroup() {
-        return mGroup;
-    }
-
-    public boolean isHardLinks() {
-        return mHardLinks;
-    }
-
-    public boolean isIgnoreExisting() {
-        return mIgnoreExisting;
-    }
-
-    public boolean isItemizeChanges() {
-        return mItemizeChanges;
-    }
-
-    public boolean isLinks() {
-        return mLinks;
-    }
-
-    public boolean isModifyWindow() {
-        return mModifyWindow;
-    }
-
-    public boolean isNumericIds() {
-        return mNumericIds;
-    }
-
-    public boolean isOneFileSystem() {
-        return mOneFileSystem;
-    }
-
-    public boolean isOwner() {
-        return mOwner;
-    }
-
-    public boolean isPartialProgress() {
-        return mPartialProgress;
-    }
-
-    public boolean isPerms() {
-        return mPerms;
-    }
-
-    public boolean isPostOnError() {
-        return mPostExecuteOnError;
-    }
-
-    public boolean isProgress() {
-        return mProgress;
-    }
-
-    public boolean isProtectArgs() {
-        return mProtectArgs;
-    }
-
-    public boolean isSizeOnly() {
-        return mSizeOnly;
-    }
-
-    public boolean isTimes() {
-        return mTimes;
-    }
-
-    public boolean isUpdate() {
-        return mUpdate;
-    }
-
     public boolean isValid() {
         return !getName().isEmpty();
-    }
-
-    public boolean isVerbose() {
-        return mVerbose;
-    }
-
-    public void setAdditionalOptions(String additionalOptions) {
-        mAdditionalOptions = additionalOptions;
-    }
-
-    public void setBackup(boolean backup) {
-        mBackup = backup;
-    }
-
-    public void setChecksum(boolean checksum) {
-        mChecksum = checksum;
-    }
-
-    public void setCompress(boolean compress) {
-        mCompress = compress;
-    }
-
-    public void setDelete(boolean delete) {
-        mDelete = delete;
     }
 
     public void setDescription(String comment) {
@@ -367,32 +148,12 @@ public class Task implements Comparable<Task>, Serializable {
         mDetails = string;
     }
 
-    public void setDevices(boolean devices) {
-        mDevices = devices;
-    }
-
-    public void setDirs(boolean dirs) {
-        mDirs = dirs;
-    }
-
     public void setDryRun(boolean dryRun) {
         mDryRun = dryRun;
     }
 
     public void setEnvironment(String environment) {
         mEnvironment = environment;
-    }
-
-    public void setExisting(boolean existing) {
-        mExisting = existing;
-    }
-
-    public void setGroup(boolean group) {
-        mGroup = group;
-    }
-
-    public void setHardLinks(boolean hardLinks) {
-        mHardLinks = hardLinks;
     }
 
     public void setHistory(String history) {
@@ -403,80 +164,16 @@ public class Task implements Comparable<Task>, Serializable {
         mId = id;
     }
 
-    public void setIgnoreExisting(boolean ignoreExisting) {
-        mIgnoreExisting = ignoreExisting;
-    }
-
-    public void setItemizeChanges(boolean itemizeChanges) {
-        mItemizeChanges = itemizeChanges;
-    }
-
-    public void setLinks(boolean links) {
-        mLinks = links;
-    }
-
-    public void setModifyWindow(boolean modifyWindow) {
-        mModifyWindow = modifyWindow;
-    }
-
     public void setName(String name) {
         mName = name;
-    }
-
-    public void setNumericIds(boolean numericIds) {
-        mNumericIds = numericIds;
-    }
-
-    public void setOneFileSystem(boolean oneFileSystem) {
-        mOneFileSystem = oneFileSystem;
-    }
-
-    public void setOwner(boolean owner) {
-        mOwner = owner;
-    }
-
-    public void setPartialProgress(boolean partialProgress) {
-        mPartialProgress = partialProgress;
-    }
-
-    public void setPerms(boolean perms) {
-        mPerms = perms;
-    }
-
-    public void setPostOnError(boolean postOnError) {
-        mPostExecuteOnError = postOnError;
-    }
-
-    public void setProgress(boolean progress) {
-        mProgress = progress;
-    }
-
-    public void setProtectArgs(boolean protectArgs) {
-        mProtectArgs = protectArgs;
-    }
-
-    public void setSizeOnly(boolean sizeOnly) {
-        mSizeOnly = sizeOnly;
     }
 
     public void setSource(String source) {
         mSource = source;
     }
 
-    public void setTimes(boolean times) {
-        mTimes = times;
-    }
-
-    public void setType(int type) {
-        mType = type;
-    }
-
-    public void setUpdate(boolean update) {
-        mUpdate = update;
-    }
-
-    public void setVerbose(boolean verbose) {
-        mVerbose = verbose;
+    public void setType(int value) {
+        mType = value;
     }
 
     @Override

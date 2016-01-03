@@ -15,6 +15,7 @@
  */
 package se.trixon.jota.task;
 
+import java.util.List;
 import org.json.simple.JSONObject;
 
 /**
@@ -42,6 +43,11 @@ public class ExecuteSection extends TaskSection {
     private boolean mRunBefore;
     private String mRunBeforeCommand = "";
     private boolean mRunBeforeHaltOnError;
+
+    @Override
+    public List<String> getCommand() {
+        return null;
+    }
 
     @Override
     public JSONObject getJson() {
@@ -100,19 +106,19 @@ public class ExecuteSection extends TaskSection {
     }
 
     @Override
-    public void setJson(JSONObject jsonObject) {
-        mRunBefore = (boolean) jsonObject.get(KEY_RUN_BEFORE);
-        mRunBeforeCommand = (String) jsonObject.get(KEY_RUN_BEFORE_COMMAND);
-        mRunBeforeHaltOnError = (boolean) jsonObject.get(KEY_RUN_BEFORE_HALT_ON_ERROR);
+    public void loadFromJson(JSONObject jsonObject) {
+        mRunBefore = optBoolean(jsonObject, KEY_RUN_BEFORE);
+        mRunBeforeCommand = optString(jsonObject, KEY_RUN_BEFORE_COMMAND);
+        mRunBeforeHaltOnError = optBoolean(jsonObject, KEY_RUN_BEFORE_HALT_ON_ERROR);
 
-        mRunAfter = (boolean) jsonObject.get(KEY_RUN_AFTER);
-        mRunAfterCommand = (String) jsonObject.get(KEY_RUN_AFTER_COMMAND);
+        mRunAfter = optBoolean(jsonObject, KEY_RUN_AFTER);
+        mRunAfterCommand = optString(jsonObject, KEY_RUN_AFTER_COMMAND);
 
-        mRunAfterFailure = (boolean) jsonObject.get(KEY_RUN_AFTER_FAILURE);
-        mRunAfterFailureCommand = (String) jsonObject.get(KEY_RUN_AFTER_FAILURE_COMMAND);
+        mRunAfterFailure = optBoolean(jsonObject, KEY_RUN_AFTER_FAILURE);
+        mRunAfterFailureCommand = optString(jsonObject, KEY_RUN_AFTER_FAILURE_COMMAND);
 
-        mRunAfterSuccess = (boolean) jsonObject.get(KEY_RUN_AFTER_SUCCESS);
-        mRunAfterSuccessCommand = (String) jsonObject.get(KEY_RUN_AFTER_SUCCESS_COMMAND);
+        mRunAfterSuccess = optBoolean(jsonObject, KEY_RUN_AFTER_SUCCESS);
+        mRunAfterSuccessCommand = optString(jsonObject, KEY_RUN_AFTER_SUCCESS_COMMAND);
     }
 
     public void setRunAfter(boolean value) {

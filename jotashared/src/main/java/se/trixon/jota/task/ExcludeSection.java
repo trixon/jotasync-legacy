@@ -34,53 +34,53 @@ public class ExcludeSection extends TaskSection {
     public static final String KEY_TEMPLATE_TEMP = "templateTemp";
     public static final String KEY_TEMPLATE_TRASH = "templateTrash";
 
-    private boolean mExcludeTemplateBackup;
-    private boolean mExcludeTemplateCache;
-    private boolean mExcludeTemplateGvfs;
-    private boolean mExcludeTemplateLostFound;
-    private boolean mExcludeTemplateSystemDirs;
-    private boolean mExcludeTemplateSystemMountDirs;
-    private boolean mExcludeTemplateTemp;
-    private boolean mExcludeTemplateTrash;
+    private boolean mTemplateBackup;
+    private boolean mTemplateCache;
+    private boolean mTemplateGvfs;
+    private boolean mTemplateLostFound;
+    private boolean mTemplateSystemDirs;
+    private boolean mTemplateSystemMountDirs;
+    private boolean mTemplateTemp;
+    private boolean mTemplateTrash;
 
     @Override
     public List<String> getCommand() {
         mCommand.clear();
 
-        if (mExcludeTemplateBackup) {
+        if (mTemplateBackup) {
             add("--exclude=**~");
         }
 
-        if (mExcludeTemplateCache) {
+        if (mTemplateCache) {
             add("--exclude=**/*cache*/");
             add("--exclude=**/*Cache*/");
         }
 
-        if (mExcludeTemplateGvfs) {
+        if (mTemplateGvfs) {
             add("--exclude=**/.gvfs/");
         }
 
-        if (mExcludeTemplateLostFound) {
+        if (mTemplateLostFound) {
             add("--exclude=**/lost+found*/");
         }
 
-        if (mExcludeTemplateSystemDirs) {
+        if (mTemplateSystemDirs) {
             add("--exclude=/var/**");
             add("--exclude=/proc/**");
             add("--exclude=/dev/**");
             add("--exclude=/sys/**");
         }
 
-        if (mExcludeTemplateSystemMountDirs) {
+        if (mTemplateSystemMountDirs) {
             add("--exclude=/mnt/*/**");
             add("--exclude=/media/*/**");
         }
 
-        if (mExcludeTemplateTemp) {
+        if (mTemplateTemp) {
             add("--exclude=**/*tmp*/");
         }
 
-        if (mExcludeTemplateTrash) {
+        if (mTemplateTrash) {
             add("--exclude=**/*Trash*/");
             add("--exclude=**/*trash*/");
         }
@@ -92,91 +92,91 @@ public class ExcludeSection extends TaskSection {
     public JSONObject getJson() {
         JSONObject jsonObject = new JSONObject();
 
-        jsonObject.put(KEY_TEMPLATE_BACKUP, isExcludeTemplateBackup());
-        jsonObject.put(KEY_TEMPLATE_CACHE, isExcludeTemplateCache());
-        jsonObject.put(KEY_TEMPLATE_GVFS, isExcludeTemplateGvfs());
-        jsonObject.put(KEY_TEMPLATE_LOST_FOUND, isExcludeTemplateLostFound());
-        jsonObject.put(KEY_TEMPLATE_SYSTEM_DIRS, isExcludeTemplateSystemDirs());
-        jsonObject.put(KEY_TEMPLATE_SYSTEM_MOUNT_DIRS, isExcludeTemplateSystemMountDirs());
-        jsonObject.put(KEY_TEMPLATE_TEMP, isExcludeTemplateTemp());
-        jsonObject.put(KEY_TEMPLATE_TRASH, isExcludeTemplateTrash());
+        jsonObject.put(KEY_TEMPLATE_BACKUP, mTemplateBackup);
+        jsonObject.put(KEY_TEMPLATE_CACHE, mTemplateCache);
+        jsonObject.put(KEY_TEMPLATE_GVFS, mTemplateGvfs);
+        jsonObject.put(KEY_TEMPLATE_LOST_FOUND, mTemplateLostFound);
+        jsonObject.put(KEY_TEMPLATE_SYSTEM_DIRS, mTemplateSystemDirs);
+        jsonObject.put(KEY_TEMPLATE_SYSTEM_MOUNT_DIRS, mTemplateSystemMountDirs);
+        jsonObject.put(KEY_TEMPLATE_TEMP, mTemplateTemp);
+        jsonObject.put(KEY_TEMPLATE_TRASH, mTemplateTrash);
 
         return jsonObject;
     }
 
-    public boolean isExcludeTemplateBackup() {
-        return mExcludeTemplateBackup;
+    public boolean isTemplateBackup() {
+        return mTemplateBackup;
     }
 
-    public boolean isExcludeTemplateCache() {
-        return mExcludeTemplateCache;
+    public boolean isTemplateCache() {
+        return mTemplateCache;
     }
 
-    public boolean isExcludeTemplateGvfs() {
-        return mExcludeTemplateGvfs;
+    public boolean isTemplateGvfs() {
+        return mTemplateGvfs;
     }
 
-    public boolean isExcludeTemplateLostFound() {
-        return mExcludeTemplateLostFound;
+    public boolean isTemplateLostFound() {
+        return mTemplateLostFound;
     }
 
-    public boolean isExcludeTemplateSystemDirs() {
-        return mExcludeTemplateSystemDirs;
+    public boolean isTemplateSystemDirs() {
+        return mTemplateSystemDirs;
     }
 
-    public boolean isExcludeTemplateSystemMountDirs() {
-        return mExcludeTemplateSystemMountDirs;
+    public boolean isTemplateSystemMountDirs() {
+        return mTemplateSystemMountDirs;
     }
 
-    public boolean isExcludeTemplateTemp() {
-        return mExcludeTemplateTemp;
+    public boolean isTemplateTemp() {
+        return mTemplateTemp;
     }
 
-    public boolean isExcludeTemplateTrash() {
-        return mExcludeTemplateTrash;
-    }
-
-    public void setExcludeTemplateBackup(boolean value) {
-        mExcludeTemplateBackup = value;
-    }
-
-    public void setExcludeTemplateCache(boolean value) {
-        mExcludeTemplateCache = value;
-    }
-
-    public void setExcludeTemplateGvfs(boolean value) {
-        mExcludeTemplateGvfs = value;
-    }
-
-    public void setExcludeTemplateLostFound(boolean value) {
-        mExcludeTemplateLostFound = value;
-    }
-
-    public void setExcludeTemplateSystemDirs(boolean value) {
-        mExcludeTemplateSystemDirs = value;
-    }
-
-    public void setExcludeTemplateSystemMountDirs(boolean value) {
-        mExcludeTemplateSystemMountDirs = value;
-    }
-
-    public void setExcludeTemplateTemp(boolean value) {
-        mExcludeTemplateTemp = value;
-    }
-
-    public void setExcludeTemplateTrash(boolean value) {
-        mExcludeTemplateTrash = value;
+    public boolean isTemplateTrash() {
+        return mTemplateTrash;
     }
 
     @Override
-    public void setJson(JSONObject jsonObject) {
-        mExcludeTemplateBackup = (boolean) jsonObject.get(KEY_TEMPLATE_BACKUP);
-        mExcludeTemplateCache = (boolean) jsonObject.get(KEY_TEMPLATE_CACHE);
-        mExcludeTemplateGvfs = (boolean) jsonObject.get(KEY_TEMPLATE_GVFS);
-        mExcludeTemplateLostFound = (boolean) jsonObject.get(KEY_TEMPLATE_LOST_FOUND);
-        mExcludeTemplateSystemDirs = (boolean) jsonObject.get(KEY_TEMPLATE_SYSTEM_DIRS);
-        mExcludeTemplateSystemMountDirs = (boolean) jsonObject.get(KEY_TEMPLATE_SYSTEM_MOUNT_DIRS);
-        mExcludeTemplateTemp = (boolean) jsonObject.get(KEY_TEMPLATE_TEMP);
-        mExcludeTemplateTrash = (boolean) jsonObject.get(KEY_TEMPLATE_TRASH);
+    public void loadFromJson(JSONObject jsonObject) {
+        mTemplateBackup = optBoolean(jsonObject, KEY_TEMPLATE_BACKUP);
+        mTemplateCache = optBoolean(jsonObject, KEY_TEMPLATE_CACHE);
+        mTemplateGvfs = optBoolean(jsonObject, KEY_TEMPLATE_GVFS);
+        mTemplateLostFound = optBoolean(jsonObject, KEY_TEMPLATE_LOST_FOUND);
+        mTemplateSystemDirs = optBoolean(jsonObject, KEY_TEMPLATE_SYSTEM_DIRS);
+        mTemplateSystemMountDirs = optBoolean(jsonObject, KEY_TEMPLATE_SYSTEM_MOUNT_DIRS);
+        mTemplateTemp = optBoolean(jsonObject, KEY_TEMPLATE_TEMP);
+        mTemplateTrash = optBoolean(jsonObject, KEY_TEMPLATE_TRASH);
+    }
+
+    public void setTemplateBackup(boolean value) {
+        mTemplateBackup = value;
+    }
+
+    public void setTemplateCache(boolean value) {
+        mTemplateCache = value;
+    }
+
+    public void setTemplateGvfs(boolean value) {
+        mTemplateGvfs = value;
+    }
+
+    public void setTemplateLostFound(boolean value) {
+        mTemplateLostFound = value;
+    }
+
+    public void setTemplateSystemDirs(boolean value) {
+        mTemplateSystemDirs = value;
+    }
+
+    public void setTemplateSystemMountDirs(boolean value) {
+        mTemplateSystemMountDirs = value;
+    }
+
+    public void setTemplateTemp(boolean value) {
+        mTemplateTemp = value;
+    }
+
+    public void setTemplateTrash(boolean value) {
+        mTemplateTrash = value;
     }
 }

@@ -106,13 +106,13 @@ public class TaskPanel extends javax.swing.JPanel {
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeBackup.text"),
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeSync.text")}));
 
+        addModulePanel(mModuleOptionsPanel);
         addModulePanel(mModuleExecutePanel);
         addModulePanel(mModuleExcludePanel);
         addModulePanel(mModuleNotePanel);
 
 //        addModulePanel(mModuleIncludePanel);
 //        addModulePanel(mModuleEnvironmentPanel);
-//        addModulePanel(mModuleOptionsPanel);
 //        addModulePanel(mModuleLogPanel);
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof ModulePanel) {

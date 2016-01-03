@@ -15,6 +15,7 @@
  */
 package se.trixon.jotaclient.ui.editor.task_modules;
 
+import se.trixon.jota.task.OptionSection;
 import se.trixon.jota.task.Task;
 import se.trixon.util.dictionary.Dict;
 
@@ -34,59 +35,64 @@ public class ModuleOptionsPanel extends ModulePanel {
 
     @Override
     public void loadTask(Task task) {
-        additionalOptionsTextArea.setText(task.getAdditionalOptions());
+        OptionSection optionSection = task.getOptionSection();
 
-        backupCheckBox.setSelected(task.isBackup());
-        checksumCheckBox.setSelected(task.isChecksum());
-        compressCheckBox.setSelected(task.isCompress());
-        deleteCheckBox.setSelected(task.isDelete());
-        devicesCheckBox.setSelected(task.isDevices());
-        dirsCheckBox.setSelected(task.isDirs());
-        existingCheckBox.setSelected(task.isExisting());
-        groupCheckBox.setSelected(task.isGroup());
-        hardlinksCheckBox.setSelected(task.isHardLinks());
-        ignoreExistingCheckBox.setSelected(task.isIgnoreExisting());
-        itemizeChangesCheckBox.setSelected(task.isItemizeChanges());
-        linksCheckBox.setSelected(task.isLinks());
-        modifyWindowCheckBox.setSelected(task.isModifyWindow());
-        numericIdsCheckBox.setSelected(task.isNumericIds());
-        oneFileSystemCheckBox.setSelected(task.isOneFileSystem());
-        ownerCheckBox.setSelected(task.isOwner());
-        partialProgressCheckBox.setSelected(task.isPartialProgress());
-        permsCheckBox.setSelected(task.isPerms());
-        progressCheckBox.setSelected(task.isProgress());
-        sizeOnlyCheckBox.setSelected(task.isSizeOnly());
-        updateCheckBox.setSelected(task.isUpdate());
-        verboseCheckBox.setSelected(task.isVerbose());
+        additionalOptionsTextArea.setText(optionSection.getAdditionalOptions());
+        backupCheckBox.setSelected(optionSection.isBackup());
+        checksumCheckBox.setSelected(optionSection.isChecksum());
+        compressCheckBox.setSelected(optionSection.isCompress());
+        deleteCheckBox.setSelected(optionSection.isDelete());
+        devicesCheckBox.setSelected(optionSection.isDevices());
+        dirsCheckBox.setSelected(optionSection.isDirs());
+        existingCheckBox.setSelected(optionSection.isExisting());
+        groupCheckBox.setSelected(optionSection.isGroup());
+        hardlinksCheckBox.setSelected(optionSection.isHardLinks());
+        ignoreExistingCheckBox.setSelected(optionSection.isIgnoreExisting());
+        itemizeChangesCheckBox.setSelected(optionSection.isItemizeChanges());
+        linksCheckBox.setSelected(optionSection.isLinks());
+        modifyWindowCheckBox.setSelected(optionSection.isModifyWindow());
+        numericIdsCheckBox.setSelected(optionSection.isNumericIds());
+        oneFileSystemCheckBox.setSelected(optionSection.isOneFileSystem());
+        ownerCheckBox.setSelected(optionSection.isOwner());
+        partialProgressCheckBox.setSelected(optionSection.isPartialProgress());
+        permsCheckBox.setSelected(optionSection.isPerms());
+        progressCheckBox.setSelected(optionSection.isProgress());
+        protectArgsCheckBox.setSelected(optionSection.isProtectArgs());
+        sizeOnlyCheckBox.setSelected(optionSection.isSizeOnly());
+        timesCheckBox.setSelected(optionSection.isTimes());
+        updateCheckBox.setSelected(optionSection.isUpdate());
+        verboseCheckBox.setSelected(optionSection.isVerbose());
     }
 
     @Override
     public Task saveTask(Task task) {
-        task.setAdditionalOptions(additionalOptionsTextArea.getText());
-        task.setBackup(backupCheckBox.isSelected());
-        task.setChecksum(checksumCheckBox.isSelected());
-        task.setCompress(compressCheckBox.isSelected());
-        task.setDelete(deleteCheckBox.isSelected());
-        task.setDevices(devicesCheckBox.isSelected());
-        task.setDirs(dirsCheckBox.isSelected());
-        task.setExisting(existingCheckBox.isSelected());
-        task.setGroup(groupCheckBox.isSelected());
-        task.setHardLinks(hardlinksCheckBox.isSelected());
-        task.setIgnoreExisting(ignoreExistingCheckBox.isSelected());
-        task.setItemizeChanges(itemizeChangesCheckBox.isSelected());
-        task.setLinks(linksCheckBox.isSelected());
-        task.setModifyWindow(modifyWindowCheckBox.isSelected());
-        task.setNumericIds(numericIdsCheckBox.isSelected());
-        task.setOneFileSystem(oneFileSystemCheckBox.isSelected());
-        task.setOwner(ownerCheckBox.isSelected());
-        task.setPartialProgress(partialProgressCheckBox.isSelected());
-        task.setPerms(permsCheckBox.isSelected());
-        task.setProgress(progressCheckBox.isSelected());
-        task.setProtectArgs(protectArgsCheckBox.isSelected());
-        task.setSizeOnly(sizeOnlyCheckBox.isSelected());
-        task.setTimes(timesCheckBox.isSelected());
-        task.setUpdate(updateCheckBox.isSelected());
-        task.setVerbose(verboseCheckBox.isSelected());
+        OptionSection optionSection = task.getOptionSection();
+
+        optionSection.setAdditionalOptions(additionalOptionsTextArea.getText());
+        optionSection.setBackup(backupCheckBox.isSelected());
+        optionSection.setChecksum(checksumCheckBox.isSelected());
+        optionSection.setCompress(compressCheckBox.isSelected());
+        optionSection.setDelete(deleteCheckBox.isSelected());
+        optionSection.setDevices(devicesCheckBox.isSelected());
+        optionSection.setDirs(dirsCheckBox.isSelected());
+        optionSection.setExisting(existingCheckBox.isSelected());
+        optionSection.setGroup(groupCheckBox.isSelected());
+        optionSection.setHardLinks(hardlinksCheckBox.isSelected());
+        optionSection.setIgnoreExisting(ignoreExistingCheckBox.isSelected());
+        optionSection.setItemizeChanges(itemizeChangesCheckBox.isSelected());
+        optionSection.setLinks(linksCheckBox.isSelected());
+        optionSection.setModifyWindow(modifyWindowCheckBox.isSelected());
+        optionSection.setNumericIds(numericIdsCheckBox.isSelected());
+        optionSection.setOneFileSystem(oneFileSystemCheckBox.isSelected());
+        optionSection.setOwner(ownerCheckBox.isSelected());
+        optionSection.setPartialProgress(partialProgressCheckBox.isSelected());
+        optionSection.setPerms(permsCheckBox.isSelected());
+        optionSection.setProgress(progressCheckBox.isSelected());
+        optionSection.setProtectArgs(protectArgsCheckBox.isSelected());
+        optionSection.setSizeOnly(sizeOnlyCheckBox.isSelected());
+        optionSection.setTimes(timesCheckBox.isSelected());
+        optionSection.setUpdate(updateCheckBox.isSelected());
+        optionSection.setVerbose(verboseCheckBox.isSelected());
 
         return task;
     }

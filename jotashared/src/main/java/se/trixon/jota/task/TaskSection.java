@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONObject;
+import se.trixon.jota.JsonHelper;
 
 /**
  *
@@ -28,13 +29,23 @@ public abstract class TaskSection implements Serializable {
 
     protected final List<String> mCommand = new ArrayList<>();
 
-    public List<String> getCommand() {
-        return mCommand;
-    }
+    public abstract List<String> getCommand();
 
     public abstract JSONObject getJson();
 
-    public abstract void setJson(JSONObject jsonObject);
+    public abstract void loadFromJson(JSONObject jsonObject);
+
+    public boolean optBoolean(JSONObject jsonObject, String key) {
+        return JsonHelper.optBoolean(jsonObject, key);
+    }
+
+    public int optInt(JSONObject jsonObject, String key) {
+        return JsonHelper.optInt(jsonObject, key);
+    }
+
+    public String optString(JSONObject jsonObject, String key) {
+        return JsonHelper.optString(jsonObject, key);
+    }
 
     protected void add(String command) {
         if (!mCommand.contains(command)) {
