@@ -13,25 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.task;
+package se.trixon.jota.job;
 
-import java.util.ArrayList;
-import java.util.List;
 import se.trixon.jota.JotaSection;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public abstract class TaskSection extends JotaSection {
+public abstract class JobSection extends JotaSection {
 
-    protected final List<String> mCommand = new ArrayList<>();
-
-    public abstract List<String> getCommand();
-
-    protected void add(String command) {
-        if (!mCommand.contains(command)) {
-            mCommand.add(command);
-        }
-    }
 }

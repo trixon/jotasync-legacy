@@ -33,7 +33,7 @@ public class Task implements Comparable<Task>, Serializable {
     private boolean mDryRun = true;
     private String mEnvironment = "";
     private final ExcludeSection mExcludeSection;
-    private final ExecuteSection mExecuteSection;
+    private final TaskExecuteSection mExecuteSection;
     private String mHistory = "";
     private long mId = System.currentTimeMillis();
     private String mName = "";
@@ -42,7 +42,7 @@ public class Task implements Comparable<Task>, Serializable {
     private int mType = 0;
 
     public Task() {
-        mExecuteSection = new ExecuteSection();
+        mExecuteSection = new TaskExecuteSection();
         mExcludeSection = new ExcludeSection();
         mOptionSection = new OptionSection();
     }
@@ -100,7 +100,7 @@ public class Task implements Comparable<Task>, Serializable {
         return mExcludeSection;
     }
 
-    public ExecuteSection getExecuteSection() {
+    public TaskExecuteSection getExecuteSection() {
         return mExecuteSection;
     }
 

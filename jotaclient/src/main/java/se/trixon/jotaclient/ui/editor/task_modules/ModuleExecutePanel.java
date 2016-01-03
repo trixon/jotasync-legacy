@@ -18,7 +18,7 @@ package se.trixon.jotaclient.ui.editor.task_modules;
 import se.trixon.jota.task.Task;
 import se.trixon.util.dictionary.Dict;
 import java.io.File;
-import se.trixon.jota.task.ExecuteSection;
+import se.trixon.jota.task.TaskExecuteSection;
 import se.trixon.util.swing.dialogs.FileChooserPanel;
 
 /**
@@ -37,7 +37,7 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
     @Override
     public void loadTask(Task task) {
-        ExecuteSection executeSection = task.getExecuteSection();
+        TaskExecuteSection executeSection = task.getExecuteSection();
 
         runBeforeHaltOnErrorCheckBox.setEnabled(executeSection.isRunBefore());
         runBeforeHaltOnErrorCheckBox.setSelected(executeSection.isRunBeforeHaltOnError());
@@ -84,7 +84,7 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
     @Override
     public Task saveTask(Task task) {
-        ExecuteSection executeSection = task.getExecuteSection();
+        TaskExecuteSection executeSection = task.getExecuteSection();
 
         executeSection.setRunBefore(runBeforePanel.isSelected());
         executeSection.setRunBeforeCommand(runBeforePanel.getPath());

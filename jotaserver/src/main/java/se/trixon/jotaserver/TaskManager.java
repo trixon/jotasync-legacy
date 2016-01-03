@@ -26,7 +26,7 @@ import se.trixon.jota.Jota;
 import se.trixon.jota.JsonHelper;
 import se.trixon.jota.task.ExcludeSection;
 import se.trixon.jota.task.Task;
-import se.trixon.jota.task.ExecuteSection;
+import se.trixon.jota.task.TaskExecuteSection;
 import se.trixon.jota.task.OptionSection;
 
 /**
@@ -79,7 +79,7 @@ public enum TaskManager {
             object.put(KEY_DESCRIPTION, task.getDescription());
             object.put(KEY_DETAILS, task.getDetails());
 
-            object.put(ExecuteSection.KEY, task.getExecuteSection().getJson());
+            object.put(TaskExecuteSection.KEY, task.getExecuteSection().getJson());
             object.put(OptionSection.KEY, task.getOptionSection().getJson());
             object.put(ExcludeSection.KEY, task.getExcludeSection().getJson());
 
@@ -159,8 +159,8 @@ public enum TaskManager {
             task.setDestination((String) object.get(KEY_DEST));
             task.setDetails((String) object.get(KEY_DETAILS));
 
-            if (object.containsKey(ExecuteSection.KEY)) {
-                task.getExecuteSection().loadFromJson((JSONObject) object.get(ExecuteSection.KEY));
+            if (object.containsKey(TaskExecuteSection.KEY)) {
+                task.getExecuteSection().loadFromJson((JSONObject) object.get(TaskExecuteSection.KEY));
             }
 
             if (object.containsKey(OptionSection.KEY)) {

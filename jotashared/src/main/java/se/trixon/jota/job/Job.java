@@ -38,6 +38,7 @@ public class Job implements Comparable<Job>, Serializable {
     private String mCronItems = "";
     private String mDescription = "";
     private String mDetails = "";
+    private final JobExecuteSection mExecuteSection;
     private long mId = System.currentTimeMillis();
     private long mLastRun = -1;
     private int mLastRunExitCode = -1;
@@ -46,16 +47,10 @@ public class Job implements Comparable<Job>, Serializable {
     private boolean mLogOutput = true;
     private boolean mLogSeparateErrors = true;
     private String mName = "";
-    private boolean mRunAfterFailure;
-    private String mRunAfterFailureCommand = "";
-    private boolean mRunAfterSuccess;
-    private String mRunAfterSuccessCommand = "";
-    private boolean mRunBefore;
-    private String mRunBeforeCommand = "";
-    private boolean mRunBeforeHaltOnError;
     private List<Task> mTasks = new LinkedList<>();
 
     public Job() {
+        mExecuteSection = new JobExecuteSection();
     }
 
     public Job(long id, String name, String description, String comment) {
@@ -63,6 +58,7 @@ public class Job implements Comparable<Job>, Serializable {
         mName = name;
         mDescription = description;
         mDetails = comment;
+        mExecuteSection = new JobExecuteSection();
     }
 
     @Override
@@ -107,6 +103,10 @@ public class Job implements Comparable<Job>, Serializable {
 
     public String getDetails() {
         return mDetails;
+    }
+
+    public JobExecuteSection getExecuteSection() {
+        return mExecuteSection;
     }
 
     public long getId() {
@@ -156,18 +156,6 @@ public class Job implements Comparable<Job>, Serializable {
         return mName;
     }
 
-    public String getRunAfterFailureCommand() {
-        return mRunAfterFailureCommand;
-    }
-
-    public String getRunAfterSuccessCommand() {
-        return mRunAfterSuccessCommand;
-    }
-
-    public String getRunBeforeCommand() {
-        return mRunBeforeCommand;
-    }
-
     public List<Task> getTasks() {
         return mTasks;
     }
@@ -196,34 +184,6 @@ public class Job implements Comparable<Job>, Serializable {
 
     public boolean isLogSeparateErrors() {
         return mLogSeparateErrors;
-    }
-
-    public boolean isRunAfterFailure() {
-        return mRunAfterFailure;
-    }
-
-    public boolean isRunAfterFailureValid() {
-        return isCommandValid(mRunAfterFailureCommand);
-    }
-
-    public boolean isRunAfterSuccess() {
-        return mRunAfterSuccess;
-    }
-
-    public boolean isRunAfterSuccessValid() {
-        return isCommandValid(mRunAfterSuccessCommand);
-    }
-
-    public boolean isRunBefore() {
-        return mRunBefore;
-    }
-
-    public boolean isRunBeforeHaltOnError() {
-        return mRunBeforeHaltOnError;
-    }
-
-    public boolean isRunBeforeValid() {
-        return isCommandValid(mRunBeforeCommand);
     }
 
     public boolean isValid() {
@@ -284,34 +244,6 @@ public class Job implements Comparable<Job>, Serializable {
 
     public void setName(String name) {
         mName = name;
-    }
-
-    public void setRunAfterFailure(boolean runAfterFailure) {
-        mRunAfterFailure = runAfterFailure;
-    }
-
-    public void setRunAfterFailureCommand(String runAfterFailureCommand) {
-        mRunAfterFailureCommand = runAfterFailureCommand;
-    }
-
-    public void setRunAfterSuccess(boolean runAfterSuccess) {
-        mRunAfterSuccess = runAfterSuccess;
-    }
-
-    public void setRunAfterSuccessCommand(String runAfterSuccessCommand) {
-        mRunAfterSuccessCommand = runAfterSuccessCommand;
-    }
-
-    public void setRunBefore(boolean runBefore) {
-        mRunBefore = runBefore;
-    }
-
-    public void setRunBeforeCommand(String runBeforeCommand) {
-        mRunBeforeCommand = runBeforeCommand;
-    }
-
-    public void setRunBeforeHaltOnError(boolean runBeforeOnError) {
-        mRunBeforeHaltOnError = runBeforeOnError;
     }
 
     public void setTasks(List<Task> tasks) {

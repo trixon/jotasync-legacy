@@ -30,7 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.Jota;
 import se.trixon.jota.ProcessEvent;
 import se.trixon.jota.job.Job;
-import se.trixon.jota.task.ExecuteSection;
+import se.trixon.jota.job.JobExecuteSection;
+import se.trixon.jota.task.TaskExecuteSection;
 import se.trixon.jota.task.Task;
 import se.trixon.util.Xlog;
 
@@ -91,14 +92,14 @@ public class JobExecutor extends Thread {
 
     private boolean runBeforeJob() throws IOException, InterruptedException {
         boolean result = true;
-
-        if (mJob.isRunBefore() && StringUtils.isNoneEmpty(mJob.getRunBeforeCommand())) {
+        JobExecuteSection jobExecuteSection = mJob.getExecuteSection();
+        if (jobExecuteSection.isRunBefore() && StringUtils.isNoneEmpty(jobExecuteSection.getRunBeforeCommand())) {
             send(ProcessEvent.OUT, "run before job...");
             ArrayList<String> command = new ArrayList<>();
-            command.add(mJob.getRunBeforeCommand());
+            command.add(jobExecuteSection.getRunBeforeCommand());
             runProcess(command);
 
-            if (mJob.isRunBeforeHaltOnError()) {
+            if (jobExecuteSection.isRunBeforeHaltOnError()) {
                 result = mCurrentProcess.exitValue() == 0;
             }
 
@@ -118,19 +119,19 @@ public class JobExecutor extends Thread {
 
     private boolean runBeforeTask(Task task) throws IOException, InterruptedException {
         boolean result = true;
-        ExecuteSection executeSection = task.getExecuteSection();
+        TaskExecuteSection taskExecuteSection = task.getExecuteSection();
         send(ProcessEvent.OUT, "runBeforeTask");
-        send(ProcessEvent.OUT, "" + executeSection.isRunBefore());
-        send(ProcessEvent.OUT, executeSection.getRunBeforeCommand());
+        send(ProcessEvent.OUT, "" + taskExecuteSection.isRunBefore());
+        send(ProcessEvent.OUT, taskExecuteSection.getRunBeforeCommand());
         send(ProcessEvent.OUT, "");
         send(ProcessEvent.OUT, "");
-        if (executeSection.isRunBefore() && StringUtils.isNoneEmpty(executeSection.getRunBeforeCommand())) {
+        if (taskExecuteSection.isRunBefore() && StringUtils.isNoneEmpty(taskExecuteSection.getRunBeforeCommand())) {
             send(ProcessEvent.OUT, "run before task...");
             ArrayList<String> command = new ArrayList<>();
-            command.add(executeSection.getRunBeforeCommand());
+            command.add(taskExecuteSection.getRunBeforeCommand());
             runProcess(command);
 
-            if (executeSection.isRunBeforeHaltOnError()) {
+            if (taskExecuteSection.isRunBeforeHaltOnError()) {
                 result = mCurrentProcess.exitValue() == 0;
             }
 

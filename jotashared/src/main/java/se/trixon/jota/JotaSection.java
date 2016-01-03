@@ -13,25 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.task;
+package se.trixon.jota;
 
-import java.util.ArrayList;
-import java.util.List;
-import se.trixon.jota.JotaSection;
+import java.io.Serializable;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public abstract class TaskSection extends JotaSection {
+public abstract class JotaSection implements Serializable {
 
-    protected final List<String> mCommand = new ArrayList<>();
+    public abstract JSONObject getJson();
 
-    public abstract List<String> getCommand();
+    public abstract void loadFromJson(JSONObject jsonObject);
 
-    protected void add(String command) {
-        if (!mCommand.contains(command)) {
-            mCommand.add(command);
-        }
+    public boolean optBoolean(JSONObject jsonObject, String key) {
+        return JsonHelper.optBoolean(jsonObject, key);
+    }
+
+    public int optInt(JSONObject jsonObject, String key) {
+        return JsonHelper.optInt(jsonObject, key);
+    }
+
+    public String optString(JSONObject jsonObject, String key) {
+        return JsonHelper.optString(jsonObject, key);
     }
 }

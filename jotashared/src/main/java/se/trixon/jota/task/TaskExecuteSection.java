@@ -22,7 +22,7 @@ import org.json.simple.JSONObject;
  *
  * @author Patrik Karlsson
  */
-public class ExecuteSection extends TaskSection {
+public class TaskExecuteSection extends TaskSection {
 
     public static final String KEY = "execute";
     public static final String KEY_RUN_AFTER = "runAfter";

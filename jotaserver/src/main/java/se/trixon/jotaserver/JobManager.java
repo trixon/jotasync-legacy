@@ -22,6 +22,7 @@ import javax.swing.DefaultListModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import se.trixon.jota.JsonHelper;
+import se.trixon.jota.job.JobExecuteSection;
 import se.trixon.jota.job.Job;
 
 /**
@@ -45,13 +46,6 @@ public enum JobManager {
     private static final String KEY_LOG_OUTPUT = "logOutput";
     private static final String KEY_LOG_SEPARATE_ERRORS = "logSeparateErrors";
     private static final String KEY_NAME = "name";
-    private static final String KEY_RUN_AFTER_FAILURE = "runAfterFailure";
-    private static final String KEY_RUN_AFTER_FAILURE_COMMAND = "runAfterFailureCommand";
-    private static final String KEY_RUN_AFTER_SUCCESS = "runAfterSuccess";
-    private static final String KEY_RUN_AFTER_SUCCESS_COMMAND = "runAfterSuccessCommand";
-    private static final String KEY_RUN_BEFORE = "runBefore";
-    private static final String KEY_RUN_BEFORE_COMMAND = "runBeforeCommand";
-    private static final String KEY_RUN_BEFORE_HALT_ON_ERROR = "runBeforeHaltOnError";
     private static final String KEY_TASKS = "tasks";
     private final LinkedList<Job> mJobs = new LinkedList<>();
 
@@ -93,16 +87,6 @@ public enum JobManager {
             object.put(KEY_LAST_RUN_EXIT_CODE, job.getLastRunExitCode());
             object.put(KEY_TASKS, job.getTasksString());
 
-            object.put(KEY_RUN_AFTER_FAILURE, job.isRunAfterFailure());
-            object.put(KEY_RUN_AFTER_FAILURE_COMMAND, job.getRunAfterFailureCommand());
-
-            object.put(KEY_RUN_AFTER_SUCCESS, job.isRunAfterSuccess());
-            object.put(KEY_RUN_AFTER_SUCCESS_COMMAND, job.getRunAfterSuccessCommand());
-
-            object.put(KEY_RUN_BEFORE, job.isRunBefore());
-            object.put(KEY_RUN_BEFORE_COMMAND, job.getRunBeforeCommand());
-            object.put(KEY_RUN_BEFORE_HALT_ON_ERROR, job.isRunBeforeHaltOnError());
-
             object.put(KEY_COLOR_BACKGROUND, job.getColorBackground());
             object.put(KEY_COLOR_FOREGROUND, job.getColorForeground());
 
@@ -110,6 +94,8 @@ public enum JobManager {
             object.put(KEY_LOG_ERRORS, job.isLogErrors());
             object.put(KEY_LOG_SEPARATE_ERRORS, job.isLogSeparateErrors());
             object.put(KEY_LOG_MODE, job.getLogMode());
+
+            object.put(JobExecuteSection.KEY, job.getExecuteSection().getJson());
 
             array.add(object);
         }
@@ -159,15 +145,6 @@ public enum JobManager {
 
             job.setCronActive(JsonHelper.optBoolean(object, KEY_CRON_ACTIVE));
             job.setCronItems((String) object.get(KEY_CRON_ITEMS));
-            job.setRunAfterFailure((boolean) object.get(KEY_RUN_AFTER_FAILURE));
-            job.setRunAfterFailureCommand((String) object.get(KEY_RUN_AFTER_FAILURE_COMMAND));
-
-            job.setRunAfterSuccess((boolean) object.get(KEY_RUN_AFTER_SUCCESS));
-            job.setRunAfterSuccessCommand((String) object.get(KEY_RUN_AFTER_SUCCESS_COMMAND));
-
-            job.setRunBefore((boolean) object.get(KEY_RUN_BEFORE));
-            job.setRunBeforeCommand((String) object.get(KEY_RUN_BEFORE_COMMAND));
-            job.setRunBeforeHaltOnError((boolean) object.get(KEY_RUN_BEFORE_HALT_ON_ERROR));
 
             job.setColorBackground(JsonHelper.optString(object, KEY_COLOR_BACKGROUND));
             job.setColorForeground(JsonHelper.optString(object, KEY_COLOR_FOREGROUND));
@@ -176,6 +153,10 @@ public enum JobManager {
             job.setLogErrors((boolean) object.get(KEY_LOG_ERRORS));
             job.setLogSeparateErrors((boolean) object.get(KEY_LOG_SEPARATE_ERRORS));
             job.setLogMode(JsonHelper.getInt(object, KEY_LOG_MODE));
+
+            if (object.containsKey(JobExecuteSection.KEY)) {
+                job.getExecuteSection().loadFromJson((JSONObject) object.get(JobExecuteSection.KEY));
+            }
 
             mJobs.add(job);
         }

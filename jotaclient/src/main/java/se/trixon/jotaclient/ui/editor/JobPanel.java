@@ -18,6 +18,7 @@ package se.trixon.jotaclient.ui.editor;
 import java.awt.Color;
 import java.io.File;
 import org.apache.commons.lang3.StringUtils;
+import se.trixon.jota.job.JobExecuteSection;
 import se.trixon.jota.job.Job;
 import se.trixon.util.GraphicsHelper;
 import se.trixon.util.swing.dialogs.FileChooserPanel;
@@ -26,7 +27,7 @@ import se.trixon.util.swing.dialogs.SimpleDialog;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.FileChooserButtonListener {
 
@@ -43,15 +44,19 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     public Job getJob() {
         Job job = new Job(mJob.getId(), nameTextField.getText(), descriptionTextField.getText(), detailsTextArea.getText());
 
-        job.setRunAfterFailure(afterFailureFileChooserPanel.isSelected());
-        job.setRunAfterFailureCommand(afterFailureFileChooserPanel.getPath().trim());
+        JobExecuteSection executeSection = job.getExecuteSection();
+        executeSection.setRunBefore(runBeforePanel.isSelected());
+        executeSection.setRunBeforeCommand(runBeforePanel.getPath());
+        executeSection.setRunBeforeHaltOnError(runBeforeHaltOnErrorCheckBox.isSelected());
 
-        job.setRunAfterSuccess(afterSuccessFileChooserPanel.isSelected());
-        job.setRunAfterSuccessCommand(afterSuccessFileChooserPanel.getPath().trim());
+        executeSection.setRunAfterFailure(runAfterFailurePanel.isSelected());
+        executeSection.setRunAfterFailureCommand(runAfterFailurePanel.getPath());
 
-        job.setRunBefore(beforeFileChooserPanel.isSelected());
-        job.setRunBeforeCommand(beforeFileChooserPanel.getPath().trim());
-        job.setRunBeforeHaltOnError(beforeHaltCheckBox.isSelected());
+        executeSection.setRunAfterSuccess(runAfterSuccessPanel.isSelected());
+        executeSection.setRunAfterSuccessCommand(runAfterSuccessPanel.getPath());
+
+        executeSection.setRunAfter(runAfterPanel.isSelected());
+        executeSection.setRunAfterCommand(runAfterPanel.getPath());
 
         job.setCronActive(cronPanel.isCronActive());
         job.setCronItems(cronPanel.getCronItems());
@@ -89,14 +94,8 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
 
     @Override
     public void onFileChooserCheckBoxChange(FileChooserPanel fileChooserPanel, boolean isSelected) {
-        if (fileChooserPanel == beforeFileChooserPanel) {
-            beforeHaltCheckBox.setEnabled(isSelected);
-        }
-
-        if (beforeFileChooserPanel.isSelected() || afterFailureFileChooserPanel.isSelected() || afterSuccessFileChooserPanel.isSelected()) {
-//            mNotificationLineSupport.setWarningMessage("External commands does not take arguments.");
-        } else {
-//            mNotificationLineSupport.clearMessages();
+        if (fileChooserPanel == runBeforePanel) {
+            runBeforeHaltOnErrorCheckBox.setEnabled(isSelected);
         }
     }
 
@@ -114,24 +113,31 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
 
     public void setJob(Job job) {
         mJob = job;
+        JobExecuteSection executeSection = job.getExecuteSection();
+
         nameTextField.setText(mJob.getName());
         descriptionTextField.setText(mJob.getDescription());
         detailsTextArea.setText(mJob.getDetails());
         detailsTextArea.setCaretPosition(0);
 
-        afterFailureFileChooserPanel.setEnabled(mJob.isRunAfterFailure());
-        afterFailureFileChooserPanel.setPath(mJob.getRunAfterFailureCommand());
-        afterFailureFileChooserPanel.setSelected(mJob.isRunAfterFailure());
+        runBeforeHaltOnErrorCheckBox.setEnabled(executeSection.isRunBefore());
+        runBeforeHaltOnErrorCheckBox.setSelected(executeSection.isRunBeforeHaltOnError());
 
-        afterSuccessFileChooserPanel.setEnabled(mJob.isRunAfterSuccess());
-        afterSuccessFileChooserPanel.setPath(mJob.getRunAfterSuccessCommand());
-        afterSuccessFileChooserPanel.setSelected(mJob.isRunAfterSuccess());
+        runBeforePanel.setSelected(executeSection.isRunBefore());
+        runBeforePanel.setPath(executeSection.getRunBeforeCommand());
+        runBeforePanel.setEnabled(runBeforePanel.isSelected());
 
-        beforeFileChooserPanel.setEnabled(mJob.isRunBefore());
-        beforeFileChooserPanel.setPath(mJob.getRunBeforeCommand());
-        beforeFileChooserPanel.setSelected(mJob.isRunBefore());
-        beforeHaltCheckBox.setEnabled(mJob.isRunBefore());
-        beforeHaltCheckBox.setSelected(mJob.isRunBeforeHaltOnError());
+        runAfterFailurePanel.setSelected(executeSection.isRunAfterFailure());
+        runAfterFailurePanel.setPath(executeSection.getRunAfterFailureCommand());
+        runAfterFailurePanel.setEnabled(runAfterFailurePanel.isSelected());
+
+        runAfterSuccessPanel.setSelected(executeSection.isRunAfterSuccess());
+        runAfterSuccessPanel.setPath(executeSection.getRunAfterSuccessCommand());
+        runAfterSuccessPanel.setEnabled(runAfterSuccessPanel.isSelected());
+
+        runAfterPanel.setSelected(executeSection.isRunAfter());
+        runAfterPanel.setPath(executeSection.getRunAfterCommand());
+        runAfterPanel.setEnabled(runAfterPanel.isSelected());
 
         cronPanel.setCronActive(job.isCronActive());
         cronPanel.setCronItems(job.getCronItems());
@@ -160,9 +166,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     }
 
     private void init() {
-        beforeFileChooserPanel.setButtonListener(this);
-        afterSuccessFileChooserPanel.setButtonListener(this);
-        afterFailureFileChooserPanel.setButtonListener(this);
+        runBeforePanel.setButtonListener(this);
 
         nameTextField.requestFocus();
     }
@@ -183,12 +187,12 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         descriptionTextField = new javax.swing.JTextField();
         tabbedPane = new javax.swing.JTabbedPane();
         cronPanel = new se.trixon.jotaclient.ui.editor.CronEditorPanel();
-        runBeforePanel = new javax.swing.JPanel();
-        beforeFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        beforeHaltCheckBox = new javax.swing.JCheckBox();
-        runAfterPanel = new javax.swing.JPanel();
-        afterSuccessFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        afterFailureFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        runPanel = new javax.swing.JPanel();
+        runBeforePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        runBeforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
+        runAfterFailurePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        runAfterSuccessPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        runAfterPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         logPanel = new javax.swing.JPanel();
         logOutputCheckBox = new javax.swing.JCheckBox();
         logErrorsCheckBox = new javax.swing.JCheckBox();
@@ -211,65 +215,54 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         tabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.addTab(Dict.SCHEDULE.getString(), cronPanel);
 
-        beforeFileChooserPanel.setCheckBoxMode(true);
+        runBeforePanel.setCheckBoxMode(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jotaclient/ui/editor/Bundle"); // NOI18N
-        beforeFileChooserPanel.setHeader(bundle.getString("JobPanel.beforeFileChooserPanel.header")); // NOI18N
+        runBeforePanel.setHeader(bundle.getString("JobPanel.runBeforePanel.header")); // NOI18N
 
-        beforeHaltCheckBox.setText(bundle.getString("JobPanel.beforeHaltCheckBox.text")); // NOI18N
+        runBeforeHaltOnErrorCheckBox.setText(bundle.getString("JobPanel.runBeforeHaltOnErrorCheckBox.text")); // NOI18N
 
-        javax.swing.GroupLayout runBeforePanelLayout = new javax.swing.GroupLayout(runBeforePanel);
-        runBeforePanel.setLayout(runBeforePanelLayout);
-        runBeforePanelLayout.setHorizontalGroup(
-            runBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(runBeforePanelLayout.createSequentialGroup()
+        runAfterFailurePanel.setCheckBoxMode(true);
+        runAfterFailurePanel.setHeader(bundle.getString("JobPanel.runAfterFailurePanel.header")); // NOI18N
+
+        runAfterSuccessPanel.setCheckBoxMode(true);
+        runAfterSuccessPanel.setHeader(bundle.getString("JobPanel.runAfterSuccessPanel.header")); // NOI18N
+
+        runAfterPanel.setCheckBoxMode(true);
+        runAfterPanel.setHeader(bundle.getString("JobPanel.runAfterPanel.header")); // NOI18N
+
+        javax.swing.GroupLayout runPanelLayout = new javax.swing.GroupLayout(runPanel);
+        runPanel.setLayout(runPanelLayout);
+        runPanelLayout.setHorizontalGroup(
+            runPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(runBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(beforeFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(runBeforePanelLayout.createSequentialGroup()
-                        .addComponent(beforeHaltCheckBox)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(runPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(runBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(runPanelLayout.createSequentialGroup()
+                        .addComponent(runBeforeHaltOnErrorCheckBox)
+                        .addGap(0, 173, Short.MAX_VALUE))
+                    .addComponent(runAfterSuccessPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(runAfterFailurePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(runAfterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        runBeforePanelLayout.setVerticalGroup(
-            runBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(runBeforePanelLayout.createSequentialGroup()
+        runPanelLayout.setVerticalGroup(
+            runPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(beforeFileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(runBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(beforeHaltCheckBox)
+                .addComponent(runBeforeHaltOnErrorCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(runAfterFailurePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(runAfterSuccessPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(runAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tabbedPane.addTab(Dict.RUN_BEFORE.getString(), runBeforePanel);
-
-        afterSuccessFileChooserPanel.setCheckBoxMode(true);
-        afterSuccessFileChooserPanel.setHeader(bundle.getString("JobPanel.afterSuccessFileChooserPanel.header")); // NOI18N
-
-        afterFailureFileChooserPanel.setCheckBoxMode(true);
-        afterFailureFileChooserPanel.setHeader(bundle.getString("JobPanel.afterFailureFileChooserPanel.header")); // NOI18N
-
-        javax.swing.GroupLayout runAfterPanelLayout = new javax.swing.GroupLayout(runAfterPanel);
-        runAfterPanel.setLayout(runAfterPanelLayout);
-        runAfterPanelLayout.setHorizontalGroup(
-            runAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(runAfterPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(runAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(afterSuccessFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(afterFailureFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        runAfterPanelLayout.setVerticalGroup(
-            runAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(runAfterPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(afterSuccessFileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(afterFailureFileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        tabbedPane.addTab(Dict.RUN_AFTER.getString(), runAfterPanel);
+        tabbedPane.addTab(Dict.RUN.toString(), runPanel);
 
         logOutputCheckBox.setText(Dict.LOG_OUTPUT.toString());
 
@@ -318,7 +311,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
                 .addGroup(logPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(logSeparateCheckBox)
                     .addComponent(logUniqueRadioButton))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(194, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab(Dict.LOG.toString(), logPanel);
@@ -389,7 +382,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
                     .addComponent(nameTextField)
                     .addComponent(descriptionTextField)
                     .addGroup(layout.createSequentialGroup()
@@ -410,7 +403,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE))
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -430,12 +423,8 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     }//GEN-LAST:event_colorButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private se.trixon.util.swing.dialogs.FileChooserPanel afterFailureFileChooserPanel;
-    private se.trixon.util.swing.dialogs.FileChooserPanel afterSuccessFileChooserPanel;
     private javax.swing.JPanel appearancePanel;
     private javax.swing.JButton backgroundButton;
-    private se.trixon.util.swing.dialogs.FileChooserPanel beforeFileChooserPanel;
-    private javax.swing.JCheckBox beforeHaltCheckBox;
     private javax.swing.JButton colorButton;
     private se.trixon.jotaclient.ui.editor.CronEditorPanel cronPanel;
     private javax.swing.JLabel descriptionLabel;
@@ -454,8 +443,12 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
     private javax.swing.JTextField nameTextField;
     private javax.swing.JButton previewButton;
     private javax.swing.JButton resetButton;
-    private javax.swing.JPanel runAfterPanel;
-    private javax.swing.JPanel runBeforePanel;
+    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterFailurePanel;
+    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterPanel;
+    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterSuccessPanel;
+    private javax.swing.JCheckBox runBeforeHaltOnErrorCheckBox;
+    private se.trixon.util.swing.dialogs.FileChooserPanel runBeforePanel;
+    private javax.swing.JPanel runPanel;
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
 }

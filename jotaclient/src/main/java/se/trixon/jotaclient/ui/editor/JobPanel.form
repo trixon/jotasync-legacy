@@ -23,7 +23,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="tabbedPane" alignment="1" max="32767" attributes="0"/>
+                  <Component id="tabbedPane" alignment="1" pref="498" max="32767" attributes="0"/>
                   <Component id="nameTextField" alignment="0" max="32767" attributes="0"/>
                   <Component id="descriptionTextField" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
@@ -49,7 +49,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="descriptionTextField" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tabbedPane" pref="173" max="32767" attributes="0"/>
+              <Component id="tabbedPane" pref="327" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -91,12 +91,12 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Container class="javax.swing.JPanel" name="runBeforePanel">
+        <Container class="javax.swing.JPanel" name="runPanel">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="&lt;User Code&gt;">
                 <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="Dict.RUN_BEFORE.getString()" type="code"/>
+                  <Connection code="Dict.RUN.toString()" type="code"/>
                 </Property>
               </JTabbedPaneConstraints>
             </Constraint>
@@ -108,11 +108,14 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="beforeFileChooserPanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="runBeforePanel" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="beforeHaltCheckBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="runBeforeHaltOnErrorCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="173" max="32767" attributes="0"/>
                           </Group>
+                          <Component id="runAfterSuccessPanel" max="32767" attributes="0"/>
+                          <Component id="runAfterFailurePanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="runAfterPanel" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -122,82 +125,57 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="beforeFileChooserPanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="runBeforePanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="beforeHaltCheckBox" min="-2" max="-2" attributes="0"/>
+                      <Component id="runBeforeHaltOnErrorCheckBox" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="runAfterFailurePanel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="runAfterSuccessPanel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="runAfterPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="beforeFileChooserPanel">
+            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="runBeforePanel">
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.beforeFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.runBeforePanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="beforeHaltCheckBox">
+            <Component class="javax.swing.JCheckBox" name="runBeforeHaltOnErrorCheckBox">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.beforeHaltCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.runBeforeHaltOnErrorCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="runAfterPanel">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="&lt;User Code&gt;">
-                <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="Dict.RUN_AFTER.getString()" type="code"/>
-                </Property>
-              </JTabbedPaneConstraints>
-            </Constraint>
-          </Constraints>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="afterSuccessFileChooserPanel" max="32767" attributes="0"/>
-                          <Component id="afterFailureFileChooserPanel" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="afterSuccessFileChooserPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="afterFailureFileChooserPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="afterSuccessFileChooserPanel">
+            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="runAfterFailurePanel">
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.afterSuccessFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.runAfterFailurePanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="afterFailureFileChooserPanel">
+            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="runAfterSuccessPanel">
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.afterFailureFileChooserPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.runAfterSuccessPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="runAfterPanel">
+              <Properties>
+                <Property name="checkBoxMode" type="boolean" value="true"/>
+                <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="se/trixon/jotaclient/ui/editor/Bundle.properties" key="JobPanel.runAfterPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
@@ -252,7 +230,7 @@
                           <Component id="logSeparateCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="logUniqueRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="40" max="32767" attributes="0"/>
+                      <EmptySpace pref="194" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

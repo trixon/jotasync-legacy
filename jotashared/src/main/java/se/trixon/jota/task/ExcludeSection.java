@@ -26,7 +26,7 @@ public class ExcludeSection extends TaskSection {
 
     public static final String KEY = "exclude";
     public static final String KEY_TEMPLATE_BACKUP = "templateBackup";
-    public static final String KEY_TEMPLATE_CACHE = "templateCahce";
+    public static final String KEY_TEMPLATE_CACHE = "templateCache";
     public static final String KEY_TEMPLATE_GVFS = "templateGvfs";
     public static final String KEY_TEMPLATE_LOST_FOUND = "templateLostFound";
     public static final String KEY_TEMPLATE_SYSTEM_DIRS = "templateSystemDirs";
