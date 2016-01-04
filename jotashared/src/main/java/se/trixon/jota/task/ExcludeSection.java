@@ -16,6 +16,7 @@
 package se.trixon.jota.task;
 
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
 /**
@@ -25,6 +26,8 @@ import org.json.simple.JSONObject;
 public class ExcludeSection extends TaskSection {
 
     public static final String KEY = "exclude";
+    public static final String KEY_MANUAL_FILE_PATH = "manualFilePath";
+    public static final String KEY_MANUAL_FILE_USED = "manualFileUsed";
     public static final String KEY_TEMPLATE_BACKUP = "templateBackup";
     public static final String KEY_TEMPLATE_CACHE = "templateCache";
     public static final String KEY_TEMPLATE_GVFS = "templateGvfs";
@@ -34,6 +37,8 @@ public class ExcludeSection extends TaskSection {
     public static final String KEY_TEMPLATE_TEMP = "templateTemp";
     public static final String KEY_TEMPLATE_TRASH = "templateTrash";
 
+    private String mManualFilePath;
+    private boolean mManualFileUsed;
     private boolean mTemplateBackup;
     private boolean mTemplateCache;
     private boolean mTemplateGvfs;
@@ -46,6 +51,10 @@ public class ExcludeSection extends TaskSection {
     @Override
     public List<String> getCommand() {
         mCommand.clear();
+
+        if (mManualFileUsed && StringUtils.isNotBlank(mManualFilePath)) {
+            add("--exclude-from=" + mManualFilePath);
+        }
 
         if (mTemplateBackup) {
             add("--exclude=**~");
@@ -100,8 +109,18 @@ public class ExcludeSection extends TaskSection {
         jsonObject.put(KEY_TEMPLATE_SYSTEM_MOUNT_DIRS, mTemplateSystemMountDirs);
         jsonObject.put(KEY_TEMPLATE_TEMP, mTemplateTemp);
         jsonObject.put(KEY_TEMPLATE_TRASH, mTemplateTrash);
+        jsonObject.put(KEY_MANUAL_FILE_USED, mManualFileUsed);
+        jsonObject.put(KEY_MANUAL_FILE_PATH, mManualFilePath);
 
         return jsonObject;
+    }
+
+    public String getManualFilePath() {
+        return mManualFilePath;
+    }
+
+    public boolean isManualFileUsed() {
+        return mManualFileUsed;
     }
 
     public boolean isTemplateBackup() {
@@ -146,6 +165,16 @@ public class ExcludeSection extends TaskSection {
         mTemplateSystemMountDirs = optBoolean(jsonObject, KEY_TEMPLATE_SYSTEM_MOUNT_DIRS);
         mTemplateTemp = optBoolean(jsonObject, KEY_TEMPLATE_TEMP);
         mTemplateTrash = optBoolean(jsonObject, KEY_TEMPLATE_TRASH);
+        mManualFileUsed = optBoolean(jsonObject, KEY_MANUAL_FILE_USED);
+        mManualFilePath = optString(jsonObject, KEY_MANUAL_FILE_PATH);
+    }
+
+    public void setManualFilePath(String value) {
+        mManualFilePath = value;
+    }
+
+    public void setManualFileUsed(boolean value) {
+        mManualFileUsed = value;
     }
 
     public void setTemplateBackup(boolean value) {

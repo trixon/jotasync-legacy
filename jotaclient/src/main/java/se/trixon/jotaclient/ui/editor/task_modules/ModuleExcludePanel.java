@@ -37,6 +37,10 @@ public class ModuleExcludePanel extends ModulePanel {
     public void loadTask(Task task) {
         ExcludeSection excludeSection = task.getExcludeSection();
 
+        externalFilePanel.setSelected(excludeSection.isManualFileUsed());
+        externalFilePanel.setPath(excludeSection.getManualFilePath());
+        externalFilePanel.setEnabled(externalFilePanel.isSelected());
+
         backupCheckBox.setSelected(excludeSection.isTemplateBackup());
         cacheCheckBox.setSelected(excludeSection.isTemplateCache());
         gvfsCheckBox.setSelected(excludeSection.isTemplateGvfs());
@@ -50,6 +54,9 @@ public class ModuleExcludePanel extends ModulePanel {
     @Override
     public Task saveTask(Task task) {
         ExcludeSection excludeSection = task.getExcludeSection();
+
+        excludeSection.setManualFileUsed(externalFilePanel.isSelected());
+        excludeSection.setManualFilePath(externalFilePanel.getPath());
 
         excludeSection.setTemplateBackup(backupCheckBox.isSelected());
         excludeSection.setTemplateCache(cacheCheckBox.isSelected());
@@ -88,6 +95,8 @@ public class ModuleExcludePanel extends ModulePanel {
         sysDirsCheckBox = new javax.swing.JCheckBox();
         lostFoundCheckBox = new javax.swing.JCheckBox();
         gvfsCheckBox = new javax.swing.JCheckBox();
+        manualPanel = new javax.swing.JPanel();
+        externalFilePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -170,14 +179,37 @@ public class ModuleExcludePanel extends ModulePanel {
 
         tabbedPane.addTab(Dict.TEMPLATES.toString(), templatePanel);
 
+        externalFilePanel.setCheckBoxMode(true);
+        externalFilePanel.setHeader(bundle.getString("ModuleExcludePanel.externalFilePanel.header")); // NOI18N
+
+        javax.swing.GroupLayout manualPanelLayout = new javax.swing.GroupLayout(manualPanel);
+        manualPanel.setLayout(manualPanelLayout);
+        manualPanelLayout.setHorizontalGroup(
+            manualPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(manualPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(externalFilePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        manualPanelLayout.setVerticalGroup(
+            manualPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(manualPanelLayout.createSequentialGroup()
+                .addComponent(externalFilePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 102, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab(Dict.MANUAL.toString(), manualPanel);
+
         add(tabbedPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox backupCheckBox;
     private javax.swing.JCheckBox cacheCheckBox;
+    private se.trixon.util.swing.dialogs.FileChooserPanel externalFilePanel;
     private javax.swing.JCheckBox gvfsCheckBox;
     private javax.swing.JCheckBox lostFoundCheckBox;
+    private javax.swing.JPanel manualPanel;
     private javax.swing.JCheckBox sysDirsCheckBox;
     private javax.swing.JCheckBox sysMountsCheckBox;
     private javax.swing.JTabbedPane tabbedPane;
