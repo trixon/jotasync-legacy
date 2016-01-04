@@ -70,7 +70,7 @@ public class Main {
     }
 
     private static void displayVersion() {
-        System.out.println(Jota.getVersionInfo("jotaserver"));
+        System.out.println(Jota.getVersionInfo("Server"));
     }
 
     private static Options initOptions() {

@@ -395,13 +395,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         sPopupMenu.add(jobEditorMenuItem);
         sPopupMenu.add(optionsMenuItem);
         sPopupMenu.add(jSeparator2);
-
-        aboutMenuItem.setText(Dict.ABOUT.getString());
-        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aboutMenuItemActionPerformed(evt);
-            }
-        });
         sPopupMenu.add(aboutMenuItem);
         sPopupMenu.add(jSeparator6);
         sPopupMenu.add(saveMenuItem);
@@ -432,10 +425,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         System.exit(0);
     }
-
-    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        JOptionPane.showMessageDialog(this, Jota.getVersionInfo("jotaclient"), Dict.ABOUT.getString(), JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         SwingHelper.frameStateSave(this);
@@ -601,11 +590,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(MainFrame.this, Jota.getVersionInfo("jotaclient"), Dict.ABOUT.getString(), JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(MainFrame.this, Jota.getVersionInfo("Client"), Dict.ABOUT.getString(), JOptionPane.INFORMATION_MESSAGE);
                 }
             };
 
             initAction(action, ABOUT, keyStroke, null, false);
+            aboutMenuItem.setAction(action);
 
             //shutdownServer
             keyStroke = null;//KeyStroke.getKeyStroke(KeyEvent.VK_W, commandMask);
