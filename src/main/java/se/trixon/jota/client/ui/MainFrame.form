@@ -15,6 +15,22 @@
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="disconnectMenuItem">
         </MenuItem>
+        <Menu class="javax.swing.JMenu" name="serverMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="Dict.SERVER.toString()" type="code"/>
+            </Property>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="startServerMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="jMenuItem1"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="shutdownServerMenuItem">
+            </MenuItem>
+          </SubComponents>
+        </Menu>
         <Component class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
         </Component>
         <MenuItem class="javax.swing.JCheckBoxMenuItem" name="cronCheckBoxMenuItem">
@@ -35,8 +51,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="jMenuItem1"/>
           </Properties>
-        </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="shutdownServerMenuItem">
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="quitMenuItem">
         </MenuItem>

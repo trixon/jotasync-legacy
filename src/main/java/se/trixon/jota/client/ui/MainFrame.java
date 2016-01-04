@@ -19,10 +19,15 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.security.CodeSource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -48,6 +53,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
@@ -376,6 +383,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         sPopupMenu = new javax.swing.JPopupMenu();
         connectMenuItem = new javax.swing.JMenuItem();
         disconnectMenuItem = new javax.swing.JMenuItem();
+        serverMenu = new javax.swing.JMenu();
+        startServerMenuItem = new javax.swing.JMenuItem();
+        shutdownServerMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         cronCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         jobEditorMenuItem = new javax.swing.JMenuItem();
@@ -385,11 +395,18 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         saveMenuItem = new javax.swing.JMenuItem();
         closeMenuItem = new javax.swing.JMenuItem();
-        shutdownServerMenuItem = new javax.swing.JMenuItem();
         quitMenuItem = new javax.swing.JMenuItem();
 
         sPopupMenu.add(connectMenuItem);
         sPopupMenu.add(disconnectMenuItem);
+
+        serverMenu.setText(Dict.SERVER.toString());
+
+        startServerMenuItem.setText("jMenuItem1");
+        serverMenu.add(startServerMenuItem);
+        serverMenu.add(shutdownServerMenuItem);
+
+        sPopupMenu.add(serverMenu);
         sPopupMenu.add(jSeparator1);
         sPopupMenu.add(cronCheckBoxMenuItem);
         sPopupMenu.add(jobEditorMenuItem);
@@ -401,7 +418,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         closeMenuItem.setText("jMenuItem1");
         sPopupMenu.add(closeMenuItem);
-        sPopupMenu.add(shutdownServerMenuItem);
         sPopupMenu.add(quitMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -416,9 +432,36 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void shutdownServer() {
+    private void serverShutdown() {
         mServerShutdownRequested = true;
         mClient.execute(Client.Command.SHUTDOWN);
+    }
+
+    private void serverStart() throws URISyntaxException, IOException, NotBoundException {
+        Xlog.timedOut(Dict.SERVER_START.toString());
+
+        StringBuilder java = new StringBuilder();
+        java.append(System.getProperty("java.home")).append(SystemUtils.FILE_SEPARATOR)
+                .append("bin").append(SystemUtils.FILE_SEPARATOR)
+                .append("java");
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            java.append(".exe");
+        }
+
+        CodeSource codeSource = getClass().getProtectionDomain().getCodeSource();
+        File jarFile = new File(codeSource.getLocation().toURI().getPath());
+
+        ArrayList<String> command = new ArrayList<>();
+        command.add(java.toString());
+        command.add("-cp");
+        command.add(jarFile.getAbsolutePath());
+        command.add("Server");
+
+        Xlog.timedOut(StringUtils.join(command, " "));
+        ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
+        processBuilder.start();
+        requestConnect();
     }
 
     private void quit() {
@@ -445,7 +488,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JMenuItem quitMenuItem;
     private static javax.swing.JPopupMenu sPopupMenu;
     private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JMenu serverMenu;
     private javax.swing.JMenuItem shutdownServerMenuItem;
+    private javax.swing.JMenuItem startServerMenuItem;
     // End of variables declaration//GEN-END:variables
 
     class ActionManager {
@@ -461,6 +506,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         static final String QUIT = "shutdownServerAndWindow";
         static final String SAVE_TAB = "saveTab";
         static final String SHUTDOWN_SERVER = "shutdownServer";
+        static final String START_SERVER = "startServer";
 
         private ActionManager() {
             initActions();
@@ -484,6 +530,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                     action.putValue(JOTA_SMALL_ICON_KEY, icon.get(UI.ICON_SIZE_SMALL));
                 } else if (iconEnum instanceof Pict.Apps) {
                     Pict.Apps icon = (Pict.Apps) iconEnum;
+                    action.putValue(Action.LARGE_ICON_KEY, icon.get(UI.ICON_SIZE_LARGE));
+                    action.putValue(JOTA_SMALL_ICON_KEY, icon.get(UI.ICON_SIZE_SMALL));
+                } else if (iconEnum instanceof Pict.Places) {
+                    Pict.Places icon = (Pict.Places) iconEnum;
                     action.putValue(Action.LARGE_ICON_KEY, icon.get(UI.ICON_SIZE_LARGE));
                     action.putValue(JOTA_SMALL_ICON_KEY, icon.get(UI.ICON_SIZE_SMALL));
                 }
@@ -597,17 +647,34 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             initAction(action, ABOUT, keyStroke, null, false);
             aboutMenuItem.setAction(action);
 
-            //shutdownServer
-            keyStroke = null;//KeyStroke.getKeyStroke(KeyEvent.VK_W, commandMask);
-            action = new AbstractAction(Dict.SHUTDOWN_SERVER.getString()) {
+            //start Server
+            keyStroke = null;
+            action = new AbstractAction(Dict.SERVER_START.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    shutdownServer();
+                    try {
+                        serverStart();
+                    } catch (URISyntaxException | IOException | NotBoundException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             };
 
-            initAction(action, SHUTDOWN_SERVER, keyStroke, Pict.Actions.SVN_UPDATE, true);
+            initAction(action, START_SERVER, keyStroke, null, false);
+            startServerMenuItem.setAction(action);
+
+            //shutdown Server
+            keyStroke = null;
+            action = new AbstractAction(Dict.SERVER_SHUTDOWN.getString()) {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    serverShutdown();
+                }
+            };
+
+            initAction(action, SHUTDOWN_SERVER, keyStroke, null, true);
             shutdownServerMenuItem.setAction(action);
 
             //quit
@@ -650,6 +717,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             closeMenuItem.setAction(action);
 
             for (Component component : sPopupMenu.getComponents()) {
+                if (component instanceof AbstractButton) {
+                    ((AbstractButton) component).setToolTipText(null);
+                }
+            }
+
+            for (Component component : serverMenu.getMenuComponents()) {
                 if (component instanceof AbstractButton) {
                     ((AbstractButton) component).setToolTipText(null);
                 }
