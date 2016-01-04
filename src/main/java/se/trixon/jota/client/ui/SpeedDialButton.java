@@ -26,7 +26,7 @@ import javax.swing.JButton;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.Options;
+import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.ui.editor.JobsPanel;
 
 /**
@@ -114,7 +114,7 @@ public class SpeedDialButton extends JButton {
     }
 
     void updateColor() {
-        if (mJob == null || !Options.INSTANCE.isCustomColors()) {
+        if (mJob == null || !ClientOptions.INSTANCE.isCustomColors()) {
             setBackground(null);
             setForeground(null);
         } else {

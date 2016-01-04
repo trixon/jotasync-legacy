@@ -33,7 +33,7 @@ import se.trixon.jota.shared.task.OptionSection;
  *
  * @author Patrik Karlsson
  */
-public enum TaskManager {
+enum TaskManager {
 
     INSTANCE;
     private static final String KEY_DESCRIPTION = "description";

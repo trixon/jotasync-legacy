@@ -23,9 +23,9 @@ import java.util.prefs.Preferences;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-enum Options {
+enum ServerOptions {
 
     INSTANCE;
     public static final boolean DEFAULT_CRON_ACTIVE = false;
@@ -37,12 +37,12 @@ enum Options {
     private final Preferences mPreferences;
     private HashMap<Integer, Long> mSpeedDials;
 
-    private Options() {
+    private ServerOptions() {
         mPreferences = Preferences.userNodeForPackage(this.getClass());
         try {
             mSpeedDials = getSpeedDials();
         } catch (BackingStoreException ex) {
-            Logger.getLogger(Options.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerOptions.class.getName()).log(Level.SEVERE, null, ex);
             mSpeedDials = new HashMap<>();
         }
     }
@@ -73,7 +73,7 @@ enum Options {
                     speedDials.put(Integer.valueOf(index[1]), value);
                 }
             } catch (NumberFormatException ex) {
-                //Logger.getLogger(Options.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(ServerOptions.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }

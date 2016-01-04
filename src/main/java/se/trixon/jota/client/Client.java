@@ -48,7 +48,7 @@ import se.trixon.util.swing.SwingHelper;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
 
@@ -58,7 +58,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private final ResourceBundle mJotaBundle = Jota.getBundle();
     private MainFrame mMainFrame = null;
     private final Manager mManager = Manager.getInstance();
-    private final Options mOptions = Options.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private int mPortClient = Jota.DEFAULT_PORT_CLIENT;
     private int mPortHost = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameClient;

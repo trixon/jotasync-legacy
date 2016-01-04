@@ -57,8 +57,8 @@ import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.Options;
-import se.trixon.jota.client.Options.ClientOptionsEvent;
+import se.trixon.jota.client.ClientOptions;
+import se.trixon.jota.client.ClientOptions.ClientOptionsEvent;
 import se.trixon.jota.client.ui.editor.EditorPanel;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.SystemHelper;
@@ -77,7 +77,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private ActionManager mActionManager;
     private boolean mShutdownInProgress;
     private boolean mServerShutdownRequested;
-    private final Options mOptions = Options.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private Client mClient;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<Action> mActions = new LinkedList<>();
@@ -185,10 +185,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private void init() {
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             String key = evt.getKey();
-            if (key.equalsIgnoreCase(Options.KEY_MENU_ICONS)) {
+            if (key.equalsIgnoreCase(ClientOptions.KEY_MENU_ICONS)) {
                 loadClientOption(ClientOptionsEvent.MENU_ICONS);
-            } else if (key.equalsIgnoreCase(Options.KEY_FORCE_LOOK_AND_FEEL)
-                    || key.equalsIgnoreCase(Options.KEY_LOOK_AND_FEEL)) {
+            } else if (key.equalsIgnoreCase(ClientOptions.KEY_FORCE_LOOK_AND_FEEL)
+                    || key.equalsIgnoreCase(ClientOptions.KEY_LOOK_AND_FEEL)) {
                 loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
             }
         });

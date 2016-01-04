@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.Options;
+import se.trixon.jota.client.ClientOptions;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
 
@@ -32,7 +32,7 @@ public class OptionsPanel extends javax.swing.JPanel {
     
     private final Manager mManager = Manager.getInstance();
     private final ServerCommander mServerCommander;
-    private final Options mOptions = Options.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.INSTANCE;
 
     /**
      * Creates new form OptionsPanel

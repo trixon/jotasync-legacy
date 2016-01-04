@@ -42,7 +42,7 @@ import se.trixon.jota.shared.job.JobComboBoxRenderer;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.Options;
+import se.trixon.jota.client.ClientOptions;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
@@ -59,7 +59,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     private final JPopupMenu mPopupMenu = new JPopupMenu(Dict.JOB.getString());
     private SpeedDialButton mButton;
     private final HashSet<SpeedDialListener> mSpeedDialListeners = new HashSet<>();
-    private final Options mOptions = Options.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Manager mManager = Manager.getInstance();
     private boolean mSimulate;
 
@@ -309,8 +309,8 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
         addSpeedDialListener(this);
-        Options.INSTANCE.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
-            if (evt.getKey().equalsIgnoreCase(Options.KEY_CUSTOM_COLORS)) {
+        ClientOptions.INSTANCE.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
+            if (evt.getKey().equalsIgnoreCase(ClientOptions.KEY_CUSTOM_COLORS)) {
                 if (mManager.isConnected() && mManager.hasJobs()) {
                     for (int i = 0; i < mButtons.size(); i++) {
                         SpeedDialButton button = mButtons.get(i);

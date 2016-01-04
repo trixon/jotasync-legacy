@@ -29,7 +29,7 @@ import se.trixon.jota.shared.job.Job;
  *
  * @author Patrik Karlsson
  */
-public enum JobManager {
+enum JobManager {
 
     INSTANCE;
     private static final String KEY_COLOR_BACKGROUND = "colorBackground";

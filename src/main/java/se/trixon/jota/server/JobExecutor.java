@@ -39,7 +39,7 @@ import se.trixon.util.Xlog;
  *
  * @author Patrik Karlsson
  */
-public class JobExecutor extends Thread {
+class JobExecutor extends Thread {
 
     private Process mCurrentProcess;
     private final StringBuffer mErrBuffer;

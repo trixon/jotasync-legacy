@@ -31,7 +31,7 @@ import se.trixon.util.Xlog;
  *
  * @author Patrik Karlsson
  */
-public enum JotaManager {
+enum JotaManager {
 
     INSTANCE;
     private static final String KEY_JOBS = "jobs";

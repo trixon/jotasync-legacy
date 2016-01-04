@@ -19,9 +19,9 @@ import java.util.prefs.Preferences;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-public enum Options {
+public enum ClientOptions {
 
     INSTANCE;
     public static final boolean DEFAULT_CUSTOM_COLORS = false;
@@ -36,7 +36,7 @@ public enum Options {
     private static final boolean DEFAULT_MENU_ICONS = true;
     private final Preferences mPreferences;
 
-    private Options() {
+    private ClientOptions() {
         mPreferences = Preferences.userNodeForPackage(this.getClass());
     }
 

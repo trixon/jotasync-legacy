@@ -30,7 +30,7 @@ import se.trixon.util.Xlog;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class Main {
 
@@ -45,6 +45,7 @@ public class Main {
     static final String OPT_SHUTDOWN = "shutdown";
     static final String OPT_STATUS = "status";
     static final String OPT_VERSION = "version";
+
     /**
      * @param args the command line arguments
      * @throws java.rmi.RemoteException

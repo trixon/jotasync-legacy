@@ -27,7 +27,7 @@ import se.trixon.util.SystemHelper;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class Manager {
 

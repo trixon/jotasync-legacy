@@ -50,22 +50,22 @@ import se.trixon.util.Xlog;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-public class Server extends UnicastRemoteObject implements ServerCommander {
+class Server extends UnicastRemoteObject implements ServerCommander {
 
     private Set<ClientCallbacks> mClientCallbacks = Collections.newSetFromMap(new ConcurrentHashMap<ClientCallbacks, Boolean>());
     private HashMap<Long, JobExecutor> mJobExecutors = new HashMap<>();
     private final JobManager mJobManager = JobManager.INSTANCE;
     private final ResourceBundle mJotaBundle = Jota.getBundle();
     private final JotaManager mJotaManager = JotaManager.INSTANCE;
-    private final Options mOptions = Options.INSTANCE;
+    private final ServerOptions mOptions = ServerOptions.INSTANCE;
     private int mPort = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameServer;
     private VMID mServerVmid;
     private final TaskManager mTaskManager = TaskManager.INSTANCE;
 
-    public Server(CommandLine cmd) throws RemoteException, IOException {
+    Server(CommandLine cmd) throws RemoteException, IOException {
         super(0);
         if (cmd.hasOption("port")) {
             String port = cmd.getOptionValue("port");
@@ -271,7 +271,7 @@ public class Server extends UnicastRemoteObject implements ServerCommander {
 
             for (ClientCallbacks clientCallback : mClientCallbacks) {
                 switch (evt.getKey()) {
-                    case Options.KEY_CRON_ACTIVE: {
+                    case ServerOptions.KEY_CRON_ACTIVE: {
                         try {
                             clientCallback.onServerEvent(ServerEvent.CRON_CHANGED);
                         } catch (RemoteException ex) {
