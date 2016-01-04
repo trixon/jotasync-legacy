@@ -183,9 +183,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
     }
 
     private void clearConfiguration() {
-        Job job = new Job(-1, "", "", "");
         jobsComboBox.removeAllItems();
-        jobsComboBox.addItem(job);
         jobsComboBox.setEnabled(false);
         mPopupMenu.removeAll();
         mButtons.stream().forEach((button) -> {

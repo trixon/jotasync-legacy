@@ -43,8 +43,15 @@ public class JobComboBoxRenderer extends JLabel implements ListCellRenderer {
         }
 
         Job job = (Job) value;
-        setText(job.getCaption(false));
+
+        if (job != null) {
+            setText(job.getCaption(false));
+        } else {
+            setText("");
+        }
+
         setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+
         return this;
     }
 }
