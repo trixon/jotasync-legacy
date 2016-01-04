@@ -1,14 +1,6 @@
-/jotaclient/nbproject/private/
-/jotaserver/nbproject/private/
-/jotacommon/nbproject/private/
-/jotaclient/dist/
-/jotaclient/build/
-/jotaserver/build/
-/jotaserver/dist/
-/jotacommon/build/
-/jotacommon/dist/
+/nbproject/private/
+/dist/
+/build/
+/target/
 *~
 
-/jotashared/target/
-/jotaserver/target/
-/jotaclient/target/
