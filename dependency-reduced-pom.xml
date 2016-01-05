@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>se.trixon.jota</groupId>
+  <groupId>se.trixon.jotasync</groupId>
   <artifactId>jotasync</artifactId>
   <name>jotasync</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
+  <description>rsync front end with built in cron</description>
+  <url>http://jotasync.trixon.se/</url>
+  <developers>
+    <developer>
+      <id>trixon</id>
+      <name>Patrik Karlsson</name>
+      <email>patrik@trixon.se</email>
+      <url>http://trixon.se</url>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git://github.com/trixon/java-jotasync.git</connection>
+    <developerConnection>scm:git:git@github.com:trixon/java-jotasync.git</developerConnection>
+    <url>https://github.com/trixon/java-jotasync</url>
+  </scm>
   <build>
     <plugins>
       <plugin>
