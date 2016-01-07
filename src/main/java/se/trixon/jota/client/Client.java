@@ -15,6 +15,7 @@
  */
 package se.trixon.jota.client;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -274,6 +275,13 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     }
 
     private void displayGui() {
+        if (GraphicsEnvironment.isHeadless()) {
+            Xlog.timedErr("Can't open gui when in headless mode.");
+            Jota.exit(1);
+
+            return;
+        }
+
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {
             try {
                 if (serverStart()) {
