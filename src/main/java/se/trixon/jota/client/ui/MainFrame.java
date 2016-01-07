@@ -81,7 +81,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private boolean mShutdownInProgress;
     private boolean mServerShutdownRequested;
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
-    private Client mClient;
+    private final Client mClient;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<Action> mActions = new LinkedList<>();
     private final Manager mManager = Manager.getInstance();
@@ -214,7 +214,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         updateWindowTitle();
 
         try {
-            SwingHelper.frameStateRestore(this);
+            SwingHelper.frameStateRestore(this, 800, 600);
         } catch (BackingStoreException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
