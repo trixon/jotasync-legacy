@@ -18,6 +18,7 @@ package se.trixon.jota.client.ui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JSpinner;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ClientOptions;
@@ -29,7 +30,7 @@ import se.trixon.util.swing.SwingHelper;
  * @author Patrik Karlsson <patrik@trixon.se>
  */
 public class OptionsPanel extends javax.swing.JPanel {
-    
+
     private final Manager mManager = Manager.getInstance();
     private final ServerCommander mServerCommander;
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
@@ -40,14 +41,15 @@ public class OptionsPanel extends javax.swing.JPanel {
     public OptionsPanel() {
         mServerCommander = mManager.getServerCommander();
         initComponents();
-        
+
         if (mServerCommander == null) {
             rsyncFileChooserPanel.setEnabled(false);
         }
-        
+        portSpinner.setEditor(new JSpinner.NumberEditor(portSpinner, "#"));
+        connectDelaySpinner.setEditor(new JSpinner.NumberEditor(connectDelaySpinner, "#"));
         load();
     }
-    
+
     void save() {
         if (mManager.isConnected()) {
             try {
@@ -56,13 +58,16 @@ public class OptionsPanel extends javax.swing.JPanel {
                 Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         mOptions.setForceLookAndFeel(lafForceCheckBox.isSelected());
         mOptions.setLookAndFeel((String) lafComboBox.getSelectedItem());
         mOptions.setDisplayMenuIcons(menuIconsCheckBox.isSelected());
         mOptions.setCustomColors(customColorsCheckBox.isSelected());
+        mOptions.setAutostartServer(autostartServerCheckBox.isSelected());
+        mOptions.setAutostartServerPort((int) portSpinner.getValue());
+        mOptions.setAutostartServerConnectDelay((int) connectDelaySpinner.getValue());
     }
-    
+
     private void load() {
         if (mManager.isConnected()) {
             try {
@@ -72,14 +77,18 @@ public class OptionsPanel extends javax.swing.JPanel {
                 Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         lafForceCheckBox.setSelected(mOptions.isForceLookAndFeel());
         lafComboBox.setModel(SwingHelper.getLookAndFeelComboBoxModel(true));
         lafComboBox.setSelectedItem(mOptions.getLookAndFeel());
-        
+
         lafForceCheckBoxActionPerformed(null);
         menuIconsCheckBox.setSelected(mOptions.isDisplayMenuIcons());
         customColorsCheckBox.setSelected(mOptions.isCustomColors());
+        autostartServerCheckBox.setSelected(mOptions.isAutostartServer());
+        portSpinner.setValue(mOptions.getAutostartServerPort());
+        connectDelaySpinner.setValue(mOptions.getAutostartServerConnectDelay());
+        autostartServerCheckBoxActionPerformed(null);
     }
 
     /**
@@ -97,6 +106,11 @@ public class OptionsPanel extends javax.swing.JPanel {
         lafComboBox = new javax.swing.JComboBox();
         menuIconsCheckBox = new javax.swing.JCheckBox();
         customColorsCheckBox = new javax.swing.JCheckBox();
+        autostartServerCheckBox = new javax.swing.JCheckBox();
+        portLabel = new javax.swing.JLabel();
+        portSpinner = new javax.swing.JSpinner();
+        connectDelayLabel = new javax.swing.JLabel();
+        connectDelaySpinner = new javax.swing.JSpinner();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/Bundle"); // NOI18N
         rsyncFileChooserPanel.setHeader(bundle.getString("OptionsPanel.rsyncFileChooserPanel.header")); // NOI18N
@@ -114,6 +128,21 @@ public class OptionsPanel extends javax.swing.JPanel {
 
         customColorsCheckBox.setText(bundle.getString("OptionsPanel.customColorsCheckBox.text")); // NOI18N
 
+        autostartServerCheckBox.setText(bundle.getString("OptionsPanel.autostartServerCheckBox.text")); // NOI18N
+        autostartServerCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autostartServerCheckBoxActionPerformed(evt);
+            }
+        });
+
+        portLabel.setText(Dict.PORT.toString());
+
+        portSpinner.setModel(new javax.swing.SpinnerNumberModel(1024, 1024, 65535, 1));
+
+        connectDelayLabel.setText(bundle.getString("OptionsPanel.connectDelayLabel.text")); // NOI18N
+
+        connectDelaySpinner.setModel(new javax.swing.SpinnerNumberModel(500, 100, 3000, 100));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -123,12 +152,23 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(rsyncFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lafComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lafForceCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(lafForceCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(menuIconsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(customColorsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lafLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(customColorsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(portLabel))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(connectDelayLabel)
+                                    .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(lafLabel)
+                            .addComponent(autostartServerCheckBox))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -146,6 +186,16 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addComponent(menuIconsCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(customColorsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(autostartServerCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(portLabel)
+                    .addComponent(connectDelayLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -155,13 +205,27 @@ public class OptionsPanel extends javax.swing.JPanel {
         lafLabel.setEnabled(lafForceCheckBox.isSelected());
     }//GEN-LAST:event_lafForceCheckBoxActionPerformed
 
+    private void autostartServerCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autostartServerCheckBoxActionPerformed
+        final boolean autoConnect = autostartServerCheckBox.isSelected();
+
+        portLabel.setEnabled(autoConnect);
+        portSpinner.setEnabled(autoConnect);
+        connectDelayLabel.setEnabled(autoConnect);
+        connectDelaySpinner.setEnabled(autoConnect);
+    }//GEN-LAST:event_autostartServerCheckBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox autostartServerCheckBox;
+    private javax.swing.JLabel connectDelayLabel;
+    private javax.swing.JSpinner connectDelaySpinner;
     private javax.swing.JCheckBox customColorsCheckBox;
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JCheckBox lafForceCheckBox;
     private javax.swing.JLabel lafLabel;
     private javax.swing.JCheckBox menuIconsCheckBox;
+    private javax.swing.JLabel portLabel;
+    private javax.swing.JSpinner portSpinner;
     private se.trixon.util.swing.dialogs.FileChooserPanel rsyncFileChooserPanel;
     // End of variables declaration//GEN-END:variables
 }

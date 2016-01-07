@@ -16,6 +16,7 @@
 package se.trixon.jota.client;
 
 import java.util.prefs.Preferences;
+import se.trixon.jota.shared.Jota;
 
 /**
  *
@@ -25,11 +26,17 @@ public enum ClientOptions {
 
     INSTANCE;
     public static final boolean DEFAULT_CUSTOM_COLORS = false;
+    public static final String KEY_AUTOSTART_SERVER = "autostartServer";
+    public static final String KEY_AUTOSTART_SERVER_CONNECT_DELAY = "autostartServerConnectDelay";
+    public static final String KEY_AUTOSTART_SERVER_PORT = "autostartServerPort";
     public static final String KEY_CUSTOM_COLORS = "customColors";
     public static final String KEY_FORCE_LOOK_AND_FEEL = "forceLookAndFeel";
     public static final String KEY_HOSTS = "hosts";
     public static final String KEY_LOOK_AND_FEEL = "lookAndFeel";
     public static final String KEY_MENU_ICONS = "displayMenuIcons";
+    private static final boolean DEFAULT_AUTOSTART_SERVER = false;
+    private static final int DEFAULT_AUTOSTART_SERVER_CONNECT_DELAY = 500;
+    private static final int DEFAULT_AUTOSTART_SERVER_PORT = Jota.DEFAULT_PORT_HOST;
     private static final boolean DEFAULT_FORCE_LOOK_AND_FEEL = true;
     private static final String DEFAULT_HOSTS = "localhost";
     private static final String DEFAULT_LOOK_AND_FEEL = "Nimbus";
@@ -38,6 +45,14 @@ public enum ClientOptions {
 
     private ClientOptions() {
         mPreferences = Preferences.userNodeForPackage(this.getClass());
+    }
+
+    public int getAutostartServerConnectDelay() {
+        return mPreferences.getInt(KEY_AUTOSTART_SERVER_CONNECT_DELAY, DEFAULT_AUTOSTART_SERVER_CONNECT_DELAY);
+    }
+
+    public int getAutostartServerPort() {
+        return mPreferences.getInt(KEY_AUTOSTART_SERVER_PORT, DEFAULT_AUTOSTART_SERVER_PORT);
     }
 
     public String getHosts() {
@@ -52,6 +67,10 @@ public enum ClientOptions {
         return mPreferences;
     }
 
+    public boolean isAutostartServer() {
+        return mPreferences.getBoolean(KEY_AUTOSTART_SERVER, DEFAULT_AUTOSTART_SERVER);
+    }
+
     public boolean isCustomColors() {
         return mPreferences.getBoolean(KEY_CUSTOM_COLORS, DEFAULT_CUSTOM_COLORS);
     }
@@ -62,6 +81,18 @@ public enum ClientOptions {
 
     public boolean isForceLookAndFeel() {
         return mPreferences.getBoolean(KEY_FORCE_LOOK_AND_FEEL, DEFAULT_FORCE_LOOK_AND_FEEL);
+    }
+
+    public void setAutostartServer(boolean value) {
+        mPreferences.putBoolean(KEY_AUTOSTART_SERVER, value);
+    }
+
+    public void setAutostartServerConnectDelay(int value) {
+        mPreferences.putInt(KEY_AUTOSTART_SERVER_CONNECT_DELAY, value);
+    }
+
+    public void setAutostartServerPort(int value) {
+        mPreferences.putInt(KEY_AUTOSTART_SERVER_PORT, value);
     }
 
     public void setCustomColors(boolean value) {

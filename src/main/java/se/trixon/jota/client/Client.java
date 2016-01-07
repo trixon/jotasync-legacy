@@ -17,19 +17,27 @@ package se.trixon.jota.client;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.net.URISyntaxException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.CodeSource;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import se.trixon.jota.client.ui.MainFrame;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.JotaClient;
@@ -41,9 +49,9 @@ import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.jota.client.ui.MainFrame;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
+import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
 
 /**
@@ -197,6 +205,48 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         return mServerEventListeners.remove(serverEventListener);
     }
 
+    public boolean serverStart() throws URISyntaxException, IOException, NotBoundException {
+        boolean serverProbablyStarted = false;
+        Xlog.timedOut(Dict.SERVER_START.toString());
+
+        StringBuilder java = new StringBuilder();
+        java.append(System.getProperty("java.home")).append(SystemUtils.FILE_SEPARATOR)
+                .append("bin").append(SystemUtils.FILE_SEPARATOR)
+                .append("java");
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            java.append(".exe");
+        }
+
+        CodeSource codeSource = getClass().getProtectionDomain().getCodeSource();
+        File jarFile = new File(codeSource.getLocation().toURI().getPath());
+        if (jarFile.getAbsolutePath().endsWith(".jar")) {
+            ArrayList<String> command = new ArrayList<>();
+            command.add(java.toString());
+            command.add("-cp");
+            command.add(jarFile.getAbsolutePath());
+            command.add("Server");
+            command.add("--port");
+            command.add(String.valueOf(mOptions.getAutostartServerPort()));
+
+            Xlog.timedOut(StringUtils.join(command, " "));
+            ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
+            processBuilder.start();
+
+            try {
+                Thread.sleep(mOptions.getAutostartServerConnectDelay());
+            } catch (InterruptedException ex) {
+                Xlog.timedErr(ex.getLocalizedMessage());
+            }
+
+            serverProbablyStarted = true;
+        } else {
+            Xlog.timedErr("Autostart of Server only works from within a jar file.");
+        }
+
+        return serverProbablyStarted;
+    }
+
     public void setHost(String host) {
         mHost = host;
     }
@@ -209,7 +259,30 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         mPortHost = portHost;
     }
 
+    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {
+        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
+        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
+        mManager.setServerCommander(mServerCommander);
+        mClientVmid = new VMID();
+
+        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
+        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
+        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
+        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
+
+        mServerCommander.registerClient(this, SystemHelper.getHostname());
+    }
+
     private void displayGui() {
+        if (mOptions.isAutostartServer() && !mManager.isConnected()) {
+            try {
+                if (serverStart()) {
+                    mManager.connect(SystemHelper.getHostname(), mOptions.getAutostartServerPort());
+                }
+            } catch (URISyntaxException | IOException | NotBoundException ex) {
+                Xlog.timedErr(ex.getLocalizedMessage());
+            }
+        }
         if (mOptions.isForceLookAndFeel()) {
             try {
                 UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
@@ -259,20 +332,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 Jota.exit();
             }
         }
-    }
-
-    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {
-        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
-        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
-        mManager.setServerCommander(mServerCommander);
-        mClientVmid = new VMID();
-
-        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
-        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
-        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
-        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
-
-        mServerCommander.registerClient(this, SystemHelper.getHostname());
     }
 
     public enum Command {

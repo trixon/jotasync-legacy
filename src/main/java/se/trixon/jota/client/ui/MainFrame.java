@@ -17,17 +17,15 @@ package se.trixon.jota.client.ui;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.security.CodeSource;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -53,20 +51,18 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
+import se.trixon.jota.client.Client;
+import se.trixon.jota.client.ClientOptions;
+import se.trixon.jota.client.ClientOptions.ClientOptionsEvent;
+import se.trixon.jota.client.ConnectionListener;
+import se.trixon.jota.client.Manager;
+import se.trixon.jota.client.ui.editor.EditorPanel;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.jota.client.Client;
-import se.trixon.jota.client.ConnectionListener;
-import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.ClientOptions;
-import se.trixon.jota.client.ClientOptions.ClientOptionsEvent;
-import se.trixon.jota.client.ui.editor.EditorPanel;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
@@ -103,6 +99,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         if (mManager.isConnected()) {
             enableGui(true);
             mTabHolder.getSpeedDialPanel().onConnectionConnect();
+            updateStartServerState();
         } else {
             enableGui(false);
         }
@@ -116,7 +113,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         SwingUtilities.invokeLater(() -> {
             loadConfiguration();
             enableGui(true);
+            updateStartServerState();
         });
+
     }
 
     @Override
@@ -126,6 +125,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             if (mShutdownInProgress && !mServerShutdownRequested) {
                 Message.warning(this, "Connection lost", "Connection lost due to server shutdown");
             }
+            mActionManager.getAction(ActionManager.START_SERVER).setEnabled(true);
         });
     }
 
@@ -367,6 +367,13 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
     }
 
+    private void updateStartServerState() {
+        boolean connectedToAutstartServer = mManager.isConnected()
+                && mClient.getHost().equalsIgnoreCase(SystemHelper.getHostname())
+                && mClient.getPortHost() == mOptions.getAutostartServerPort();
+        mActionManager.getAction(ActionManager.START_SERVER).setEnabled(!connectedToAutstartServer);
+    }
+
     private void updateWindowTitle() {
         setTitle(String.format(mBundle.getString("windowTitle"), mManager.getClient().getHost(), mManager.getClient().getPortHost()));
     }
@@ -435,33 +442,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private void serverShutdown() {
         mServerShutdownRequested = true;
         mClient.execute(Client.Command.SHUTDOWN);
-    }
-
-    private void serverStart() throws URISyntaxException, IOException, NotBoundException {
-        Xlog.timedOut(Dict.SERVER_START.toString());
-
-        StringBuilder java = new StringBuilder();
-        java.append(System.getProperty("java.home")).append(SystemUtils.FILE_SEPARATOR)
-                .append("bin").append(SystemUtils.FILE_SEPARATOR)
-                .append("java");
-
-        if (SystemUtils.IS_OS_WINDOWS) {
-            java.append(".exe");
-        }
-
-        CodeSource codeSource = getClass().getProtectionDomain().getCodeSource();
-        File jarFile = new File(codeSource.getLocation().toURI().getPath());
-
-        ArrayList<String> command = new ArrayList<>();
-        command.add(java.toString());
-        command.add("-cp");
-        command.add(jarFile.getAbsolutePath());
-        command.add("Server");
-
-        Xlog.timedOut(StringUtils.join(command, " "));
-        ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
-        processBuilder.start();
-        requestConnect();
     }
 
     private void quit() {
@@ -648,13 +628,15 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             aboutMenuItem.setAction(action);
 
             //start Server
-            keyStroke = null;
-            action = new AbstractAction(Dict.SERVER_START.toString()) {
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask | InputEvent.SHIFT_MASK);
+            action = new AbstractAction(Dict.START.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        serverStart();
+                        if (mClient.serverStart()) {
+                            mManager.connect(SystemHelper.getHostname(), mOptions.getAutostartServerPort());
+                        }
                     } catch (URISyntaxException | IOException | NotBoundException ex) {
                         Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -665,8 +647,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             startServerMenuItem.setAction(action);
 
             //shutdown Server
-            keyStroke = null;
-            action = new AbstractAction(Dict.SERVER_SHUTDOWN.getString()) {
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask | InputEvent.SHIFT_MASK);
+            action = new AbstractAction(Dict.SHUTDOWN.getString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
