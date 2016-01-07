@@ -104,6 +104,7 @@ public class SpeedDialButton extends JButton {
         }
 
         updateText();
+        updateColor();
         setEnabled(mJob != null);
     }
 
