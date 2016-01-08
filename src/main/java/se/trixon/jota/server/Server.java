@@ -81,12 +81,6 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public void cancelJob(Job job) throws RemoteException {
-        Xlog.timedOut(String.format("Cancel job: %s", job.getName()));
-        mJobExecutors.get(job.getId()).interrupt();
-    }
-
-    @Override
     public Job getJob(long jobId) throws RemoteException {
         return mJobManager.getJobById(jobId);
     }
@@ -135,6 +129,11 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public boolean isCronActive() throws RemoteException {
         return mOptions.isCronActive();
+    }
+
+    @Override
+    public boolean isRunning(Job job) throws RemoteException {
+        return mJobExecutors.containsKey(job.getId());
     }
 
     @Override
@@ -260,6 +259,21 @@ class Server extends UnicastRemoteObject implements ServerCommander {
         jobExecutor.start();
     }
 
+    @Override
+    public void stopJob(Job job) throws RemoteException {
+        Xlog.timedOut(String.format("Cancel job: %s", job.getName()));
+        mJobExecutors.get(job.getId()).interrupt();
+        mJobExecutors.remove(job.getId());
+    }
+
+    Set<ClientCallbacks> getClientCallbacks() {
+        return mClientCallbacks;
+    }
+
+    HashMap<Long, JobExecutor> getJobExecutors() {
+        return mJobExecutors;
+    }
+
     private void intiListeners() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             notifyClientsShutdown();
@@ -324,9 +338,5 @@ class Server extends UnicastRemoteObject implements ServerCommander {
             Xlog.timedErr(ex.getLocalizedMessage());
             Jota.exit();
         }
-    }
-
-    Set<ClientCallbacks> getClientCallbacks() {
-        return mClientCallbacks;
     }
 }

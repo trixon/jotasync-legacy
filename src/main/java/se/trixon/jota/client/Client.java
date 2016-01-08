@@ -62,6 +62,7 @@ import se.trixon.util.swing.SwingHelper;
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
 
     private VMID mClientVmid;
+    private Job mCurrentJob;
     private boolean mExitOnException;
     private String mHost = SystemHelper.getHostname();
     private final ResourceBundle mJotaBundle = Jota.getBundle();
@@ -73,14 +74,13 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private String mRmiNameClient;
     private String mRmiNameServer;
     private ServerCommander mServerCommander;
+    private ServerEventListener mServerEventListener;
     private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
-    private ServerEventListener mServerEventListener;
-    private Job mCurrentJob;
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
-        
+
         mServerEventListener = new ServerEventListener() {
             @Override
             public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
@@ -171,9 +171,9 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             execute(Command.LIST_TASKS);
             Jota.exit();
         } else if (cmd.hasOption(Main.OPT_START)) {
-            jobStart(getJobByName(cmd.getOptionValue(Main.OPT_START)));
+            startJob(getJobByName(cmd.getOptionValue(Main.OPT_START)));
         } else if (cmd.hasOption(Main.OPT_STOP)) {
-            jobStop(getJobByName(cmd.getOptionValue(Main.OPT_STOP)));
+            stopJob(getJobByName(cmd.getOptionValue(Main.OPT_STOP)));
             Jota.exit();
         } else {
             displayGui();
@@ -358,10 +358,34 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         });
     }
 
+    private Job getJobByName(String jobName) throws RemoteException {
+        for (Job job : mServerCommander.getJobs()) {
+            if (job.getName().equalsIgnoreCase(jobName)) {
+                return job;
+            }
+        }
+
+        Xlog.timedErr("Job not found: " + jobName);
+        return null;
+    }
+
     private void initCallbackServer() throws RemoteException, MalformedURLException, java.rmi.server.ExportException {
         mRmiNameClient = JotaHelper.getRmiName(SystemHelper.getHostname(), mPortClient, JotaClient.class);
         LocateRegistry.createRegistry(mPortClient);
         Naming.rebind(mRmiNameClient, this);
+    }
+
+    private void startJob(Job job) throws RemoteException {
+        if (job == null) {
+            mCurrentJob = null;
+            Jota.exit(1);
+        } else if (mServerCommander.isRunning(job)) {
+            Xlog.timedErr("Job already running: " + job.getName());
+            Jota.exit(1);
+        } else {
+            mCurrentJob = job;
+            mServerCommander.startJob(job);
+        }
     }
 
     private void startRMI() throws RemoteException {
@@ -386,36 +410,15 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         }
     }
 
-    private Job getJobByName(String jobName) throws RemoteException {
-        for (Job job : mServerCommander.getJobs()) {
-            if (job.getName().equalsIgnoreCase(jobName)) {
-                return job;
-            }
-        }
-        
-        Xlog.timedErr("Job not found: " + jobName);
-        return null;
-    }
-
-    private void jobStart(Job job) throws RemoteException {
+    private void stopJob(Job job) throws RemoteException {
         if (job == null) {
             mCurrentJob = null;
-            Jota.exit(1);
-            return;
+        } else if (mServerCommander.isRunning(job)) {
+            mCurrentJob = job;
+            mServerCommander.stopJob(job);
+        } else {
+            Xlog.timedOut("Job not running: " + job.getName());
         }
-
-        mCurrentJob = job;
-        mServerCommander.startJob(job);
-    }
-
-    private void jobStop(Job job) throws RemoteException {
-        if (job == null) {
-            mCurrentJob = null;
-            return;
-        }
-
-        mCurrentJob = job;
-        mServerCommander.cancelJob(job);
     }
 
     public enum Command {

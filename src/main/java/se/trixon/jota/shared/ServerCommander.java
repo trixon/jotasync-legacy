@@ -25,11 +25,9 @@ import se.trixon.jota.shared.job.Job;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public interface ServerCommander extends Remote {
-
-    void cancelJob(Job job) throws RemoteException;
 
     Job getJob(long jobId) throws RemoteException;
 
@@ -46,6 +44,8 @@ public interface ServerCommander extends Remote {
     boolean hasJobs() throws RemoteException;
 
     boolean isCronActive() throws RemoteException;
+
+    boolean isRunning(Job job) throws RemoteException;
 
     String listJobs() throws RemoteException;
 
@@ -76,5 +76,7 @@ public interface ServerCommander extends Remote {
     void shutdown() throws RemoteException;
 
     void startJob(Job job) throws RemoteException;
+
+    void stopJob(Job job) throws RemoteException;
 
 }

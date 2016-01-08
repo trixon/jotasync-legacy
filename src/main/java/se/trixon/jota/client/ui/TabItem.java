@@ -103,7 +103,7 @@ public class TabItem extends JPanel implements TabListener {
 
     void cancel() {
         try {
-            mManager.getServerCommander().cancelJob(mJob);
+            mManager.getServerCommander().stopJob(mJob);
         } catch (RemoteException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
+import java.rmi.UnmarshalException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -80,7 +81,7 @@ class JobExecutor extends Thread {
                 try {
                     clientCallback.onProcessEvent(ProcessEvent.CANCELED, mJob, null, null);
                 } catch (RemoteException ex1) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex1);
+                    // nvm Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex1);
                 }
             });
         } catch (IOException ex) {
@@ -88,6 +89,7 @@ class JobExecutor extends Thread {
         }
 
         writelogs();
+        mServer.getJobExecutors().remove(mJob.getId());
     }
 
     private boolean runBeforeJob() throws IOException, InterruptedException {
@@ -213,7 +215,7 @@ class JobExecutor extends Thread {
             try {
                 clientCallback.onProcessEvent(processEvent, mJob, null, line);
             } catch (RemoteException ex) {
-                Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
+                // nvm Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
