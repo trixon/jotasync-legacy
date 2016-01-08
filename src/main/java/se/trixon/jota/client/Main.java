@@ -34,17 +34,19 @@ import se.trixon.util.Xlog;
  */
 public class Main {
 
-    private final ResourceBundle mJotaBundle = Jota.getBundle();
     static final String OPT_CLIENT_PORT = "client-port";
     static final String OPT_CRON = "cron";
     static final String OPT_HELP = "help";
     static final String OPT_HOST = "host";
+    static final String OPT_START = "start";
+    static final String OPT_STOP = "stop";
     static final String OPT_LIST_JOBS = "list-jobs";
     static final String OPT_LIST_TASKS = "list-tasks";
     static final String OPT_PORT = "port";
     static final String OPT_SHUTDOWN = "shutdown";
     static final String OPT_STATUS = "status";
     static final String OPT_VERSION = "version";
+    private final ResourceBundle mJotaBundle = Jota.getBundle();
 
     /**
      * @param args the command line arguments
@@ -90,7 +92,9 @@ public class Main {
         Option portClient = Option.builder("q").longOpt(OPT_CLIENT_PORT).argName("port").hasArg(true).desc("client callback port [1199]\n").build();
         Option cron = Option.builder("c").longOpt(OPT_CRON).argName("on|off").hasArg(true).desc("turn internal cron on or off").build();
         Option listJobs = new Option("lj", OPT_LIST_JOBS, false, "list jobs");
-        Option listTasks = new Option("lt", OPT_LIST_TASKS, false, "list tasks");
+        Option listTasks = new Option("lt", OPT_LIST_TASKS, false, "list tasks\n");
+        Option start = Option.builder(null).longOpt(OPT_START).argName("job").hasArg(true).desc("start job").build();
+        Option stop = Option.builder(null).longOpt(OPT_STOP).argName("job").hasArg(true).desc("stop job\n").build();
         Option shutdown = new Option("s", OPT_SHUTDOWN, false, "shutdown jotasync");
         Option status = new Option("u", OPT_STATUS, false, "print status information");
 
@@ -102,6 +106,8 @@ public class Main {
         options.addOption(portClient);
         options.addOption(listJobs);
         options.addOption(listTasks);
+        options.addOption(start);
+        options.addOption(stop);
         options.addOption(cron);
         options.addOption(shutdown);
         options.addOption(status);

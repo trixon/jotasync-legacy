@@ -75,9 +75,46 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private ServerCommander mServerCommander;
     private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
+    private ServerEventListener mServerEventListener;
+    private Job mCurrentJob;
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
+        
+        mServerEventListener = new ServerEventListener() {
+            @Override
+            public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
+                if (mCurrentJob != null && mCurrentJob.getId() == job.getId() && null != processEvent) {
+                    switch (processEvent) {
+                        case OUT:
+                            System.out.println(object);
+                            break;
+                        case ERR:
+                            System.err.println(object);
+                            break;
+                        case CANCELED:
+                            Xlog.timedOut("\n\nJob interrupted.");
+                        case FINISHED:
+                            System.out.println("\n");
+                            if (object != null) {
+                                Xlog.timedOut((String) object);
+                            }
+                            Jota.exit();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onServerEvent(ServerEvent serverEvent) {
+                // nvm
+            }
+        };
+
+        addServerEventListener(mServerEventListener);
+
         mManager.setClient(this);
         if (cmd.hasOption(Main.OPT_HOST)) {
             mHost = cmd.getOptionValue(Main.OPT_HOST);
@@ -105,7 +142,9 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 || cmd.hasOption(Main.OPT_SHUTDOWN)
                 || cmd.hasOption(Main.OPT_CRON)
                 || cmd.hasOption(Main.OPT_LIST_JOBS)
-                || cmd.hasOption(Main.OPT_LIST_TASKS);
+                || cmd.hasOption(Main.OPT_LIST_TASKS)
+                || cmd.hasOption(Main.OPT_START)
+                || cmd.hasOption(Main.OPT_STOP);
 
         startRMI();
 
@@ -130,6 +169,11 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             Jota.exit();
         } else if (cmd.hasOption(Main.OPT_LIST_TASKS)) {
             execute(Command.LIST_TASKS);
+            Jota.exit();
+        } else if (cmd.hasOption(Main.OPT_START)) {
+            jobStart(getJobByName(cmd.getOptionValue(Main.OPT_START)));
+        } else if (cmd.hasOption(Main.OPT_STOP)) {
+            jobStop(getJobByName(cmd.getOptionValue(Main.OPT_STOP)));
             Jota.exit();
         } else {
             displayGui();
@@ -340,6 +384,38 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 Jota.exit();
             }
         }
+    }
+
+    private Job getJobByName(String jobName) throws RemoteException {
+        for (Job job : mServerCommander.getJobs()) {
+            if (job.getName().equalsIgnoreCase(jobName)) {
+                return job;
+            }
+        }
+        
+        Xlog.timedErr("Job not found: " + jobName);
+        return null;
+    }
+
+    private void jobStart(Job job) throws RemoteException {
+        if (job == null) {
+            mCurrentJob = null;
+            Jota.exit(1);
+            return;
+        }
+
+        mCurrentJob = job;
+        mServerCommander.startJob(job);
+    }
+
+    private void jobStop(Job job) throws RemoteException {
+        if (job == null) {
+            mCurrentJob = null;
+            return;
+        }
+
+        mCurrentJob = job;
+        mServerCommander.cancelJob(job);
     }
 
     public enum Command {
