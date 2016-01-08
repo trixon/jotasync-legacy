@@ -103,7 +103,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         } else {
             enableGui(false);
         }
-        //showEditor();
+
+        if (mManager.isConnected()) {
+            SwingUtilities.invokeLater(this::showEditor);
+        }
     }
 
     @Override

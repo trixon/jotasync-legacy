@@ -219,7 +219,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/Bundle"); // NOI18N
         runBeforePanel.setHeader(bundle.getString("JobPanel.runBeforePanel.header")); // NOI18N
 
-        runBeforeHaltOnErrorCheckBox.setText(bundle.getString("JobPanel.runBeforeHaltOnErrorCheckBox.text")); // NOI18N
+        runBeforeHaltOnErrorCheckBox.setText(Dict.STOP_ON_ERROR.toString());
 
         runAfterFailurePanel.setCheckBoxMode(true);
         runAfterFailurePanel.setHeader(bundle.getString("JobPanel.runAfterFailurePanel.header")); // NOI18N
@@ -240,7 +240,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
                     .addComponent(runBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(runPanelLayout.createSequentialGroup()
                         .addComponent(runBeforeHaltOnErrorCheckBox)
-                        .addGap(0, 173, Short.MAX_VALUE))
+                        .addGap(0, 370, Short.MAX_VALUE))
                     .addComponent(runAfterSuccessPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(runAfterFailurePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(runAfterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -382,7 +382,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(nameTextField)
                     .addComponent(descriptionTextField)
                     .addGroup(layout.createSequentialGroup()

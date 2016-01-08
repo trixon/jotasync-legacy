@@ -23,7 +23,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="tabbedPane" alignment="1" pref="498" max="32767" attributes="0"/>
+                  <Component id="tabbedPane" alignment="1" max="32767" attributes="0"/>
                   <Component id="nameTextField" alignment="0" max="32767" attributes="0"/>
                   <Component id="descriptionTextField" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
@@ -111,7 +111,7 @@
                           <Component id="runBeforePanel" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="runBeforeHaltOnErrorCheckBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="173" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="370" max="32767" attributes="0"/>
                           </Group>
                           <Component id="runAfterSuccessPanel" max="32767" attributes="0"/>
                           <Component id="runAfterFailurePanel" alignment="0" max="32767" attributes="0"/>
@@ -150,8 +150,8 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="runBeforeHaltOnErrorCheckBox">
               <Properties>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.runBeforeHaltOnErrorCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="Dict.STOP_ON_ERROR.toString()" type="code"/>
                 </Property>
               </Properties>
             </Component>

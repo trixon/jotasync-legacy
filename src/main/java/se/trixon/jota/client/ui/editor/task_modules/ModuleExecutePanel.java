@@ -39,24 +39,31 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     public void loadTask(Task task) {
         TaskExecuteSection executeSection = task.getExecuteSection();
 
-        runBeforeHaltOnErrorCheckBox.setEnabled(executeSection.isRunBefore());
-        runBeforeHaltOnErrorCheckBox.setSelected(executeSection.isRunBeforeHaltOnError());
+        beforePanel.setSelected(executeSection.isBefore());
+        beforePanel.setPath(executeSection.getBeforeCommand());
+        beforePanel.setEnabled(beforePanel.isSelected());
+        beforeHaltOnErrorCheckBox.setEnabled(executeSection.isBefore());
+        beforeHaltOnErrorCheckBox.setSelected(executeSection.isBeforeHaltOnError());
 
-        runBeforePanel.setSelected(executeSection.isRunBefore());
-        runBeforePanel.setPath(executeSection.getRunBeforeCommand());
-        runBeforePanel.setEnabled(runBeforePanel.isSelected());
+        afterFailurePanel.setSelected(executeSection.isAfterFailure());
+        afterFailurePanel.setPath(executeSection.getAfterFailureCommand());
+        afterFailurePanel.setEnabled(afterFailurePanel.isSelected());
+        afterFailureHaltOnErrorCheckBox.setEnabled(executeSection.isAfterFailure());
+        afterFailureHaltOnErrorCheckBox.setSelected(executeSection.isAfterFailureHaltOnError());
 
-        runAfterFailurePanel.setSelected(executeSection.isRunAfterFailure());
-        runAfterFailurePanel.setPath(executeSection.getRunAfterFailureCommand());
-        runAfterFailurePanel.setEnabled(runAfterFailurePanel.isSelected());
+        afterSuccessPanel.setSelected(executeSection.isAfterSuccess());
+        afterSuccessPanel.setPath(executeSection.getAfterSuccessCommand());
+        afterSuccessPanel.setEnabled(afterSuccessPanel.isSelected());
+        afterSuccessHaltOnErrorCheckBox.setEnabled(executeSection.isAfterSuccess());
+        afterSuccessHaltOnErrorCheckBox.setSelected(executeSection.isAfterSuccessHaltOnError());
 
-        runAfterSuccessPanel.setSelected(executeSection.isRunAfterSuccess());
-        runAfterSuccessPanel.setPath(executeSection.getRunAfterSuccessCommand());
-        runAfterSuccessPanel.setEnabled(runAfterSuccessPanel.isSelected());
+        afterPanel.setSelected(executeSection.isAfter());
+        afterPanel.setPath(executeSection.getAfterCommand());
+        afterPanel.setEnabled(afterPanel.isSelected());
+        afterHaltOnErrorCheckBox.setEnabled(executeSection.isAfter());
+        afterHaltOnErrorCheckBox.setSelected(executeSection.isAfterHaltOnError());
 
-        runAfterPanel.setSelected(executeSection.isRunAfter());
-        runAfterPanel.setPath(executeSection.getRunAfterCommand());
-        runAfterPanel.setEnabled(runAfterPanel.isSelected());
+        jobHaltOnErrorCheckBox.setSelected(executeSection.isJobHaltOnError());
     }
 
     @Override
@@ -65,8 +72,14 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
     @Override
     public void onFileChooserCheckBoxChange(FileChooserPanel fileChooserPanel, boolean isSelected) {
-        if (fileChooserPanel == runBeforePanel) {
-            runBeforeHaltOnErrorCheckBox.setEnabled(isSelected);
+        if (fileChooserPanel == beforePanel) {
+            beforeHaltOnErrorCheckBox.setEnabled(isSelected);
+        } else if (fileChooserPanel == afterFailurePanel) {
+            afterFailureHaltOnErrorCheckBox.setEnabled(isSelected);
+        } else if (fileChooserPanel == afterSuccessPanel) {
+            afterSuccessHaltOnErrorCheckBox.setEnabled(isSelected);
+        } else if (fileChooserPanel == afterPanel) {
+            afterHaltOnErrorCheckBox.setEnabled(isSelected);
         }
     }
 
@@ -86,18 +99,23 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     public Task saveTask(Task task) {
         TaskExecuteSection executeSection = task.getExecuteSection();
 
-        executeSection.setRunBefore(runBeforePanel.isSelected());
-        executeSection.setRunBeforeCommand(runBeforePanel.getPath());
-        executeSection.setRunBeforeHaltOnError(runBeforeHaltOnErrorCheckBox.isSelected());
+        executeSection.setBefore(beforePanel.isSelected());
+        executeSection.setBeforeCommand(beforePanel.getPath());
+        executeSection.setBeforeHaltOnError(beforeHaltOnErrorCheckBox.isSelected());
 
-        executeSection.setRunAfterFailure(runAfterFailurePanel.isSelected());
-        executeSection.setRunAfterFailureCommand(runAfterFailurePanel.getPath());
+        executeSection.setAfterFailure(afterFailurePanel.isSelected());
+        executeSection.setAfterFailureCommand(afterFailurePanel.getPath());
+        executeSection.setAfterFailureHaltOnError(afterFailureHaltOnErrorCheckBox.isSelected());
 
-        executeSection.setRunAfterSuccess(runAfterSuccessPanel.isSelected());
-        executeSection.setRunAfterSuccessCommand(runAfterSuccessPanel.getPath());
+        executeSection.setAfterSuccess(afterSuccessPanel.isSelected());
+        executeSection.setAfterSuccessCommand(afterSuccessPanel.getPath());
+        executeSection.setAfterSuccessHaltOnError(afterSuccessHaltOnErrorCheckBox.isSelected());
 
-        executeSection.setRunAfter(runAfterPanel.isSelected());
-        executeSection.setRunAfterCommand(runAfterPanel.getPath());
+        executeSection.setAfter(afterPanel.isSelected());
+        executeSection.setAfterCommand(afterPanel.getPath());
+        executeSection.setAfterHaltOnError(afterHaltOnErrorCheckBox.isSelected());
+
+        executeSection.setJobHaltOnError(jobHaltOnErrorCheckBox.isSelected());
 
         return task;
     }
@@ -105,12 +123,10 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     private void init() {
         mTitle = Dict.RUN.getString();
 
-        runBeforePanel.setButtonListener(this);
-        runBeforePanel.setEnabled(false);
-
-        runAfterFailurePanel.setEnabled(false);
-        runAfterSuccessPanel.setEnabled(false);
-        runAfterPanel.setEnabled(false);
+        beforePanel.setButtonListener(this);
+        afterFailurePanel.setButtonListener(this);
+        afterSuccessPanel.setButtonListener(this);
+        afterPanel.setButtonListener(this);
     }
 
     /**
@@ -121,75 +137,161 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        runPanel = new javax.swing.JPanel();
-        runBeforePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        runBeforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
+        beforePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        beforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
-        runAfterFailurePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        runAfterSuccessPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        runAfterPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        afterFailurePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        afterFailureHaltOnErrorCheckBox = new javax.swing.JCheckBox();
+        jSeparator2 = new javax.swing.JSeparator();
+        afterSuccessPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        afterSuccessHaltOnErrorCheckBox = new javax.swing.JCheckBox();
+        jSeparator3 = new javax.swing.JSeparator();
+        afterPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        jSeparator4 = new javax.swing.JSeparator();
+        afterHaltOnErrorCheckBox = new javax.swing.JCheckBox();
+        jobHaltOnErrorCheckBox = new javax.swing.JCheckBox();
+        jPanel1 = new javax.swing.JPanel();
 
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
+        setLayout(new java.awt.GridBagLayout());
 
-        runPanel.setBorder(null);
-
-        runBeforePanel.setCheckBoxMode(true);
+        beforePanel.setCheckBoxMode(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/task_modules/Bundle"); // NOI18N
-        runBeforePanel.setHeader(bundle.getString("ModuleExecutePanel.runBefore.text")); // NOI18N
+        beforePanel.setHeader(bundle.getString("ModuleExecutePanel.runBefore.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(beforePanel, gridBagConstraints);
 
-        runBeforeHaltOnErrorCheckBox.setText(bundle.getString("ModuleExecutePanel.runBeforeHaltOnErrorCheckBox.text")); // NOI18N
+        beforeHaltOnErrorCheckBox.setText(Dict.STOP_ON_ERROR.toString());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        add(beforeHaltOnErrorCheckBox, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jSeparator1, gridBagConstraints);
 
-        runAfterFailurePanel.setCheckBoxMode(true);
-        runAfterFailurePanel.setHeader(bundle.getString("ModuleExecutePanel.runAfterFailurePanel.header")); // NOI18N
+        afterFailurePanel.setAlignmentX(0.0F);
+        afterFailurePanel.setCheckBoxMode(true);
+        afterFailurePanel.setHeader(bundle.getString("ModuleExecutePanel.afterFailurePanel.header")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(afterFailurePanel, gridBagConstraints);
 
-        runAfterSuccessPanel.setCheckBoxMode(true);
-        runAfterSuccessPanel.setHeader(bundle.getString("ModuleExecutePanel.runAfterSuccessPanel.header")); // NOI18N
+        afterFailureHaltOnErrorCheckBox.setText(Dict.STOP_ON_ERROR.toString());
+        afterFailureHaltOnErrorCheckBox.setAlignmentY(0.0F);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(afterFailureHaltOnErrorCheckBox, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jSeparator2, gridBagConstraints);
 
-        runAfterPanel.setCheckBoxMode(true);
-        runAfterPanel.setHeader(bundle.getString("ModuleExecutePanel.runAfterPanel.header")); // NOI18N
+        afterSuccessPanel.setAlignmentX(0.0F);
+        afterSuccessPanel.setCheckBoxMode(true);
+        afterSuccessPanel.setHeader(bundle.getString("ModuleExecutePanel.afterSuccessPanel.header")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(afterSuccessPanel, gridBagConstraints);
 
-        javax.swing.GroupLayout runPanelLayout = new javax.swing.GroupLayout(runPanel);
-        runPanel.setLayout(runPanelLayout);
-        runPanelLayout.setHorizontalGroup(
-            runPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(runBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
-            .addComponent(runAfterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(runPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSeparator1)
-                .addContainerGap())
-            .addComponent(runAfterFailurePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(runAfterSuccessPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(runBeforeHaltOnErrorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        afterSuccessHaltOnErrorCheckBox.setText(Dict.STOP_ON_ERROR.toString());
+        afterSuccessHaltOnErrorCheckBox.setAlignmentY(0.0F);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(afterSuccessHaltOnErrorCheckBox, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jSeparator3, gridBagConstraints);
+
+        afterPanel.setAlignmentX(0.0F);
+        afterPanel.setCheckBoxMode(true);
+        afterPanel.setHeader(bundle.getString("ModuleExecutePanel.afterPanel.header")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(afterPanel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jSeparator4, gridBagConstraints);
+
+        afterHaltOnErrorCheckBox.setText(Dict.STOP_ON_ERROR.toString());
+        afterHaltOnErrorCheckBox.setAlignmentY(0.0F);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(afterHaltOnErrorCheckBox, gridBagConstraints);
+
+        jobHaltOnErrorCheckBox.setText(bundle.getString("ModuleExecutePanel.jobHaltOnErrorCheckBox.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(jobHaltOnErrorCheckBox, gridBagConstraints);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
         );
-        runPanelLayout.setVerticalGroup(
-            runPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(runPanelLayout.createSequentialGroup()
-                .addComponent(runBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(runBeforeHaltOnErrorCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(runAfterFailurePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(runAfterSuccessPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(runAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 15, Short.MAX_VALUE)
         );
 
-        add(runPanel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 13;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(jPanel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox afterFailureHaltOnErrorCheckBox;
+    private se.trixon.util.swing.dialogs.FileChooserPanel afterFailurePanel;
+    private javax.swing.JCheckBox afterHaltOnErrorCheckBox;
+    private se.trixon.util.swing.dialogs.FileChooserPanel afterPanel;
+    private javax.swing.JCheckBox afterSuccessHaltOnErrorCheckBox;
+    private se.trixon.util.swing.dialogs.FileChooserPanel afterSuccessPanel;
+    private javax.swing.JCheckBox beforeHaltOnErrorCheckBox;
+    private se.trixon.util.swing.dialogs.FileChooserPanel beforePanel;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
-    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterFailurePanel;
-    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterPanel;
-    private se.trixon.util.swing.dialogs.FileChooserPanel runAfterSuccessPanel;
-    private javax.swing.JCheckBox runBeforeHaltOnErrorCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel runBeforePanel;
-    private javax.swing.JPanel runPanel;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JCheckBox jobHaltOnErrorCheckBox;
     // End of variables declaration//GEN-END:variables
 }

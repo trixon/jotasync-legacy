@@ -123,17 +123,17 @@ class JobExecutor extends Thread {
         boolean result = true;
         TaskExecuteSection taskExecuteSection = task.getExecuteSection();
         send(ProcessEvent.OUT, "runBeforeTask");
-        send(ProcessEvent.OUT, "" + taskExecuteSection.isRunBefore());
-        send(ProcessEvent.OUT, taskExecuteSection.getRunBeforeCommand());
+        send(ProcessEvent.OUT, "" + taskExecuteSection.isBefore());
+        send(ProcessEvent.OUT, taskExecuteSection.getBeforeCommand());
         send(ProcessEvent.OUT, "");
         send(ProcessEvent.OUT, "");
-        if (taskExecuteSection.isRunBefore() && StringUtils.isNoneEmpty(taskExecuteSection.getRunBeforeCommand())) {
+        if (taskExecuteSection.isBefore() && StringUtils.isNoneEmpty(taskExecuteSection.getBeforeCommand())) {
             send(ProcessEvent.OUT, "run before task...");
             ArrayList<String> command = new ArrayList<>();
-            command.add(taskExecuteSection.getRunBeforeCommand());
+            command.add(taskExecuteSection.getBeforeCommand());
             runProcess(command);
 
-            if (taskExecuteSection.isRunBeforeHaltOnError()) {
+            if (taskExecuteSection.isBeforeHaltOnError()) {
                 result = mCurrentProcess.exitValue() == 0;
             }
 
