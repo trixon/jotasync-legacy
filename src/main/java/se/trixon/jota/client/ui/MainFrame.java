@@ -398,6 +398,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         serverMenu = new javax.swing.JMenu();
         startServerMenuItem = new javax.swing.JMenuItem();
         shutdownServerMenuItem = new javax.swing.JMenuItem();
+        shutdownServerQuitMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         cronCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         jobEditorMenuItem = new javax.swing.JMenuItem();
@@ -417,6 +418,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         startServerMenuItem.setText("jMenuItem1");
         serverMenu.add(startServerMenuItem);
         serverMenu.add(shutdownServerMenuItem);
+        serverMenu.add(shutdownServerQuitMenuItem);
 
         sPopupMenu.add(serverMenu);
         sPopupMenu.add(jSeparator1);
@@ -475,6 +477,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenu serverMenu;
     private javax.swing.JMenuItem shutdownServerMenuItem;
+    private javax.swing.JMenuItem shutdownServerQuitMenuItem;
     private javax.swing.JMenuItem startServerMenuItem;
     // End of variables declaration//GEN-END:variables
 
@@ -491,6 +494,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         static final String QUIT = "shutdownServerAndWindow";
         static final String SAVE_TAB = "saveTab";
         static final String SHUTDOWN_SERVER = "shutdownServer";
+        static final String SHUTDOWN_SERVER_QUIT = "shutdownServer";
         static final String START_SERVER = "startServer";
 
         private ActionManager() {
@@ -663,6 +667,20 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             initAction(action, SHUTDOWN_SERVER, keyStroke, null, true);
             shutdownServerMenuItem.setAction(action);
+
+            //shutdown server and quit
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask + InputEvent.SHIFT_MASK);
+            action = new AbstractAction(Dict.SHUTDOWN_SERVER_AND_WINDOW.getString()) {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    serverShutdown();
+                    quit();
+                }
+            };
+
+            initAction(action, SHUTDOWN_SERVER_QUIT, keyStroke, null, true);
+            shutdownServerQuitMenuItem.setAction(action);
 
             //quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask);
