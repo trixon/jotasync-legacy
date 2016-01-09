@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskVerifier;
 import se.trixon.jota.client.ui.editor.task_modules.ModuleNotePanel;

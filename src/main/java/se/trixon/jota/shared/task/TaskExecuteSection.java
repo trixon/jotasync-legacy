@@ -50,7 +50,6 @@ public class TaskExecuteSection extends TaskSection {
     private boolean mBefore;
     private String mBeforeCommand = "";
     private boolean mBeforeHaltOnError;
-
     private boolean mJobHaltOnError;
 
     public String getAfterCommand() {

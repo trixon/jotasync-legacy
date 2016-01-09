@@ -243,6 +243,7 @@ public class ModuleExecutePanel extends ModulePanel implements FileChooserPanel.
 
         afterHaltOnErrorCheckBox.setText(Dict.STOP_ON_ERROR.toString());
         afterHaltOnErrorCheckBox.setAlignmentY(0.0F);
+        afterHaltOnErrorCheckBox.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 10;
