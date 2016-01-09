@@ -120,5 +120,7 @@ enum JotaManager {
         String jsonString = jsonObject.toJSONString();
         FileUtils.writeStringToFile(mJobFile, jsonString);
         FileUtils.writeStringToFile(mJobBakFile, String.format("%s=%s\n", tag, jsonString), true);
+        
+        load();
     }
 }
