@@ -108,14 +108,14 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="runBeforePanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="beforePanel" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="runBeforeHaltOnErrorCheckBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="beforeHaltOnErrorCheckBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="370" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="runAfterSuccessPanel" max="32767" attributes="0"/>
-                          <Component id="runAfterFailurePanel" alignment="0" max="32767" attributes="0"/>
-                          <Component id="runAfterPanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="afterSuccessPanel" max="32767" attributes="0"/>
+                          <Component id="afterFailurePanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="afterPanel" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -125,57 +125,57 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="runBeforePanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="beforePanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="runBeforeHaltOnErrorCheckBox" min="-2" max="-2" attributes="0"/>
+                      <Component id="beforeHaltOnErrorCheckBox" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="runAfterFailurePanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="afterFailurePanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="runAfterSuccessPanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="afterSuccessPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="runAfterPanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="afterPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="runBeforePanel">
+            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="beforePanel">
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.runBeforePanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.beforePanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="runBeforeHaltOnErrorCheckBox">
+            <Component class="javax.swing.JCheckBox" name="beforeHaltOnErrorCheckBox">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="Dict.STOP_ON_ERROR.toString()" type="code"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="runAfterFailurePanel">
+            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="afterFailurePanel">
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.runAfterFailurePanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.afterFailurePanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="runAfterSuccessPanel">
+            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="afterSuccessPanel">
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.runAfterSuccessPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.afterSuccessPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="runAfterPanel">
+            <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="afterPanel">
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.runAfterPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jota/client/ui/editor/Bundle.properties" key="JobPanel.afterPanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>

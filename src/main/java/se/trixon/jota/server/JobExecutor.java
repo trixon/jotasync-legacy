@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
-import java.rmi.UnmarshalException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,8 +31,8 @@ import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobExecuteSection;
-import se.trixon.jota.shared.task.TaskExecuteSection;
 import se.trixon.jota.shared.task.Task;
+import se.trixon.jota.shared.task.TaskExecuteSection;
 import se.trixon.util.Xlog;
 
 /**
@@ -48,6 +47,8 @@ class JobExecutor extends Thread {
     private long mLastRun;
     private final StringBuffer mOutBuffer;
     private final Server mServer;
+    private final JobExecuteSection mJobExecuteSection;
+    private int mNumOfFailedTasks;
 
     JobExecutor(Server server, Job job) {
         mJob = job;
@@ -55,20 +56,44 @@ class JobExecutor extends Thread {
 
         mErrBuffer = new StringBuffer();
         mOutBuffer = new StringBuffer();
+        mJobExecuteSection = mJob.getExecuteSection();
     }
 
     @Override
     public void run() {
         mLastRun = System.currentTimeMillis();
+        send(ProcessEvent.OUT, String.format("%s: Starting job %s", Jota.millisToDateTime(mLastRun), mJob.getName()));
+
         try {
-            if (runBeforeJob()) {
-                if (runTasks()) {
-                    // run after
-                } else {
-                    send(ProcessEvent.OUT, "one or more tasks failed");
+            String command;
+            // run before first task
+            command = mJobExecuteSection.getBeforeCommand();
+            if (mJobExecuteSection.isBefore() && StringUtils.isNoneEmpty(command)) {
+                run(command, mJobExecuteSection.isBeforeHaltOnError(), "BEFORE FIRST TASK");
+            }
+
+            runTasks();
+
+            if (mNumOfFailedTasks == 0) {
+                // run after last task - if all ok
+                command = mJobExecuteSection.getAfterSuccessCommand();
+                if (mJobExecuteSection.isAfterSuccess() && StringUtils.isNoneEmpty(command)) {
+                    run(command, false, "AFTER LAST TASK (ALL OK)");
                 }
             } else {
-                send(ProcessEvent.OUT, "before failed and will not continue");
+                send(ProcessEvent.OUT, String.format("%d tasks failed", mNumOfFailedTasks));
+
+                // run after last task - if any failed
+                command = mJobExecuteSection.getAfterFailureCommand();
+                if (mJobExecuteSection.isAfterFailure() && StringUtils.isNoneEmpty(command)) {
+                    run(command, false, "AFTER LAST TASK (ANY FAILED)");
+                }
+            }
+
+            // run after last task
+            command = mJobExecuteSection.getAfterCommand();
+            if (mJobExecuteSection.isAfter() && StringUtils.isNoneEmpty(command)) {
+                run(command, false, "AFTER LAST TASK");
             }
 
             updateJobStatus(0);
@@ -86,37 +111,45 @@ class JobExecutor extends Thread {
             });
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionFailedException ex) {
+            //Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
+            //send(ProcessEvent.OUT, "before failed and will not continue");
+            updateJobStatus(1);
+            send(ProcessEvent.FAILED, "\n\nJob failed");
         }
 
         writelogs();
         mServer.getJobExecutors().remove(mJob.getId());
     }
 
-    private boolean runBeforeJob() throws IOException, InterruptedException {
-        boolean result = true;
-        JobExecuteSection jobExecuteSection = mJob.getExecuteSection();
-        if (jobExecuteSection.isRunBefore() && StringUtils.isNoneEmpty(jobExecuteSection.getRunBeforeCommand())) {
-            send(ProcessEvent.OUT, "run before job...");
-            ArrayList<String> command = new ArrayList<>();
-            command.add(jobExecuteSection.getRunBeforeCommand());
-            runProcess(command);
+    private void run(String command, boolean stopOnError, String description) throws IOException, InterruptedException, ExecutionFailedException {
+        send(ProcessEvent.OUT, String.format("Run %s: %s", description, command));
 
-            if (jobExecuteSection.isRunBeforeHaltOnError()) {
-                result = mCurrentProcess.exitValue() == 0;
-            }
+        if (new File(command).exists()) {
+            ArrayList<String> commandLine = new ArrayList<>();
+            commandLine.add(command);
+            runProcess(commandLine);
 
             Thread.sleep(100);
 
             if (mCurrentProcess.exitValue() == 0) {
-                send(ProcessEvent.OUT, "before job OK");
+                send(ProcessEvent.OUT, String.format("%s OK", description));
             } else {
-                send(ProcessEvent.OUT, "before job failed");
+                send(ProcessEvent.OUT, String.format("%s FAILED", description));
             }
 
             send(ProcessEvent.OUT, "");
+            if (stopOnError && mCurrentProcess.exitValue() != 0) {
+                throw new ExecutionFailedException("FAILED: Will not continue. exitValue=" + mCurrentProcess.exitValue());
+            }
+        } else {
+            String fileNotExists = String.format("File does not exist: %s", command);
+            if (stopOnError) {
+                throw new ExecutionFailedException(fileNotExists);
+            } else {
+                send(ProcessEvent.ERR, fileNotExists);
+            }
         }
-
-        return result;
     }
 
     private boolean runBeforeTask(Task task) throws IOException, InterruptedException {
@@ -183,31 +216,30 @@ class JobExecutor extends Thread {
         boolean result = true;
 
         send(ProcessEvent.OUT, "Run task: " + task.getName());
-        if (runBeforeTask(task)) {
-            runRsync();
-        }
+        TaskExecuteSection taskExecuteSection = task.getExecuteSection();
+
+
+//        if (runBeforeTask(task)) {
+//            runRsync();
+//        }
 
         return result;
     }
 
-    private boolean runTasks() {
-        boolean result = true;
-
+    private void runTasks() {
         send(ProcessEvent.OUT, "begin to run all tasks");
 
         for (Task task : mJob.getTasks()) {
-
             try {
-                if (!runTask(task)) {
-                    break;
-                }
+                runTask(task);
+//                if (!runTask(task)) {
+//                    break;
+//                }
                 Thread.sleep(500);
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-        return result;
     }
 
     private synchronized void send(ProcessEvent processEvent, String line) {
@@ -302,6 +334,30 @@ class JobExecutor extends Thread {
             } catch (IOException e) {
                 Xlog.timedErr(e.getLocalizedMessage());
             }
+        }
+    }
+
+    class ExecutionFailedException extends Exception {
+
+        public ExecutionFailedException() {
+            super();
+        }
+
+        public ExecutionFailedException(String message) {
+            super(message);
+            send(ProcessEvent.OUT, message);
+        }
+
+        public ExecutionFailedException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public ExecutionFailedException(Throwable cause) {
+            super(cause);
+        }
+
+        public ExecutionFailedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+            super(message, cause, enableSuppression, writableStackTrace);
         }
     }
 }

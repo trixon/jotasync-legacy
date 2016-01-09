@@ -116,6 +116,7 @@ public class SpeedDialPanel extends JPanel implements ConnectionListener, Server
                 updateCaptions(job);
                 break;
             case CANCELED:
+            case FAILED:
             case FINISHED:
                 updateButtons(job, true);
                 updateCaptions(job);
