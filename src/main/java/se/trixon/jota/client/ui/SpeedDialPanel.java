@@ -35,15 +35,15 @@ import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import se.trixon.jota.client.ClientOptions;
+import se.trixon.jota.client.ConnectionListener;
+import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobComboBoxRenderer;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.jota.client.ConnectionListener;
-import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.ClientOptions;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
@@ -57,6 +57,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mEditMenuItem;
+    private JMenuItem mEditorMenuItem;
     private JMenuItem mResetMenuItem;
     private final JPopupMenu mPopupMenu = new JPopupMenu(Dict.JOB.getString());
     private SpeedDialButton mButton;
@@ -205,6 +206,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
             mPopupMenu.removeAll();
 
             mEditMenuItem = new JMenuItem(Dict.EDIT.getString());
+            mEditorMenuItem = new JMenuItem();
             mResetMenuItem = new JMenuItem(Dict.RESET.getString());
             mResetMenuItem.addActionListener((ActionEvent e) -> {
                 mButton.setJobId(-1);
@@ -215,6 +217,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
                 }
             });
             mPopupMenu.add(mEditMenuItem);
+            mPopupMenu.add(mEditorMenuItem);
             mPopupMenu.add(mResetMenuItem);
             mPopupMenu.add(new JSeparator());
 
@@ -292,11 +295,18 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
                     @Override
                     public void mousePressed(MouseEvent evt) {
                         SwingUtilities.invokeLater(() -> {
+                            MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(SpeedDialPanel.this);
+                            mEditorMenuItem.setAction(mainFrame.getActionManager().getAction(MainFrame.ActionManager.JOB_EDITOR));
                             if (mManager.hasJobs()) {
                                 mButton = (SpeedDialButton) evt.getSource();
                                 mResetMenuItem.setEnabled(mButton.getJob() != null);
                                 mEditMenuItem.setEnabled(mButton.getJob() != null);
                                 mEditMenuItem.removeActionListener(editActionListener);
+                                if (mButton.getJob() == null) {
+                                    mEditMenuItem.setText(Dict.EDIT.getString());
+                                } else {
+                                    mEditMenuItem.setText(String.format("%s %s", Dict.EDIT.getString(), mButton.getJob().getName()));
+                                }
 
                                 if (!mButton.isEnabled() && evt.getButton() == MouseEvent.BUTTON1 || evt.getButton() == MouseEvent.BUTTON3) {
                                     mEditMenuItem.addActionListener(editActionListener);
