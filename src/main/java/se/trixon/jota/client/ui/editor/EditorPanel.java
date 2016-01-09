@@ -38,10 +38,12 @@ public class EditorPanel extends JPanel implements JobsPanel.JobsListener, Tasks
 
     /**
      * Creates new form EditorPanel
+     *
+     * @param jobId
      */
-    public EditorPanel() {
+    public EditorPanel(long jobId) {
         mTasksPanel = new TasksPanel();
-        mJobsPanel = new JobsPanel();
+        mJobsPanel = new JobsPanel(jobId);
         mActiveTasksPanel = new ActiveTasksPanel();
 
         initComponents();

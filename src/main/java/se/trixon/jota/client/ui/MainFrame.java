@@ -105,7 +105,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
 
         if (mManager.isConnected()) {
-            SwingUtilities.invokeLater(this::showEditor);
+            SwingUtilities.invokeLater(() -> {
+                showEditor(-1);
+            });
         }
     }
 
@@ -329,8 +331,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
     }
 
-    private void showEditor() {
-        EditorPanel editorPanel = new EditorPanel();
+    void showEditor(long jobId) {
+        EditorPanel editorPanel = new EditorPanel(jobId);
         SwingHelper.makeWindowResizable(editorPanel);
 
         int retval = JOptionPane.showOptionDialog(this,
@@ -597,7 +599,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    showEditor();
+                    showEditor(-1);
                 }
             };
 
