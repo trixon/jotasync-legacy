@@ -84,6 +84,7 @@ public class JobPanel extends javax.swing.JPanel implements FileChooserPanel.Fil
 
         job.setLastRun(mJob.getLastRun());
         job.setLastRunExitCode(mJob.getLastRunExitCode());
+        job.setTasks(mJob.getTasks());
 
         return job;
     }
