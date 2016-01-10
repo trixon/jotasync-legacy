@@ -272,8 +272,11 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public void stopJob(Job job) throws RemoteException {
         Xlog.timedOut(String.format("Cancel job: %s", job.getName()));
-        mJobExecutors.get(job.getId()).interrupt();
-        mJobExecutors.remove(job.getId());
+        try {
+            mJobExecutors.get(job.getId()).interrupt();
+            mJobExecutors.remove(job.getId());
+        } catch (NullPointerException e) {
+        }
     }
 
     Set<ClientCallbacks> getClientCallbacks() {

@@ -111,6 +111,8 @@ public class TabItem extends JPanel implements TabListener {
 
     void enableSave() {
         progressBar.setIndeterminate(false);
+        editButton.setEnabled(true);
+        startButton.setEnabled(true);
         saveButton.setEnabled(true);
         cancelButton.setVisible(false);
         closeButton.setVisible(true);
@@ -128,7 +130,6 @@ public class TabItem extends JPanel implements TabListener {
     }
 
     boolean isClosable() {
-        //return closeButton.isVisible() && closeButton.isEnabled();
         return mClosable;
     }
 
@@ -156,6 +157,8 @@ public class TabItem extends JPanel implements TabListener {
         logPanel.clear();
         progressBar.setIndeterminate(true);
 
+        editButton.setEnabled(false);
+        startButton.setEnabled(false);
         saveButton.setEnabled(false);
         cancelButton.setVisible(true);
         closeButton.setVisible(false);
@@ -164,10 +167,14 @@ public class TabItem extends JPanel implements TabListener {
 
     private void init() {
         cancelButton.setIcon(Pict.Actions.PROCESS_STOP.get(UI.ICON_SIZE_LARGE));
+        editButton.setIcon(Pict.Actions.DOCUMENT_EDIT.get(UI.ICON_SIZE_LARGE));
         menuButton.setIcon(Pict.Custom.MENU.get(UI.ICON_SIZE_LARGE));
+        startButton.setIcon(Pict.Actions.MEDIA_PLAYBACK_START.get(UI.ICON_SIZE_LARGE));
 
         cancelButton.setToolTipText(Dict.CANCEL.getString());
+        editButton.setToolTipText(Dict.EDIT.getString());
         menuButton.setToolTipText(Dict.MENU.getString());
+        startButton.setToolTipText(Dict.START.getString());
 
         closeButton.setVisible(false);
     }
@@ -189,8 +196,10 @@ public class TabItem extends JPanel implements TabListener {
         progressBar = new javax.swing.JProgressBar();
         toolBar = new javax.swing.JToolBar();
         saveButton = new javax.swing.JButton();
+        editButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
+        startButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         menuButton = new javax.swing.JButton();
         logPanel = new se.trixon.util.swing.LogPanel();
@@ -214,6 +223,16 @@ public class TabItem extends JPanel implements TabListener {
         saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(saveButton);
 
+        editButton.setFocusable(false);
+        editButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        editButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        editButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(editButton);
+
         cancelButton.setFocusable(false);
         cancelButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         cancelButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -228,6 +247,16 @@ public class TabItem extends JPanel implements TabListener {
         closeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         closeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(closeButton);
+
+        startButton.setFocusable(false);
+        startButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        startButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        startButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(startButton);
         toolBar.add(jSeparator1);
 
         menuButton.setFocusable(false);
@@ -251,14 +280,29 @@ public class TabItem extends JPanel implements TabListener {
         cancel();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(this);
+        mainFrame.showEditor(mJob.getId());
+    }//GEN-LAST:event_editButtonActionPerformed
+
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        try {
+            mManager.getServerCommander().startJob(mJob);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_startButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeButton;
+    private javax.swing.JButton editButton;
     private javax.swing.JToolBar.Separator jSeparator1;
     private se.trixon.util.swing.LogPanel logPanel;
     private javax.swing.JButton menuButton;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JButton saveButton;
+    private javax.swing.JButton startButton;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 }
