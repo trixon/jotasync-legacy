@@ -670,7 +670,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //shutdown server and quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask + InputEvent.SHIFT_MASK);
-            action = new AbstractAction(Dict.SHUTDOWN_SERVER_AND_WINDOW.getString()) {
+            action = new AbstractAction(Dict.SHUTDOWN_SERVER_AND_QUIT.getString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {

@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.prefs.Preferences;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -39,32 +38,21 @@ enum JotaManager {
     private static final String KEY_VERSION = "version";
     private static final int sVersion = 1;
     private final File mDirectory;
-    private final File mJobFile;
     private final File mJobBakFile;
+    private final File mJobFile;
     private final JobManager mJobManager = JobManager.INSTANCE;
-    private final File mLogDirectory;
     private final File mLogFile;
-    private final Preferences mPreferences;
     private final TaskManager mTaskManager = TaskManager.INSTANCE;
     private int mVersion;
 
     private JotaManager() {
         mDirectory = new File(System.getProperty("user.home"), ".config/jotasync");
-        mLogDirectory = new File(mDirectory, "log");
         mJobFile = new File(mDirectory, "jobs.json");
         mJobBakFile = new File(mDirectory, "jobs.bak");
         mLogFile = new File(mDirectory, "jotasync.log");
 
-        mPreferences = Preferences.userNodeForPackage(this.getClass());
-
         try {
             FileUtils.forceMkdir(mDirectory);
-        } catch (IOException ex) {
-            Xlog.timedErr(ex.getLocalizedMessage());
-        }
-
-        try {
-            FileUtils.forceMkdir(mLogDirectory);
         } catch (IOException ex) {
             Xlog.timedErr(ex.getLocalizedMessage());
         }
@@ -80,10 +68,6 @@ enum JotaManager {
 
     public JobManager getJobManager() {
         return mJobManager;
-    }
-
-    public File getLogDirectory() {
-        return mLogDirectory;
     }
 
     public File getLogFile() {
@@ -120,7 +104,7 @@ enum JotaManager {
         String jsonString = jsonObject.toJSONString();
         FileUtils.writeStringToFile(mJobFile, jsonString);
         FileUtils.writeStringToFile(mJobBakFile, String.format("%s=%s\n", tag, jsonString), true);
-        
+
         load();
     }
 }

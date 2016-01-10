@@ -33,6 +33,7 @@ import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobExecuteSection;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskExecuteSection;
+import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 
 /**
@@ -97,12 +98,13 @@ class JobExecutor extends Thread {
             }
 
             updateJobStatus(0);
-            send(ProcessEvent.OUT, "\n\n");
+            writelogs();
             send(ProcessEvent.FINISHED, "Job finished");
             Xlog.timedOut(String.format("Job finished: %s", mJob.getName()));
         } catch (InterruptedException ex) {
             mCurrentProcess.destroy();
             updateJobStatus(99);
+            writelogs();
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {
                 try {
                     clientCallback.onProcessEvent(ProcessEvent.CANCELED, mJob, null, null);
@@ -111,15 +113,16 @@ class JobExecutor extends Thread {
                 }
             });
         } catch (IOException ex) {
+            writelogs();
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionFailedException ex) {
             //Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
             //send(ProcessEvent.OUT, "before failed and will not continue");
             updateJobStatus(1);
+            writelogs();
             send(ProcessEvent.FAILED, "\n\nJob failed");
         }
 
-        writelogs();
         mServer.getJobExecutors().remove(mJob.getId());
     }
 
@@ -287,7 +290,7 @@ class JobExecutor extends Thread {
     }
 
     private void writelogs() {
-        File directory = JotaManager.INSTANCE.getLogDirectory();
+        File directory = new File(ServerOptions.INSTANCE.getLogDir());
         String outFile = String.format("%s.log", mJob.getName());
         String errFile = String.format("%s.err", mJob.getName());
 
@@ -300,17 +303,32 @@ class JobExecutor extends Thread {
         boolean append = logMode == 0;
 
         try {
+            FileUtils.forceMkdir(directory);
             File file = new File(directory, outFile);
+            send(ProcessEvent.OUT, "");
 
+            StringBuilder builder = new StringBuilder();
             if (mJob.isLogOutput() || mJob.isLogErrors() && !mJob.isLogSeparateErrors()) {
                 FileUtils.writeStringToFile(file, mOutBuffer.toString(), append);
-                Xlog.timedOut("Write log: " + file.getAbsolutePath());
+                String message = file.getAbsolutePath();
+                Xlog.timedOut(message);
+                builder.append(String.format("%s:%s", SystemHelper.getHostname(), message));
             }
 
             if (mJob.isLogErrors() && mJob.isLogSeparateErrors()) {
+                if (builder.length() > 0) {
+                    builder.append("\n");
+                }
                 file = new File(directory, errFile);
                 FileUtils.writeStringToFile(file, mErrBuffer.toString(), append);
-                Xlog.timedOut("Write log: " + file.getAbsolutePath());
+                String message = file.getAbsolutePath();
+                Xlog.timedOut(message);
+                builder.append(String.format("%s:%s", SystemHelper.getHostname(), message));
+            }
+            
+            if (builder.length() > 0) {
+                builder.insert(0, "Save log\n");
+                send(ProcessEvent.OUT, builder.toString());
             }
         } catch (IOException ex) {
             Xlog.timedErr(ex.getLocalizedMessage());

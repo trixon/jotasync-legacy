@@ -33,6 +33,8 @@ public interface ServerCommander extends Remote {
 
     LinkedList<Job> getJobs() throws RemoteException;
 
+    String getLogDir() throws RemoteException;
+
     String getRsyncPath() throws RemoteException;
 
     long getSpeedDial(int key) throws RemoteException;
@@ -66,6 +68,8 @@ public interface ServerCommander extends Remote {
     void setCronActive(boolean enable) throws RemoteException;
 
     void setJobs(DefaultListModel model) throws RemoteException;
+
+    void setLogDir(String path) throws RemoteException;
 
     void setRsyncPath(String path) throws RemoteException;
 

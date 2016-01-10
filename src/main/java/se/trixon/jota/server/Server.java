@@ -91,6 +91,11 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
+    public String getLogDir() throws RemoteException {
+        return mOptions.getLogDir();
+    }
+
+    @Override
     public String getRsyncPath() throws RemoteException {
         return mOptions.getRsyncPath();
     }
@@ -216,6 +221,11 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     @Override
     public void setJobs(DefaultListModel model) throws RemoteException {
         mJobManager.setJobs(model);
+    }
+
+    @Override
+    public void setLogDir(String path) throws RemoteException {
+        mOptions.setLogDir(path);
     }
 
     @Override

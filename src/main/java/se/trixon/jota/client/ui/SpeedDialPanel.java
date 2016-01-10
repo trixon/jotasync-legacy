@@ -296,7 +296,10 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
                     public void mousePressed(MouseEvent evt) {
                         SwingUtilities.invokeLater(() -> {
                             MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(SpeedDialPanel.this);
-                            mEditorMenuItem.setAction(mainFrame.getActionManager().getAction(MainFrame.ActionManager.JOB_EDITOR));
+                            try {
+                                mEditorMenuItem.setAction(mainFrame.getActionManager().getAction(MainFrame.ActionManager.JOB_EDITOR));
+                            } catch (NullPointerException e) {
+                            }
                             if (mManager.hasJobs()) {
                                 mButton = (SpeedDialButton) evt.getSource();
                                 mResetMenuItem.setEnabled(mButton.getJob() != null);

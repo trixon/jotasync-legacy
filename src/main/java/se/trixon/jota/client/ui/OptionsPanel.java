@@ -18,6 +18,7 @@ package se.trixon.jota.client.ui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JSpinner;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.client.Manager;
@@ -27,7 +28,7 @@ import se.trixon.util.swing.SwingHelper;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class OptionsPanel extends javax.swing.JPanel {
 
@@ -42,9 +43,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         mServerCommander = mManager.getServerCommander();
         initComponents();
 
-        if (mServerCommander == null) {
-            rsyncFileChooserPanel.setEnabled(false);
-        }
+        tabbedPane.setEnabledAt(1, mServerCommander != null);
         portSpinner.setEditor(new JSpinner.NumberEditor(portSpinner, "#"));
         connectDelaySpinner.setEditor(new JSpinner.NumberEditor(connectDelaySpinner, "#"));
         load();
@@ -54,6 +53,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         if (mManager.isConnected()) {
             try {
                 mServerCommander.setRsyncPath(rsyncFileChooserPanel.getPath());
+                mServerCommander.setLogDir(logDirFileChooserPanel.getPath());
             } catch (RemoteException ex) {
                 Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -72,6 +72,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         if (mManager.isConnected()) {
             try {
                 rsyncFileChooserPanel.setPath(mServerCommander.getRsyncPath());
+                logDirFileChooserPanel.setPath(mServerCommander.getLogDir());
             } catch (NullPointerException | RemoteException ex) {
                 rsyncFileChooserPanel.setEnabled(false);
                 Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,7 +101,8 @@ public class OptionsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        rsyncFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        tabbedPane = new javax.swing.JTabbedPane();
+        clientPanel = new javax.swing.JPanel();
         lafForceCheckBox = new javax.swing.JCheckBox();
         lafLabel = new javax.swing.JLabel();
         lafComboBox = new javax.swing.JComboBox();
@@ -111,10 +113,11 @@ public class OptionsPanel extends javax.swing.JPanel {
         portSpinner = new javax.swing.JSpinner();
         connectDelayLabel = new javax.swing.JLabel();
         connectDelaySpinner = new javax.swing.JSpinner();
+        serverPanel = new javax.swing.JPanel();
+        rsyncFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        logDirFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/Bundle"); // NOI18N
-        rsyncFileChooserPanel.setHeader(bundle.getString("OptionsPanel.rsyncFileChooserPanel.header")); // NOI18N
-
         lafForceCheckBox.setText(bundle.getString("OptionsPanel.lafForceCheckBox.text")); // NOI18N
         lafForceCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,27 +146,26 @@ public class OptionsPanel extends javax.swing.JPanel {
 
         connectDelaySpinner.setModel(new javax.swing.SpinnerNumberModel(500, 100, 3000, 100));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        javax.swing.GroupLayout clientPanelLayout = new javax.swing.GroupLayout(clientPanel);
+        clientPanel.setLayout(clientPanelLayout);
+        clientPanelLayout.setHorizontalGroup(
+            clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(clientPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rsyncFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lafComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lafForceCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(menuIconsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(customColorsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
+                    .addGroup(clientPanelLayout.createSequentialGroup()
+                        .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(clientPanelLayout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(portLabel))
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(connectDelayLabel)
                                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(lafLabel)
@@ -171,12 +173,10 @@ public class OptionsPanel extends javax.swing.JPanel {
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        clientPanelLayout.setVerticalGroup(
+            clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(clientPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(rsyncFileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addComponent(lafForceCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lafLabel)
@@ -189,14 +189,55 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autostartServerCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(portLabel)
                     .addComponent(connectDelayLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        tabbedPane.addTab(Dict.CLIENT.toString(), clientPanel);
+
+        rsyncFileChooserPanel.setHeader(bundle.getString("OptionsPanel.rsyncFileChooserPanel.header")); // NOI18N
+
+        logDirFileChooserPanel.setHeader(Dict.LOG_DIRECTORY.toString());
+        logDirFileChooserPanel.setMode(JFileChooser.DIRECTORIES_ONLY);
+
+        javax.swing.GroupLayout serverPanelLayout = new javax.swing.GroupLayout(serverPanel);
+        serverPanel.setLayout(serverPanelLayout);
+        serverPanelLayout.setHorizontalGroup(
+            serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(serverPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rsyncFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                    .addComponent(logDirFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        serverPanelLayout.setVerticalGroup(
+            serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(serverPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(rsyncFileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(logDirFileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        tabbedPane.addTab(Dict.SERVER.toString(), serverPanel);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(tabbedPane)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(tabbedPane)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -217,15 +258,19 @@ public class OptionsPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox autostartServerCheckBox;
+    private javax.swing.JPanel clientPanel;
     private javax.swing.JLabel connectDelayLabel;
     private javax.swing.JSpinner connectDelaySpinner;
     private javax.swing.JCheckBox customColorsCheckBox;
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JCheckBox lafForceCheckBox;
     private javax.swing.JLabel lafLabel;
+    private se.trixon.util.swing.dialogs.FileChooserPanel logDirFileChooserPanel;
     private javax.swing.JCheckBox menuIconsCheckBox;
     private javax.swing.JLabel portLabel;
     private javax.swing.JSpinner portSpinner;
     private se.trixon.util.swing.dialogs.FileChooserPanel rsyncFileChooserPanel;
+    private javax.swing.JPanel serverPanel;
+    private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
 }

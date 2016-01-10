@@ -15,11 +15,14 @@
  */
 package se.trixon.jota.server;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -29,8 +32,10 @@ enum ServerOptions {
 
     INSTANCE;
     public static final boolean DEFAULT_CRON_ACTIVE = false;
+    public static final String DEFAULT_LOG_DIR = new File(FileUtils.getUserDirectory(), ".config/jotasync/log").getAbsolutePath();
     public static final String DEFAULT_RSYNC_PATH = "rsync";
     public static final String KEY_CRON_ACTIVE = "cron_active";
+    public static final String KEY_LOG_DIR = "logDir";
     public static final String KEY_RSYNC_PATH = "rsync";
     public static final String KEY_SELECTED_JOB = "job";
     public static final String KEY_SPEED_DIAL = "speedDial_";
@@ -49,6 +54,15 @@ enum ServerOptions {
 
     long getJobId() {
         return mPreferences.getLong(KEY_SELECTED_JOB, 0);
+    }
+
+    String getLogDir() {
+        String dir = mPreferences.get(KEY_LOG_DIR, DEFAULT_LOG_DIR);
+        if (StringUtils.isBlank(dir)) {
+            dir = DEFAULT_LOG_DIR;
+        }
+
+        return dir;
     }
 
     Preferences getPreferences() {
@@ -95,6 +109,10 @@ enum ServerOptions {
 
     void setJobId(long jobId) {
         mPreferences.putLong(KEY_SELECTED_JOB, jobId);
+    }
+
+    void setLogDir(String value) {
+        mPreferences.put(KEY_LOG_DIR, value);
     }
 
     void setRsyncPath(String value) {
