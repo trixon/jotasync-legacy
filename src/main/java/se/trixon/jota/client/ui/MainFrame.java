@@ -39,6 +39,7 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -106,7 +107,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         if (mManager.isConnected()) {
             SwingUtilities.invokeLater(() -> {
-                showEditor(-1);
+                //showEditor(-1);
             });
         }
     }
@@ -120,7 +121,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             enableGui(true);
             updateStartServerState();
         });
-
     }
 
     @Override
@@ -195,6 +195,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     }
 
     private void init() {
+        String fileName = String.format("/%s/sync-256px.png", getClass().getPackage().getName().replace(".", "/"));
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource(fileName));
+        setIconImage(imageIcon.getImage());
+
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             String key = evt.getKey();
             if (key.equalsIgnoreCase(ClientOptions.KEY_MENU_ICONS)) {

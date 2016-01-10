@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>se.trixon.jotasync</groupId>
     <artifactId>jotasync</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.2.2-SNAPSHOT</version>
     <description>rsync front end with built in cron</description>
     <url>http://jotasync.trixon.se/</url>
     <licenses>
