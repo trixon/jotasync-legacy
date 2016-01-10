@@ -337,7 +337,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         int retval = JOptionPane.showOptionDialog(this,
                 editorPanel,
-                Dict.JOB_PROPERTIES.getString(),
+                mBundle.getString("jobEditor"),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
