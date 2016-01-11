@@ -23,6 +23,7 @@ import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
@@ -44,6 +45,7 @@ import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobComboBoxRenderer;
 import se.trixon.jota.shared.task.Task;
+import se.trixon.util.BundleHelper;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
@@ -65,6 +67,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Manager mManager = Manager.getInstance();
     private boolean mSimulate;
+    private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
 
     /**
      * Creates new form SpeedDialPanel
@@ -206,7 +209,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
             mPopupMenu.removeAll();
 
             mEditMenuItem = new JMenuItem(Dict.EDIT.getString());
-            mEditorMenuItem = new JMenuItem();
+            mEditorMenuItem = new JMenuItem(mBundle.getString("jobEditor"));
             mResetMenuItem = new JMenuItem(Dict.RESET.getString());
             mResetMenuItem.addActionListener((ActionEvent e) -> {
                 mButton.setJobId(-1);
@@ -279,7 +282,12 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
 
         final ActionListener editActionListener = (ActionEvent e) -> {
             MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(SpeedDialPanel.this);
-            mainFrame.showEditor(mButton.getJob().getId());
+            mainFrame.showEditor(mButton.getJob().getId(), true);
+        };
+
+        final ActionListener editorActionListener = (ActionEvent e) -> {
+            MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(SpeedDialPanel.this);
+            mainFrame.showEditor(mButton.getJob().getId(), false);
         };
 
         mButtons.clear();
@@ -295,15 +303,12 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
                     @Override
                     public void mousePressed(MouseEvent evt) {
                         SwingUtilities.invokeLater(() -> {
-                            MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(SpeedDialPanel.this);
-                            try {
-                                mEditorMenuItem.setAction(mainFrame.getActionManager().getAction(MainFrame.ActionManager.JOB_EDITOR));
-                            } catch (NullPointerException e) {
-                            }
                             if (mManager.hasJobs()) {
                                 mButton = (SpeedDialButton) evt.getSource();
                                 mResetMenuItem.setEnabled(mButton.getJob() != null);
                                 mEditMenuItem.setEnabled(mButton.getJob() != null);
+                                mEditorMenuItem.setEnabled(mButton.getJob() != null);
+                                mEditorMenuItem.removeActionListener(editorActionListener);
                                 mEditMenuItem.removeActionListener(editActionListener);
                                 if (mButton.getJob() == null) {
                                     mEditMenuItem.setText(Dict.EDIT.getString());
@@ -313,6 +318,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
 
                                 if (!mButton.isEnabled() && evt.getButton() == MouseEvent.BUTTON1 || evt.getButton() == MouseEvent.BUTTON3) {
                                     mEditMenuItem.addActionListener(editActionListener);
+                                    mEditorMenuItem.addActionListener(editorActionListener);
                                     mPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
                                 }
                             }
@@ -395,7 +401,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
         jobsComboBox = new javax.swing.JComboBox();
         toolBar = new javax.swing.JToolBar();
         startButton = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
         menuButton = new javax.swing.JButton();
         centerPanel = new javax.swing.JPanel();
         speedDialButton0 = new se.trixon.jota.client.ui.SpeedDialButton();
@@ -438,7 +443,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
             }
         });
         toolBar.add(startButton);
-        toolBar.add(jSeparator1);
 
         menuButton.setFocusable(false);
         menuButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -531,7 +535,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel centerPanel;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JComboBox jobsComboBox;
     private javax.swing.JButton menuButton;
     private se.trixon.jota.client.ui.SpeedDialButton speedDialButton0;

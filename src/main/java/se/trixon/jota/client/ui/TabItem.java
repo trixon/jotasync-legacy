@@ -27,9 +27,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FileUtils;
+import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.job.Job;
-import se.trixon.jota.client.Manager;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.dialogs.Message;
@@ -200,7 +200,6 @@ public class TabItem extends JPanel implements TabListener {
         cancelButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         startButton = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
         menuButton = new javax.swing.JButton();
         logPanel = new se.trixon.util.swing.LogPanel();
 
@@ -257,7 +256,6 @@ public class TabItem extends JPanel implements TabListener {
             }
         });
         toolBar.add(startButton);
-        toolBar.add(jSeparator1);
 
         menuButton.setFocusable(false);
         menuButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -282,7 +280,7 @@ public class TabItem extends JPanel implements TabListener {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(this);
-        mainFrame.showEditor(mJob.getId());
+        mainFrame.showEditor(mJob.getId(), true);
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
@@ -297,7 +295,6 @@ public class TabItem extends JPanel implements TabListener {
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeButton;
     private javax.swing.JButton editButton;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private se.trixon.util.swing.LogPanel logPanel;
     private javax.swing.JButton menuButton;
     private javax.swing.JProgressBar progressBar;

@@ -27,8 +27,8 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.client.Manager;
+import se.trixon.jota.shared.job.Job;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
@@ -44,7 +44,7 @@ public final class JobsPanel extends EditPanel {
     private final HashSet<JobsListener> mJobsListeners = new HashSet<>();
     private final Manager mManager = Manager.getInstance();
 
-    public JobsPanel(long jobId) {
+    public JobsPanel(long jobId, boolean openJob) {
         init();
         initListeners();
 
@@ -52,7 +52,9 @@ public final class JobsPanel extends EditPanel {
             if (job.getId() == jobId) {
                 SwingUtilities.invokeLater(() -> {
                     list.setSelectedValue(job, true);
-                    edit(job);
+                    if (openJob) {
+                        edit(job);
+                    }
                 });
                 break;
             }

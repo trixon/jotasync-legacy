@@ -335,8 +335,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
     }
 
-    void showEditor(long jobId) {
-        EditorPanel editorPanel = new EditorPanel(jobId);
+    void showEditor(long jobId, boolean openJob) {
+        EditorPanel editorPanel = new EditorPanel(jobId, openJob);
         SwingHelper.makeWindowResizable(editorPanel);
 
         int retval = JOptionPane.showOptionDialog(this,
@@ -607,7 +607,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    showEditor(-1);
+                    showEditor(-1, false);
                 }
             };
 
@@ -674,7 +674,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //shutdown server and quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask + InputEvent.SHIFT_MASK);
-            action = new AbstractAction(Dict.SHUTDOWN_SERVER_AND_QUIT.getString()) {
+            action = new AbstractAction(Dict.SHUTDOWN_AND_QUIT.getString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
