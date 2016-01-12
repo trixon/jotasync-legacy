@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor.task_modules;
+package se.trixon.jota.client.ui.editor.module.task;
 
 import se.trixon.jota.shared.task.OptionSection;
 import se.trixon.jota.shared.task.Task;
@@ -21,14 +21,14 @@ import se.trixon.util.dictionary.Dict;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-public class ModuleOptionsPanel extends ModulePanel {
+public class TaskOptionsPanel extends TaskModule {
 
     /**
      * Creates new form ModulePanel
      */
-    public ModuleOptionsPanel() {
+    public TaskOptionsPanel() {
         initComponents();
         init();
     }
@@ -154,12 +154,12 @@ public class ModuleOptionsPanel extends ModulePanel {
 
         basic1Panel.setLayout(new java.awt.GridLayout(1, 0));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/task_modules/Bundle"); // NOI18N
-        timesCheckBox.setText(bundle.getString("ModuleOptionsPanel.timesCheckBox.text")); // NOI18N
-        timesCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.timesCheckBox.toolTipText")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
+        timesCheckBox.setText(bundle.getString("TaskOptionsPanel.timesCheckBox.text")); // NOI18N
+        timesCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.timesCheckBox.toolTipText")); // NOI18N
 
-        ownerCheckBox.setText(bundle.getString("ModuleOptionsPanel.ownerCheckBox.text")); // NOI18N
-        ownerCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.ownerCheckBox.toolTipText")); // NOI18N
+        ownerCheckBox.setText(bundle.getString("TaskOptionsPanel.ownerCheckBox.text")); // NOI18N
+        ownerCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.ownerCheckBox.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout basic11PanelLayout = new javax.swing.GroupLayout(basic11Panel);
         basic11Panel.setLayout(basic11PanelLayout);
@@ -183,11 +183,11 @@ public class ModuleOptionsPanel extends ModulePanel {
 
         basic1Panel.add(basic11Panel);
 
-        permsCheckBox.setText(bundle.getString("ModuleOptionsPanel.permsCheckBox.text")); // NOI18N
-        permsCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.permsCheckBox.toolTipText")); // NOI18N
+        permsCheckBox.setText(bundle.getString("TaskOptionsPanel.permsCheckBox.text")); // NOI18N
+        permsCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.permsCheckBox.toolTipText")); // NOI18N
 
-        groupCheckBox.setText(bundle.getString("ModuleOptionsPanel.groupCheckBox.text")); // NOI18N
-        groupCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.groupCheckBox.toolTipText")); // NOI18N
+        groupCheckBox.setText(bundle.getString("TaskOptionsPanel.groupCheckBox.text")); // NOI18N
+        groupCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.groupCheckBox.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout basic12PanelLayout = new javax.swing.GroupLayout(basic12Panel);
         basic12Panel.setLayout(basic12PanelLayout);
@@ -213,17 +213,17 @@ public class ModuleOptionsPanel extends ModulePanel {
 
         basic2Panel.setLayout(new java.awt.GridLayout(1, 0));
 
-        verboseCheckBox.setText(bundle.getString("ModuleOptionsPanel.verboseCheckBox.text")); // NOI18N
-        verboseCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.verboseCheckBox.toolTipText")); // NOI18N
+        verboseCheckBox.setText(bundle.getString("TaskOptionsPanel.verboseCheckBox.text")); // NOI18N
+        verboseCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.verboseCheckBox.toolTipText")); // NOI18N
 
-        ignoreExistingCheckBox.setText(bundle.getString("ModuleOptionsPanel.ignoreExistingCheckBox.text")); // NOI18N
-        ignoreExistingCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.ignoreExistingCheckBox.toolTipText")); // NOI18N
+        ignoreExistingCheckBox.setText(bundle.getString("TaskOptionsPanel.ignoreExistingCheckBox.text")); // NOI18N
+        ignoreExistingCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.ignoreExistingCheckBox.toolTipText")); // NOI18N
 
-        updateCheckBox.setText(bundle.getString("ModuleOptionsPanel.updateCheckBox.text")); // NOI18N
-        updateCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.updateCheckBox.toolTipText")); // NOI18N
+        updateCheckBox.setText(bundle.getString("TaskOptionsPanel.updateCheckBox.text")); // NOI18N
+        updateCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.updateCheckBox.toolTipText")); // NOI18N
 
-        deleteCheckBox.setText(bundle.getString("ModuleOptionsPanel.deleteCheckBox.text")); // NOI18N
-        deleteCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.deleteCheckBox.toolTipText")); // NOI18N
+        deleteCheckBox.setText(bundle.getString("TaskOptionsPanel.deleteCheckBox.text")); // NOI18N
+        deleteCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.deleteCheckBox.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout basic21PanelLayout = new javax.swing.GroupLayout(basic21Panel);
         basic21Panel.setLayout(basic21PanelLayout);
@@ -253,17 +253,17 @@ public class ModuleOptionsPanel extends ModulePanel {
 
         basic2Panel.add(basic21Panel);
 
-        oneFileSystemCheckBox.setText(bundle.getString("ModuleOptionsPanel.oneFileSystemCheckBox.text")); // NOI18N
-        oneFileSystemCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.oneFileSystemCheckBox.toolTipText")); // NOI18N
+        oneFileSystemCheckBox.setText(bundle.getString("TaskOptionsPanel.oneFileSystemCheckBox.text")); // NOI18N
+        oneFileSystemCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.oneFileSystemCheckBox.toolTipText")); // NOI18N
 
-        progressCheckBox.setText(bundle.getString("ModuleOptionsPanel.progressCheckBox.text")); // NOI18N
-        progressCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.progressCheckBox.toolTipText")); // NOI18N
+        progressCheckBox.setText(bundle.getString("TaskOptionsPanel.progressCheckBox.text")); // NOI18N
+        progressCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.progressCheckBox.toolTipText")); // NOI18N
 
-        sizeOnlyCheckBox.setText(bundle.getString("ModuleOptionsPanel.sizeOnlyCheckBox.text")); // NOI18N
-        sizeOnlyCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.sizeOnlyCheckBox.toolTipText")); // NOI18N
+        sizeOnlyCheckBox.setText(bundle.getString("TaskOptionsPanel.sizeOnlyCheckBox.text")); // NOI18N
+        sizeOnlyCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.sizeOnlyCheckBox.toolTipText")); // NOI18N
 
-        modifyWindowCheckBox.setText(bundle.getString("ModuleOptionsPanel.modifyWindowCheckBox.text")); // NOI18N
-        modifyWindowCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.modifyWindowCheckBox.toolTipText")); // NOI18N
+        modifyWindowCheckBox.setText(bundle.getString("TaskOptionsPanel.modifyWindowCheckBox.text")); // NOI18N
+        modifyWindowCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.modifyWindowCheckBox.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout basic22PanelLayout = new javax.swing.GroupLayout(basic22Panel);
         basic22Panel.setLayout(basic22PanelLayout);
@@ -317,23 +317,23 @@ public class ModuleOptionsPanel extends ModulePanel {
 
         advancedPanel.setLayout(new java.awt.GridLayout(1, 0));
 
-        checksumCheckBox.setText(bundle.getString("ModuleOptionsPanel.checksumCheckBox.text")); // NOI18N
-        checksumCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.checksumCheckBox.toolTipText")); // NOI18N
+        checksumCheckBox.setText(bundle.getString("TaskOptionsPanel.checksumCheckBox.text")); // NOI18N
+        checksumCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.checksumCheckBox.toolTipText")); // NOI18N
 
-        devicesCheckBox.setText(bundle.getString("ModuleOptionsPanel.devicesCheckBox.text")); // NOI18N
-        devicesCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.devicesCheckBox.toolTipText")); // NOI18N
+        devicesCheckBox.setText(bundle.getString("TaskOptionsPanel.devicesCheckBox.text")); // NOI18N
+        devicesCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.devicesCheckBox.toolTipText")); // NOI18N
 
-        partialProgressCheckBox.setText(bundle.getString("ModuleOptionsPanel.partialProgressCheckBox.text")); // NOI18N
-        partialProgressCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.partialProgressCheckBox.toolTipText")); // NOI18N
+        partialProgressCheckBox.setText(bundle.getString("TaskOptionsPanel.partialProgressCheckBox.text")); // NOI18N
+        partialProgressCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.partialProgressCheckBox.toolTipText")); // NOI18N
 
-        linksCheckBox.setText(bundle.getString("ModuleOptionsPanel.linksCheckBox.text")); // NOI18N
-        linksCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.linksCheckBox.toolTipText")); // NOI18N
+        linksCheckBox.setText(bundle.getString("TaskOptionsPanel.linksCheckBox.text")); // NOI18N
+        linksCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.linksCheckBox.toolTipText")); // NOI18N
 
-        backupCheckBox.setText(bundle.getString("ModuleOptionsPanel.backupCheckBox.text")); // NOI18N
-        backupCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.backupCheckBox.toolTipText")); // NOI18N
+        backupCheckBox.setText(bundle.getString("TaskOptionsPanel.backupCheckBox.text")); // NOI18N
+        backupCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.backupCheckBox.toolTipText")); // NOI18N
 
-        dirsCheckBox.setText(bundle.getString("ModuleOptionsPanel.dirsCheckBox.text")); // NOI18N
-        dirsCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.dirsCheckBox.toolTipText")); // NOI18N
+        dirsCheckBox.setText(bundle.getString("TaskOptionsPanel.dirsCheckBox.text")); // NOI18N
+        dirsCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.dirsCheckBox.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout advanced11PanelLayout = new javax.swing.GroupLayout(advanced11Panel);
         advanced11Panel.setLayout(advanced11PanelLayout);
@@ -369,23 +369,23 @@ public class ModuleOptionsPanel extends ModulePanel {
 
         advancedPanel.add(advanced11Panel);
 
-        compressCheckBox.setText(bundle.getString("ModuleOptionsPanel.compressCheckBox.text")); // NOI18N
-        compressCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.compressCheckBox.toolTipText")); // NOI18N
+        compressCheckBox.setText(bundle.getString("TaskOptionsPanel.compressCheckBox.text")); // NOI18N
+        compressCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.compressCheckBox.toolTipText")); // NOI18N
 
-        existingCheckBox.setText(bundle.getString("ModuleOptionsPanel.existingCheckBox.text")); // NOI18N
-        existingCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.existingCheckBox.toolTipText")); // NOI18N
+        existingCheckBox.setText(bundle.getString("TaskOptionsPanel.existingCheckBox.text")); // NOI18N
+        existingCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.existingCheckBox.toolTipText")); // NOI18N
 
-        numericIdsCheckBox.setText(bundle.getString("ModuleOptionsPanel.numericIdsCheckBox.text")); // NOI18N
-        numericIdsCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.numericIdsCheckBox.toolTipText")); // NOI18N
+        numericIdsCheckBox.setText(bundle.getString("TaskOptionsPanel.numericIdsCheckBox.text")); // NOI18N
+        numericIdsCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.numericIdsCheckBox.toolTipText")); // NOI18N
 
-        hardlinksCheckBox.setText(bundle.getString("ModuleOptionsPanel.hardlinksCheckBox.text")); // NOI18N
-        hardlinksCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.hardlinksCheckBox.toolTipText")); // NOI18N
+        hardlinksCheckBox.setText(bundle.getString("TaskOptionsPanel.hardlinksCheckBox.text")); // NOI18N
+        hardlinksCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.hardlinksCheckBox.toolTipText")); // NOI18N
 
-        itemizeChangesCheckBox.setText(bundle.getString("ModuleOptionsPanel.itemizeChangesCheckBox.text")); // NOI18N
-        itemizeChangesCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.itemizeChangesCheckBox.toolTipText")); // NOI18N
+        itemizeChangesCheckBox.setText(bundle.getString("TaskOptionsPanel.itemizeChangesCheckBox.text")); // NOI18N
+        itemizeChangesCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.itemizeChangesCheckBox.toolTipText")); // NOI18N
 
-        protectArgsCheckBox.setText(bundle.getString("ModuleOptionsPanel.protectArgsCheckBox.text")); // NOI18N
-        protectArgsCheckBox.setToolTipText(bundle.getString("ModuleOptionsPanel.protectArgsCheckBox.toolTipText")); // NOI18N
+        protectArgsCheckBox.setText(bundle.getString("TaskOptionsPanel.protectArgsCheckBox.text")); // NOI18N
+        protectArgsCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.protectArgsCheckBox.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout advanced12PanelLayout = new javax.swing.GroupLayout(advanced12Panel);
         advanced12Panel.setLayout(advanced12PanelLayout);

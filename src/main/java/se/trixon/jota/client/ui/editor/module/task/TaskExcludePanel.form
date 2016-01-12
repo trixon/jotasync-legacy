@@ -80,28 +80,28 @@
                 <Component class="javax.swing.JCheckBox" name="tempCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.tempCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.tempCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="backupCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.backupCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.backupCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="cacheCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.cacheCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.cacheCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="trashCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.trashCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.trashCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -143,28 +143,28 @@
                 <Component class="javax.swing.JCheckBox" name="sysMountsCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.sysMountsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.sysMountsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="sysDirsCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.sysDirsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.sysDirsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="lostFoundCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.lostFoundCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.lostFoundCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="gvfsCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.gvfsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.gvfsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -207,7 +207,7 @@
               <Properties>
                 <Property name="checkBoxMode" type="boolean" value="true"/>
                 <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleExcludePanel.externalFilePanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskExcludePanel.externalFilePanel.header" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>

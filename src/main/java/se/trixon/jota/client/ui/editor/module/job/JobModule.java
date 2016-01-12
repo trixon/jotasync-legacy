@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,32 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor.task_modules;
+package se.trixon.jota.client.ui.editor.module.job;
 
-import se.trixon.jota.shared.task.Task;
+import se.trixon.jota.client.ui.editor.module.JobPersistor;
+import se.trixon.jota.client.ui.editor.module.Module;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-public abstract class ModulePanel extends javax.swing.JPanel {
-
-    protected String mTitle;
+public abstract class JobModule extends Module implements JobPersistor {
 
     /**
-     * Creates new form ModulePanel
+     * Creates new form TaskModule
      */
-    public ModulePanel() {
+    public JobModule() {
         initComponents();
     }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public abstract void loadTask(Task task);
-
-    public abstract Task saveTask(Task task);
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -60,6 +51,7 @@ public abstract class ModulePanel extends javax.swing.JPanel {
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

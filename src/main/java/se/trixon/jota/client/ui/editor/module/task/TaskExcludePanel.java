@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor.task_modules;
+package se.trixon.jota.client.ui.editor.module.task;
 
 import se.trixon.jota.shared.task.ExcludeSection;
 import se.trixon.jota.shared.task.Task;
@@ -23,12 +23,12 @@ import se.trixon.util.dictionary.Dict;
  *
  * @author Patrik Karlsson
  */
-public class ModuleExcludePanel extends ModulePanel {
+public class TaskExcludePanel extends TaskModule {
 
     /**
      * Creates new form ModulePanel
      */
-    public ModuleExcludePanel() {
+    public TaskExcludePanel() {
         initComponents();
         init();
     }
@@ -104,14 +104,14 @@ public class ModuleExcludePanel extends ModulePanel {
 
         templatePanel.setLayout(new java.awt.GridLayout(1, 2));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/task_modules/Bundle"); // NOI18N
-        tempCheckBox.setText(bundle.getString("ModuleExcludePanel.tempCheckBox.text")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
+        tempCheckBox.setText(bundle.getString("TaskExcludePanel.tempCheckBox.text")); // NOI18N
 
-        backupCheckBox.setText(bundle.getString("ModuleExcludePanel.backupCheckBox.text")); // NOI18N
+        backupCheckBox.setText(bundle.getString("TaskExcludePanel.backupCheckBox.text")); // NOI18N
 
-        cacheCheckBox.setText(bundle.getString("ModuleExcludePanel.cacheCheckBox.text")); // NOI18N
+        cacheCheckBox.setText(bundle.getString("TaskExcludePanel.cacheCheckBox.text")); // NOI18N
 
-        trashCheckBox.setText(bundle.getString("ModuleExcludePanel.trashCheckBox.text")); // NOI18N
+        trashCheckBox.setText(bundle.getString("TaskExcludePanel.trashCheckBox.text")); // NOI18N
 
         javax.swing.GroupLayout template1PanelLayout = new javax.swing.GroupLayout(template1Panel);
         template1Panel.setLayout(template1PanelLayout);
@@ -141,13 +141,13 @@ public class ModuleExcludePanel extends ModulePanel {
 
         templatePanel.add(template1Panel);
 
-        sysMountsCheckBox.setText(bundle.getString("ModuleExcludePanel.sysMountsCheckBox.text")); // NOI18N
+        sysMountsCheckBox.setText(bundle.getString("TaskExcludePanel.sysMountsCheckBox.text")); // NOI18N
 
-        sysDirsCheckBox.setText(bundle.getString("ModuleExcludePanel.sysDirsCheckBox.text")); // NOI18N
+        sysDirsCheckBox.setText(bundle.getString("TaskExcludePanel.sysDirsCheckBox.text")); // NOI18N
 
-        lostFoundCheckBox.setText(bundle.getString("ModuleExcludePanel.lostFoundCheckBox.text")); // NOI18N
+        lostFoundCheckBox.setText(bundle.getString("TaskExcludePanel.lostFoundCheckBox.text")); // NOI18N
 
-        gvfsCheckBox.setText(bundle.getString("ModuleExcludePanel.gvfsCheckBox.text")); // NOI18N
+        gvfsCheckBox.setText(bundle.getString("TaskExcludePanel.gvfsCheckBox.text")); // NOI18N
 
         javax.swing.GroupLayout template2PanelLayout = new javax.swing.GroupLayout(template2Panel);
         template2Panel.setLayout(template2PanelLayout);
@@ -180,7 +180,7 @@ public class ModuleExcludePanel extends ModulePanel {
         tabbedPane.addTab(Dict.TEMPLATES.toString(), templatePanel);
 
         externalFilePanel.setCheckBoxMode(true);
-        externalFilePanel.setHeader(bundle.getString("ModuleExcludePanel.externalFilePanel.header")); // NOI18N
+        externalFilePanel.setHeader(bundle.getString("TaskExcludePanel.externalFilePanel.header")); // NOI18N
 
         javax.swing.GroupLayout manualPanelLayout = new javax.swing.GroupLayout(manualPanel);
         manualPanel.setLayout(manualPanelLayout);

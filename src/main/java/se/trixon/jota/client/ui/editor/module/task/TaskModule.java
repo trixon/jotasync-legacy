@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,40 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor.task_modules;
+package se.trixon.jota.client.ui.editor.module.task;
 
-import se.trixon.jota.shared.task.Task;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.jota.client.ui.editor.module.Module;
+import se.trixon.jota.client.ui.editor.module.TaskPersistor;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class ModuleNotePanel extends ModulePanel {
+public abstract class TaskModule extends Module implements TaskPersistor {
 
     /**
-     * Creates new form ModulePanel
+     * Creates new form TaskModule
      */
-    public ModuleNotePanel() {
+    public TaskModule() {
         initComponents();
-        init();
-    }
-
-    @Override
-    public void loadTask(Task task) {
-        detailsTextArea.setText(task.getDetails());
-        detailsTextArea.setCaretPosition(0);
-    }
-
-    @Override
-    public Task saveTask(Task task) {
-        task.setDetails(detailsTextArea.getText());
-
-        return task;
-    }
-
-    private void init() {
-        mTitle = Dict.NOTE.toString();
     }
 
     /**
@@ -58,27 +40,19 @@ public class ModuleNotePanel extends ModulePanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        descriptionScrollPane = new javax.swing.JScrollPane();
-        detailsTextArea = new javax.swing.JTextArea();
-
-        detailsTextArea.setColumns(20);
-        detailsTextArea.setRows(5);
-        descriptionScrollPane.setViewportView(detailsTextArea);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descriptionScrollPane)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descriptionScrollPane)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane descriptionScrollPane;
-    private javax.swing.JTextArea detailsTextArea;
     // End of variables declaration//GEN-END:variables
 }

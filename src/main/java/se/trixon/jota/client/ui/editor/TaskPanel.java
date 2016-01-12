@@ -23,13 +23,14 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskVerifier;
-import se.trixon.jota.client.ui.editor.task_modules.ModuleNotePanel;
-import se.trixon.jota.client.ui.editor.task_modules.ModuleEnvironmentPanel;
-import se.trixon.jota.client.ui.editor.task_modules.ModuleExcludePanel;
-import se.trixon.jota.client.ui.editor.task_modules.ModuleExecutePanel;
-import se.trixon.jota.client.ui.editor.task_modules.ModuleIncludePanel;
-import se.trixon.jota.client.ui.editor.task_modules.ModuleOptionsPanel;
-import se.trixon.jota.client.ui.editor.task_modules.ModulePanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskNotePanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskEnvironmentPanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskExcludePanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskIncludePanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskOptionsPanel;
+import se.trixon.jota.client.ui.editor.module.Module;
+import se.trixon.jota.client.ui.editor.module.TaskPersistor;
 import se.trixon.util.dictionary.Dict;
 
 /**
@@ -40,13 +41,13 @@ public class TaskPanel extends javax.swing.JPanel {
 
     private Task mTask = new Task();
     private Mode mMode;
-    private final ModuleNotePanel mModuleNotePanel = new ModuleNotePanel();
+    private final TaskNotePanel mNotePanel = new TaskNotePanel();
 //    private final ModuleLogPanel mModuleLogPanel = new ModuleLogPanel();
-    private final ModuleEnvironmentPanel mModuleEnvironmentPanel = new ModuleEnvironmentPanel();
-    private final ModuleIncludePanel mModuleIncludePanel = new ModuleIncludePanel();
-    private final ModuleExcludePanel mModuleExcludePanel = new ModuleExcludePanel();
-    private final ModuleExecutePanel mModuleExecutePanel = new ModuleExecutePanel();
-    private final ModuleOptionsPanel mModuleOptionsPanel = new ModuleOptionsPanel();
+    private final TaskEnvironmentPanel mEnvironmentPanel = new TaskEnvironmentPanel();
+    private final TaskIncludePanel mIncludePanel = new TaskIncludePanel();
+    private final TaskExcludePanel mExcludePanel = new TaskExcludePanel();
+    private final TaskExecutePanel mExecutePanel = new TaskExecutePanel();
+    private final TaskOptionsPanel mOptionsPanel = new TaskOptionsPanel();
     private TaskVerifier mTaskVerifier;
 
     /**
@@ -105,17 +106,17 @@ public class TaskPanel extends javax.swing.JPanel {
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeBackup.text"),
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeSync.text")}));
 
-        addModulePanel(mModuleOptionsPanel);
-        addModulePanel(mModuleExecutePanel);
-        addModulePanel(mModuleExcludePanel);
-        addModulePanel(mModuleNotePanel);
+        addModulePanel(mOptionsPanel);
+        addModulePanel(mExecutePanel);
+        addModulePanel(mExcludePanel);
+        addModulePanel(mNotePanel);
 
 //        addModulePanel(mModuleIncludePanel);
 //        addModulePanel(mModuleEnvironmentPanel);
 //        addModulePanel(mModuleLogPanel);
         for (Component component : tabbedPane.getComponents()) {
-            if (component instanceof ModulePanel) {
-                ModulePanel modulePanel = (ModulePanel) component;
+            if (component instanceof Module) {
+                Module modulePanel = (Module) component;
                 //modulePanel.setBorder(new EmptyBorder(8, 8, 8, 8));
             }
         }
@@ -124,7 +125,7 @@ public class TaskPanel extends javax.swing.JPanel {
         destinationPanel.setMode(JFileChooser.FILES_AND_DIRECTORIES);
     }
 
-    private Component addModulePanel(ModulePanel modulePanel) {
+    private Component addModulePanel(Module modulePanel) {
         return tabbedPane.add(modulePanel.getTitle(), modulePanel);
     }
 
@@ -136,9 +137,9 @@ public class TaskPanel extends javax.swing.JPanel {
         destinationPanel.setPath(mTask.getDestination());
 
         for (Component component : tabbedPane.getComponents()) {
-            if (component instanceof ModulePanel) {
-                ModulePanel modulePanel = (ModulePanel) component;
-                modulePanel.loadTask(mTask);
+            if (component instanceof TaskPersistor) {
+                TaskPersistor taskPersistor = (TaskPersistor) component;
+                taskPersistor.loadTask(mTask);
             }
         }
     }
@@ -151,9 +152,9 @@ public class TaskPanel extends javax.swing.JPanel {
         mTask.setDestination(destinationPanel.getPath());
 
         for (Component component : tabbedPane.getComponents()) {
-            if (component instanceof ModulePanel) {
-                ModulePanel modulePanel = (ModulePanel) component;
-                mTask = modulePanel.saveTask(mTask);
+            if (component instanceof TaskPersistor) {
+                TaskPersistor taskPersistor = (TaskPersistor) component;
+                taskPersistor.saveTask(mTask);
             }
         }
     }

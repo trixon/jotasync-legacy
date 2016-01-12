@@ -13,39 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor.task_modules;
+package se.trixon.jota.client.ui.editor.module.task;
 
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.dictionary.Dict;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
-public class ModuleLogPanel extends ModulePanel {
+public class TaskEnvironmentPanel extends TaskModule {
 
     /**
      * Creates new form ModulePanel
      */
-    public ModuleLogPanel() {
+    public TaskEnvironmentPanel() {
         initComponents();
         init();
     }
 
     @Override
     public void loadTask(Task task) {
-        logTextArea.setText(task.getHistory());
+        envTextArea.setText(task.getEnvironment());
     }
 
     @Override
     public Task saveTask(Task task) {
-        task.setHistory(logTextArea.getText());
+        task.setEnvironment(envTextArea.getText());
 
         return task;
     }
 
     private void init() {
-        mTitle = Dict.LOG.getString();
+        mTitle = Dict.ENVIRONMENT.getString();
     }
 
     /**
@@ -57,28 +57,28 @@ public class ModuleLogPanel extends ModulePanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        logScrollPane = new javax.swing.JScrollPane();
-        logTextArea = new javax.swing.JTextArea();
+        envScrollPane = new javax.swing.JScrollPane();
+        envTextArea = new javax.swing.JTextArea();
 
-        logTextArea.setEditable(false);
-        logTextArea.setColumns(20);
-        logTextArea.setRows(5);
-        logScrollPane.setViewportView(logTextArea);
+        envTextArea.setEditable(false);
+        envTextArea.setColumns(20);
+        envTextArea.setRows(5);
+        envScrollPane.setViewportView(envTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(logScrollPane)
+            .addComponent(envScrollPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(logScrollPane)
+            .addComponent(envScrollPane)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane logScrollPane;
-    private javax.swing.JTextArea logTextArea;
+    private javax.swing.JScrollPane envScrollPane;
+    private javax.swing.JTextArea envTextArea;
     // End of variables declaration//GEN-END:variables
 }

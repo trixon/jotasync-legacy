@@ -101,20 +101,20 @@
                     <Component class="javax.swing.JCheckBox" name="timesCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.timesCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.timesCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.timesCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.timesCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="ownerCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.ownerCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.ownerCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.ownerCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.ownerCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -150,20 +150,20 @@
                     <Component class="javax.swing.JCheckBox" name="permsCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.permsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.permsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.permsCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.permsCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="groupCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.groupCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.groupCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.groupCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.groupCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -214,40 +214,40 @@
                     <Component class="javax.swing.JCheckBox" name="verboseCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.verboseCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.verboseCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.verboseCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.verboseCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="ignoreExistingCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.ignoreExistingCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.ignoreExistingCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.ignoreExistingCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.ignoreExistingCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="updateCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.updateCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.updateCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.updateCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.updateCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="deleteCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.deleteCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.deleteCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.deleteCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.deleteCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -289,40 +289,40 @@
                     <Component class="javax.swing.JCheckBox" name="oneFileSystemCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.oneFileSystemCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.oneFileSystemCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.oneFileSystemCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.oneFileSystemCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="progressCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.progressCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.progressCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.progressCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.progressCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="sizeOnlyCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.sizeOnlyCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.sizeOnlyCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.sizeOnlyCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.sizeOnlyCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="modifyWindowCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.modifyWindowCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.modifyWindowCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.modifyWindowCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.modifyWindowCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -390,60 +390,60 @@
                 <Component class="javax.swing.JCheckBox" name="checksumCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.checksumCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.checksumCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.checksumCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.checksumCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="devicesCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.devicesCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.devicesCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.devicesCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.devicesCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="partialProgressCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.partialProgressCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.partialProgressCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.partialProgressCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.partialProgressCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="linksCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.linksCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.linksCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.linksCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.linksCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="backupCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.backupCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.backupCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.backupCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.backupCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="dirsCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.dirsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.dirsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.dirsCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.dirsCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -491,60 +491,60 @@
                 <Component class="javax.swing.JCheckBox" name="compressCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.compressCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.compressCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.compressCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.compressCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="existingCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.existingCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.existingCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.existingCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.existingCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="numericIdsCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.numericIdsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.numericIdsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.numericIdsCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.numericIdsCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="hardlinksCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.hardlinksCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.hardlinksCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.hardlinksCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.hardlinksCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="itemizeChangesCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.itemizeChangesCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.itemizeChangesCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.itemizeChangesCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.itemizeChangesCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="protectArgsCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.protectArgsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.protectArgsCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="se/trixon/jota/client/ui/editor/task_modules/Bundle.properties" key="ModuleOptionsPanel.protectArgsCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskOptionsPanel.protectArgsCheckBox.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                   </Properties>
                 </Component>
