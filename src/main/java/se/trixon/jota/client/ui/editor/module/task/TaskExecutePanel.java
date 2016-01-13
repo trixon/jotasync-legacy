@@ -157,7 +157,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
         setLayout(new java.awt.GridBagLayout());
 
         beforePanel.setCheckBoxMode(true);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/task_modules/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
         beforePanel.setHeader(bundle.getString("ModuleExecutePanel.runBefore.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -180,8 +180,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
 
         afterFailurePanel.setAlignmentX(0.0F);
         afterFailurePanel.setCheckBoxMode(true);
-        java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
-        afterFailurePanel.setHeader(bundle1.getString("TaskExecutePanel.afterFailurePanel.header")); // NOI18N
+        afterFailurePanel.setHeader(bundle.getString("TaskExecutePanel.afterFailurePanel.header")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -205,7 +204,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
 
         afterSuccessPanel.setAlignmentX(0.0F);
         afterSuccessPanel.setCheckBoxMode(true);
-        afterSuccessPanel.setHeader(bundle1.getString("TaskExecutePanel.afterSuccessPanel.header")); // NOI18N
+        afterSuccessPanel.setHeader(bundle.getString("TaskExecutePanel.afterSuccessPanel.header")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
@@ -229,7 +228,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
 
         afterPanel.setAlignmentX(0.0F);
         afterPanel.setCheckBoxMode(true);
-        afterPanel.setHeader(bundle1.getString("TaskExecutePanel.afterPanel.header")); // NOI18N
+        afterPanel.setHeader(bundle.getString("TaskExecutePanel.afterPanel.header")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 9;
@@ -252,7 +251,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         add(afterHaltOnErrorCheckBox, gridBagConstraints);
 
-        jobHaltOnErrorCheckBox.setText(bundle1.getString("TaskExecutePanel.jobHaltOnErrorCheckBox.text")); // NOI18N
+        jobHaltOnErrorCheckBox.setText(bundle.getString("TaskExecutePanel.jobHaltOnErrorCheckBox.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 12;

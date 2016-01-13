@@ -5,7 +5,7 @@
   <artifactId>jotasync</artifactId>
   <name>jotasync</name>
   <version>0.2.2-SNAPSHOT</version>
-  <description>rsync front end with built in cron</description>
+  <description>rsync GUI with integrated scheduler</description>
   <url>http://jotasync.trixon.se/</url>
   <developers>
     <developer>
