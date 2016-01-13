@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor.module.task;
+package se.trixon.jota.client.ui.editor.module.job;
 
-import se.trixon.jota.client.ui.editor.module.TaskPersistor;
+import se.trixon.jota.client.ui.editor.module.JobPersistor;
 import se.trixon.jota.client.ui.editor.module.common.NotePanel;
-import se.trixon.jota.shared.task.Task;
+import se.trixon.jota.shared.job.Job;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class TaskNotePanel extends NotePanel implements TaskPersistor {
+public class JobNotePanel extends NotePanel implements JobPersistor {
 
     @Override
-    public void loadTask(Task task) {
-        getTextArea().setText(task.getDetails());
+    public void loadJob(Job job) {
+        getTextArea().setText(job.getDetails());
         getTextArea().setCaretPosition(0);
     }
 
     @Override
-    public Task saveTask(Task task) {
-        task.setDetails(getTextArea().getText());
+    public Job saveJob(Job job) {
+        job.setDetails(getTextArea().getText());
 
-        return task;
+        return job;
     }
 }

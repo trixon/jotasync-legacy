@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor;
+package se.trixon.jota.client.ui.editor.module.job;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.apache.commons.lang3.StringUtils;
+import se.trixon.jota.client.ui.editor.EditPanel;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
@@ -34,8 +35,8 @@ import se.trixon.util.swing.dialogs.cron.CronPanel;
  */
 public class CronEditorPanel extends EditPanel {
 
-    private final ResourceBundle mBundle = BundleHelper.getBundle(CronEditorPanel.class, "Bundle");
     private static final String CRON_ITEM_SEPARATOR = "|";
+    private final ResourceBundle mBundle = BundleHelper.getBundle(CronEditorPanel.class, "Bundle");
 
     /**
      * Creates new form CronPanel
@@ -60,6 +61,16 @@ public class CronEditorPanel extends EditPanel {
     public void setCronActive(boolean value) {
         checkBox.setSelected(value);
         list.setEnabled(checkBox.isSelected());
+    }
+
+    String getCronItems() {
+        return StringUtils.join(getModel().toArray(), CRON_ITEM_SEPARATOR);
+    }
+
+    void setCronItems(String cronItems) {
+        for (String item : StringUtils.split(cronItems, CRON_ITEM_SEPARATOR)) {
+            getModel().addElement(item);
+        }
     }
 
     private void addButtonActionPerformed(ActionEvent evt) {
@@ -175,16 +186,6 @@ public class CronEditorPanel extends EditPanel {
             if (retval == JOptionPane.OK_OPTION) {
                 getModel().removeElement(getSelectedCronString());
             }
-        }
-    }
-
-    String getCronItems() {
-        return StringUtils.join(getModel().toArray(), CRON_ITEM_SEPARATOR);
-    }
-
-    void setCronItems(String cronItems) {
-        for (String item : StringUtils.split(cronItems, CRON_ITEM_SEPARATOR)) {
-            getModel().addElement(item);
         }
     }
 }

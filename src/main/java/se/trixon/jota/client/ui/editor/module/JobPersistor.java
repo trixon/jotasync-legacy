@@ -16,7 +16,6 @@
 package se.trixon.jota.client.ui.editor.module;
 
 import se.trixon.jota.shared.job.Job;
-import se.trixon.jota.shared.task.Task;
 
 /**
  *
@@ -26,5 +25,5 @@ public interface JobPersistor {
 
     public abstract void loadJob(Job job);
 
-    public abstract Task saveJob(Job job);
+    public abstract Job saveJob(Job job);
 }

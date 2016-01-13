@@ -23,7 +23,6 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskVerifier;
-import se.trixon.jota.client.ui.editor.module.task.TaskNotePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskEnvironmentPanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExcludePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
@@ -31,6 +30,7 @@ import se.trixon.jota.client.ui.editor.module.task.TaskIncludePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskOptionsPanel;
 import se.trixon.jota.client.ui.editor.module.Module;
 import se.trixon.jota.client.ui.editor.module.TaskPersistor;
+import se.trixon.jota.client.ui.editor.module.task.TaskNotePanel;
 import se.trixon.util.dictionary.Dict;
 
 /**
@@ -138,8 +138,8 @@ public class TaskPanel extends javax.swing.JPanel {
 
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof TaskPersistor) {
-                TaskPersistor taskPersistor = (TaskPersistor) component;
-                taskPersistor.loadTask(mTask);
+                TaskPersistor persistor = (TaskPersistor) component;
+                persistor.loadTask(mTask);
             }
         }
     }
@@ -153,8 +153,8 @@ public class TaskPanel extends javax.swing.JPanel {
 
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof TaskPersistor) {
-                TaskPersistor taskPersistor = (TaskPersistor) component;
-                taskPersistor.saveTask(mTask);
+                TaskPersistor persistor = (TaskPersistor) component;
+                persistor.saveTask(mTask);
             }
         }
     }
