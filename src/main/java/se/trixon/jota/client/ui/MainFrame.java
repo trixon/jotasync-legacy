@@ -633,7 +633,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(MainFrame.this, Jota.getVersionInfo("Client"), Dict.ABOUT.getString(), JOptionPane.INFORMATION_MESSAGE);
+                    Message.information(MainFrame.this, Dict.ABOUT.getString(), Jota.getVersionInfo("Client"));
                 }
             };
 
