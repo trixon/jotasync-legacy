@@ -20,17 +20,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
-import se.trixon.jota.shared.task.Task;
-import se.trixon.jota.shared.task.TaskVerifier;
+import se.trixon.jota.client.ui.editor.module.Module;
+import se.trixon.jota.client.ui.editor.module.TaskPersistor;
 import se.trixon.jota.client.ui.editor.module.task.TaskEnvironmentPanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExcludePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskIncludePanel;
-import se.trixon.jota.client.ui.editor.module.task.TaskOptionsPanel;
-import se.trixon.jota.client.ui.editor.module.Module;
-import se.trixon.jota.client.ui.editor.module.TaskPersistor;
 import se.trixon.jota.client.ui.editor.module.task.TaskNotePanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskOptionsPanel;
+import se.trixon.jota.shared.task.Task;
+import se.trixon.jota.shared.task.TaskVerifier;
 import se.trixon.util.dictionary.Dict;
 
 /**
@@ -38,7 +37,7 @@ import se.trixon.util.dictionary.Dict;
  * @author Patrik Karlsson
  */
 public class TaskPanel extends javax.swing.JPanel {
-
+    
     private Task mTask = new Task();
     private Mode mMode;
     private final TaskNotePanel mNotePanel = new TaskNotePanel();
@@ -57,21 +56,21 @@ public class TaskPanel extends javax.swing.JPanel {
         initComponents();
         init();
     }
-
+    
     public List<String> getCommand() {
         saveTask();
         return mTask.build();
     }
-
+    
     public String getCommandAsString() {
         getCommand();
         return mTask.getCommandAsString();
     }
-
+    
     public Task getCommandBuilder() {
         return mTask;
     }
-
+    
     public Task getTask() {
         saveTask();
         return mTask;
@@ -97,15 +96,14 @@ public class TaskPanel extends javax.swing.JPanel {
     public void setTask(Task task) {
         mTask = task;
         loadTask();
-        setMode(Mode.BASIC);
     }
-
+    
     private void init() {
         String bundlePath = this.getClass().getPackage().getName().replace(".", "/") + "/Bundle";
         typeComboBox.setModel(new DefaultComboBoxModel(new String[]{
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeBackup.text"),
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeSync.text")}));
-
+        
         addModulePanel(mOptionsPanel);
         addModulePanel(mExecutePanel);
         addModulePanel(mExcludePanel);
@@ -120,22 +118,23 @@ public class TaskPanel extends javax.swing.JPanel {
                 //modulePanel.setBorder(new EmptyBorder(8, 8, 8, 8));
             }
         }
-
+        
         sourcePanel.setMode(JFileChooser.FILES_AND_DIRECTORIES);
         destinationPanel.setMode(JFileChooser.FILES_AND_DIRECTORIES);
     }
-
+    
     private Component addModulePanel(Module modulePanel) {
         return tabbedPane.add(modulePanel.getTitle(), modulePanel);
     }
-
+    
     private void loadTask() {
         nameTextField.setText(mTask.getName());
+        descriptionTextField.setText(mTask.getDescription());
         typeComboBox.setSelectedIndex(mTask.getType());
-
+        
         sourcePanel.setPath(mTask.getSource());
         destinationPanel.setPath(mTask.getDestination());
-
+        
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof TaskPersistor) {
                 TaskPersistor persistor = (TaskPersistor) component;
@@ -143,14 +142,15 @@ public class TaskPanel extends javax.swing.JPanel {
             }
         }
     }
-
+    
     private void saveTask() {
         mTask.setName(nameTextField.getText());
+        mTask.setDescription(descriptionTextField.getText());
         mTask.setType(typeComboBox.getSelectedIndex());
-
+        
         mTask.setSource(sourcePanel.getPath());
         mTask.setDestination(destinationPanel.getPath());
-
+        
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof TaskPersistor) {
                 TaskPersistor persistor = (TaskPersistor) component;
@@ -158,24 +158,7 @@ public class TaskPanel extends javax.swing.JPanel {
             }
         }
     }
-
-    private void setMode(Mode mode) {
-        mMode = mode;
-
-        if (mMode == Mode.ANDVANCED) {
-            modeButton.setText(Dict.BASIC.getString() + " <<");
-        } else {
-            modeButton.setText(Dict.ADVANCED.getString() + " >>");
-        }
-
-        tabbedPane.setVisible(mode == Mode.ANDVANCED);
-
-        try {
-            SwingUtilities.getWindowAncestor(this).pack();
-        } catch (Exception e) {
-        }
-    }
-
+    
     private boolean disableTab(Component tab) {
         try {
             tabbedPane.setEnabledAt(tabbedPane.indexOfComponent(tab), false);
@@ -200,15 +183,15 @@ public class TaskPanel extends javax.swing.JPanel {
         namePanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
-        typePanel = new javax.swing.JPanel();
-        typeComboBox = new javax.swing.JComboBox();
-        typeLabel = new javax.swing.JLabel();
+        descriptionPanel = new javax.swing.JPanel();
+        descriptionLabel = new javax.swing.JLabel();
+        descriptionTextField = new javax.swing.JTextField();
         sourceDestPanel = new javax.swing.JPanel();
         sourcePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         destinationPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        modeButton = new javax.swing.JButton();
         forceSourceSlashCheckBox = new javax.swing.JCheckBox();
         swapSourceDestButton = new javax.swing.JButton();
+        typeComboBox = new javax.swing.JComboBox();
         tabbedPane = new javax.swing.JTabbedPane();
 
         topPanel.setLayout(new javax.swing.BoxLayout(topPanel, javax.swing.BoxLayout.PAGE_AXIS));
@@ -240,48 +223,37 @@ public class TaskPanel extends javax.swing.JPanel {
 
         nameTypePanel.add(namePanel);
 
-        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Backup source to destination", "Synchronize source and destination" }));
+        descriptionLabel.setText(Dict.DESCRIPTION.getString());
 
-        typeLabel.setText(Dict.TYPE.getString());
-
-        javax.swing.GroupLayout typePanelLayout = new javax.swing.GroupLayout(typePanel);
-        typePanel.setLayout(typePanelLayout);
-        typePanelLayout.setHorizontalGroup(
-            typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(typePanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout descriptionPanelLayout = new javax.swing.GroupLayout(descriptionPanel);
+        descriptionPanel.setLayout(descriptionPanelLayout);
+        descriptionPanelLayout.setHorizontalGroup(
+            descriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(descriptionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(typeComboBox, 0, 285, Short.MAX_VALUE)
-                    .addGroup(typePanelLayout.createSequentialGroup()
-                        .addComponent(typeLabel)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(descriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(descriptionPanelLayout.createSequentialGroup()
+                        .addComponent(descriptionLabel)
+                        .addGap(0, 196, Short.MAX_VALUE))
+                    .addComponent(descriptionTextField))
                 .addContainerGap())
         );
-        typePanelLayout.setVerticalGroup(
-            typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(typePanelLayout.createSequentialGroup()
+        descriptionPanelLayout.setVerticalGroup(
+            descriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(descriptionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(typeLabel)
-                .addGap(0, 0, 0)
-                .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(descriptionLabel)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        nameTypePanel.add(typePanel);
+        nameTypePanel.add(descriptionPanel);
 
         topPanel.add(nameTypePanel);
 
         sourcePanel.setHeader(Dict.SOURCE.getString());
 
         destinationPanel.setHeader(Dict.DESTINATION.getString());
-
-        modeButton.setText("Mode"); // NOI18N
-        modeButton.setPreferredSize(new java.awt.Dimension(168, 0));
-        modeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modeButtonActionPerformed(evt);
-            }
-        });
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/Bundle"); // NOI18N
         forceSourceSlashCheckBox.setText(bundle.getString("TaskPanel.forceSourceSlashCheckBox.text")); // NOI18N
@@ -293,6 +265,8 @@ public class TaskPanel extends javax.swing.JPanel {
             }
         });
 
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Backup source to destination", "Synchronize source and destination" }));
+
         javax.swing.GroupLayout sourceDestPanelLayout = new javax.swing.GroupLayout(sourceDestPanel);
         sourceDestPanel.setLayout(sourceDestPanelLayout);
         sourceDestPanelLayout.setHorizontalGroup(
@@ -303,8 +277,8 @@ public class TaskPanel extends javax.swing.JPanel {
                     .addComponent(sourcePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(destinationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(sourceDestPanelLayout.createSequentialGroup()
-                        .addComponent(modeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(typeComboBox, 0, 202, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(forceSourceSlashCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(swapSourceDestButton)))
@@ -321,7 +295,7 @@ public class TaskPanel extends javax.swing.JPanel {
                 .addGroup(sourceDestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(forceSourceSlashCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(swapSourceDestButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(modeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -362,18 +336,12 @@ public class TaskPanel extends javax.swing.JPanel {
         destinationPanel.setPath(tempPath);
     }//GEN-LAST:event_swapSourceDestButtonActionPerformed
 
-    private void modeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeButtonActionPerformed
-        if (mMode == Mode.ANDVANCED) {
-            setMode(Mode.BASIC);
-        } else {
-            setMode(Mode.ANDVANCED);
-        }
-    }//GEN-LAST:event_modeButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JPanel descriptionPanel;
+    private javax.swing.JTextField descriptionTextField;
     private se.trixon.util.swing.dialogs.FileChooserPanel destinationPanel;
     private javax.swing.JCheckBox forceSourceSlashCheckBox;
-    private javax.swing.JButton modeButton;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JPanel namePanel;
     private javax.swing.JTextField nameTextField;
@@ -384,12 +352,10 @@ public class TaskPanel extends javax.swing.JPanel {
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JPanel topPanel;
     private javax.swing.JComboBox typeComboBox;
-    private javax.swing.JLabel typeLabel;
-    private javax.swing.JPanel typePanel;
     // End of variables declaration//GEN-END:variables
 
     private enum Mode {
-
+        
         ANDVANCED, BASIC;
     }
 }
