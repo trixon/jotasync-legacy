@@ -15,9 +15,19 @@
  */
 package se.trixon.jota.client.ui.editor.module.task;
 
-import se.trixon.jota.shared.task.OptionSection;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import javax.swing.DefaultListModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import se.trixon.jota.client.ui.UI;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.dictionary.Dict;
+import se.trixon.util.icon.Pict;
 
 /**
  *
@@ -25,80 +35,81 @@ import se.trixon.util.dictionary.Dict;
  */
 public class TaskOptionsPanel extends TaskModule {
 
+    private static final int ICON_SIZE = UI.ICON_SIZE_LARGE;
+
+    private final ArrayList<RsyncOption> mAvailableOptions = new ArrayList<>();
+    private final ArrayList<RsyncOption> mSelectedOptions = new ArrayList<>();
+    private DefaultListModel mAvailableModel;
+    private DefaultListModel mSelectedModel;
+
     /**
-     * Creates new form ModulePanel
+     * Creates new form TaskOptionsPanel
      */
     public TaskOptionsPanel() {
         initComponents();
         init();
+        initListeners();
     }
 
     @Override
     public void loadTask(Task task) {
-        OptionSection optionSection = task.getOptionSection();
-
-        additionalOptionsTextArea.setText(optionSection.getAdditionalOptions());
-        backupCheckBox.setSelected(optionSection.isBackup());
-        checksumCheckBox.setSelected(optionSection.isChecksum());
-        compressCheckBox.setSelected(optionSection.isCompress());
-        deleteCheckBox.setSelected(optionSection.isDelete());
-        devicesCheckBox.setSelected(optionSection.isDevices());
-        dirsCheckBox.setSelected(optionSection.isDirs());
-        existingCheckBox.setSelected(optionSection.isExisting());
-        groupCheckBox.setSelected(optionSection.isGroup());
-        hardlinksCheckBox.setSelected(optionSection.isHardLinks());
-        ignoreExistingCheckBox.setSelected(optionSection.isIgnoreExisting());
-        itemizeChangesCheckBox.setSelected(optionSection.isItemizeChanges());
-        linksCheckBox.setSelected(optionSection.isLinks());
-        modifyWindowCheckBox.setSelected(optionSection.isModifyWindow());
-        numericIdsCheckBox.setSelected(optionSection.isNumericIds());
-        oneFileSystemCheckBox.setSelected(optionSection.isOneFileSystem());
-        ownerCheckBox.setSelected(optionSection.isOwner());
-        partialProgressCheckBox.setSelected(optionSection.isPartialProgress());
-        permsCheckBox.setSelected(optionSection.isPerms());
-        progressCheckBox.setSelected(optionSection.isProgress());
-        protectArgsCheckBox.setSelected(optionSection.isProtectArgs());
-        sizeOnlyCheckBox.setSelected(optionSection.isSizeOnly());
-        timesCheckBox.setSelected(optionSection.isTimes());
-        updateCheckBox.setSelected(optionSection.isUpdate());
-        verboseCheckBox.setSelected(optionSection.isVerbose());
     }
 
     @Override
     public Task saveTask(Task task) {
-        OptionSection optionSection = task.getOptionSection();
-
-        optionSection.setAdditionalOptions(additionalOptionsTextArea.getText());
-        optionSection.setBackup(backupCheckBox.isSelected());
-        optionSection.setChecksum(checksumCheckBox.isSelected());
-        optionSection.setCompress(compressCheckBox.isSelected());
-        optionSection.setDelete(deleteCheckBox.isSelected());
-        optionSection.setDevices(devicesCheckBox.isSelected());
-        optionSection.setDirs(dirsCheckBox.isSelected());
-        optionSection.setExisting(existingCheckBox.isSelected());
-        optionSection.setGroup(groupCheckBox.isSelected());
-        optionSection.setHardLinks(hardlinksCheckBox.isSelected());
-        optionSection.setIgnoreExisting(ignoreExistingCheckBox.isSelected());
-        optionSection.setItemizeChanges(itemizeChangesCheckBox.isSelected());
-        optionSection.setLinks(linksCheckBox.isSelected());
-        optionSection.setModifyWindow(modifyWindowCheckBox.isSelected());
-        optionSection.setNumericIds(numericIdsCheckBox.isSelected());
-        optionSection.setOneFileSystem(oneFileSystemCheckBox.isSelected());
-        optionSection.setOwner(ownerCheckBox.isSelected());
-        optionSection.setPartialProgress(partialProgressCheckBox.isSelected());
-        optionSection.setPerms(permsCheckBox.isSelected());
-        optionSection.setProgress(progressCheckBox.isSelected());
-        optionSection.setProtectArgs(protectArgsCheckBox.isSelected());
-        optionSection.setSizeOnly(sizeOnlyCheckBox.isSelected());
-        optionSection.setTimes(timesCheckBox.isSelected());
-        optionSection.setUpdate(updateCheckBox.isSelected());
-        optionSection.setVerbose(verboseCheckBox.isSelected());
-
         return task;
+    }
+
+    private void activate() {
+        for (int index : availableOptions.getList().getSelectedIndices()) {
+            RsyncOption rsyncOption = (RsyncOption) mAvailableModel.elementAt(index);
+            mSelectedOptions.add(rsyncOption);
+            mAvailableOptions.remove(rsyncOption);
+        }
+
+        Collections.sort(mSelectedOptions, new Comparator<RsyncOption>() {
+            @Override
+            public int compare(RsyncOption o1, RsyncOption o2) {
+                return o1.getDescription().compareTo(o2.getDescription());
+            }
+        });
+
+        updateAvailableModel();
+        updateSelectedModel();
+    }
+
+    private void deactivate() {
+        for (int index : selectedOptions.getList().getSelectedIndices()) {
+            RsyncOption rsyncOption = (RsyncOption) mSelectedModel.elementAt(index);
+            mAvailableOptions.add(rsyncOption);
+            mSelectedOptions.remove(rsyncOption);
+        }
+
+        Collections.sort(mAvailableOptions, new Comparator<RsyncOption>() {
+            @Override
+            public int compare(RsyncOption o1, RsyncOption o2) {
+                return o1.getDescription().compareTo(o2.getDescription());
+            }
+        });
+
+        updateAvailableModel();
+        updateSelectedModel();
     }
 
     private void init() {
         mTitle = Dict.OPTIONS.getString();
+        mAvailableModel = availableOptions.getModel();
+        mSelectedModel = selectedOptions.getModel();
+
+        mAvailableOptions.addAll(Arrays.asList(RsyncOption.values()));
+        Collections.sort(mAvailableOptions, new Comparator<RsyncOption>() {
+            @Override
+            public int compare(RsyncOption o1, RsyncOption o2) {
+                return o1.getDescription().compareTo(o2.getDescription());
+            }
+        });
+
+        updateAvailableModel();
     }
 
     /**
@@ -109,366 +120,192 @@ public class TaskOptionsPanel extends TaskModule {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        tabbedPane = new javax.swing.JTabbedPane();
-        basicPanel = new javax.swing.JPanel();
-        basic1Panel = new javax.swing.JPanel();
-        basic11Panel = new javax.swing.JPanel();
-        timesCheckBox = new javax.swing.JCheckBox();
-        ownerCheckBox = new javax.swing.JCheckBox();
-        basic12Panel = new javax.swing.JPanel();
-        permsCheckBox = new javax.swing.JCheckBox();
-        groupCheckBox = new javax.swing.JCheckBox();
-        basic2Panel = new javax.swing.JPanel();
-        basic21Panel = new javax.swing.JPanel();
-        verboseCheckBox = new javax.swing.JCheckBox();
-        ignoreExistingCheckBox = new javax.swing.JCheckBox();
-        updateCheckBox = new javax.swing.JCheckBox();
-        deleteCheckBox = new javax.swing.JCheckBox();
-        basic22Panel = new javax.swing.JPanel();
-        oneFileSystemCheckBox = new javax.swing.JCheckBox();
-        progressCheckBox = new javax.swing.JCheckBox();
-        sizeOnlyCheckBox = new javax.swing.JCheckBox();
-        modifyWindowCheckBox = new javax.swing.JCheckBox();
-        advancedPanel = new javax.swing.JPanel();
-        advanced11Panel = new javax.swing.JPanel();
-        checksumCheckBox = new javax.swing.JCheckBox();
-        devicesCheckBox = new javax.swing.JCheckBox();
-        partialProgressCheckBox = new javax.swing.JCheckBox();
-        linksCheckBox = new javax.swing.JCheckBox();
-        backupCheckBox = new javax.swing.JCheckBox();
-        dirsCheckBox = new javax.swing.JCheckBox();
-        advanced12Panel = new javax.swing.JPanel();
-        compressCheckBox = new javax.swing.JCheckBox();
-        existingCheckBox = new javax.swing.JCheckBox();
-        numericIdsCheckBox = new javax.swing.JCheckBox();
-        hardlinksCheckBox = new javax.swing.JCheckBox();
-        itemizeChangesCheckBox = new javax.swing.JCheckBox();
-        protectArgsCheckBox = new javax.swing.JCheckBox();
-        additionalScrollPane = new javax.swing.JScrollPane();
-        additionalOptionsTextArea = new javax.swing.JTextArea();
+        optionsListPanel1 = new se.trixon.jota.client.ui.editor.module.task.OptionsListPanel();
+        selectedOptions = new se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        activateButton = new javax.swing.JButton();
+        deactivateButton = new javax.swing.JButton();
+        removeAllButton = new javax.swing.JButton();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        availableOptions = new se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new java.awt.GridBagLayout());
 
-        tabbedPane.setTabPlacement(javax.swing.JTabbedPane.LEFT);
+        selectedOptions.setHeader(Dict.SELECTED.toString());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(selectedOptions, gridBagConstraints);
 
-        basic1Panel.setLayout(new java.awt.GridLayout(1, 0));
+        jToolBar1.setFloatable(false);
+        jToolBar1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        jToolBar1.setRollover(true);
+        jToolBar1.add(filler1);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
-        timesCheckBox.setText(bundle.getString("TaskOptionsPanel.timesCheckBox.text")); // NOI18N
-        timesCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.timesCheckBox.toolTipText")); // NOI18N
+        activateButton.setIcon(Pict.Actions.GO_PREVIOUS.get(ICON_SIZE));
+        activateButton.setToolTipText(Dict.ACTIVATE.toString());
+        activateButton.setFocusable(false);
+        activateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        activateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        activateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activateButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(activateButton);
 
-        ownerCheckBox.setText(bundle.getString("TaskOptionsPanel.ownerCheckBox.text")); // NOI18N
-        ownerCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.ownerCheckBox.toolTipText")); // NOI18N
+        deactivateButton.setIcon(Pict.Actions.GO_NEXT.get(ICON_SIZE));
+        deactivateButton.setToolTipText(Dict.DEACTIVATE.toString());
+        deactivateButton.setFocusable(false);
+        deactivateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        deactivateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deactivateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deactivateButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(deactivateButton);
 
-        javax.swing.GroupLayout basic11PanelLayout = new javax.swing.GroupLayout(basic11Panel);
-        basic11Panel.setLayout(basic11PanelLayout);
-        basic11PanelLayout.setHorizontalGroup(
-            basic11PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basic11PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(basic11PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(timesCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ownerCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        removeAllButton.setIcon(Pict.Actions.EDIT_DELETE.get(ICON_SIZE)
         );
-        basic11PanelLayout.setVerticalGroup(
-            basic11PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basic11PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(timesCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ownerCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        removeAllButton.setToolTipText(Dict.REMOVE_ALL.toString());
+        removeAllButton.setFocusable(false);
+        removeAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        removeAllButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        removeAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeAllButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(removeAllButton);
+        jToolBar1.add(filler2);
 
-        basic1Panel.add(basic11Panel);
+        add(jToolBar1, new java.awt.GridBagConstraints());
 
-        permsCheckBox.setText(bundle.getString("TaskOptionsPanel.permsCheckBox.text")); // NOI18N
-        permsCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.permsCheckBox.toolTipText")); // NOI18N
-
-        groupCheckBox.setText(bundle.getString("TaskOptionsPanel.groupCheckBox.text")); // NOI18N
-        groupCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.groupCheckBox.toolTipText")); // NOI18N
-
-        javax.swing.GroupLayout basic12PanelLayout = new javax.swing.GroupLayout(basic12Panel);
-        basic12Panel.setLayout(basic12PanelLayout);
-        basic12PanelLayout.setHorizontalGroup(
-            basic12PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basic12PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(basic12PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(permsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(groupCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        basic12PanelLayout.setVerticalGroup(
-            basic12PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basic12PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(permsCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(groupCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        basic1Panel.add(basic12Panel);
-
-        basic2Panel.setLayout(new java.awt.GridLayout(1, 0));
-
-        verboseCheckBox.setText(bundle.getString("TaskOptionsPanel.verboseCheckBox.text")); // NOI18N
-        verboseCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.verboseCheckBox.toolTipText")); // NOI18N
-
-        ignoreExistingCheckBox.setText(bundle.getString("TaskOptionsPanel.ignoreExistingCheckBox.text")); // NOI18N
-        ignoreExistingCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.ignoreExistingCheckBox.toolTipText")); // NOI18N
-
-        updateCheckBox.setText(bundle.getString("TaskOptionsPanel.updateCheckBox.text")); // NOI18N
-        updateCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.updateCheckBox.toolTipText")); // NOI18N
-
-        deleteCheckBox.setText(bundle.getString("TaskOptionsPanel.deleteCheckBox.text")); // NOI18N
-        deleteCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.deleteCheckBox.toolTipText")); // NOI18N
-
-        javax.swing.GroupLayout basic21PanelLayout = new javax.swing.GroupLayout(basic21Panel);
-        basic21Panel.setLayout(basic21PanelLayout);
-        basic21PanelLayout.setHorizontalGroup(
-            basic21PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basic21PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(basic21PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(deleteCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(verboseCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ignoreExistingCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(updateCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        basic21PanelLayout.setVerticalGroup(
-            basic21PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basic21PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(deleteCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(verboseCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ignoreExistingCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(updateCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        basic2Panel.add(basic21Panel);
-
-        oneFileSystemCheckBox.setText(bundle.getString("TaskOptionsPanel.oneFileSystemCheckBox.text")); // NOI18N
-        oneFileSystemCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.oneFileSystemCheckBox.toolTipText")); // NOI18N
-
-        progressCheckBox.setText(bundle.getString("TaskOptionsPanel.progressCheckBox.text")); // NOI18N
-        progressCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.progressCheckBox.toolTipText")); // NOI18N
-
-        sizeOnlyCheckBox.setText(bundle.getString("TaskOptionsPanel.sizeOnlyCheckBox.text")); // NOI18N
-        sizeOnlyCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.sizeOnlyCheckBox.toolTipText")); // NOI18N
-
-        modifyWindowCheckBox.setText(bundle.getString("TaskOptionsPanel.modifyWindowCheckBox.text")); // NOI18N
-        modifyWindowCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.modifyWindowCheckBox.toolTipText")); // NOI18N
-
-        javax.swing.GroupLayout basic22PanelLayout = new javax.swing.GroupLayout(basic22Panel);
-        basic22Panel.setLayout(basic22PanelLayout);
-        basic22PanelLayout.setHorizontalGroup(
-            basic22PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basic22PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(basic22PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(oneFileSystemCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(progressCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(sizeOnlyCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(modifyWindowCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        basic22PanelLayout.setVerticalGroup(
-            basic22PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basic22PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(oneFileSystemCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(progressCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sizeOnlyCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(modifyWindowCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        basic2Panel.add(basic22Panel);
-
-        javax.swing.GroupLayout basicPanelLayout = new javax.swing.GroupLayout(basicPanel);
-        basicPanel.setLayout(basicPanelLayout);
-        basicPanelLayout.setHorizontalGroup(
-            basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addGroup(basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(basic2Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(basic1Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        basicPanelLayout.setVerticalGroup(
-            basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addGroup(basicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(basicPanelLayout.createSequentialGroup()
-                    .addComponent(basic1Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(basic2Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-
-        tabbedPane.addTab(Dict.BASIC.toString(), basicPanel);
-
-        advancedPanel.setLayout(new java.awt.GridLayout(1, 0));
-
-        checksumCheckBox.setText(bundle.getString("TaskOptionsPanel.checksumCheckBox.text")); // NOI18N
-        checksumCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.checksumCheckBox.toolTipText")); // NOI18N
-
-        devicesCheckBox.setText(bundle.getString("TaskOptionsPanel.devicesCheckBox.text")); // NOI18N
-        devicesCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.devicesCheckBox.toolTipText")); // NOI18N
-
-        partialProgressCheckBox.setText(bundle.getString("TaskOptionsPanel.partialProgressCheckBox.text")); // NOI18N
-        partialProgressCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.partialProgressCheckBox.toolTipText")); // NOI18N
-
-        linksCheckBox.setText(bundle.getString("TaskOptionsPanel.linksCheckBox.text")); // NOI18N
-        linksCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.linksCheckBox.toolTipText")); // NOI18N
-
-        backupCheckBox.setText(bundle.getString("TaskOptionsPanel.backupCheckBox.text")); // NOI18N
-        backupCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.backupCheckBox.toolTipText")); // NOI18N
-
-        dirsCheckBox.setText(bundle.getString("TaskOptionsPanel.dirsCheckBox.text")); // NOI18N
-        dirsCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.dirsCheckBox.toolTipText")); // NOI18N
-
-        javax.swing.GroupLayout advanced11PanelLayout = new javax.swing.GroupLayout(advanced11Panel);
-        advanced11Panel.setLayout(advanced11PanelLayout);
-        advanced11PanelLayout.setHorizontalGroup(
-            advanced11PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(advanced11PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(advanced11PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(checksumCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(devicesCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(partialProgressCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(linksCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(backupCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dirsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        advanced11PanelLayout.setVerticalGroup(
-            advanced11PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(advanced11PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(checksumCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(devicesCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(partialProgressCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(linksCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(backupCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dirsCheckBox)
-                .addGap(0, 0, 0))
-        );
-
-        advancedPanel.add(advanced11Panel);
-
-        compressCheckBox.setText(bundle.getString("TaskOptionsPanel.compressCheckBox.text")); // NOI18N
-        compressCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.compressCheckBox.toolTipText")); // NOI18N
-
-        existingCheckBox.setText(bundle.getString("TaskOptionsPanel.existingCheckBox.text")); // NOI18N
-        existingCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.existingCheckBox.toolTipText")); // NOI18N
-
-        numericIdsCheckBox.setText(bundle.getString("TaskOptionsPanel.numericIdsCheckBox.text")); // NOI18N
-        numericIdsCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.numericIdsCheckBox.toolTipText")); // NOI18N
-
-        hardlinksCheckBox.setText(bundle.getString("TaskOptionsPanel.hardlinksCheckBox.text")); // NOI18N
-        hardlinksCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.hardlinksCheckBox.toolTipText")); // NOI18N
-
-        itemizeChangesCheckBox.setText(bundle.getString("TaskOptionsPanel.itemizeChangesCheckBox.text")); // NOI18N
-        itemizeChangesCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.itemizeChangesCheckBox.toolTipText")); // NOI18N
-
-        protectArgsCheckBox.setText(bundle.getString("TaskOptionsPanel.protectArgsCheckBox.text")); // NOI18N
-        protectArgsCheckBox.setToolTipText(bundle.getString("TaskOptionsPanel.protectArgsCheckBox.toolTipText")); // NOI18N
-
-        javax.swing.GroupLayout advanced12PanelLayout = new javax.swing.GroupLayout(advanced12Panel);
-        advanced12Panel.setLayout(advanced12PanelLayout);
-        advanced12PanelLayout.setHorizontalGroup(
-            advanced12PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(advanced12PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(advanced12PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(compressCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(existingCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(numericIdsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(hardlinksCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(itemizeChangesCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(protectArgsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        advanced12PanelLayout.setVerticalGroup(
-            advanced12PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(advanced12PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(compressCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(existingCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(numericIdsCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hardlinksCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(itemizeChangesCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(protectArgsCheckBox)
-                .addContainerGap())
-        );
-
-        advancedPanel.add(advanced12Panel);
-
-        tabbedPane.addTab(Dict.ADVANCED.toString(), advancedPanel);
-
-        additionalOptionsTextArea.setColumns(20);
-        additionalOptionsTextArea.setRows(5);
-        additionalScrollPane.setViewportView(additionalOptionsTextArea);
-
-        tabbedPane.addTab(Dict.MANUAL.toString(), additionalScrollPane);
-
-        add(tabbedPane, java.awt.BorderLayout.CENTER);
+        availableOptions.setHeader(Dict.AVAILABLE.toString());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(availableOptions, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void activateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activateButtonActionPerformed
+        activate();
+    }//GEN-LAST:event_activateButtonActionPerformed
+
+    private void deactivateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deactivateButtonActionPerformed
+        deactivate();
+    }//GEN-LAST:event_deactivateButtonActionPerformed
+
+    private void initListeners() {
+        availableOptions.getFilterTextField().getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            private void filter() {
+                updateAvailableModel();
+            }
+        });
+
+        selectedOptions.getFilterTextField().getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            private void filter() {
+                updateSelectedModel();
+            }
+
+        });
+
+        availableOptions.getList().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2) {
+                    activate();
+                }
+            }
+        });
+
+        selectedOptions.getList().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2) {
+                    deactivate();
+                }
+            }
+        });
+    }
+
+    private void removeAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllButtonActionPerformed
+        mSelectedOptions.stream().forEach((rsyncOption) -> {
+            mAvailableOptions.add(rsyncOption);
+        });
+
+        mSelectedOptions.clear();
+
+        updateAvailableModel();
+        updateSelectedModel();
+    }//GEN-LAST:event_removeAllButtonActionPerformed
+
+    private void updateAvailableModel() {
+        String filter = availableOptions.getFilterTextField().getText();
+        mAvailableModel.clear();
+        for (RsyncOption rsyncOption : mAvailableOptions) {
+            if (rsyncOption.filter(filter)) {
+                mAvailableModel.addElement(rsyncOption);
+            }
+        }
+    }
+
+    private void updateSelectedModel() {
+        String filter = selectedOptions.getFilterTextField().getText();
+        mSelectedModel.clear();
+
+        for (RsyncOption rsyncOption : mSelectedOptions) {
+            if (rsyncOption.filter(filter)) {
+                mSelectedModel.addElement(rsyncOption);
+            }
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea additionalOptionsTextArea;
-    private javax.swing.JScrollPane additionalScrollPane;
-    private javax.swing.JPanel advanced11Panel;
-    private javax.swing.JPanel advanced12Panel;
-    private javax.swing.JPanel advancedPanel;
-    private javax.swing.JCheckBox backupCheckBox;
-    private javax.swing.JPanel basic11Panel;
-    private javax.swing.JPanel basic12Panel;
-    private javax.swing.JPanel basic1Panel;
-    private javax.swing.JPanel basic21Panel;
-    private javax.swing.JPanel basic22Panel;
-    private javax.swing.JPanel basic2Panel;
-    private javax.swing.JPanel basicPanel;
-    private javax.swing.JCheckBox checksumCheckBox;
-    private javax.swing.JCheckBox compressCheckBox;
-    private javax.swing.JCheckBox deleteCheckBox;
-    private javax.swing.JCheckBox devicesCheckBox;
-    private javax.swing.JCheckBox dirsCheckBox;
-    private javax.swing.JCheckBox existingCheckBox;
-    private javax.swing.JCheckBox groupCheckBox;
-    private javax.swing.JCheckBox hardlinksCheckBox;
-    private javax.swing.JCheckBox ignoreExistingCheckBox;
-    private javax.swing.JCheckBox itemizeChangesCheckBox;
-    private javax.swing.JCheckBox linksCheckBox;
-    private javax.swing.JCheckBox modifyWindowCheckBox;
-    private javax.swing.JCheckBox numericIdsCheckBox;
-    private javax.swing.JCheckBox oneFileSystemCheckBox;
-    private javax.swing.JCheckBox ownerCheckBox;
-    private javax.swing.JCheckBox partialProgressCheckBox;
-    private javax.swing.JCheckBox permsCheckBox;
-    private javax.swing.JCheckBox progressCheckBox;
-    private javax.swing.JCheckBox protectArgsCheckBox;
-    private javax.swing.JCheckBox sizeOnlyCheckBox;
-    private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JCheckBox timesCheckBox;
-    private javax.swing.JCheckBox updateCheckBox;
-    private javax.swing.JCheckBox verboseCheckBox;
+    private javax.swing.JButton activateButton;
+    private se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel availableOptions;
+    private javax.swing.JButton deactivateButton;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.JToolBar jToolBar1;
+    private se.trixon.jota.client.ui.editor.module.task.OptionsListPanel optionsListPanel1;
+    private javax.swing.JButton removeAllButton;
+    private se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel selectedOptions;
     // End of variables declaration//GEN-END:variables
 }

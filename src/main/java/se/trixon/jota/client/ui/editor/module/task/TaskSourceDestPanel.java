@@ -1,5 +1,5 @@
-/*
- * Copyright 2016 pata.
+/* 
+ * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import se.trixon.util.dictionary.Dict;
 
 /**
  *
- * @author pata
+ * @author Patrik Karlsson
  */
 public class TaskSourceDestPanel extends TaskModule {
 

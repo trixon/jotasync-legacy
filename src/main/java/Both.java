@@ -1,7 +1,4 @@
-
-import java.io.IOException;
-
-/*
+/* 
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +13,8 @@ import java.io.IOException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- * @author Patrik Karlsson
- */
+import java.io.IOException;
+
 class Both {
 
     /**

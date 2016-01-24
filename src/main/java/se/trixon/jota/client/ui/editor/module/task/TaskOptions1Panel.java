@@ -13,41 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor.module.job;
+package se.trixon.jota.client.ui.editor.module.task;
 
-import se.trixon.jota.shared.job.Job;
+import se.trixon.jota.shared.task.Task;
 import se.trixon.util.dictionary.Dict;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class JobCronPanel extends JobModule {
+public class TaskOptions1Panel extends TaskModule {
 
     /**
-     * Creates new form JobCron
+     * Creates new form TaskOptions2Panel
      */
-    public JobCronPanel() {
+    public TaskOptions1Panel() {
         initComponents();
         init();
     }
 
     @Override
-    public void loadJob(Job job) {
-        cronPanel.setCronActive(job.isCronActive());
-        cronPanel.setCronItems(job.getCronItems());
+    public void loadTask(Task task) {
     }
 
     @Override
-    public Job saveJob(Job job) {
-        job.setCronActive(cronPanel.isCronActive());
-        job.setCronItems(cronPanel.getCronItems());
-
-        return job;
+    public Task saveTask(Task task) {
+        return task;
     }
 
     private void init() {
-        mTitle = Dict.SCHEDULER.toString();
+        mTitle = Dict.OPTIONS.getString();
     }
 
     /**
@@ -59,22 +54,22 @@ public class JobCronPanel extends JobModule {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cronPanel = new se.trixon.jota.client.ui.editor.module.job.CronEditorPanel();
+        optionsListPanel1 = new se.trixon.jota.client.ui.editor.module.task.OptionsListPanel();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cronPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(optionsListPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cronPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+            .addComponent(optionsListPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 88, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private se.trixon.jota.client.ui.editor.module.job.CronEditorPanel cronPanel;
+    private se.trixon.jota.client.ui.editor.module.task.OptionsListPanel optionsListPanel1;
     // End of variables declaration//GEN-END:variables
 }

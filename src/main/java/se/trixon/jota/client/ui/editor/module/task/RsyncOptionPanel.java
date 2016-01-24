@@ -15,26 +15,31 @@
  */
 package se.trixon.jota.client.ui.editor.module.task;
 
-import se.trixon.jota.client.ui.editor.module.TaskPersistor;
-import se.trixon.jota.client.ui.editor.module.common.NotePanel;
-import se.trixon.jota.shared.task.Task;
+import java.util.ArrayList;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class TaskNotePanel extends NotePanel implements TaskPersistor {
+public class RsyncOptionPanel extends BaseOptionPanel {
 
-    @Override
-    public void loadTask(Task task) {
-        getTextArea().setText(task.getDetails());
-        getTextArea().setCaretPosition(0);
+    /**
+     * Creates new form OptionPanel
+     */
+    public RsyncOptionPanel() {
+        init();
     }
 
-    @Override
-    public Task saveTask(Task task) {
-        task.setDetails(getTextArea().getText());
+    ArrayList<RsyncOption> getSelectedItems() {
+        ArrayList<RsyncOption> arrayList = new ArrayList<>();
 
-        return task;
+        for (int index : getList().getSelectedIndices()) {
+            arrayList.add((RsyncOption) getModel().elementAt(index));
+        }
+
+        return arrayList;
+    }
+
+    private void init() {
     }
 }

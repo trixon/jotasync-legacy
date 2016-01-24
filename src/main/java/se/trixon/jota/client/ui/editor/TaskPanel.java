@@ -24,6 +24,7 @@ import se.trixon.jota.client.ui.editor.module.task.TaskExcludePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskIncludePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskNotePanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskOptionsClassicPanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskOptionsPanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskSourceDestPanel;
 import se.trixon.jota.shared.task.Task;
@@ -34,7 +35,7 @@ import se.trixon.jota.shared.task.TaskVerifier;
  * @author Patrik Karlsson
  */
 public class TaskPanel extends javax.swing.JPanel {
-    
+
     private Task mTask = new Task();
     private Mode mMode;
     private final TaskNotePanel mNotePanel = new TaskNotePanel();
@@ -43,8 +44,9 @@ public class TaskPanel extends javax.swing.JPanel {
     private final TaskIncludePanel mIncludePanel = new TaskIncludePanel();
     private final TaskExcludePanel mExcludePanel = new TaskExcludePanel();
     private final TaskExecutePanel mExecutePanel = new TaskExecutePanel();
+    private final TaskOptionsClassicPanel mOptionsClassicPanel = new TaskOptionsClassicPanel();
     private final TaskOptionsPanel mOptionsPanel = new TaskOptionsPanel();
-    private final TaskSourceDestPanel mSourceDestPanel=new TaskSourceDestPanel();
+    private final TaskSourceDestPanel mSourceDestPanel = new TaskSourceDestPanel();
     private TaskVerifier mTaskVerifier;
 
     /**
@@ -54,21 +56,21 @@ public class TaskPanel extends javax.swing.JPanel {
         initComponents();
         init();
     }
-    
+
     public List<String> getCommand() {
         saveTask();
         return mTask.build();
     }
-    
+
     public String getCommandAsString() {
         getCommand();
         return mTask.getCommandAsString();
     }
-    
+
     public Task getCommandBuilder() {
         return mTask;
     }
-    
+
     public Task getTask() {
         saveTask();
         return mTask;
@@ -95,10 +97,11 @@ public class TaskPanel extends javax.swing.JPanel {
         mTask = task;
         loadTask();
     }
-    
+
     private void init() {
-        addModulePanel(mSourceDestPanel);
         addModulePanel(mOptionsPanel);
+        addModulePanel(mSourceDestPanel);
+        addModulePanel(mOptionsClassicPanel);
         addModulePanel(mExecutePanel);
         addModulePanel(mExcludePanel);
         addModulePanel(mNotePanel);
@@ -113,11 +116,11 @@ public class TaskPanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     private Component addModulePanel(Module modulePanel) {
         return tabbedPane.add(modulePanel.getTitle(), modulePanel);
     }
-    
+
     private void loadTask() {
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof TaskPersistor) {
@@ -126,7 +129,7 @@ public class TaskPanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     private void saveTask() {
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof TaskPersistor) {
@@ -135,7 +138,7 @@ public class TaskPanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     private boolean disableTab(Component tab) {
         try {
             tabbedPane.setEnabledAt(tabbedPane.indexOfComponent(tab), false);
@@ -190,7 +193,7 @@ public class TaskPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private enum Mode {
-        
+
         ANDVANCED, BASIC;
     }
 }

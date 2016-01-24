@@ -20,6 +20,7 @@ import java.util.Arrays;
 import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
+import se.trixon.jota.client.ui.UI;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 
@@ -29,7 +30,7 @@ import se.trixon.util.icon.Pict;
  */
 public abstract class EditPanel extends javax.swing.JPanel {
 
-    private static final int ICON_SIZE = 24;
+    private static final int ICON_SIZE = UI.ICON_SIZE_LARGE;
     private DefaultListModel mModel = new DefaultListModel();
 
     /**
