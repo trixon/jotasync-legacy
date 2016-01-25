@@ -263,7 +263,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     @Override
     public void updateUI() {
         super.updateUI();
-        if (mPopupMenu != null) {
+        if (mPopupMenu != null && mOptions.isForceLookAndFeel()) {
             try {
                 UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
                 SwingUtilities.updateComponentTreeUI(mPopupMenu);

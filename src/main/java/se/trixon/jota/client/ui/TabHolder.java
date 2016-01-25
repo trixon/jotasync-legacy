@@ -31,14 +31,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import se.trixon.jota.client.ConnectionListener;
+import se.trixon.jota.client.Manager;
+import se.trixon.jota.client.ui.MainFrame.ActionManager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.jota.client.ConnectionListener;
-import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.ui.MainFrame.ActionManager;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.icon.Pict;
 
@@ -321,7 +321,10 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         };
 
         mSpeedDialPanel.getMenuButton().addMouseListener(mMenuMouseAdapter);
-        //setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
+        
+        //FIXME Why is this necessary?
+        setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
+        setTabLayoutPolicy(WRAP_TAB_LAYOUT);
     }
 
     private void updateActionStates() {
