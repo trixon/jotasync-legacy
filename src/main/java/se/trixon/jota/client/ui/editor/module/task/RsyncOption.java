@@ -24,10 +24,12 @@ import se.trixon.util.BundleHelper;
  */
 public enum RsyncOption {
 
+    SAFE_LINKS(null, "safe-links"),
     PRESERVE_TIME("t", "times"),
     PRESERVE_OWNER("o", "owner"),
     PRESERVE_GROUP("g", "group"),
-    PRESERVE_PERMISSION("p", "perms");
+    PRESERVE_PERMISSION("p", "perms"),
+    PARTIAL_PROGRESS("P", null);
     private final ResourceBundle mBundle = BundleHelper.getBundle(RsyncOption.class, "RsyncOption");
     private final String mDescription;
     private final String mLongArg;
@@ -40,19 +42,43 @@ public enum RsyncOption {
     }
 
     public boolean filter(String filter) {
-        return mShortArg.toLowerCase().contains(filter.toLowerCase())
-                || mLongArg.toLowerCase().contains(filter.toLowerCase())
-                || ("-" + mShortArg).toLowerCase().contains(filter.toLowerCase())
-                || ("--" + mLongArg).toLowerCase().contains(filter.toLowerCase())
+        return getShortArg().toLowerCase().contains(filter.toLowerCase())
+                || getLongArg().toLowerCase().contains(filter.toLowerCase())
                 || mDescription.toLowerCase().contains(filter.toLowerCase());
+    }
+
+    public String getArg() {
+        if (mLongArg != null) {
+            return getLongArg();
+        } else {
+            return getShortArg();
+        }
     }
 
     public String getDescription() {
         return mDescription;
     }
 
+    public String getLongArg() {
+        if (mLongArg != null) {
+            return "--" + mLongArg;
+        } else {
+            return "";
+        }
+    }
+
+    public String getShortArg() {
+        if (mShortArg != null) {
+            return "-" + mShortArg;
+        } else {
+            return "";
+        }
+    }
+
     @Override
     public String toString() {
-        return String.format("<html><b>%s</b><br />-%s, --%s</html>", mDescription, mShortArg, mLongArg);
+        String separator = (mShortArg == null || mLongArg == null) ? "" : ", ";
+
+        return String.format("<html><b>%s</b><br />%s%s%s</html>", mDescription, getShortArg(), separator, getLongArg());
     }
 }

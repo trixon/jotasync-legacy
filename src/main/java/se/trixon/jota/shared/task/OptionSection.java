@@ -41,6 +41,7 @@ public class OptionSection extends TaskSection {
     private static final String KEY_MODIFY_WINDOW = "modifyWindow";
     private static final String KEY_NUMERIC_IDS = "numericIds";
     private static final String KEY_ONE_FILE_SYSTEM = "oneFilesystem";
+    private static final String KEY_OPTIONS = "options";
     private static final String KEY_OWNER = "owner";
     private static final String KEY_PARTIAL_PROGRESS = "partialProgress";
     private static final String KEY_PERMS = "perms";
@@ -67,6 +68,7 @@ public class OptionSection extends TaskSection {
     private boolean mModifyWindow;
     private boolean mNumericIds;
     private boolean mOneFileSystem;
+    private String mOptions;
     private boolean mOwner;
     private boolean mPartialProgress;
     private boolean mPerms;
@@ -84,6 +86,10 @@ public class OptionSection extends TaskSection {
     @Override
     public List<String> getCommand() {
         mCommand.clear();
+
+        for (String option : mOptions.split(" ")) {
+            add(option);
+        }
 
         if (mTimes) {
             add("--times");
@@ -170,6 +176,7 @@ public class OptionSection extends TaskSection {
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put(KEY_ADDITIONAL_OPTIONS, mAdditionalOptions);
+        jsonObject.put(KEY_OPTIONS, mOptions);
         jsonObject.put(KEY_BACKUP, mBackup);
         jsonObject.put(KEY_CHECKSUM, mChecksum);
         jsonObject.put(KEY_COMPRESS, mCompress);
@@ -196,6 +203,10 @@ public class OptionSection extends TaskSection {
         jsonObject.put(KEY_VERBOSE, mVerbose);
 
         return jsonObject;
+    }
+
+    public String getOptions() {
+        return mOptions;
     }
 
     public boolean isBackup() {
@@ -297,6 +308,7 @@ public class OptionSection extends TaskSection {
     @Override
     public void loadFromJson(JSONObject jsonObject) {
         mAdditionalOptions = optString(jsonObject, KEY_ADDITIONAL_OPTIONS);
+        mOptions = optString(jsonObject, KEY_OPTIONS);
         mBackup = optBoolean(jsonObject, KEY_BACKUP);
         mChecksum = optBoolean(jsonObject, KEY_CHECKSUM);
         mCompress = optBoolean(jsonObject, KEY_COMPRESS);
@@ -385,6 +397,10 @@ public class OptionSection extends TaskSection {
 
     public void setOneFileSystem(boolean value) {
         mOneFileSystem = value;
+    }
+
+    public void setOptions(String value) {
+        mOptions = value;
     }
 
     public void setOwner(boolean value) {

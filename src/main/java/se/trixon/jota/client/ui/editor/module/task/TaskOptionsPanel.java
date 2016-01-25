@@ -24,7 +24,9 @@ import java.util.Comparator;
 import javax.swing.DefaultListModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.ui.UI;
+import se.trixon.jota.shared.task.OptionSection;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
@@ -53,10 +55,33 @@ public class TaskOptionsPanel extends TaskModule {
 
     @Override
     public void loadTask(Task task) {
+        OptionSection optionSection = task.getOptionSection();
+        String[] options = StringUtils.splitPreserveAllTokens(optionSection.getOptions(), " ");
+        for (String option : options) {
+            for (RsyncOption rsyncOption : mAvailableOptions) {
+                if (StringUtils.equals(option, rsyncOption.getArg())) {
+                    mSelectedOptions.add(rsyncOption);
+                    mAvailableOptions.remove(rsyncOption);
+                    break;
+                }
+            }
+        }
+
+        updateAvailableModel();
+        updateSelectedModel();
     }
 
     @Override
     public Task saveTask(Task task) {
+        OptionSection optionSection = task.getOptionSection();
+        ArrayList<String> options = new ArrayList<>();
+
+        for (RsyncOption rsyncOption : mSelectedOptions) {
+            options.add(rsyncOption.getArg());
+        }
+
+        optionSection.setOptions(StringUtils.join(options, " "));
+
         return task;
     }
 
