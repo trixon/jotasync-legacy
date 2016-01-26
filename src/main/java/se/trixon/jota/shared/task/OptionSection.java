@@ -68,7 +68,7 @@ public class OptionSection extends TaskSection {
     private boolean mModifyWindow;
     private boolean mNumericIds;
     private boolean mOneFileSystem;
-    private String mOptions;
+    private String mOptions = "";
     private boolean mOwner;
     private boolean mPartialProgress;
     private boolean mPerms;
