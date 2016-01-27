@@ -92,12 +92,7 @@ public class TaskOptionsPanel extends TaskModule {
             mAvailableOptions.remove(rsyncOption);
         }
 
-        Collections.sort(mSelectedOptions, new Comparator<RsyncOption>() {
-            @Override
-            public int compare(RsyncOption o1, RsyncOption o2) {
-                return o1.getDescription().compareTo(o2.getDescription());
-            }
-        });
+        sortOptions(mSelectedOptions);
 
         updateAvailableModel();
         updateSelectedModel();
@@ -110,12 +105,7 @@ public class TaskOptionsPanel extends TaskModule {
             mSelectedOptions.remove(rsyncOption);
         }
 
-        Collections.sort(mAvailableOptions, new Comparator<RsyncOption>() {
-            @Override
-            public int compare(RsyncOption o1, RsyncOption o2) {
-                return o1.getDescription().compareTo(o2.getDescription());
-            }
-        });
+        sortOptions(mAvailableOptions);
 
         updateAvailableModel();
         updateSelectedModel();
@@ -127,12 +117,7 @@ public class TaskOptionsPanel extends TaskModule {
         mSelectedModel = selectedOptions.getModel();
 
         mAvailableOptions.addAll(Arrays.asList(RsyncOption.values()));
-        Collections.sort(mAvailableOptions, new Comparator<RsyncOption>() {
-            @Override
-            public int compare(RsyncOption o1, RsyncOption o2) {
-                return o1.getDescription().compareTo(o2.getDescription());
-            }
-        });
+        sortOptions(mAvailableOptions);
 
         updateAvailableModel();
     }
@@ -147,9 +132,8 @@ public class TaskOptionsPanel extends TaskModule {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        optionsListPanel1 = new se.trixon.jota.client.ui.editor.module.task.OptionsListPanel();
         selectedOptions = new se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel();
-        jToolBar1 = new javax.swing.JToolBar();
+        toolBar = new javax.swing.JToolBar();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         activateButton = new javax.swing.JButton();
         deactivateButton = new javax.swing.JButton();
@@ -166,10 +150,11 @@ public class TaskOptionsPanel extends TaskModule {
         gridBagConstraints.weighty = 1.0;
         add(selectedOptions, gridBagConstraints);
 
-        jToolBar1.setFloatable(false);
-        jToolBar1.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        jToolBar1.setRollover(true);
-        jToolBar1.add(filler1);
+        toolBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        toolBar.setFloatable(false);
+        toolBar.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        toolBar.setRollover(true);
+        toolBar.add(filler1);
 
         activateButton.setIcon(Pict.Actions.GO_PREVIOUS.get(ICON_SIZE));
         activateButton.setToolTipText(Dict.ACTIVATE.toString());
@@ -181,7 +166,7 @@ public class TaskOptionsPanel extends TaskModule {
                 activateButtonActionPerformed(evt);
             }
         });
-        jToolBar1.add(activateButton);
+        toolBar.add(activateButton);
 
         deactivateButton.setIcon(Pict.Actions.GO_NEXT.get(ICON_SIZE));
         deactivateButton.setToolTipText(Dict.DEACTIVATE.toString());
@@ -193,7 +178,7 @@ public class TaskOptionsPanel extends TaskModule {
                 deactivateButtonActionPerformed(evt);
             }
         });
-        jToolBar1.add(deactivateButton);
+        toolBar.add(deactivateButton);
 
         removeAllButton.setIcon(Pict.Actions.EDIT_DELETE.get(ICON_SIZE)
         );
@@ -206,10 +191,10 @@ public class TaskOptionsPanel extends TaskModule {
                 removeAllButtonActionPerformed(evt);
             }
         });
-        jToolBar1.add(removeAllButton);
-        jToolBar1.add(filler2);
+        toolBar.add(removeAllButton);
+        toolBar.add(filler2);
 
-        add(jToolBar1, new java.awt.GridBagConstraints());
+        add(toolBar, new java.awt.GridBagConstraints());
 
         availableOptions.setHeader(Dict.AVAILABLE.toString());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -296,10 +281,20 @@ public class TaskOptionsPanel extends TaskModule {
         });
 
         mSelectedOptions.clear();
+        sortOptions(mAvailableOptions);
 
         updateAvailableModel();
         updateSelectedModel();
     }//GEN-LAST:event_removeAllButtonActionPerformed
+
+    private void sortOptions(ArrayList<RsyncOption> options) {
+        Collections.sort(options, new Comparator<RsyncOption>() {
+            @Override
+            public int compare(RsyncOption o1, RsyncOption o2) {
+                return o1.getDescription().compareTo(o2.getDescription());
+            }
+        });
+    }
 
     private void updateAvailableModel() {
         String filter = availableOptions.getFilterTextField().getText();
@@ -328,9 +323,8 @@ public class TaskOptionsPanel extends TaskModule {
     private javax.swing.JButton deactivateButton;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
-    private javax.swing.JToolBar jToolBar1;
-    private se.trixon.jota.client.ui.editor.module.task.OptionsListPanel optionsListPanel1;
     private javax.swing.JButton removeAllButton;
     private se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel selectedOptions;
+    private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 }

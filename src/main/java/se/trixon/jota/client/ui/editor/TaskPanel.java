@@ -99,9 +99,9 @@ public class TaskPanel extends javax.swing.JPanel {
     }
 
     private void init() {
-        addModulePanel(mOptionsPanel);
         addModulePanel(mSourceDestPanel);
-        addModulePanel(mOptionsClassicPanel);
+        addModulePanel(mOptionsPanel);
+//        addModulePanel(mOptionsClassicPanel);
         addModulePanel(mExecutePanel);
         addModulePanel(mExcludePanel);
         addModulePanel(mNotePanel);
