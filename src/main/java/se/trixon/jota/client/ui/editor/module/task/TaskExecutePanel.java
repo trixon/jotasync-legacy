@@ -176,6 +176,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         add(jSeparator1, gridBagConstraints);
 
         afterFailurePanel.setAlignmentX(0.0F);
@@ -200,6 +201,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         add(jSeparator2, gridBagConstraints);
 
         afterSuccessPanel.setAlignmentX(0.0F);
@@ -224,6 +226,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         add(jSeparator3, gridBagConstraints);
 
         afterPanel.setAlignmentX(0.0F);
@@ -239,6 +242,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         add(jSeparator4, gridBagConstraints);
 
         afterHaltOnErrorCheckBox.setText(Dict.STOP_ON_ERROR.toString());
@@ -263,11 +267,11 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 290, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 15, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();

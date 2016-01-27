@@ -17,6 +17,7 @@ package se.trixon.jota.client.ui.editor;
 
 import java.awt.Component;
 import java.util.List;
+import javax.swing.border.EmptyBorder;
 import se.trixon.jota.client.ui.editor.module.Module;
 import se.trixon.jota.client.ui.editor.module.TaskPersistor;
 import se.trixon.jota.client.ui.editor.module.task.TaskEnvironmentPanel;
@@ -110,9 +111,9 @@ public class TaskPanel extends javax.swing.JPanel {
 //        addModulePanel(mModuleEnvironmentPanel);
 //        addModulePanel(mModuleLogPanel);
         for (Component component : tabbedPane.getComponents()) {
-            if (component instanceof Module) {
+            if (component instanceof Module && component != mNotePanel) {
                 Module modulePanel = (Module) component;
-                //modulePanel.setBorder(new EmptyBorder(8, 8, 8, 8));
+                modulePanel.setBorder(new EmptyBorder(8, 8, 8, 8));
             }
         }
     }
@@ -170,17 +171,11 @@ public class TaskPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
