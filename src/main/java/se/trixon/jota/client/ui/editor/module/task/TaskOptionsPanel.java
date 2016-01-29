@@ -15,21 +15,11 @@
  */
 package se.trixon.jota.client.ui.editor.module.task;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import javax.swing.DefaultListModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import org.apache.commons.lang3.StringUtils;
-import se.trixon.jota.client.ui.UI;
 import se.trixon.jota.shared.task.OptionSection;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.dictionary.Dict;
-import se.trixon.util.icon.Pict;
 
 /**
  *
@@ -37,20 +27,12 @@ import se.trixon.util.icon.Pict;
  */
 public class TaskOptionsPanel extends TaskModule {
 
-    private static final int ICON_SIZE = UI.ICON_SIZE_LARGE;
-
-    private final ArrayList<RsyncOption> mAvailableOptions = new ArrayList<>();
-    private final ArrayList<RsyncOption> mSelectedOptions = new ArrayList<>();
-    private DefaultListModel mAvailableModel;
-    private DefaultListModel mSelectedModel;
-
     /**
      * Creates new form TaskOptionsPanel
      */
     public TaskOptionsPanel() {
         initComponents();
         init();
-        initListeners();
     }
 
     @Override
@@ -58,26 +40,28 @@ public class TaskOptionsPanel extends TaskModule {
         OptionSection optionSection = task.getOptionSection();
         String[] options = StringUtils.splitPreserveAllTokens(optionSection.getOptions(), " ");
         for (String option : options) {
-            for (RsyncOption rsyncOption : mAvailableOptions) {
-                if (StringUtils.equals(option, rsyncOption.getArg())) {
-                    mSelectedOptions.add(rsyncOption);
-                    mAvailableOptions.remove(rsyncOption);
+            for (Object object : dualListPanel.getAvailableListPanel().getModel().toArray()) {
+                OptionHandler optionHandler = (OptionHandler) object;
+                if (StringUtils.equals(option, optionHandler.getArg())) {
+                    dualListPanel.getSelectedListPanel().getModel().addElement(object);
+                    dualListPanel.getAvailableListPanel().getModel().removeElement(object);
                     break;
                 }
             }
         }
 
-        updateAvailableModel();
-        updateSelectedModel();
+        dualListPanel.getSelectedListPanel().updateModel();
+        dualListPanel.getAvailableListPanel().updateModel();
     }
 
     @Override
     public Task saveTask(Task task) {
         OptionSection optionSection = task.getOptionSection();
+
         ArrayList<String> options = new ArrayList<>();
 
-        for (RsyncOption rsyncOption : mSelectedOptions) {
-            options.add(rsyncOption.getArg());
+        for (Object object : dualListPanel.getSelectedListPanel().getModel().toArray()) {
+            options.add(((OptionHandler) object).getArg());
         }
 
         optionSection.setOptions(StringUtils.join(options, " "));
@@ -85,41 +69,14 @@ public class TaskOptionsPanel extends TaskModule {
         return task;
     }
 
-    private void activate() {
-        for (int index : availableOptions.getList().getSelectedIndices()) {
-            RsyncOption rsyncOption = (RsyncOption) mAvailableModel.elementAt(index);
-            mSelectedOptions.add(rsyncOption);
-            mAvailableOptions.remove(rsyncOption);
-        }
-
-        sortOptions(mSelectedOptions);
-
-        updateAvailableModel();
-        updateSelectedModel();
-    }
-
-    private void deactivate() {
-        for (int index : selectedOptions.getList().getSelectedIndices()) {
-            RsyncOption rsyncOption = (RsyncOption) mSelectedModel.elementAt(index);
-            mAvailableOptions.add(rsyncOption);
-            mSelectedOptions.remove(rsyncOption);
-        }
-
-        sortOptions(mAvailableOptions);
-
-        updateAvailableModel();
-        updateSelectedModel();
-    }
-
     private void init() {
-        mTitle = Dict.OPTIONS.getString();
-        mAvailableModel = availableOptions.getModel();
-        mSelectedModel = selectedOptions.getModel();
+        mTitle = Dict.OPTIONS.toString();
 
-        mAvailableOptions.addAll(Arrays.asList(RsyncOption.values()));
-        sortOptions(mAvailableOptions);
+        for (RsyncOption option : RsyncOption.values()) {
+            dualListPanel.getAvailableListPanel().getModel().addElement(option);
+        }
 
-        updateAvailableModel();
+        dualListPanel.getAvailableListPanel().updateModel();
     }
 
     /**
@@ -130,201 +87,22 @@ public class TaskOptionsPanel extends TaskModule {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        selectedOptions = new se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel();
-        toolBar = new javax.swing.JToolBar();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        activateButton = new javax.swing.JButton();
-        deactivateButton = new javax.swing.JButton();
-        removeAllButton = new javax.swing.JButton();
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        availableOptions = new se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel();
+        dualListPanel = new se.trixon.jota.client.ui.editor.module.DualListPanel();
 
-        setLayout(new java.awt.GridBagLayout());
-
-        selectedOptions.setHeader(Dict.SELECTED.toString());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(selectedOptions, gridBagConstraints);
-
-        toolBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        toolBar.setFloatable(false);
-        toolBar.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        toolBar.setRollover(true);
-        toolBar.add(filler1);
-
-        activateButton.setIcon(Pict.Actions.GO_PREVIOUS.get(ICON_SIZE));
-        activateButton.setToolTipText(Dict.ACTIVATE.toString());
-        activateButton.setFocusable(false);
-        activateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        activateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        activateButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                activateButtonActionPerformed(evt);
-            }
-        });
-        toolBar.add(activateButton);
-
-        deactivateButton.setIcon(Pict.Actions.GO_NEXT.get(ICON_SIZE));
-        deactivateButton.setToolTipText(Dict.DEACTIVATE.toString());
-        deactivateButton.setFocusable(false);
-        deactivateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        deactivateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        deactivateButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deactivateButtonActionPerformed(evt);
-            }
-        });
-        toolBar.add(deactivateButton);
-
-        removeAllButton.setIcon(Pict.Actions.EDIT_DELETE.get(ICON_SIZE)
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(dualListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
         );
-        removeAllButton.setToolTipText(Dict.REMOVE_ALL.toString());
-        removeAllButton.setFocusable(false);
-        removeAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        removeAllButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        removeAllButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeAllButtonActionPerformed(evt);
-            }
-        });
-        toolBar.add(removeAllButton);
-        toolBar.add(filler2);
-
-        add(toolBar, new java.awt.GridBagConstraints());
-
-        availableOptions.setHeader(Dict.AVAILABLE.toString());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(availableOptions, gridBagConstraints);
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(dualListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void activateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activateButtonActionPerformed
-        activate();
-    }//GEN-LAST:event_activateButtonActionPerformed
-
-    private void deactivateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deactivateButtonActionPerformed
-        deactivate();
-    }//GEN-LAST:event_deactivateButtonActionPerformed
-
-    private void initListeners() {
-        availableOptions.getFilterTextField().getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                filter();
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                filter();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                filter();
-            }
-
-            private void filter() {
-                updateAvailableModel();
-            }
-        });
-
-        selectedOptions.getFilterTextField().getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                filter();
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                filter();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                filter();
-            }
-
-            private void filter() {
-                updateSelectedModel();
-            }
-
-        });
-
-        availableOptions.getList().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2) {
-                    activate();
-                }
-            }
-        });
-
-        selectedOptions.getList().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2) {
-                    deactivate();
-                }
-            }
-        });
-    }
-
-    private void removeAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllButtonActionPerformed
-        mSelectedOptions.stream().forEach((rsyncOption) -> {
-            mAvailableOptions.add(rsyncOption);
-        });
-
-        mSelectedOptions.clear();
-        sortOptions(mAvailableOptions);
-
-        updateAvailableModel();
-        updateSelectedModel();
-    }//GEN-LAST:event_removeAllButtonActionPerformed
-
-    private void sortOptions(ArrayList<RsyncOption> options) {
-        Collections.sort(options, new Comparator<RsyncOption>() {
-            @Override
-            public int compare(RsyncOption o1, RsyncOption o2) {
-                return o1.getDescription().compareTo(o2.getDescription());
-            }
-        });
-    }
-
-    private void updateAvailableModel() {
-        String filter = availableOptions.getFilterTextField().getText();
-        mAvailableModel.clear();
-        for (RsyncOption rsyncOption : mAvailableOptions) {
-            if (rsyncOption.filter(filter)) {
-                mAvailableModel.addElement(rsyncOption);
-            }
-        }
-    }
-
-    private void updateSelectedModel() {
-        String filter = selectedOptions.getFilterTextField().getText();
-        mSelectedModel.clear();
-
-        for (RsyncOption rsyncOption : mSelectedOptions) {
-            if (rsyncOption.filter(filter)) {
-                mSelectedModel.addElement(rsyncOption);
-            }
-        }
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton activateButton;
-    private se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel availableOptions;
-    private javax.swing.JButton deactivateButton;
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.JButton removeAllButton;
-    private se.trixon.jota.client.ui.editor.module.task.RsyncOptionPanel selectedOptions;
-    private javax.swing.JToolBar toolBar;
+    private se.trixon.jota.client.ui.editor.module.DualListPanel dualListPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -22,7 +22,7 @@ import se.trixon.util.BundleHelper;
  *
  * @author Patrik Karlsson
  */
-public enum RsyncOption {
+public enum RsyncOption implements OptionHandler {
 
     ACLS("A", "acls"),
     APPEND(null, "append"),
@@ -100,32 +100,30 @@ public enum RsyncOption {
     _8_BIT_OUTPUT("8", "8-bit-output ");
 
     private final ResourceBundle mBundle = BundleHelper.getBundle(RsyncOption.class, "RsyncOption");
-    private final String mDescription;
     private final String mLongArg;
     private final String mShortArg;
+    private final String mTitle;
 
     private RsyncOption(String shortArg, String longArg) {
         mShortArg = shortArg;
         mLongArg = longArg;
-        mDescription = mBundle.containsKey(name()) ? mBundle.getString(name()) : "_MISSING DESCRIPTION " + name();
+        mTitle = mBundle.containsKey(name()) ? mBundle.getString(name()) : "_MISSING DESCRIPTION " + name();
     }
 
+    @Override
     public boolean filter(String filter) {
         return getShortArg().toLowerCase().contains(filter.toLowerCase())
                 || getLongArg().toLowerCase().contains(filter.toLowerCase())
-                || mDescription.toLowerCase().contains(filter.toLowerCase());
+                || mTitle.toLowerCase().contains(filter.toLowerCase());
     }
 
+    @Override
     public String getArg() {
         if (mLongArg != null) {
             return getLongArg();
         } else {
             return getShortArg();
         }
-    }
-
-    public String getDescription() {
-        return mDescription;
     }
 
     public String getLongArg() {
@@ -145,9 +143,14 @@ public enum RsyncOption {
     }
 
     @Override
+    public String getTitle() {
+        return mTitle;
+    }
+
+    @Override
     public String toString() {
         String separator = (mShortArg == null || mLongArg == null) ? "" : ", ";
 
-        return String.format("<html><b>%s</b><br />%s%s%s</html>", mDescription, getShortArg(), separator, getLongArg());
+        return String.format("<html><b>%s</b><br />%s%s%s</html>", mTitle, getShortArg(), separator, getLongArg());
     }
 }
