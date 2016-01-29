@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.shared.task;
-
-import java.util.ArrayList;
-import java.util.List;
-import se.trixon.jota.shared.JotaSection;
+package se.trixon.jota.client.ui.editor.module.task;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public abstract class TaskSection extends JotaSection {
+public interface OptionHandler {
 
-    public static final String OPT_SEPARATOR = ":::";
-    protected final List<String> mCommand = new ArrayList<>();
+    boolean filter(String filter);
 
-    public abstract List<String> getCommand();
+    String getArg();
 
-    protected void add(String command) {
-        if (!mCommand.contains(command)) {
-            mCommand.add(command);
-        }
-    }
+    String getTitle();
 }
