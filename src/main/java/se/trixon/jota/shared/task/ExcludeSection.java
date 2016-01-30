@@ -39,7 +39,9 @@ public class ExcludeSection extends TaskSection {
         mCommand.clear();
 
         for (String option : mOptions.split(" ")) {
-            add(option);
+            for (String option2 : option.split(OPT_SEPARATOR)) {
+                add(option2);
+            }
         }
 
         if (mManualFileUsed && StringUtils.isNotBlank(mManualFilePath)) {
