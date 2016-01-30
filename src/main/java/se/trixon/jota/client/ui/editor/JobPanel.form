@@ -27,7 +27,7 @@
                           <Component id="nameLabel" min="-2" max="-2" attributes="0"/>
                           <Component id="descriptionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="495" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -45,7 +45,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="descriptionTextField" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tabbedPane" max="32767" attributes="0"/>
+              <Component id="tabbedPane" pref="266" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

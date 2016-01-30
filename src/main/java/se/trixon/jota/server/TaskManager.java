@@ -36,14 +36,15 @@ import se.trixon.jota.shared.task.OptionSection;
 enum TaskManager {
 
     INSTANCE;
+    private final LinkedList<Task> mTasks = new LinkedList<>();
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_DEST = "dest";
     private static final String KEY_DETAILS = "details";
+    private static final String KEY_HISTORY = "history";
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_SOURCE = "source";
     private static final String KEY_TYPE = "type";
-    private final LinkedList<Task> mTasks = new LinkedList<>();
 
     private TaskManager() {
     }
@@ -78,6 +79,7 @@ enum TaskManager {
             object.put(KEY_DEST, task.getDestination());
             object.put(KEY_DESCRIPTION, task.getDescription());
             object.put(KEY_DETAILS, task.getDetails());
+            object.put(KEY_HISTORY, task.getHistory());
 
             object.put(TaskExecuteSection.KEY, task.getExecuteSection().getJson());
             object.put(OptionSection.KEY, task.getOptionSection().getJson());
@@ -158,6 +160,7 @@ enum TaskManager {
             task.setSource((String) object.get(KEY_SOURCE));
             task.setDestination((String) object.get(KEY_DEST));
             task.setDetails((String) object.get(KEY_DETAILS));
+            task.setHistory((String) object.get(KEY_HISTORY));
 
             if (object.containsKey(TaskExecuteSection.KEY)) {
                 task.getExecuteSection().loadFromJson((JSONObject) object.get(TaskExecuteSection.KEY));

@@ -38,6 +38,7 @@ enum JobManager {
     private static final String KEY_CRON_ITEMS = "cronItems";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_DETAILS = "details";
+    private static final String KEY_HISTORY = "history";
     private static final String KEY_ID = "id";
     private static final String KEY_LAST_RUN = "lastRun";
     private static final String KEY_LAST_RUN_EXIT_CODE = "lastRunExitCode";
@@ -82,6 +83,7 @@ enum JobManager {
             object.put(KEY_CRON_ACTIVE, job.isCronActive());
             object.put(KEY_CRON_ITEMS, job.getCronItems());
 
+            object.put(KEY_HISTORY, job.getHistory());
             object.put(KEY_DETAILS, job.getDetails());
             object.put(KEY_LAST_RUN, job.getLastRun());
             object.put(KEY_LAST_RUN_EXIT_CODE, job.getLastRunExitCode());
@@ -137,6 +139,7 @@ enum JobManager {
             job.setId(JsonHelper.getLong(object, KEY_ID));
             job.setName((String) object.get(KEY_NAME));
             job.setDescription((String) object.get(KEY_DESCRIPTION));
+            job.setHistory((String) object.get(KEY_HISTORY));
             job.setDetails((String) object.get(KEY_DETAILS));
             job.setLastRun(JsonHelper.getLong(object, KEY_LAST_RUN));
             job.setLastRunExitCode(JsonHelper.getInt(object, KEY_LAST_RUN_EXIT_CODE));

@@ -2,6 +2,11 @@
 
 <Form version="1.4" maxVersion="1.9">
   <Properties>
+    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+      <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+        <EmptyBorder bottom="0" left="0" right="0" top="8"/>
+      </Border>
+    </Property>
     <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
       <FontInfo relative="true">
         <Font bold="false" component="Form" italic="false" property="font" relativeSize="true" size="0"/>
@@ -31,7 +36,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="300" max="32767" attributes="0"/>
+          <EmptySpace min="0" pref="292" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>

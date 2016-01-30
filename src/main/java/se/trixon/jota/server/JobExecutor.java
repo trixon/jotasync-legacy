@@ -44,7 +44,9 @@ class JobExecutor extends Thread {
 
     private Process mCurrentProcess;
     private final StringBuffer mErrBuffer;
+    private StringBuilder mHistoryBuilder;
     private final Job mJob;
+    private final JotaManager mJotaManager = JotaManager.INSTANCE;
     private long mLastRun;
     private int mNumOfFailedTasks;
     private ServerOptions mOptions = ServerOptions.INSTANCE;
@@ -63,6 +65,8 @@ class JobExecutor extends Thread {
     @Override
     public void run() {
         mLastRun = System.currentTimeMillis();
+        mHistoryBuilder = new StringBuilder();
+        mHistoryBuilder.append(String.format("%s started", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
         send(ProcessEvent.OUT, String.format("%s: Starting job %s", Jota.millisToDateTime(mLastRun), mJob.getName()));
         JobExecuteSection jobExecute = mJob.getExecuteSection();
 
@@ -98,12 +102,14 @@ class JobExecutor extends Thread {
                 run(command, false, "AFTER LAST TASK");
             }
 
+            mHistoryBuilder.append(String.format("%s finished", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
             updateJobStatus(0);
             writelogs();
             send(ProcessEvent.FINISHED, "Job finished");
             Xlog.timedOut(String.format("Job finished: %s", mJob.getName()));
         } catch (InterruptedException ex) {
             mCurrentProcess.destroy();
+            mHistoryBuilder.append(String.format("%s aborted", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
             updateJobStatus(99);
             writelogs();
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {
@@ -119,6 +125,7 @@ class JobExecutor extends Thread {
         } catch (ExecutionFailedException ex) {
             //Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
             //send(ProcessEvent.OUT, "before failed and will not continue");
+            mHistoryBuilder.append(String.format("%s failed", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
             updateJobStatus(1);
             writelogs();
             send(ProcessEvent.FAILED, "\n\nJob failed");
@@ -192,6 +199,8 @@ class JobExecutor extends Thread {
     }
 
     private boolean runTask(Task task) {
+        StringBuilder taskHistoryBuilder = new StringBuilder();
+        taskHistoryBuilder.append(String.format("%s started", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
         send(ProcessEvent.OUT, "Run task: " + task.getName());
         mTaskFailed = false;
         boolean doNextStep = true;
@@ -234,13 +243,15 @@ class JobExecutor extends Thread {
                 doNextStep = runTaskStep(command, taskExecute.isAfterHaltOnError(), "AFTER RSYNC");
                 send(ProcessEvent.OUT, "********** after");
             }
-
         }
 
         send(ProcessEvent.OUT, "");
         if (mTaskFailed) {
             mNumOfFailedTasks++;
         }
+
+        taskHistoryBuilder.append(String.format("%s finished", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
+        mJotaManager.getTaskManager().getTaskById(task.getId()).appendHistory(taskHistoryBuilder.append("\n").toString());
 
         boolean doNextTask = !(mTaskFailed && taskExecute.isJobHaltOnError());
         return doNextTask;
@@ -282,10 +293,11 @@ class JobExecutor extends Thread {
     }
 
     private void updateJobStatus(int exitCode) {
-        JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
-        JotaManager.INSTANCE.getJobManager().getJobById(mJob.getId()).setLastRunExitCode(exitCode);
+        mJotaManager.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
+        mJotaManager.getJobManager().getJobById(mJob.getId()).setLastRunExitCode(exitCode);
+        mJotaManager.getJobManager().getJobById(mJob.getId()).appendHistory(mHistoryBuilder.append("\n").toString());
         try {
-            JotaManager.INSTANCE.save();
+            mJotaManager.save();
         } catch (IOException ex) {
             Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
         }

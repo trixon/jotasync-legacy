@@ -62,6 +62,10 @@ public class Job implements Comparable<Job>, Serializable {
         mExecuteSection = new JobExecuteSection();
     }
 
+    public void appendHistory(String history) {
+        mHistory = mHistory + history;
+    }
+
     @Override
     public int compareTo(Job o) {
         return mName.compareTo(o.getName());
@@ -219,6 +223,10 @@ public class Job implements Comparable<Job>, Serializable {
         mDetails = string;
     }
 
+    public void setHistory(String history) {
+        mHistory = history == null ? "" : history;
+    }
+
     public void setId(long id) {
         mId = id;
     }
@@ -261,10 +269,6 @@ public class Job implements Comparable<Job>, Serializable {
         for (Object object : model.toArray()) {
             mTasks.add((Task) object);
         }
-    }
-
-    public void setmHistory(String history) {
-        mHistory = history;
     }
 
     @Override

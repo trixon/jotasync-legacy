@@ -166,6 +166,7 @@ public class TabItem extends JPanel implements TabListener {
     }
 
     private void init() {
+        logPanel.getTextArea().setLineWrap(true);
         cancelButton.setIcon(Pict.Actions.PROCESS_STOP.get(UI.ICON_SIZE_LARGE));
         editButton.setIcon(Pict.Actions.DOCUMENT_EDIT.get(UI.ICON_SIZE_LARGE));
         menuButton.setIcon(Pict.Custom.MENU.get(UI.ICON_SIZE_LARGE));

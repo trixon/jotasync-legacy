@@ -52,6 +52,10 @@ public class Task implements Comparable<Task>, Serializable {
         mDestination = new File(FileUtils.getTempDirectory(), "jotasync-dest").getAbsolutePath();
     }
 
+    public void appendHistory(String history) {
+        mHistory = mHistory + history;
+    }
+
     @Override
     public int compareTo(Task o) {
         return mName.compareTo(o.getName());
@@ -159,7 +163,7 @@ public class Task implements Comparable<Task>, Serializable {
     }
 
     public void setHistory(String history) {
-        mHistory = history;
+        mHistory = history == null ? "" : history;
     }
 
     public void setId(long id) {
