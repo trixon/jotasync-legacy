@@ -15,9 +15,11 @@
  */
 package se.trixon.jota.shared.task;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -28,7 +30,7 @@ public class Task implements Comparable<Task>, Serializable {
 
     private final List<String> mCommand = new ArrayList<>();
     private String mDescription = "";
-    private String mDestination = System.getProperty("user.home");
+    private String mDestination;
     private String mDetails = "";
     private boolean mDryRun = true;
     private String mEnvironment = "";
@@ -38,36 +40,16 @@ public class Task implements Comparable<Task>, Serializable {
     private long mId = System.currentTimeMillis();
     private String mName = "";
     private final OptionSection mOptionSection;
-    private String mSource = System.getProperty("user.home");
+    private String mSource;
     private int mType = 0;
 
     public Task() {
         mExecuteSection = new TaskExecuteSection();
         mExcludeSection = new ExcludeSection();
         mOptionSection = new OptionSection();
-    }
 
-    public List<String> build() {
-        mCommand.clear();
-
-        String command = "rsync";
-//        if (SystemUtils.IS_OS_WINDOWS) {
-//            File file = InstalledFileLocator.getDefault().locate("rsync.exe", "se.trixon.toolbox.rsync.windows", false);
-//            command = file.getAbsolutePath();
-//        }
-        add(command);
-
-        if (mDryRun) {
-            add("--dry-run");
-        }
-
-        mCommand.addAll(mOptionSection.getCommand());
-        mCommand.addAll(mExcludeSection.getCommand());
-
-        add(mSource);
-        add(mDestination);
-
-        return mCommand;
+        mSource = new File(FileUtils.getTempDirectory(), "jotasync-source").getAbsolutePath();
+        mDestination = new File(FileUtils.getTempDirectory(), "jotasync-dest").getAbsolutePath();
     }
 
     @Override
@@ -75,9 +57,29 @@ public class Task implements Comparable<Task>, Serializable {
         return mName.compareTo(o.getName());
     }
 
+    public List<String> getCommand() {
+        mCommand.clear();
+
+        if (mDryRun) {
+            //add("--dry-run");
+        }
+
+        if (!StringUtils.isBlank(StringUtils.join(mOptionSection.getCommand(), ""))) {
+            mCommand.addAll(mOptionSection.getCommand());
+        }
+
+        if (!StringUtils.isBlank(StringUtils.join(mExcludeSection.getCommand(), ""))) {
+            mCommand.addAll(mExcludeSection.getCommand());
+        }
+
+        add(mSource);
+        add(mDestination);
+
+        return mCommand;
+    }
+
     public String getCommandAsString() {
-        build();
-        return StringUtils.join(mCommand, " ");
+        return StringUtils.join(getCommand(), " ");
     }
 
     public String getDescription() {

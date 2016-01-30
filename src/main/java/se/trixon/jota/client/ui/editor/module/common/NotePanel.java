@@ -34,7 +34,7 @@ public abstract class NotePanel extends Module {
     }
 
     public JTextArea getTextArea() {
-        return detailsTextArea;
+        return textArea;
     }
 
     private void init() {
@@ -50,27 +50,30 @@ public abstract class NotePanel extends Module {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        descriptionScrollPane = new javax.swing.JScrollPane();
-        detailsTextArea = new javax.swing.JTextArea();
+        scrollPane = new javax.swing.JScrollPane();
+        textArea = new javax.swing.JTextArea();
 
-        detailsTextArea.setColumns(20);
-        detailsTextArea.setRows(5);
-        descriptionScrollPane.setViewportView(detailsTextArea);
+        scrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        textArea.setColumns(20);
+        textArea.setRows(5);
+        textArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        scrollPane.setViewportView(textArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descriptionScrollPane)
+            .addComponent(scrollPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(descriptionScrollPane)
+            .addComponent(scrollPane)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane descriptionScrollPane;
-    private javax.swing.JTextArea detailsTextArea;
+    private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
 }
