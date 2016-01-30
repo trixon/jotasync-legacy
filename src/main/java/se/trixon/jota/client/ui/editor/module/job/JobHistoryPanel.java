@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,34 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.editor.module.task;
+package se.trixon.jota.client.ui.editor.module.job;
 
-import se.trixon.jota.client.ui.editor.module.TaskPersistor;
+import se.trixon.jota.client.ui.editor.module.JobPersistor;
 import se.trixon.jota.client.ui.editor.module.common.NotePanel;
-import se.trixon.jota.shared.task.Task;
+import se.trixon.jota.shared.job.Job;
 import se.trixon.util.dictionary.Dict;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class TaskHistoryPanel extends NotePanel implements TaskPersistor {
+public class JobHistoryPanel extends NotePanel implements JobPersistor {
 
-    /**
-     * Creates new form ModulePanel
-     */
-    public TaskHistoryPanel() {
+    public JobHistoryPanel() {
         init();
     }
 
     @Override
-    public void loadTask(Task task) {
-        getTextArea().setText(task.getHistory());
+    public void loadJob(Job job) {
+        getTextArea().setText(job.getHistory());
     }
 
     @Override
-    public Task saveTask(Task task) {
-        return task;
+    public Job saveJob(Job job) {
+        return job;
     }
 
     private void init() {

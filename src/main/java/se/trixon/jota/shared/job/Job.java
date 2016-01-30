@@ -31,7 +31,6 @@ import se.trixon.jota.shared.task.Task;
  */
 public class Job implements Comparable<Job>, Serializable {
 
-    public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
     private String mColorBackground;
     private String mColorForeground;
     private boolean mCronActive;
@@ -39,6 +38,7 @@ public class Job implements Comparable<Job>, Serializable {
     private String mDescription = "";
     private String mDetails = "";
     private final JobExecuteSection mExecuteSection;
+    private String mHistory = "";
     private long mId = System.currentTimeMillis();
     private long mLastRun = -1;
     private int mLastRunExitCode = -1;
@@ -48,6 +48,7 @@ public class Job implements Comparable<Job>, Serializable {
     private boolean mLogSeparateErrors = true;
     private String mName = "";
     private List<Task> mTasks = new LinkedList<>();
+    public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
     public Job() {
         mExecuteSection = new JobExecuteSection();
@@ -107,6 +108,10 @@ public class Job implements Comparable<Job>, Serializable {
 
     public JobExecuteSection getExecuteSection() {
         return mExecuteSection;
+    }
+
+    public String getHistory() {
+        return mHistory;
     }
 
     public long getId() {
@@ -256,6 +261,10 @@ public class Job implements Comparable<Job>, Serializable {
         for (Object object : model.toArray()) {
             mTasks.add((Task) object);
         }
+    }
+
+    public void setmHistory(String history) {
+        mHistory = history;
     }
 
     @Override

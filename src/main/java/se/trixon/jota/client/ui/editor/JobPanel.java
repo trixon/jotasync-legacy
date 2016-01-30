@@ -21,6 +21,7 @@ import se.trixon.jota.client.ui.editor.module.Module;
 import se.trixon.jota.client.ui.editor.module.job.JobAppearancePanel;
 import se.trixon.jota.client.ui.editor.module.job.JobCronPanel;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
+import se.trixon.jota.client.ui.editor.module.job.JobHistoryPanel;
 import se.trixon.jota.client.ui.editor.module.job.JobLogPanel;
 import se.trixon.jota.client.ui.editor.module.job.JobNotePanel;
 import se.trixon.jota.shared.job.Job;
@@ -37,6 +38,7 @@ public class JobPanel extends javax.swing.JPanel {
     private final JobExecutePanel mExecutePanel = new JobExecutePanel();
     private final JobLogPanel mLogPanel = new JobLogPanel();
     private final JobNotePanel mNotePanel = new JobNotePanel();
+    private final JobHistoryPanel mHistoryPanel = new JobHistoryPanel();
     private Job mJob = new Job();
 
     /**
@@ -69,6 +71,7 @@ public class JobPanel extends javax.swing.JPanel {
         addModulePanel(mLogPanel);
         addModulePanel(mAppearancePanel);
         addModulePanel(mNotePanel);
+        addModulePanel(mHistoryPanel);
     }
 
     private void loadJob() {
