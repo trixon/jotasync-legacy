@@ -47,6 +47,7 @@ class JobExecutor extends Thread {
     private final Job mJob;
     private long mLastRun;
     private int mNumOfFailedTasks;
+    private ServerOptions mOptions = ServerOptions.INSTANCE;
     private final StringBuffer mOutBuffer;
     private final Server mServer;
     private boolean mTaskFailed;
@@ -170,11 +171,12 @@ class JobExecutor extends Thread {
         mCurrentProcess.waitFor();
     }
 
-    private int runRsync() {
+    private int runRsync(Task task) {
         try {
             ArrayList<String> command = new ArrayList<>();
-            command.add("echo");
-            command.add("rsync");
+            command.add(mOptions.getRsyncPath());
+            command.add("--dry-run");
+            command.addAll(task.getCommand());
             send(ProcessEvent.OUT, StringUtils.join(command, " "));
 
             runProcess(command);
@@ -205,7 +207,7 @@ class JobExecutor extends Thread {
 
         // run rsync
         if (doNextStep) {
-            int exitValue = runRsync();
+            int exitValue = runRsync(task);
             boolean rsyncSuccess = exitValue == 0;
             send(ProcessEvent.OUT, "********** rsync");
             if (rsyncSuccess) {
@@ -325,7 +327,7 @@ class JobExecutor extends Thread {
                 Xlog.timedOut(message);
                 builder.append(String.format("%s:%s", SystemHelper.getHostname(), message));
             }
-            
+
             if (builder.length() > 0) {
                 builder.insert(0, "Save log\n");
                 send(ProcessEvent.OUT, builder.toString());
