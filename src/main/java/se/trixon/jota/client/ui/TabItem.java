@@ -42,7 +42,7 @@ import se.trixon.util.swing.dialogs.SimpleDialog;
 public class TabItem extends JPanel implements TabListener {
 
     private boolean mClosable;
-    private final Job mJob;
+    private Job mJob;
     private final Manager mManager = Manager.getInstance();
     private long mTimeFinished;
 
@@ -285,7 +285,13 @@ public class TabItem extends JPanel implements TabListener {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         try {
-            mManager.getServerCommander().startJob(mJob);
+            Job job = mManager.getServerCommander().getJob(mJob.getId());
+            if (job == null) {
+                Message.error(this, Dict.ERROR.toString(), "Job not found");
+            } else {
+                mJob = job;
+                mManager.getServerCommander().startJob(mJob);
+            }
         } catch (RemoteException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
