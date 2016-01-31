@@ -80,7 +80,7 @@ public interface ServerCommander extends Remote {
 
     void shutdown() throws RemoteException;
 
-    void startJob(Job job) throws RemoteException;
+    void startJob(Job job, boolean dryRun) throws RemoteException;
 
     void stopJob(Job job) throws RemoteException;
 

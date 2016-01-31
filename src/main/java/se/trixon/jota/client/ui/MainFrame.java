@@ -183,9 +183,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                         JOptionPane.PLAIN_MESSAGE,
                         null,
                         options,
-                        options[0]);
-                if (result == 0) {
-                    mManager.getServerCommander().startJob(job);
+                        options[1]);
+
+                if (result < 2) {
+                    mManager.getServerCommander().startJob(job, result == 1);
                 }
             } else {
                 Message.html(this, Dict.ERROR_VALIDATION.toString(), validator.getSummaryAsHtml());

@@ -384,7 +384,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             Jota.exit(1);
         } else {
             mCurrentJob = job;
-            mServerCommander.startJob(job);
+            mServerCommander.startJob(job, false);
         }
     }
 

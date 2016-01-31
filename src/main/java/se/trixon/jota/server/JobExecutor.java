@@ -53,10 +53,12 @@ class JobExecutor extends Thread {
     private final StringBuffer mOutBuffer;
     private final Server mServer;
     private boolean mTaskFailed;
+    private boolean mDryRun;
 
-    JobExecutor(Server server, Job job) {
+    JobExecutor(Server server, Job job, boolean dryRun) {
         mJob = job;
         mServer = server;
+        mDryRun = dryRun;
 
         mErrBuffer = new StringBuffer();
         mOutBuffer = new StringBuffer();
@@ -182,7 +184,9 @@ class JobExecutor extends Thread {
         try {
             ArrayList<String> command = new ArrayList<>();
             command.add(mOptions.getRsyncPath());
-            command.add("--dry-run");
+            if (mDryRun) {
+                command.add("--dry-run");
+            }
             command.addAll(task.getCommand());
             send(ProcessEvent.OUT, StringUtils.join(command, " "));
 

@@ -258,13 +258,13 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public void startJob(Job job) throws RemoteException {
+    public void startJob(Job job, boolean dryRun) throws RemoteException {
         Xlog.timedOut(String.format("Job started: %s", job.getName()));
         for (ClientCallbacks clientCallback : mClientCallbacks) {
             clientCallback.onProcessEvent(ProcessEvent.STARTED, job, null, null);
         }
 
-        JobExecutor jobExecutor = new JobExecutor(this, job);
+        JobExecutor jobExecutor = new JobExecutor(this, job, dryRun);
         mJobExecutors.put(job.getId(), jobExecutor);
         jobExecutor.start();
     }
