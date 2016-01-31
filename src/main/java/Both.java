@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import java.io.IOException;
+import java.util.Locale;
 
 class Both {
 
@@ -21,6 +22,7 @@ class Both {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, InterruptedException {
+        Locale.setDefault(Locale.ENGLISH);
         Server.main(args);
         Thread.sleep(500);
         Client.main(args);
