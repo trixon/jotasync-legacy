@@ -158,7 +158,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
 
         beforePanel.setCheckBoxMode(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
-        beforePanel.setHeader(bundle.getString("ModuleExecutePanel.runBefore.text")); // NOI18N
+        beforePanel.setHeader(bundle.getString("TaskExecutePanel.beforePanel.header")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;

@@ -46,7 +46,6 @@ import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobComboBoxRenderer;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.BundleHelper;
-import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.SwingHelper;
@@ -66,7 +65,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     private final HashSet<SpeedDialListener> mSpeedDialListeners = new HashSet<>();
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Manager mManager = Manager.getInstance();
-    private boolean mSimulate;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
 
     /**
@@ -149,6 +147,11 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     @Override
     public void onSpeedDialButtonClicked(SpeedDialButton speedDialButton) {
         requestStartJob(speedDialButton.getJob());
+    }
+
+    private void requestStartJob(Job job) {
+        MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(this);
+        mainFrame.requestStartJob(job);
     }
 
     private void updateButtons(Job job, boolean state) {
@@ -357,34 +360,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
                 }
             }
         });
-    }
-
-    private boolean requestStartJob(Job job) {
-        Xlog.timedOut("requestStartJob() " + job.getName());
-
-        String start = Dict.START.getString();
-        String simulate = "Simulate";
-        String cancel = Dict.CANCEL.getString();
-        String[] options = new String[]{simulate, start};
-        String title = "Confirm";
-        String message = String.format("<html>Start job <b>%s</b>?</html>", job.getName());
-
-        try {
-            mManager.getServerCommander().startJob(job);
-        } catch (RemoteException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //NotifyDescriptor d = new NotifyDescriptor(message, title, NotifyDescriptor.DEFAULT_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, start);
-        //d.setAdditionalOptions(new String[]{cancel});
-//        Object retval = DialogDisplayer.getDefault().notify(d);
-//        mSimulate = retval == simulate;
-//        if (retval == start || retval == simulate) {
-//        mJotaRunner = new JotaRunner(mProgressPanel);
-//        mJotaRunner.addJotaListener(this);
-//        mJotaRunner.start(job, mSimulate);
-//        }
-        return false;
     }
 
     /**

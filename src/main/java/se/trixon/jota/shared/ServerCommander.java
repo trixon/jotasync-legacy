@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import se.trixon.jota.shared.job.Job;
+import se.trixon.jota.server.JobValidator;
 
 /**
  *
@@ -82,5 +83,7 @@ public interface ServerCommander extends Remote {
     void startJob(Job job) throws RemoteException;
 
     void stopJob(Job job) throws RemoteException;
+
+    JobValidator validate(Job job) throws RemoteException;
 
 }

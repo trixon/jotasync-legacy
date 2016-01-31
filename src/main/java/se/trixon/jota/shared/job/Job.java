@@ -20,10 +20,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.DefaultListModel;
 import org.apache.commons.lang3.StringUtils;
+import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.task.Task;
+import se.trixon.util.BundleHelper;
+import se.trixon.util.dictionary.Dict;
 
 /**
  *
@@ -47,6 +51,7 @@ public class Job implements Comparable<Job>, Serializable {
     private boolean mLogOutput = true;
     private boolean mLogSeparateErrors = true;
     private String mName = "";
+    private StringBuilder mSummaryBuilder;
     private List<Task> mTasks = new LinkedList<>();
     public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
@@ -165,6 +170,28 @@ public class Job implements Comparable<Job>, Serializable {
         return mName;
     }
 
+    public String getSummaryAsHtml() {
+        mSummaryBuilder = new StringBuilder("<html>");
+        mSummaryBuilder.append("<h1>").append(getName()).append("</h1>");
+        ResourceBundle bundle = BundleHelper.getBundle(JobExecutePanel.class, "Bundle");
+
+        addOptionalToSummary(mExecuteSection.isBefore(), mExecuteSection.getBeforeCommand(), bundle.getString("JobPanel.beforePanel.header"));
+        if (mExecuteSection.isBefore() && mExecuteSection.isBeforeHaltOnError()) {
+            mSummaryBuilder.append(Dict.STOP_ON_ERROR.toString());
+        }
+
+        addOptionalToSummary(mExecuteSection.isAfterFailure(), mExecuteSection.getAfterFailureCommand(), bundle.getString("JobPanel.afterFailurePanel.header"));
+        addOptionalToSummary(mExecuteSection.isAfterSuccess(), mExecuteSection.getAfterSuccessCommand(), bundle.getString("JobPanel.afterSuccessPanel.header"));
+        addOptionalToSummary(mExecuteSection.isAfter(), mExecuteSection.getAfterCommand(), bundle.getString("JobPanel.afterPanel.header"));
+
+        for (Task task : getTasks()) {
+            mSummaryBuilder.append("<hr>");
+            mSummaryBuilder.append(task.getSummaryAsHtml());
+        }
+
+        return mSummaryBuilder.toString();
+    }
+
     public List<Task> getTasks() {
         return mTasks;
     }
@@ -276,19 +303,16 @@ public class Job implements Comparable<Job>, Serializable {
         if (TO_STRING == OUTPUT.NORMAL) {
             return mName;
         } else {
-            String description = mDescription;
-            if (StringUtils.isEmpty(description)) {
-                description = "&nbsp;";
-            }
+            String description = StringUtils.isBlank(mDescription) ? "&nbsp;" : mDescription;
 
             return String.format("<html><b>%s</b><br /><i>%s</i></html>", mName, description);
         }
     }
 
-    private boolean isCommandValid(String command) {
-//        File file = new File(command);
-//        return file.exists() && file.isFile();
-        return true;
+    private void addOptionalToSummary(boolean active, String command, String header) {
+        if (active) {
+            mSummaryBuilder.append(String.format("<p><b>%s</b><br /><i>%s</i></p>", header, command));
+        }
     }
 
     public enum OUTPUT {

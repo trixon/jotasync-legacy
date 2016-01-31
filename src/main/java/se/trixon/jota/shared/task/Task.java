@@ -19,8 +19,12 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
+import se.trixon.util.BundleHelper;
+import se.trixon.util.dictionary.Dict;
 
 /**
  *
@@ -41,6 +45,7 @@ public class Task implements Comparable<Task>, Serializable {
     private String mName = "";
     private final OptionSection mOptionSection;
     private String mSource;
+    private StringBuilder mSummaryBuilder;
     private int mType = 0;
 
     public Task() {
@@ -130,6 +135,43 @@ public class Task implements Comparable<Task>, Serializable {
         return mSource;
     }
 
+    public String getSummaryAsHtml() {
+        mSummaryBuilder = new StringBuilder("<h2>").append(getName()).append("</h2>");
+
+        addOptionalToSummary(true, getSource(), Dict.SOURCE.toString());
+        addOptionalToSummary(true, getDestination(), Dict.DESTINATION.toString());
+
+        ResourceBundle bundle = BundleHelper.getBundle(TaskExecutePanel.class, "Bundle");
+
+        addOptionalToSummary(mExecuteSection.isBefore(), mExecuteSection.getBeforeCommand(), bundle.getString("TaskExecutePanel.beforePanel.header"));
+        if (mExecuteSection.isBefore() && mExecuteSection.isBeforeHaltOnError()) {
+            mSummaryBuilder.append(Dict.STOP_ON_ERROR.toString());
+        }
+
+        addOptionalToSummary(mExecuteSection.isAfterFailure(), mExecuteSection.getAfterFailureCommand(), bundle.getString("TaskExecutePanel.afterFailurePanel.header"));
+        if (mExecuteSection.isAfterFailure() && mExecuteSection.isAfterFailureHaltOnError()) {
+            mSummaryBuilder.append(Dict.STOP_ON_ERROR.toString());
+        }
+
+        addOptionalToSummary(mExecuteSection.isAfterSuccess(), mExecuteSection.getAfterSuccessCommand(), bundle.getString("TaskExecutePanel.afterSuccessPanel.header"));
+        if (mExecuteSection.isAfterSuccess() && mExecuteSection.isAfterSuccessHaltOnError()) {
+            mSummaryBuilder.append(Dict.STOP_ON_ERROR.toString());
+        }
+
+        addOptionalToSummary(mExecuteSection.isAfter(), mExecuteSection.getAfterCommand(), bundle.getString("TaskExecutePanel.afterPanel.header"));
+        if (mExecuteSection.isAfter() && mExecuteSection.isAfterHaltOnError()) {
+            mSummaryBuilder.append(Dict.STOP_ON_ERROR.toString());
+        }
+
+        if (mExecuteSection.isJobHaltOnError()) {
+            mSummaryBuilder.append("<p>").append(bundle.getString("TaskExecutePanel.jobHaltOnErrorCheckBox.text")).append("</p>");
+        }
+
+        mSummaryBuilder.append("<h2>rsync</h2>").append(getCommandAsString());
+
+        return mSummaryBuilder.toString();
+    }
+
     public int getType() {
         return mType;
     }
@@ -184,13 +226,7 @@ public class Task implements Comparable<Task>, Serializable {
 
     @Override
     public String toString() {
-        String description = "";
-
-        try {
-            description = mDescription.split("\\n")[0];
-        } catch (Exception e) {
-            // nvm
-        }
+        String description = StringUtils.isBlank(mDescription) ? "&nbsp;" : mDescription;
 
         return String.format("<html><b>%s</b><br /><i>%s</i></html>", mName, description);
     }
@@ -198,6 +234,12 @@ public class Task implements Comparable<Task>, Serializable {
     private void add(String command) {
         if (!mCommand.contains(command)) {
             mCommand.add(command);
+        }
+    }
+
+    private void addOptionalToSummary(boolean active, String command, String header) {
+        if (active) {
+            mSummaryBuilder.append(String.format("<p><b>%s</b><br /><i>%s</i></p>", header, command));
         }
     }
 }

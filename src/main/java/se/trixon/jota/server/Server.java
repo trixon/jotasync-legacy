@@ -279,12 +279,9 @@ class Server extends UnicastRemoteObject implements ServerCommander {
         }
     }
 
-    Set<ClientCallbacks> getClientCallbacks() {
-        return mClientCallbacks;
-    }
-
-    HashMap<Long, JobExecutor> getJobExecutors() {
-        return mJobExecutors;
+    @Override
+    public JobValidator validate(Job job) throws RemoteException {
+        return new JobValidator(job);
     }
 
     private void intiListeners() {
@@ -351,5 +348,13 @@ class Server extends UnicastRemoteObject implements ServerCommander {
             Xlog.timedErr(ex.getLocalizedMessage());
             Jota.exit();
         }
+    }
+
+    Set<ClientCallbacks> getClientCallbacks() {
+        return mClientCallbacks;
+    }
+
+    HashMap<Long, JobExecutor> getJobExecutors() {
+        return mJobExecutors;
     }
 }

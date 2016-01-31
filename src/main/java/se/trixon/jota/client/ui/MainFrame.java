@@ -15,6 +15,7 @@
  */
 package se.trixon.jota.client.ui;
 
+import se.trixon.util.swing.dialogs.HtmlPanel;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -58,6 +59,7 @@ import se.trixon.jota.client.ClientOptions.ClientOptionsEvent;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ui.editor.EditorPanel;
+import se.trixon.jota.server.JobValidator;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
@@ -164,6 +166,35 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             default:
                 throw new AssertionError();
         }
+    }
+
+    public boolean requestStartJob(Job job) {
+        try {
+            JobValidator validator = mManager.getServerCommander().validate(job);
+            if (validator.isValid()) {
+                Object[] options = {Dict.RUN.toString(), Dict.DRY_RUN.toString(), Dict.CANCEL.toString()};
+                HtmlPanel htmlPanel = new HtmlPanel(job.getSummaryAsHtml());
+                SwingHelper.makeWindowResizable(htmlPanel);
+
+                int result = JOptionPane.showOptionDialog(this,
+                        htmlPanel,
+                        Dict.RUN.toString(),
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
+                if (result == 0) {
+                    mManager.getServerCommander().startJob(job);
+                }
+            } else {
+                Message.html(this, Dict.ERROR_VALIDATION.toString(), validator.getSummaryAsHtml());
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
     }
 
     ActionManager getActionManager() {

@@ -59,14 +59,14 @@ public class TaskSourceDestPanel extends TaskModule {
     }
 
     private void init() {
-        mTitle = Dict.SOURCE_AND_DEST.getString();
+        mTitle = Dict.SOURCE_AND_DEST.toString();
         String bundlePath = this.getClass().getPackage().getName().replace(".", "/") + "/Bundle";
         typeComboBox.setModel(new DefaultComboBoxModel(new String[]{
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeBackup.text"),
             ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeSync.text")}));
 
-        sourcePanel.setMode(JFileChooser.FILES_AND_DIRECTORIES);
-        destinationPanel.setMode(JFileChooser.FILES_AND_DIRECTORIES);
+        sourcePanel.setMode(JFileChooser.DIRECTORIES_ONLY);
+        destinationPanel.setMode(JFileChooser.DIRECTORIES_ONLY);
     }
 
     /**

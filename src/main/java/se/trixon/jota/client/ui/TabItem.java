@@ -85,21 +85,6 @@ public class TabItem extends JPanel implements TabListener {
             logPanel.getTextArea().append(builder.toString());
         });
     }
-//
-//    @Override
-//    public void onLauncherFinished(int exitValue, boolean destroyedByUser) {
-////        progressBar.setIndeterminate(false);
-//        if (exitValue == 0) {
-////            launcherLog("Finished successfully");
-////            Message.information(mToolName, "Finished successfully");
-//        } else if (destroyedByUser) {
-////            launcherLog("Aborted by user");
-////            Message.warning(mToolName, "Aborted by user");
-//        } else {
-////            launcherLog("Finished  with exit value=" + getErrorCode(exitValue));
-////            Message.error(mToolName, String.format("Exited with: %s", getErrorCode(exitValue)));
-//        }
-//    }
 
     void cancel() {
         try {
@@ -291,7 +276,8 @@ public class TabItem extends JPanel implements TabListener {
                 Message.error(this, Dict.ERROR.toString(), "Job not found");
             } else {
                 mJob = job;
-                mManager.getServerCommander().startJob(mJob);
+                MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(this);
+                mainFrame.requestStartJob(job);
             }
         } catch (RemoteException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
