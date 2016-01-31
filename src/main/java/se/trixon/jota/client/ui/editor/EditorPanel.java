@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
 
@@ -50,6 +51,10 @@ public class EditorPanel extends JPanel implements JobsPanel.JobsListener, Tasks
         initComponents();
         init();
         initListeners();
+
+        SwingUtilities.invokeLater(() -> {
+            loadActiveTasks();
+        });
     }
 
     @Override
@@ -105,7 +110,6 @@ public class EditorPanel extends JPanel implements JobsPanel.JobsListener, Tasks
         add(mJobsPanel);
         add(mActiveTasksPanel);
         add(mTasksPanel);
-        loadActiveTasks();
         setPreferredSize(new Dimension(720, 480));
     }
 
