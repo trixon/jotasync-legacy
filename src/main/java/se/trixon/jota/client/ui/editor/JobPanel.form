@@ -70,9 +70,6 @@
     <Component class="javax.swing.JTextField" name="descriptionTextField">
     </Component>
     <Container class="javax.swing.JTabbedPane" name="tabbedPane">
-      <Properties>
-        <Property name="tabLayoutPolicy" type="int" value="1"/>
-      </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
     </Container>

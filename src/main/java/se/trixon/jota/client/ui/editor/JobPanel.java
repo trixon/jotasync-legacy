@@ -117,8 +117,6 @@ public class JobPanel extends javax.swing.JPanel {
 
         descriptionLabel.setText(Dict.DESCRIPTION.getString());
 
-        tabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
