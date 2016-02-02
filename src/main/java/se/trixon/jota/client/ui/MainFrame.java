@@ -185,7 +185,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                         options,
                         options[1]);
 
-                if (result < 2) {
+                if (result > -1 && result < 2) {
                     mManager.getServerCommander().startJob(job, result == 1);
                 }
             } else {
