@@ -43,8 +43,8 @@ public class TaskOptionsPanel extends TaskModule {
             for (Object object : dualListPanel.getAvailableListPanel().getModel().toArray()) {
                 OptionHandler optionHandler = (OptionHandler) object;
                 if (option.contains("=")) {
-                    String[] elements = option.split("=");
-                    if (StringUtils.equals(elements[0], optionHandler.getArg().split("=")[0])) {
+                    String[] elements = StringUtils.split(option, "=", 2);
+                    if (StringUtils.equals(elements[0], StringUtils.split(optionHandler.getArg(), "=", 2)[0])) {
                         optionHandler.setDynamicArg(elements[1]);
                         dualListPanel.getSelectedListPanel().getModel().addElement(object);
                         dualListPanel.getAvailableListPanel().getModel().removeElement(object);
@@ -80,6 +80,7 @@ public class TaskOptionsPanel extends TaskModule {
         mTitle = Dict.OPTIONS.toString();
 
         for (RsyncOption option : RsyncOption.values()) {
+            option.setDynamicArg(null);
             dualListPanel.getAvailableListPanel().getModel().addElement(option);
         }
 

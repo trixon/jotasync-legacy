@@ -16,6 +16,7 @@
 package se.trixon.jota.client.ui.editor.module.task;
 
 import java.util.ResourceBundle;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.util.BundleHelper;
 
 /**
@@ -140,7 +141,7 @@ public enum RsyncOption implements OptionHandler {
     WHOLE_FILE("W", "whole-file"),
     WRITE_BATCH(null, "write-batch=FILE"),
     _8_BIT_OUTPUT("8", "8-bit-output");
-    
+
     private final ResourceBundle mBundle = BundleHelper.getBundle(RsyncOption.class, "RsyncOption");
     private final String mLongArg;
     private final String mShortArg;
@@ -150,7 +151,7 @@ public enum RsyncOption implements OptionHandler {
     private RsyncOption(String shortArg, String longArg) {
         mShortArg = shortArg;
         mLongArg = longArg;
-        String key = name().split("=")[0];
+        String key = name();
         mTitle = mBundle.containsKey(key) ? mBundle.getString(key) : "_MISSING DESCRIPTION " + key;
     }
 
@@ -185,7 +186,7 @@ public enum RsyncOption implements OptionHandler {
         }
 
         if (result.contains("=")) {
-            String[] elements = result.split("=");
+            String[] elements = StringUtils.split(result, "=", 2);
             String prefix = elements[0];
             result = String.format("%s=%s", prefix, mDynamicArg == null ? elements[1] : mDynamicArg);
         }
@@ -205,6 +206,12 @@ public enum RsyncOption implements OptionHandler {
     @Override
     public String getTitle() {
         return mTitle;
+    }
+
+    public static void reset() {
+        for (RsyncOption value : RsyncOption.values()) {
+            value.setDynamicArg(null);
+        }
     }
 
     @Override
