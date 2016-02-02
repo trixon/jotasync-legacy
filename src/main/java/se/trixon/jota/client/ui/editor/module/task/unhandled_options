@@ -4,13 +4,10 @@ ARGS
 
      --info=FLAGS            fine-grained informational verbosity
      --debug=FLAGS           fine-grained debug verbosity
-     --backup-dir=DIR        make backups into hierarchy based in DIR
      --suffix=SUFFIX         set backup suffix (default ~ w/o --backup-dir)
      --chmod=CHMOD           affect file and/or directory permissions
- -B, --block-size=SIZE       force a fixed checksum block-size
  -e, --rsh=COMMAND           specify the remote shell to use
      --rsync-path=PROGRAM    specify the rsync to run on the remote machine
-     --max-delete=NUM        don't delete more than NUM files
      --max-size=SIZE         don't transfer any file larger than SIZE
      --min-size=SIZE         don't transfer any file smaller than SIZE
      --partial-dir=DIR       put a partially transferred file into DIR
@@ -20,7 +17,6 @@ ARGS
      --modify-window=NUM     compare mod-times with reduced accuracy
  -T, --temp-dir=DIR          create temporary files in directory DIR
      --chown=USER:GROUP      simple username/groupname mapping
-     --timeout=SECONDS       set I/O timeout in seconds
      --contimeout=SECONDS    set daemon connection timeout in seconds
      --compare-dest=DIR      also compare destination files relative to DIR
      --copy-dest=DIR         ... and include copies of unchanged files
@@ -40,7 +36,6 @@ ARGS
      --log-file=FILE         log what we're doing to the specified FILE
      --log-file-format=FMT   log updates using the specified FMT
      --password-file=FILE    read daemon-access password from FILE
-     --bwlimit=RATE          limit socket I/O bandwidth
      --outbuf=N|L|B          set output buffering to None, Line, or Block
      --write-batch=FILE      write a batched update to FILE
      --only-write-batch=FILE like --write-batch but w/o updating destination

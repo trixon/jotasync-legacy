@@ -17,9 +17,14 @@ package se.trixon.jota.client.ui.editor.module;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.ui.UI;
+import se.trixon.jota.client.ui.editor.module.task.OptionHandler;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
+import se.trixon.util.swing.dialogs.Message;
 
 /**
  *
@@ -48,9 +53,18 @@ public class DualListPanel extends javax.swing.JPanel {
 
     private void activate() {
         for (int index : availableListPanel.getList().getSelectedIndices()) {
-            Object object = availableListPanel.getFilteredModel().elementAt(index);
-            selectedListPanel.getModel().addElement(object);
-            availableListPanel.getModel().removeElement(object);
+            OptionHandler optionHandler = (OptionHandler) availableListPanel.getFilteredModel().elementAt(index);
+            if (optionHandler.getLongArg().contains("=")) {
+                String input = requestArg(optionHandler);
+                if (input != null) {
+                    selectedListPanel.getModel().addElement(optionHandler);
+                    availableListPanel.getModel().removeElement(optionHandler);
+                    optionHandler.setDynamicArg(input);
+                }
+            } else {
+                selectedListPanel.getModel().addElement(optionHandler);
+                availableListPanel.getModel().removeElement(optionHandler);
+            }
         }
 
         selectedListPanel.updateModel();
@@ -59,9 +73,10 @@ public class DualListPanel extends javax.swing.JPanel {
 
     private void deactivate() {
         for (int index : selectedListPanel.getList().getSelectedIndices()) {
-            Object object = selectedListPanel.getFilteredModel().elementAt(index);
-            availableListPanel.getModel().addElement(object);
-            selectedListPanel.getModel().removeElement(object);
+            OptionHandler optionHandler = (OptionHandler) selectedListPanel.getFilteredModel().elementAt(index);
+            availableListPanel.getModel().addElement(optionHandler);
+            selectedListPanel.getModel().removeElement(optionHandler);
+            optionHandler.setDynamicArg(null);
         }
 
         selectedListPanel.updateModel();
@@ -89,6 +104,36 @@ public class DualListPanel extends javax.swing.JPanel {
                 }
             }
         });
+    }
+
+    private String requestArg(OptionHandler optionHandler) {
+        String input = JOptionPane.showInputDialog(this, optionHandler.getLongArg(), optionHandler.getTitle(), JOptionPane.PLAIN_MESSAGE);
+
+        if (input != null) {
+            input = input.trim();
+            boolean invalidInput = StringUtils.isBlank(input);
+
+            String[] intKeys = {"num", "rate", "seconds", "size"};
+            String argType = optionHandler.getLongArg().split("=")[1].toLowerCase();
+            boolean shouldBeInt = ArrayUtils.contains(intKeys, argType);
+
+            if (shouldBeInt) {
+                try {
+                    Integer.parseInt(input);
+                } catch (NullPointerException | NumberFormatException e) {
+                    invalidInput = true;
+                }
+            }
+
+            if (invalidInput) {
+                Message.error(this, "Invalid input", "try again");
+                input = requestArg(optionHandler);
+            } else {
+                return input;
+            }
+        }
+
+        return input;
     }
 
     /**
@@ -193,6 +238,7 @@ public class DualListPanel extends javax.swing.JPanel {
     private void removeAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllButtonActionPerformed
         for (Object object : selectedListPanel.getModel().toArray()) {
             availableListPanel.getModel().addElement(object);
+            ((OptionHandler) object).setDynamicArg(null);
         }
 
         selectedListPanel.getModel().clear();

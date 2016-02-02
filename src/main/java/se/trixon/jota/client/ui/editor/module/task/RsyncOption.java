@@ -29,7 +29,10 @@ public enum RsyncOption implements OptionHandler {
     APPEND_VERIFY(null, "append-verify"),
     ARCHIVE("a", "archive"),
     BACKUP("b", "backup"),
+    BACKUP_DIR(null, "backup-dir=DIR"),
     BLOCKING_IO(null, "blocking-io"),
+    BLOCK_SIZE("B", "block-size=SIZE"),
+    BWLIMIT(null, "bwlimit=RATE"),
     CHECKSUM("c", "checksum"),
     COMPRESS("z", "compress"),
     COPY_DIRLINKS("k", "copy-dirlinks"),
@@ -66,6 +69,7 @@ public enum RsyncOption implements OptionHandler {
     KEEP_DIRLINKS("K", "keep-dirlinks"),
     LINKS("l", "links"),
     LIST_ONLY(null, "list-only"),
+    MAX_DELETE(null, "max-delete=NUM"),
     MSGS2STDERR(null, "msgs2stderr"),
     MUNGE_LINKS(null, "munge-links"),
     NO_IMPLIED_DIRS(null, "no-implied-dirs"),
@@ -94,6 +98,7 @@ public enum RsyncOption implements OptionHandler {
     SPECIALS(null, "specials"),
     STATS(null, "stats"),
     SUPER(null, "super"),
+    TIMEOUT(null, "timeout=SECONDS"),
     UPDATE("u", "update"),
     VERBOSE("v", "verbose"),
     WHOLE_FILE("W", "whole-file"),
@@ -103,11 +108,13 @@ public enum RsyncOption implements OptionHandler {
     private final String mLongArg;
     private final String mShortArg;
     private final String mTitle;
+    private String mDynamicArg;
 
     private RsyncOption(String shortArg, String longArg) {
         mShortArg = shortArg;
         mLongArg = longArg;
-        mTitle = mBundle.containsKey(name()) ? mBundle.getString(name()) : "_MISSING DESCRIPTION " + name();
+        String key = name().split("=")[0];
+        mTitle = mBundle.containsKey(key) ? mBundle.getString(key) : "_MISSING DESCRIPTION " + key;
     }
 
     @Override
@@ -126,14 +133,30 @@ public enum RsyncOption implements OptionHandler {
         }
     }
 
-    public String getLongArg() {
-        if (mLongArg != null) {
-            return "--" + mLongArg;
-        } else {
-            return "";
-        }
+    @Override
+    public String getDynamicArg() {
+        return mDynamicArg;
     }
 
+    @Override
+    public String getLongArg() {
+        String result;
+        if (mLongArg != null) {
+            result = "--" + mLongArg;
+        } else {
+            result = "";
+        }
+
+        if (result.contains("=")) {
+            String[] elements = result.split("=");
+            String prefix = elements[0];
+            result = String.format("%s=%s", prefix, mDynamicArg == null ? elements[1] : mDynamicArg);
+        }
+
+        return result;
+    }
+
+    @Override
     public String getShortArg() {
         if (mShortArg != null) {
             return "-" + mShortArg;
@@ -145,6 +168,11 @@ public enum RsyncOption implements OptionHandler {
     @Override
     public String getTitle() {
         return mTitle;
+    }
+
+    @Override
+    public void setDynamicArg(String dynamicArg) {
+        mDynamicArg = dynamicArg;
     }
 
     @Override

@@ -25,5 +25,13 @@ public interface OptionHandler {
 
     String getArg();
 
+    String getDynamicArg();
+
+    String getLongArg();
+
+    String getShortArg();
+
     String getTitle();
+
+    void setDynamicArg(String dynamicArg);
 }

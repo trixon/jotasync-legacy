@@ -34,10 +34,10 @@ public enum ExcludeOption implements OptionHandler {
     SYS_DIRS("--exclude=/var/**" + OPT_SEPARATOR + "--exclude=/proc/**" + OPT_SEPARATOR + "--exclude=/dev/**" + OPT_SEPARATOR + "--exclude=/sys/**", SystemUtils.IS_OS_LINUX),
     LOST_FOUND("--exclude=**/lost+found*/", SystemUtils.IS_OS_LINUX),
     GVFS("--exclude=**/.gvfs/", SystemUtils.IS_OS_LINUX);
+    private final boolean mActive;
+    private final String mArg;
     private final ResourceBundle mBundle = BundleHelper.getBundle(ExcludeOption.class, "ExcludeOption");
     private final String mTitle;
-    private final String mArg;
-    private final boolean mActive;
 
     private ExcludeOption(String arg, boolean active) {
         mArg = arg;
@@ -52,17 +52,36 @@ public enum ExcludeOption implements OptionHandler {
     }
 
     @Override
-    public String getTitle() {
-        return mTitle;
-    }
-
-    @Override
     public String getArg() {
         return mArg;
     }
 
+    @Override
+    public String getDynamicArg() {
+        return "";
+    }
+
+    @Override
+    public String getLongArg() {
+        return "";
+    }
+
+    @Override
+    public String getShortArg() {
+        return "";
+    }
+
+    @Override
+    public String getTitle() {
+        return mTitle;
+    }
+
     public boolean isActive() {
         return mActive;
+    }
+
+    @Override
+    public void setDynamicArg(String dynamicArg) {
     }
 
     @Override

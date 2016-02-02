@@ -42,7 +42,14 @@ public class TaskOptionsPanel extends TaskModule {
         for (String option : options) {
             for (Object object : dualListPanel.getAvailableListPanel().getModel().toArray()) {
                 OptionHandler optionHandler = (OptionHandler) object;
-                if (StringUtils.equals(option, optionHandler.getArg())) {
+                if (option.contains("=")) {
+                    String[] elements = option.split("=");
+                    if (StringUtils.equals(elements[0], optionHandler.getArg().split("=")[0])) {
+                        optionHandler.setDynamicArg(elements[1]);
+                        dualListPanel.getSelectedListPanel().getModel().addElement(object);
+                        dualListPanel.getAvailableListPanel().getModel().removeElement(object);
+                    }
+                } else if (StringUtils.equals(option, optionHandler.getArg())) {
                     dualListPanel.getSelectedListPanel().getModel().addElement(object);
                     dualListPanel.getAvailableListPanel().getModel().removeElement(object);
                     break;
