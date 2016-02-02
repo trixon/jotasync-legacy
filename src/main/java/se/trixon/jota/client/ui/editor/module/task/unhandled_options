@@ -1,48 +1,9 @@
 Options
 
 ARGS
-
-     --info=FLAGS            fine-grained informational verbosity
-     --debug=FLAGS           fine-grained debug verbosity
-     --suffix=SUFFIX         set backup suffix (default ~ w/o --backup-dir)
-     --chmod=CHMOD           affect file and/or directory permissions
- -e, --rsh=COMMAND           specify the remote shell to use
-     --rsync-path=PROGRAM    specify the rsync to run on the remote machine
-     --max-size=SIZE         don't transfer any file larger than SIZE
-     --min-size=SIZE         don't transfer any file smaller than SIZE
-     --partial-dir=DIR       put a partially transferred file into DIR
- -M, --remote-option=OPTION  send OPTION to the remote side only
-     --usermap=STRING        custom username mapping
-     --groupmap=STRING       custom groupname mapping
-     --modify-window=NUM     compare mod-times with reduced accuracy
- -T, --temp-dir=DIR          create temporary files in directory DIR
-     --chown=USER:GROUP      simple username/groupname mapping
-     --contimeout=SECONDS    set daemon connection timeout in seconds
-     --compare-dest=DIR      also compare destination files relative to DIR
-     --copy-dest=DIR         ... and include copies of unchanged files
-     --link-dest=DIR         hardlink to files in DIR when unchanged
-     --compress-level=NUM    explicitly set compression level
-     --skip-compress=LIST    skip compressing files with a suffix in LIST
-     --exclude=PATTERN       exclude files matching PATTERN
-     --exclude-from=FILE     read exclude patterns from FILE
      --include=PATTERN       don't exclude files matching PATTERN
      --include-from=FILE     read include patterns from FILE
-     --files-from=FILE       read list of source-file names from FILE
-     --address=ADDRESS       bind address for outgoing socket to daemon
-     --port=PORT             specify double-colon alternate port number
-     --sockopts=OPTIONS      specify custom TCP options
- -f, --filter=RULE           add a file-filtering RULE
-     --out-format=FORMAT     output updates using the specified FORMAT
-     --log-file=FILE         log what we're doing to the specified FILE
-     --log-file-format=FMT   log updates using the specified FMT
-     --password-file=FILE    read daemon-access password from FILE
-     --outbuf=N|L|B          set output buffering to None, Line, or Block
-     --write-batch=FILE      write a batched update to FILE
-     --only-write-batch=FILE like --write-batch but w/o updating destination
-     --read-batch=FILE       read a batched update from FILE
-     --protocol=NUM          force an older protocol version to be used
-     --iconv=CONVERT_SPEC    request charset conversion of filenames
-     --checksum-seed=NUM     set block/file checksum seed (advanced)
+
  -F                          same as --filter='dir-merge /.rsync-filter'
                              repeated: --filter='- .rsync-filter'
 
@@ -53,5 +14,7 @@ SPECIAL
 
 SKIP
 
+     --exclude=PATTERN       exclude files matching PATTERN
+     --exclude-from=FILE     read exclude patterns from FILE
      --version               print version number
 (-h) --help                  show this help (-h is --help only if used alone)

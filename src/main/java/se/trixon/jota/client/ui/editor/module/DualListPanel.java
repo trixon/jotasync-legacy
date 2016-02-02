@@ -113,7 +113,7 @@ public class DualListPanel extends javax.swing.JPanel {
             input = input.trim();
             boolean invalidInput = StringUtils.isBlank(input);
 
-            String[] intKeys = {"num", "rate", "seconds", "size"};
+            String[] intKeys = {"num", "port", "rate", "seconds", "size"};
             String argType = optionHandler.getLongArg().split("=")[1].toLowerCase();
             boolean shouldBeInt = ArrayUtils.contains(intKeys, argType);
 
