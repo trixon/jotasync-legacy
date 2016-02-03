@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
@@ -81,8 +82,19 @@ public class Task implements Comparable<Task>, Serializable {
             mCommand.addAll(mExcludeSection.getCommand());
         }
 
-        add(mSource);
-        add(mDestination);
+        String source;
+        String destination;
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            source = "/cygdrive/" + mSource.replace(":", "").replace("\\", "/");
+            destination = "/cygdrive/" + mDestination.replace(":", "").replace("\\", "/");
+        } else {
+            source = mSource;
+            destination = mDestination;
+        }
+
+        add(source);
+        add(destination);
 
         return mCommand;
     }
