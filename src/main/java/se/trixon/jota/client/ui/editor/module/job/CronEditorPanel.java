@@ -129,7 +129,7 @@ public class CronEditorPanel extends EditPanel {
         removeButton.setVisible(true);
         removeAllButton.setVisible(true);
         checkBox.setVisible(true);
-        checkBox.setText(Dict.SCHEDULER.getString());
+        checkBox.setText(Dict.ACTIVE.toString());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         setModel(getModel());

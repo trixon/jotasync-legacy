@@ -68,7 +68,6 @@ import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.SystemHelper;
-import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.SwingHelper;
@@ -143,7 +142,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     @Override
     public void onServerEvent(ServerEvent serverEvent) {
-        Xlog.timedOut("UI got " + serverEvent);
         switch (serverEvent) {
             case CRON_CHANGED:
                 try {

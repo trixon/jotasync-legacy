@@ -15,6 +15,7 @@
  */
 package se.trixon.jota.server;
 
+import it.sauronsoftware.cron4j.Scheduler;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -62,11 +63,13 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     private final ServerOptions mOptions = ServerOptions.INSTANCE;
     private int mPort = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameServer;
+    private Scheduler mScheduler = new Scheduler();
     private VMID mServerVmid;
     private final TaskManager mTaskManager = TaskManager.INSTANCE;
 
     Server(CommandLine cmd) throws RemoteException, IOException {
         super(0);
+
         if (cmd.hasOption("port")) {
             String port = cmd.getOptionValue("port");
             try {
@@ -75,9 +78,40 @@ class Server extends UnicastRemoteObject implements ServerCommander {
                 Xlog.timedErr(String.format(mJotaBundle.getString("invalid_port"), port, Jota.DEFAULT_PORT_HOST));
             }
         }
+
         mJotaManager.load();
         intiListeners();
         startServer();
+    }
+
+    public void cronOff() {
+        if (mScheduler.isStarted()) {
+            mScheduler.stop();
+        }
+
+        mScheduler = new Scheduler();
+    }
+
+    public void cronOn() {
+        cronOff();
+
+        for (Job job : mJobManager.getJobs()) {
+            if (job.isCronActive()) {
+                for (String cronString : StringUtils.split(job.getCronItems(), "|")) {
+                    mScheduler.schedule(cronString, () -> {
+                        try {
+                            if (!isRunning(job)) {
+                                startJob(job, false);
+                            }
+                        } catch (RemoteException ex) {
+                            Xlog.timedErr(ex.getLocalizedMessage());
+                        }
+                    });
+                }
+            }
+        }
+
+        mScheduler.start();
     }
 
     @Override
@@ -207,15 +241,23 @@ class Server extends UnicastRemoteObject implements ServerCommander {
                     // nvm
                 }
             });
-
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (mOptions.isCronActive()) {
+            cronOn();
         }
     }
 
     @Override
     public void setCronActive(boolean enable) throws RemoteException {
         mOptions.setCronActive(enable);
+        if (enable) {
+            cronOn();
+        } else {
+            cronOff();
+        }
     }
 
     @Override
@@ -290,7 +332,6 @@ class Server extends UnicastRemoteObject implements ServerCommander {
         }));
 
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
-            Xlog.timedOut(String.format(">>> %s on %s key=%s", "preferenceChange", SystemHelper.getHostname(), evt.getKey()));
             HashSet<ClientCallbacks> invalidClientCallbacks = new HashSet<>();
 
             for (ClientCallbacks clientCallback : mClientCallbacks) {
@@ -337,6 +378,9 @@ class Server extends UnicastRemoteObject implements ServerCommander {
             listJobs();
             listTasks();
             getStatus();
+            if (mOptions.isCronActive()) {
+                cronOn();
+            }
         } catch (IllegalArgumentException e) {
             Xlog.timedErr(e.getLocalizedMessage());
             Jota.exit();
