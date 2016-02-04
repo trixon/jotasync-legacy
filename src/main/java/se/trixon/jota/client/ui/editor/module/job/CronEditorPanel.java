@@ -81,9 +81,9 @@ public class CronEditorPanel extends EditPanel {
         String title;
         boolean add = cronString == null;
         if (cronString == null) {
-            title = Dict.ADD.getString();
+            title = Dict.ADD.toString();
         } else {
-            title = Dict.EDIT.getString();
+            title = Dict.EDIT.toString();
         }
 
         CronPanel cronPanel = new CronPanel();
@@ -163,8 +163,8 @@ public class CronEditorPanel extends EditPanel {
     private void removeAllButtonActionPerformed(ActionEvent evt) {
         if (!getModel().isEmpty()) {
             int retval = JOptionPane.showConfirmDialog(getRoot(),
-                    mBundle.getString("JobsPanel.message.removeAll"),
-                    mBundle.getString("JobsPanel.title.removeAll"),
+                    mBundle.getString("CronPanel.message.removeAll"),
+                    mBundle.getString("CronPanel.title.removeAll"),
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.WARNING_MESSAGE);
 
@@ -176,10 +176,10 @@ public class CronEditorPanel extends EditPanel {
 
     private void removeButtonActionPerformed(ActionEvent evt) {
         if (getSelectedCronString() != null) {
-            String message = String.format(mBundle.getString("JobsPanel.message.remove"), getSelectedCronString());
+            String message = String.format(mBundle.getString("CronPanel.message.remove"), getSelectedCronString());
             int retval = JOptionPane.showConfirmDialog(getRoot(),
                     message,
-                    mBundle.getString("JobsPanel.title.remove"),
+                    mBundle.getString("CronPanel.title.remove"),
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.WARNING_MESSAGE);
 
