@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.job.Job;
@@ -43,8 +44,11 @@ public class TabItem extends JPanel implements TabListener {
 
     private boolean mClosable;
     private Job mJob;
+    private boolean mLastLineWasBlank;
+    private boolean mLastRowWasProgress;
     private final Manager mManager = Manager.getInstance();
     private long mTimeFinished;
+    private Progress mProgress;
 
     /**
      * Creates new form TabItem
@@ -55,7 +59,7 @@ public class TabItem extends JPanel implements TabListener {
         initComponents();
         init();
         mJob = job;
-        progressBar.setValue(100);
+        progressBar.setValue(0);
     }
 
     public Job getJob() {
@@ -82,7 +86,24 @@ public class TabItem extends JPanel implements TabListener {
                 builder.insert(0, "E: ");
             }
 
-            logPanel.getTextArea().append(builder.toString());
+            String line = builder.toString();
+            if (mProgress.parse(line)) {
+                progressBar.setIndeterminate(false);
+                progressBar.setStringPainted(true);
+
+                progressBar.setValue(mProgress.getPercentage());
+                progressBar.setString(mProgress.toString());
+                mLastRowWasProgress = true;
+            } else {
+                if (mLastRowWasProgress && mLastLineWasBlank) {
+                    int size = logPanel.getText().length();
+                    logPanel.getTextArea().replaceRange(null, size - 1, size);
+                }
+                logPanel.getTextArea().append(line);
+                mLastLineWasBlank = StringUtils.isBlank(line);
+                mLastRowWasProgress = false;
+            }
+
         });
     }
 
@@ -96,6 +117,8 @@ public class TabItem extends JPanel implements TabListener {
 
     void enableSave() {
         progressBar.setIndeterminate(false);
+        progressBar.setValue(100);
+        progressBar.setStringPainted(false);
         editButton.setEnabled(true);
         startButton.setEnabled(true);
         saveButton.setEnabled(true);
@@ -141,6 +164,7 @@ public class TabItem extends JPanel implements TabListener {
     synchronized void start() {
         logPanel.clear();
         progressBar.setIndeterminate(true);
+        progressBar.setStringPainted(false);
 
         editButton.setEnabled(false);
         startButton.setEnabled(false);
@@ -163,6 +187,8 @@ public class TabItem extends JPanel implements TabListener {
         startButton.setToolTipText(Dict.START.getString());
 
         closeButton.setVisible(false);
+
+        mProgress = new Progress();
     }
 
 //    private String getErrorCode(int exitValue) {
@@ -190,8 +216,6 @@ public class TabItem extends JPanel implements TabListener {
         logPanel = new se.trixon.util.swing.LogPanel();
 
         setLayout(new java.awt.GridBagLayout());
-
-        progressBar.setIndeterminate(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

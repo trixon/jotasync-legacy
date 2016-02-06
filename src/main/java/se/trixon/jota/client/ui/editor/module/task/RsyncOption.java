@@ -61,6 +61,7 @@ public enum RsyncOption implements OptionHandler {
     DELETE_MISSING_ARGS(null, "delete-missing-args"),
     DEVICES(null, "devices"),
     DIRS("d", "dirs"),
+    DRY_RUN("n", "dry-run"),
     EXECUTABILITY("E", "executability"),
     EXISTING(null, "existing"),
     FILES_FROM(null, "files-from=FILE"),

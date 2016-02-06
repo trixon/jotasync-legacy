@@ -103,7 +103,7 @@ class JobExecutor extends Thread {
             if (jobExecute.isAfter() && StringUtils.isNoneEmpty(command)) {
                 run(command, false, "AFTER LAST TASK");
             }
-
+            Thread.sleep(500);
             mHistoryBuilder.append(String.format("%s finished", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
             updateJobStatus(0);
             writelogs();
@@ -134,6 +134,11 @@ class JobExecutor extends Thread {
         }
 
         mServer.getJobExecutors().remove(mJob.getId());
+    }
+
+    public void stopJob() {
+        mCurrentProcess.destroy();
+        interrupt();
     }
 
     private boolean run(String command, boolean stopOnError, String description) throws IOException, InterruptedException, ExecutionFailedException {
@@ -270,7 +275,10 @@ class JobExecutor extends Thread {
                 mTaskFailed = true;
             }
             doNextStep = true;
-        } catch (IOException | InterruptedException | ExecutionFailedException ex) {
+        } catch (InterruptedException ex) {
+            mTaskFailed = true;
+            //Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | ExecutionFailedException ex) {
             mTaskFailed = true;
             Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
         }

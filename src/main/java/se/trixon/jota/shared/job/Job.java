@@ -171,7 +171,7 @@ public class Job implements Comparable<Job>, Serializable {
     }
 
     public String getSummaryAsHtml() {
-        mSummaryBuilder = new StringBuilder("<html>");
+        mSummaryBuilder = new StringBuilder("<html><body>");
         mSummaryBuilder.append("<h1>").append(getName()).append("</h1>");
         ResourceBundle bundle = BundleHelper.getBundle(JobExecutePanel.class, "Bundle");
 
@@ -188,6 +188,8 @@ public class Job implements Comparable<Job>, Serializable {
             mSummaryBuilder.append("<hr>");
             mSummaryBuilder.append(task.getSummaryAsHtml());
         }
+
+        mSummaryBuilder.append("</body></html>");
 
         return mSummaryBuilder.toString();
     }
