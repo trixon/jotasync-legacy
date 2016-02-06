@@ -15,17 +15,20 @@
  */
 package se.trixon.jota.client.ui.editor.module.task;
 
+import java.io.File;
 import java.util.ResourceBundle;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
+import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.dictionary.Dict;
+import se.trixon.util.swing.dialogs.FileChooserPanel;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class TaskSourceDestPanel extends TaskModule {
+public class TaskSourceDestPanel extends TaskModule implements FileChooserPanel.FileChooserButtonListener {
 
     /**
      * Creates new form TaskBasicPanel
@@ -39,32 +42,70 @@ public class TaskSourceDestPanel extends TaskModule {
     public void loadTask(Task task) {
         nameTextField.setText(task.getName());
         descriptionTextField.setText(task.getDescription());
-        typeComboBox.setSelectedIndex(task.getType());
-
         sourcePanel.setPath(task.getSource());
         destinationPanel.setPath(task.getDestination());
+        noAdditionalDirCheckBox.setSelected(task.isNoAdditionalDir());
 
+        noAdditionalDirUpdate(noAdditionalDirCheckBox.isSelected());
+    }
+
+    @Override
+    public void onFileChooserCancel(FileChooserPanel fileChooserPanel) {
+        // nvm
+    }
+
+    @Override
+    public void onFileChooserCheckBoxChange(FileChooserPanel fileChooserPanel, boolean isSelected) {
+        // nvm
+    }
+
+    @Override
+    public void onFileChooserDrop(FileChooserPanel fileChooserPanel) {
+        // nvm
+    }
+
+    @Override
+    public void onFileChooserOk(FileChooserPanel fileChooserPanel, File file) {
+        if (fileChooserPanel == sourcePanel) {
+            noAdditionalDirUpdate(noAdditionalDirCheckBox.isSelected());
+        }
+    }
+
+    @Override
+    public void onFileChooserPreSelect(FileChooserPanel fileChooserPanel) {
+        // nvm
     }
 
     @Override
     public Task saveTask(Task task) {
         task.setName(nameTextField.getText());
         task.setDescription(descriptionTextField.getText());
-        task.setType(typeComboBox.getSelectedIndex());
 
+        noAdditionalDirUpdate(noAdditionalDirCheckBox.isSelected());
         task.setSource(sourcePanel.getPath());
         task.setDestination(destinationPanel.getPath());
+
+        task.setNoAdditionalDir(noAdditionalDirCheckBox.isSelected());
 
         return task;
     }
 
+    private void noAdditionalDirUpdate(boolean selected) {
+        String path = sourcePanel.getPath();
+
+        while (path.endsWith("/")) {
+            path = StringUtils.removeEnd(path, "/");
+        }
+
+        if (selected) {
+            path = StringUtils.appendIfMissing(path, "/");
+        }
+        
+        sourcePanel.setPath(path);
+    }
+
     private void init() {
         mTitle = Dict.SOURCE_AND_DEST.toString();
-        String bundlePath = this.getClass().getPackage().getName().replace(".", "/") + "/Bundle";
-        typeComboBox.setModel(new DefaultComboBoxModel(new String[]{
-            ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeBackup.text"),
-            ResourceBundle.getBundle(bundlePath).getString("TaskPanel.typeSync.text")}));
-
         sourcePanel.setMode(JFileChooser.DIRECTORIES_ONLY);
         destinationPanel.setMode(JFileChooser.DIRECTORIES_ONLY);
     }
@@ -85,10 +126,9 @@ public class TaskSourceDestPanel extends TaskModule {
         descriptionTextField = new javax.swing.JTextField();
         sourcePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
         destinationPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        fillPanel = new javax.swing.JPanel();
-        typeComboBox = new javax.swing.JComboBox();
+        noAdditionalDirCheckBox = new javax.swing.JCheckBox();
         swapSourceDestButton = new javax.swing.JButton();
-        forceSourceSlashCheckBox = new javax.swing.JCheckBox();
+        fillPanel = new javax.swing.JPanel();
 
         setAlignmentX(0.0F);
         setLayout(new java.awt.GridBagLayout());
@@ -150,45 +190,47 @@ public class TaskSourceDestPanel extends TaskModule {
         gridBagConstraints.insets = new java.awt.Insets(8, 0, 0, 0);
         add(destinationPanel, gridBagConstraints);
 
-        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Backup source to destination", "Synchronize source and destination" }));
-
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
+        noAdditionalDirCheckBox.setText(bundle.getString("TaskPanel.forceSourceSlashCheckBox.text")); // NOI18N
+        noAdditionalDirCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                noAdditionalDirCheckBoxActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 0, 0);
+        add(noAdditionalDirCheckBox, gridBagConstraints);
+
         swapSourceDestButton.setText(bundle.getString("TaskPanel.swapSourceDestButton.text")); // NOI18N
         swapSourceDestButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 swapSourceDestButtonActionPerformed(evt);
             }
         });
-
-        forceSourceSlashCheckBox.setText(bundle.getString("TaskPanel.forceSourceSlashCheckBox.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 0, 0);
+        add(swapSourceDestButton, gridBagConstraints);
 
         javax.swing.GroupLayout fillPanelLayout = new javax.swing.GroupLayout(fillPanel);
         fillPanel.setLayout(fillPanelLayout);
         fillPanelLayout.setHorizontalGroup(
             fillPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fillPanelLayout.createSequentialGroup()
-                .addComponent(forceSourceSlashCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(267, Short.MAX_VALUE))
-            .addGroup(fillPanelLayout.createSequentialGroup()
-                .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(swapSourceDestButton))
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         fillPanelLayout.setVerticalGroup(
             fillPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fillPanelLayout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addGroup(fillPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(swapSourceDestButton)
-                    .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(forceSourceSlashCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
@@ -200,19 +242,23 @@ public class TaskSourceDestPanel extends TaskModule {
         String tempPath = sourcePanel.getPath();
         sourcePanel.setPath(destinationPanel.getPath());
         destinationPanel.setPath(tempPath);
+
+        noAdditionalDirUpdate(noAdditionalDirCheckBox.isSelected());
     }//GEN-LAST:event_swapSourceDestButtonActionPerformed
 
+    private void noAdditionalDirCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noAdditionalDirCheckBoxActionPerformed
+        noAdditionalDirUpdate(noAdditionalDirCheckBox.isSelected());
+    }//GEN-LAST:event_noAdditionalDirCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTextField descriptionTextField;
     private se.trixon.util.swing.dialogs.FileChooserPanel destinationPanel;
     private javax.swing.JPanel fillPanel;
-    private javax.swing.JCheckBox forceSourceSlashCheckBox;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
+    private javax.swing.JCheckBox noAdditionalDirCheckBox;
     private se.trixon.util.swing.dialogs.FileChooserPanel sourcePanel;
     private javax.swing.JButton swapSourceDestButton;
-    private javax.swing.JComboBox typeComboBox;
     // End of variables declaration//GEN-END:variables
 }

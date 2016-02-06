@@ -43,8 +43,8 @@ enum TaskManager {
     private static final String KEY_HISTORY = "history";
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String KEY_NO_ADDITIONAL_DIR = "additionalDir";
     private static final String KEY_SOURCE = "source";
-    private static final String KEY_TYPE = "type";
 
     private TaskManager() {
     }
@@ -74,9 +74,9 @@ enum TaskManager {
 
             object.put(KEY_ID, task.getId());
             object.put(KEY_NAME, task.getName());
-            object.put(KEY_TYPE, task.getType());
             object.put(KEY_SOURCE, task.getSource());
             object.put(KEY_DEST, task.getDestination());
+            object.put(KEY_NO_ADDITIONAL_DIR, task.isNoAdditionalDir());
             object.put(KEY_DESCRIPTION, task.getDescription());
             object.put(KEY_DETAILS, task.getDetails());
             object.put(KEY_HISTORY, task.getHistory());
@@ -156,9 +156,9 @@ enum TaskManager {
             task.setId(JsonHelper.getLong(object, KEY_ID));
             task.setName((String) object.get(KEY_NAME));
             task.setDescription((String) object.get(KEY_DESCRIPTION));
-            task.setType(JsonHelper.getInt(object, KEY_TYPE));
             task.setSource((String) object.get(KEY_SOURCE));
             task.setDestination((String) object.get(KEY_DEST));
+            task.setNoAdditionalDir(JsonHelper.optBoolean(object, KEY_NO_ADDITIONAL_DIR));
             task.setDetails((String) object.get(KEY_DETAILS));
             task.setHistory((String) object.get(KEY_HISTORY));
 

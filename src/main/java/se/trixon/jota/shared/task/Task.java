@@ -37,17 +37,16 @@ public class Task implements Comparable<Task>, Serializable {
     private String mDescription = "";
     private String mDestination;
     private String mDetails = "";
-    private boolean mDryRun = true;
     private String mEnvironment = "";
     private final ExcludeSection mExcludeSection;
     private final TaskExecuteSection mExecuteSection;
     private String mHistory = "";
     private long mId = System.currentTimeMillis();
     private String mName = "";
+    private boolean mNoAdditionalDir;
     private final OptionSection mOptionSection;
     private String mSource;
     private StringBuilder mSummaryBuilder;
-    private int mType = 0;
 
     public Task() {
         mExecuteSection = new TaskExecuteSection();
@@ -69,10 +68,6 @@ public class Task implements Comparable<Task>, Serializable {
 
     public List<String> getCommand() {
         mCommand.clear();
-
-        if (mDryRun) {
-            //add("--dry-run");
-        }
 
         if (!StringUtils.isBlank(StringUtils.join(mOptionSection.getCommand(), ""))) {
             mCommand.addAll(mOptionSection.getCommand());
@@ -184,12 +179,8 @@ public class Task implements Comparable<Task>, Serializable {
         return mSummaryBuilder.toString();
     }
 
-    public int getType() {
-        return mType;
-    }
-
-    public boolean isDryRun() {
-        return mDryRun;
+    public boolean isNoAdditionalDir() {
+        return mNoAdditionalDir;
     }
 
     public boolean isValid() {
@@ -208,10 +199,6 @@ public class Task implements Comparable<Task>, Serializable {
         mDetails = string;
     }
 
-    public void setDryRun(boolean dryRun) {
-        mDryRun = dryRun;
-    }
-
     public void setEnvironment(String environment) {
         mEnvironment = environment;
     }
@@ -228,12 +215,12 @@ public class Task implements Comparable<Task>, Serializable {
         mName = name;
     }
 
-    public void setSource(String source) {
-        mSource = source;
+    public void setNoAdditionalDir(boolean value) {
+        mNoAdditionalDir = value;
     }
 
-    public void setType(int value) {
-        mType = value;
+    public void setSource(String source) {
+        mSource = source;
     }
 
     @Override
