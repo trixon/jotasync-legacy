@@ -185,7 +185,7 @@ class JobExecutor extends Thread {
         mCurrentProcess.waitFor();
     }
 
-    private int runRsync(Task task) {
+    private int runRsync(Task task) throws InterruptedException {
         try {
             ArrayList<String> command = new ArrayList<>();
             command.add(mOptions.getRsyncPath());
@@ -199,15 +199,15 @@ class JobExecutor extends Thread {
 
             Thread.sleep(500);
             send(ProcessEvent.OUT, "");
-        } catch (IOException | InterruptedException ex) {
-            //Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
             return 9999;
         }
 
         return mCurrentProcess.exitValue();
     }
 
-    private boolean runTask(Task task) {
+    private boolean runTask(Task task) throws InterruptedException {
         StringBuilder taskHistoryBuilder = new StringBuilder();
         taskHistoryBuilder.append(String.format("%s started", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
         send(ProcessEvent.OUT, "Run task: " + task.getName());
@@ -266,7 +266,7 @@ class JobExecutor extends Thread {
         return doNextTask;
     }
 
-    private boolean runTaskStep(String command, boolean stopOnError, String description) {
+    private boolean runTaskStep(String command, boolean stopOnError, String description) throws InterruptedException {
         boolean doNextStep = false;
 
         try {
@@ -275,9 +275,6 @@ class JobExecutor extends Thread {
                 mTaskFailed = true;
             }
             doNextStep = true;
-        } catch (InterruptedException ex) {
-            mTaskFailed = true;
-            //Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | ExecutionFailedException ex) {
             mTaskFailed = true;
             Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
@@ -286,7 +283,7 @@ class JobExecutor extends Thread {
         return doNextStep;
     }
 
-    private void runTasks() {
+    private void runTasks() throws InterruptedException {
         for (Task task : mJob.getTasks()) {
             if (!runTask(task)) {
                 break;
