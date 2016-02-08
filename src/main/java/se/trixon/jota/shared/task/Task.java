@@ -57,8 +57,8 @@ public class Task implements Comparable<Task>, Serializable {
         mDestination = new File(FileUtils.getTempDirectory(), "jotasync-dest").getAbsolutePath();
     }
 
-    public void appendHistory(String history) {
-        mHistory = mHistory + history;
+    public void addHistory(String history) {
+        mHistory = history + mHistory;
     }
 
     @Override

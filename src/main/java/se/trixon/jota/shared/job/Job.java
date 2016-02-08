@@ -35,6 +35,8 @@ import se.trixon.util.dictionary.Dict;
  */
 public class Job implements Comparable<Job>, Serializable {
 
+    public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
+
     private String mColorBackground;
     private String mColorForeground;
     private boolean mCronActive;
@@ -53,7 +55,6 @@ public class Job implements Comparable<Job>, Serializable {
     private String mName = "";
     private StringBuilder mSummaryBuilder;
     private List<Task> mTasks = new LinkedList<>();
-    public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
     public Job() {
         mExecuteSection = new JobExecuteSection();
@@ -67,8 +68,8 @@ public class Job implements Comparable<Job>, Serializable {
         mExecuteSection = new JobExecuteSection();
     }
 
-    public void appendHistory(String history) {
-        mHistory = mHistory + history;
+    public void addHistory(String history) {
+        mHistory = history + mHistory;
     }
 
     @Override

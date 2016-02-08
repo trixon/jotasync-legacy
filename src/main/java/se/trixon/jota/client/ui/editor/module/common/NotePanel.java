@@ -15,6 +15,9 @@
  */
 package se.trixon.jota.client.ui.editor.module.common;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JTextArea;
 import se.trixon.jota.client.ui.editor.module.Module;
 import se.trixon.util.dictionary.Dict;
@@ -33,12 +36,24 @@ public abstract class NotePanel extends Module {
         init();
     }
 
+    public String getText() {
+        return textArea.getText();
+    }
+
     public JTextArea getTextArea() {
         return textArea;
     }
 
+    public void setText(String string) {
+        textArea.setText(string);
+        textArea.setCaretPosition(0);
+
+    }
+
     private void init() {
         mTitle = Dict.NOTE.toString();
+        MouseListener popupListener = new PopupListener();
+        textArea.addMouseListener(popupListener);
     }
 
     /**
@@ -50,8 +65,18 @@ public abstract class NotePanel extends Module {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        popupMenu = new javax.swing.JPopupMenu();
+        clearMenuItem = new javax.swing.JMenuItem();
         scrollPane = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
+
+        clearMenuItem.setText(Dict.CLEAR.toString());
+        clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearMenuItemActionPerformed(evt);
+            }
+        });
+        popupMenu.add(clearMenuItem);
 
         scrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
@@ -72,8 +97,33 @@ public abstract class NotePanel extends Module {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
+        textArea.setText("");
+    }//GEN-LAST:event_clearMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem clearMenuItem;
+    private javax.swing.JPopupMenu popupMenu;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
+
+    class PopupListener extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        private void maybeShowPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
+    }
 }

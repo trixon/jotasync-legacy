@@ -43,6 +43,7 @@ import se.trixon.util.Xlog;
 class JobExecutor extends Thread {
 
     private Process mCurrentProcess;
+    private boolean mDryRun;
     private final StringBuffer mErrBuffer;
     private StringBuilder mHistoryBuilder;
     private final Job mJob;
@@ -53,7 +54,6 @@ class JobExecutor extends Thread {
     private final StringBuffer mOutBuffer;
     private final Server mServer;
     private boolean mTaskFailed;
-    private boolean mDryRun;
 
     JobExecutor(Server server, Job job, boolean dryRun) {
         mJob = job;
@@ -260,7 +260,7 @@ class JobExecutor extends Thread {
         }
 
         taskHistoryBuilder.append(String.format("%s finished", Jota.millisToDateTime(System.currentTimeMillis()))).append("\n");
-        mJotaManager.getTaskManager().getTaskById(task.getId()).appendHistory(taskHistoryBuilder.append("\n").toString());
+        mJotaManager.getTaskManager().getTaskById(task.getId()).addHistory(taskHistoryBuilder.append("\n").toString());
 
         boolean doNextTask = !(mTaskFailed && taskExecute.isJobHaltOnError());
         return doNextTask;
@@ -307,7 +307,7 @@ class JobExecutor extends Thread {
     private void updateJobStatus(int exitCode) {
         mJotaManager.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
         mJotaManager.getJobManager().getJobById(mJob.getId()).setLastRunExitCode(exitCode);
-        mJotaManager.getJobManager().getJobById(mJob.getId()).appendHistory(mHistoryBuilder.append("\n").toString());
+        mJotaManager.getJobManager().getJobById(mJob.getId()).addHistory(mHistoryBuilder.append("\n").toString());
         try {
             mJotaManager.save();
         } catch (IOException ex) {

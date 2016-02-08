@@ -27,13 +27,12 @@ public class JobNotePanel extends NotePanel implements JobPersistor {
 
     @Override
     public void loadJob(Job job) {
-        getTextArea().setText(job.getDetails());
-        getTextArea().setCaretPosition(0);
+        setText(job.getDetails());
     }
 
     @Override
     public Job saveJob(Job job) {
-        job.setDetails(getTextArea().getText());
+        job.setDetails(getText());
 
         return job;
     }

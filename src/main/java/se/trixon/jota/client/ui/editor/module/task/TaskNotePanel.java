@@ -27,13 +27,12 @@ public class TaskNotePanel extends NotePanel implements TaskPersistor {
 
     @Override
     public void loadTask(Task task) {
-        getTextArea().setText(task.getDetails());
-        getTextArea().setCaretPosition(0);
+        setText(task.getDetails());
     }
 
     @Override
     public Task saveTask(Task task) {
-        task.setDetails(getTextArea().getText());
+        task.setDetails(getText());
 
         return task;
     }

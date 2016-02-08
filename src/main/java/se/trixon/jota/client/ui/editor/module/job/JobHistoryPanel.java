@@ -32,11 +32,13 @@ public class JobHistoryPanel extends NotePanel implements JobPersistor {
 
     @Override
     public void loadJob(Job job) {
-        getTextArea().setText(job.getHistory());
+        setText(job.getHistory());
     }
 
     @Override
     public Job saveJob(Job job) {
+        job.setHistory(getText());
+
         return job;
     }
 

@@ -35,11 +35,13 @@ public class TaskHistoryPanel extends NotePanel implements TaskPersistor {
 
     @Override
     public void loadTask(Task task) {
-        getTextArea().setText(task.getHistory());
+        setText(task.getHistory());
     }
 
     @Override
     public Task saveTask(Task task) {
+        task.setHistory(getText());
+
         return task;
     }
 
