@@ -22,6 +22,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.ui.UI;
 import se.trixon.jota.client.ui.editor.module.task.OptionHandler;
+import se.trixon.jota.client.ui.editor.module.task.RsyncOption;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 import se.trixon.util.swing.dialogs.Message;
@@ -124,6 +125,10 @@ public class DualListPanel extends javax.swing.JPanel {
                 } catch (NullPointerException | NumberFormatException e) {
                     invalidInput = true;
                 }
+            } else if (optionHandler instanceof RsyncOption && optionHandler == RsyncOption.CHOWN) {
+                invalidInput = input.startsWith(":")
+                        || input.endsWith(":")
+                        || StringUtils.countMatches(input, ":") != 1;
             }
 
             if (invalidInput) {
