@@ -325,15 +325,15 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         hostComboBox.setSelectedItem(mClient.getHost());
         JTextField portTextField = new JTextField(String.valueOf(mClient.getPortHost()));
         final JComponent[] inputs = new JComponent[]{
-            new JLabel(Dict.HOST.getString()),
+            new JLabel(Dict.HOST.toString()),
             hostComboBox,
-            new JLabel(Dict.PORT.getString()),
+            new JLabel(Dict.PORT.toString()),
             portTextField,};
 
-        Object[] options = {Dict.CONNECT.getString(), Dict.CANCEL.getString()};
+        Object[] options = {Dict.CONNECT.toString(), Dict.CANCEL.toString()};
         int retval = JOptionPane.showOptionDialog(this,
                 inputs,
-                Dict.CONNECT_TO_HOST.getString(),
+                Dict.CONNECT_TO_HOST.toString(),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
@@ -356,9 +356,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 }
                 mOptions.setHosts(SwingHelper.comboBoxModelToString(comboBoxModel));
             } catch (NumberFormatException e) {
-                Message.error(this, Dict.ERROR.getString(), String.format(Dict.INVALID_PORT.getString(), portString));
+                Message.error(this, Dict.ERROR.toString(), String.format(Dict.INVALID_PORT.toString(), portString));
             } catch (NotBoundException | MalformedURLException | RemoteException | SocketException ex) {
-                Message.error(this, Dict.ERROR.getString(), ex.getLocalizedMessage());
+                Message.error(this, Dict.ERROR.toString(), ex.getLocalizedMessage());
                 mClient.setHost(currentHost);
                 mClient.setPortHost(currentPort);
             }
@@ -394,7 +394,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         int retval = JOptionPane.showOptionDialog(this,
                 optionsPanel,
-                Dict.OPTIONS.getString(),
+                Dict.OPTIONS.toString(),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
@@ -577,7 +577,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //connect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask);
-            action = new AbstractAction(Dict.CONNECT_TO_SERVER.getString()) {
+            action = new AbstractAction(Dict.CONNECT_TO_SERVER.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -594,7 +594,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //disconnect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask);
-            action = new AbstractAction(Dict.DISCONNECT.getString()) {
+            action = new AbstractAction(Dict.DISCONNECT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -646,7 +646,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //options
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_P, commandMask);
-            action = new AbstractAction(Dict.OPTIONS.getString()) {
+            action = new AbstractAction(Dict.OPTIONS.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -659,11 +659,11 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //about
             keyStroke = null;
-            action = new AbstractAction(Dict.ABOUT.getString()) {
+            action = new AbstractAction(Dict.ABOUT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Message.information(MainFrame.this, Dict.ABOUT.getString(), Jota.getVersionInfo("Client"));
+                    Message.information(MainFrame.this, Dict.ABOUT.toString(), Jota.getVersionInfo("Client"));
                 }
             };
 
@@ -691,7 +691,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //shutdown Server
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask | InputEvent.SHIFT_MASK);
-            action = new AbstractAction(Dict.SHUTDOWN.getString()) {
+            action = new AbstractAction(Dict.SHUTDOWN.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -704,7 +704,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //shutdown server and quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask + InputEvent.SHIFT_MASK);
-            action = new AbstractAction(Dict.SHUTDOWN_AND_QUIT.getString()) {
+            action = new AbstractAction(Dict.SHUTDOWN_AND_QUIT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -718,7 +718,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask);
-            action = new AbstractAction(Dict.QUIT.getString()) {
+            action = new AbstractAction(Dict.QUIT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -731,7 +731,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //save tab
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, commandMask);
-            action = new AbstractAction(Dict.SAVE.getString()) {
+            action = new AbstractAction(Dict.SAVE.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -744,7 +744,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //close tab
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, commandMask);
-            action = new AbstractAction(Dict.TAB_CLOSE.getString()) {
+            action = new AbstractAction(Dict.TAB_CLOSE.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {

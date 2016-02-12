@@ -51,4 +51,8 @@ public class Jota {
         Date date = new Date(timestamp);
         return new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(date);
     }
+
+    public static String nowToDateTime() {
+        return millisToDateTime(System.currentTimeMillis());
+    }
 }
