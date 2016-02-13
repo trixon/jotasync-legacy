@@ -40,6 +40,7 @@ import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.SystemHelper;
+import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
 
 /**
@@ -101,13 +102,13 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
                 tabItem.log(processEvent, (String) object);
                 break;
             case CANCELED:
-                tabItem.log(ProcessEvent.OUT, "\n\nJob interrupted.");
+                tabItem.log(ProcessEvent.OUT, String.format("\n\n%s", Dict.JOB_INTERRUPTED.toString()));
                 tabItem.enableSave();
                 updateTitle(job, "i");
                 updateActionStates();
                 break;
             case FAILED:
-                tabItem.log(ProcessEvent.OUT, "\n\nJob failed.");
+                tabItem.log(ProcessEvent.OUT, String.format("\n\n%s", Dict.JOB_FAILED.toString()));
                 tabItem.enableSave();
                 updateTitle(job, "strike");
                 updateActionStates();
@@ -321,7 +322,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         };
 
         mSpeedDialPanel.getMenuButton().addMouseListener(mMenuMouseAdapter);
-        
+
         //FIXME Why is this necessary?
         setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
         setTabLayoutPolicy(WRAP_TAB_LAYOUT);

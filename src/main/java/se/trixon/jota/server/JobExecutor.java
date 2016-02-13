@@ -103,7 +103,7 @@ class JobExecutor extends Thread {
                     run(command, false, mJobExecBundle.getString("JobPanel.afterSuccessPanel.header"));
                 }
             } else {
-                s = String.format("%d tasks failed", mNumOfFailedTasks);
+                s = String.format(Dict.TASKS_FAILED.toString(), mNumOfFailedTasks);
                 mOutBuffer.append(s).append("\n");
                 send(ProcessEvent.OUT, s);
 
@@ -128,10 +128,10 @@ class JobExecutor extends Thread {
             updateJobStatus(0);
             writelogs();
             send(ProcessEvent.FINISHED, s);
-            Xlog.timedOut(String.format("Job finished: %s", mJob.getName()));
+            Xlog.timedOut(String.format(Dict.JOB_FINISHED.toString(), mJob.getName()));
         } catch (InterruptedException ex) {
             mCurrentProcess.destroy();
-            mHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), "ABORTED"));
+            mHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), Dict.CANCEL.toString()));
             updateJobStatus(99);
             writelogs();
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {
@@ -147,10 +147,10 @@ class JobExecutor extends Thread {
         } catch (ExecutionFailedException ex) {
             //Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
             //send(ProcessEvent.OUT, "before failed and will not continue");
-            mHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), "FAILED"));
+            mHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), Dict.FAILED.toString()));
             updateJobStatus(1);
             writelogs();
-            send(ProcessEvent.FAILED, "\n\nJob failed"); //FIXME
+            send(ProcessEvent.FAILED, String.format("\n\n%s", Dict.JOB_FAILED.toString()));
         }
 
         mServer.getJobExecutors().remove(mJob.getId());
@@ -161,8 +161,16 @@ class JobExecutor extends Thread {
         interrupt();
     }
 
+    private String getRsyncErrorCode(int exitValue) {
+        ResourceBundle bundle = BundleHelper.getBundle(getClass(), "ExitValues");
+        String key = String.valueOf(exitValue);
+
+        return bundle.containsKey(key) ? bundle.getString(key) : String.format((Dict.SYSTEM_CODE.toString()), key);
+    }
+
     private boolean run(String command, boolean stopOnError, String description) throws IOException, InterruptedException, ExecutionFailedException {
-        String s = String.format("%s %s: '%s'='%s' ('%s'=%s)", Jota.nowToDateTime(), Dict.START.toString(), description, command, Dict.STOP_ON_ERROR.toString(), StringHelper.booleanToYesNo(stopOnError));
+        //String s = String.format("%s %s: '%s'='%s' ('%s'=%s)", Jota.nowToDateTime(), Dict.START.toString(), description, command, Dict.STOP_ON_ERROR.toString(), StringHelper.booleanToYesNo(stopOnError));
+        String s = String.format("%s %s: '%s'='%s'", Jota.nowToDateTime(), Dict.START.toString(), description, command);
         mOutBuffer.append(s).append("\n");
         send(ProcessEvent.OUT, s);
         boolean success = false;
@@ -174,20 +182,23 @@ class JobExecutor extends Thread {
 
             Thread.sleep(100);
 
+            String status;
             if (mCurrentProcess.exitValue() == 0) {
-                s = String.format("%s %s: '%s'", Jota.nowToDateTime(), Dict.DONE.toString(), description);
+                status = Dict.DONE.toString();
                 success = true;
             } else {
-                s = String.format("%s %s: '%s'", Jota.nowToDateTime(), Dict.ERROR.toString(), description);
+                status = Dict.ERROR.toString();
             }
+            s = String.format("%s %s: '%s'", Jota.nowToDateTime(), status, description);
             mOutBuffer.append(s).append("\n");
             send(ProcessEvent.OUT, s);
 
             if (stopOnError && mCurrentProcess.exitValue() != 0) {
-                throw new ExecutionFailedException("FAILED: Will not continue. exitValue=" + mCurrentProcess.exitValue());
+                String string = String.format("%s: exitValue=%d", Dict.FAILED.toString(), mCurrentProcess.exitValue());
+                throw new ExecutionFailedException(string);
             }
         } else {
-            s = String.format("File does not exist: %s", command);
+            s = String.format("%s: %s", Dict.FILE_NOT_FOUND_TITLE.toString(), command);
             if (stopOnError) {
                 throw new ExecutionFailedException(s);
             } else {
@@ -253,7 +264,7 @@ class JobExecutor extends Thread {
         if (doNextStep) {
             int exitValue = runRsync(task);
             boolean rsyncSuccess = exitValue == 0;
-            s = String.format("%s %s: rsync", Jota.nowToDateTime(), Dict.DONE.toString());
+            s = String.format("%s %s: rsync (%s)", Jota.nowToDateTime(), Dict.DONE.toString(), getRsyncErrorCode(exitValue));
             mOutBuffer.append(s).append("\n");
             send(ProcessEvent.OUT, s);
             if (rsyncSuccess) {
@@ -275,7 +286,7 @@ class JobExecutor extends Thread {
             // run after
             command = taskExecute.getAfterCommand();
             if (taskExecute.isAfter() && StringUtils.isNoneEmpty(command)) {
-                doNextStep = runTaskStep(command, taskExecute.isAfterHaltOnError(), mTaskExecBundle.getString("TaskExecutePanel.afterPanel.header"));
+                runTaskStep(command, taskExecute.isAfterHaltOnError(), mTaskExecBundle.getString("TaskExecutePanel.afterPanel.header"));
             }
         }
 
@@ -377,7 +388,7 @@ class JobExecutor extends Thread {
             }
 
             if (builder.length() > 0) {
-                builder.insert(0, "Save log\n");
+                builder.insert(0, String.format("%s\n", Dict.SAVE_LOG.toString()));
                 send(ProcessEvent.OUT, builder.toString());
             }
         } catch (IOException ex) {

@@ -26,8 +26,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import se.trixon.jota.shared.Jota;
+import se.trixon.util.BundleHelper;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
+import se.trixon.util.dictionary.Dict;
 
 /**
  *
@@ -35,7 +37,7 @@ import se.trixon.util.Xlog;
  */
 public class Main {
 
-    private final ResourceBundle mJotaBundle = Jota.getBundle();
+    private static final ResourceBundle sBundle = BundleHelper.getBundle(Jota.class, "Bundle");
 
     /**
      * @param args the command line arguments
@@ -56,13 +58,13 @@ public class Main {
             }
         } catch (ParseException ex) {
             Xlog.timedErr(ex.getMessage());
-            System.out.println("Try 'jotaserver --help' for more information.");
+            System.out.println(sBundle.getString("parse_help_server"));
         }
     }
 
     private static void displayHelp(Options options) {
-        String header = "rsync front end with built in cron\n\n";
-        String footer = "\nPlease report issues to patrik@trixon.se";
+        String header = sBundle.getString("help_header");
+        String footer = sBundle.getString("help_footer");
 
         HelpFormatter formatter = new HelpFormatter();
         formatter.setOptionComparator(null);
@@ -70,13 +72,14 @@ public class Main {
     }
 
     private static void displayVersion() {
-        System.out.println(Jota.getVersionInfo("Server"));
+        System.out.println(Jota.getVersionInfo());
     }
 
     private static Options initOptions() {
-        Option help = new Option("?", "help", false, "print this message");
-        Option version = new Option("v", "version", false, "print the version information and exit\n");
-        Option port = Option.builder("p").longOpt("port").argName("port").hasArg(true).desc("listen for connection on port [1099]").build();
+        String portString = Dict.PORT.toString().toLowerCase();
+        Option help = new Option("?", "help", false, sBundle.getString("opt_help_desc"));
+        Option version = new Option("v", "version", false, sBundle.getString("opt_version_desc"));
+        Option port = Option.builder("p").longOpt("port").argName(portString).hasArg(true).desc(sBundle.getString("opt_port_server_desc")).build();
 
         Options options = new Options();
         options.addOption(help);

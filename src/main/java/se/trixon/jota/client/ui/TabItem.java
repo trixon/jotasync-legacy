@@ -143,7 +143,7 @@ public class TabItem extends JPanel implements TabListener {
 
     void save() {
         String ext = "log";
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Log file (*.log)", ext);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(Dict.EXTENSION_FILTER_LOG.toString(), ext);
 
         SimpleDialog.clearFilters();
         SimpleDialog.addFilter(filter);
@@ -181,20 +181,16 @@ public class TabItem extends JPanel implements TabListener {
         menuButton.setIcon(Pict.Custom.MENU.get(UI.ICON_SIZE_LARGE));
         startButton.setIcon(Pict.Actions.MEDIA_PLAYBACK_START.get(UI.ICON_SIZE_LARGE));
 
-        cancelButton.setToolTipText(Dict.CANCEL.getString());
-        editButton.setToolTipText(Dict.EDIT.getString());
-        menuButton.setToolTipText(Dict.MENU.getString());
-        startButton.setToolTipText(Dict.START.getString());
+        cancelButton.setToolTipText(Dict.CANCEL.toString());
+        editButton.setToolTipText(Dict.EDIT.toString());
+        menuButton.setToolTipText(Dict.MENU.toString());
+        startButton.setToolTipText(Dict.START.toString());
 
         closeButton.setVisible(false);
 
         mProgress = new Progress();
     }
 
-//    private String getErrorCode(int exitValue) {
-//        String key = String.valueOf(exitValue);
-//        return mExitValueBundle.containsKey(key) ? mExitValueBundle.getString(key) : String.format(("System code: %s"), key);
-//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -297,7 +293,7 @@ public class TabItem extends JPanel implements TabListener {
         try {
             Job job = mManager.getServerCommander().getJob(mJob.getId());
             if (job == null) {
-                Message.error(this, Dict.ERROR.toString(), "Job not found");
+                Message.error(this, Dict.ERROR.toString(), Dict.JOB_NOT_FOUND.toString());
             } else {
                 mJob = job;
                 MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(this);

@@ -50,6 +50,7 @@ import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
+import se.trixon.util.BundleHelper;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
@@ -60,6 +61,8 @@ import se.trixon.util.swing.SwingHelper;
  * @author Patrik Karlsson
  */
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
+
+    private final ResourceBundle mBundle = BundleHelper.getBundle(Jota.class, "Bundle");
 
     private VMID mClientVmid;
     private Job mCurrentJob;
@@ -93,7 +96,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                             System.err.println(object);
                             break;
                         case CANCELED:
-                            Xlog.timedOut("\n\nJob interrupted.");
+                            Xlog.timedOut(String.format("\n\n%s", Dict.JOB_INTERRUPTED.toString()));
                         case FINISHED:
                             System.out.println("\n");
                             if (object != null) {
@@ -161,7 +164,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             } else if (state.equalsIgnoreCase("off")) {
                 execute(Command.STOP_CRON);
             } else {
-                Xlog.timedOut("invalid cron argument");
+                Xlog.timedOut(Dict.INVALID_ARGUMENT.toString());
             }
             Jota.exit();
         } else if (cmd.hasOption(Main.OPT_LIST_JOBS)) {
@@ -286,7 +289,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
             serverProbablyStarted = true;
         } else {
-            Xlog.timedErr("Autostart of Server only works from within a jar file.");
+            Xlog.timedErr(mBundle.getString("autostart_info"));
         }
 
         return serverProbablyStarted;
@@ -302,20 +305,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
     public void setPortHost(int portHost) {
         mPortHost = portHost;
-    }
-
-    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {
-        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
-        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
-        mManager.setServerCommander(mServerCommander);
-        mClientVmid = new VMID();
-
-        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
-        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
-        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
-        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
-
-        mServerCommander.registerClient(this, SystemHelper.getHostname());
     }
 
     private void displayGui() {
@@ -365,7 +354,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             }
         }
 
-        Xlog.timedErr("Job not found: " + jobName);
+        Xlog.timedErr(String.format("%s: %s", Dict.JOB_NOT_FOUND.toString(), jobName));
         return null;
     }
 
@@ -380,7 +369,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             mCurrentJob = null;
             Jota.exit(1);
         } else if (mServerCommander.isRunning(job)) {
-            Xlog.timedErr("Job already running: " + job.getName());
+            Xlog.timedErr(String.format("%s: %s", Dict.JOB_ALREADY_RUNNING.toString(), job.getName()));
             Jota.exit(1);
         } else {
             mCurrentJob = job;
@@ -417,8 +406,22 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             mCurrentJob = job;
             mServerCommander.stopJob(job);
         } else {
-            Xlog.timedOut("Job not running: " + job.getName());
+            Xlog.timedErr(String.format("%s: %s", Dict.JOB_NOT_RUNNING.toString(), job.getName()));
         }
+    }
+
+    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {
+        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
+        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
+        mManager.setServerCommander(mServerCommander);
+        mClientVmid = new VMID();
+
+        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
+        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
+        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
+        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
+
+        mServerCommander.registerClient(this, SystemHelper.getHostname());
     }
 
     public enum Command {

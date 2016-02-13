@@ -25,8 +25,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import se.trixon.jota.shared.Jota;
+import se.trixon.util.BundleHelper;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
+import se.trixon.util.dictionary.Dict;
 
 /**
  *
@@ -34,19 +36,20 @@ import se.trixon.util.Xlog;
  */
 public class Main {
 
+    private static final ResourceBundle sBundle = BundleHelper.getBundle(Jota.class, "Bundle");
+
     static final String OPT_CLIENT_PORT = "client-port";
     static final String OPT_CRON = "cron";
     static final String OPT_HELP = "help";
     static final String OPT_HOST = "host";
-    static final String OPT_START = "start";
-    static final String OPT_STOP = "stop";
     static final String OPT_LIST_JOBS = "list-jobs";
     static final String OPT_LIST_TASKS = "list-tasks";
     static final String OPT_PORT = "port";
     static final String OPT_SHUTDOWN = "shutdown";
+    static final String OPT_START = "start";
     static final String OPT_STATUS = "status";
+    static final String OPT_STOP = "stop";
     static final String OPT_VERSION = "version";
-    private final ResourceBundle mJotaBundle = Jota.getBundle();
 
     /**
      * @param args the command line arguments
@@ -67,13 +70,13 @@ public class Main {
             }
         } catch (ParseException ex) {
             Xlog.timedErr(ex.getMessage());
-            System.out.println("Try 'jotaclient --help' for more information.");
+            System.out.println(sBundle.getString("parse_help_client"));
         }
     }
 
     private static void displayHelp(Options options) {
-        String header = "rsync front end with built in cron\n\n";
-        String footer = "\nPlease report issues to patrik@trixon.se";
+        String header = sBundle.getString("help_header");
+        String footer = sBundle.getString("help_footer");
 
         HelpFormatter formatter = new HelpFormatter();
         formatter.setOptionComparator(null);
@@ -81,22 +84,26 @@ public class Main {
     }
 
     private static void displayVersion() {
-        System.out.println(Jota.getVersionInfo("Client"));
+        System.out.println(Jota.getVersionInfo());
     }
 
     private static Options initOptions() {
-        Option help = new Option("?", OPT_HELP, false, "print this message");
-        Option version = new Option("v", OPT_VERSION, false, "print the version information and exit\n");
-        Option host = Option.builder("h").longOpt(OPT_HOST).argName("host").hasArg(true).desc("connect to server at host [hostname]").build();
-        Option portHost = Option.builder("p").longOpt(OPT_PORT).argName("port").hasArg(true).desc("connect to server at port [1099]").build();
-        Option portClient = Option.builder("q").longOpt(OPT_CLIENT_PORT).argName("port").hasArg(true).desc("client callback port [1199]\n").build();
-        Option cron = Option.builder("c").longOpt(OPT_CRON).argName("on|off").hasArg(true).desc("turn internal cron on or off").build();
-        Option listJobs = new Option("lj", OPT_LIST_JOBS, false, "list jobs");
-        Option listTasks = new Option("lt", OPT_LIST_TASKS, false, "list tasks\n");
-        Option start = Option.builder(null).longOpt(OPT_START).argName("job").hasArg(true).desc("start job").build();
-        Option stop = Option.builder(null).longOpt(OPT_STOP).argName("job").hasArg(true).desc("stop job\n").build();
-        Option shutdown = new Option("s", OPT_SHUTDOWN, false, "shutdown jotasync");
-        Option status = new Option("u", OPT_STATUS, false, "print status information");
+        String hostString = Dict.HOST.toString().toLowerCase();
+        String portString = Dict.PORT.toString().toLowerCase();
+        String jobString = Dict.JOB.toString().toLowerCase();
+
+        Option help = new Option("?", OPT_HELP, false, sBundle.getString("opt_help_desc"));
+        Option version = new Option("v", OPT_VERSION, false, sBundle.getString("opt_version_desc"));
+        Option host = Option.builder("h").longOpt(OPT_HOST).argName(hostString).hasArg(true).desc(sBundle.getString("opt_host_desc")).build();
+        Option portHost = Option.builder("p").longOpt(OPT_PORT).argName(portString).hasArg(true).desc(sBundle.getString("opt_port_host_desc")).build();
+        Option portClient = Option.builder("q").longOpt(OPT_CLIENT_PORT).argName(portString).hasArg(true).desc(sBundle.getString("opt_port_client_desc")).build();
+        Option cron = Option.builder("c").longOpt(OPT_CRON).argName("on|off").hasArg(true).desc(sBundle.getString("opt_cron_desc")).build();
+        Option listJobs = new Option("lj", OPT_LIST_JOBS, false, sBundle.getString("opt_list_jobs_desc"));
+        Option listTasks = new Option("lt", OPT_LIST_TASKS, false, sBundle.getString("opt_list_tasks_desc"));
+        Option start = Option.builder(null).longOpt(OPT_START).argName(jobString).hasArg(true).desc(sBundle.getString("opt_start_desc")).build();
+        Option stop = Option.builder(null).longOpt(OPT_STOP).argName(jobString).hasArg(true).desc(sBundle.getString("opt_stop_desc")).build();
+        Option shutdown = new Option("s", OPT_SHUTDOWN, false, sBundle.getString("opt_shutdown_desc"));
+        Option status = new Option("u", OPT_STATUS, false, sBundle.getString("opt_status_desc"));
 
         Options options = new Options();
         options.addOption(help);

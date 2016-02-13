@@ -129,7 +129,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         SwingUtilities.invokeLater(() -> {
             enableGui(false);
             if (mShutdownInProgress && !mServerShutdownRequested) {
-                Message.warning(this, "Connection lost", "Connection lost due to server shutdown");
+                Message.warning(this, Dict.CONNECTION_LOST.toString(), Dict.CONNECTION_LOST_SERVER_SHUTDOWN.toString());
             }
             mActionManager.getAction(ActionManager.START_SERVER).setEnabled(true);
         });
@@ -663,7 +663,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Message.information(MainFrame.this, Dict.ABOUT.toString(), Jota.getVersionInfo("Client"));
+                    Message.information(MainFrame.this, Dict.ABOUT.toString(), Jota.getVersionInfo());
                 }
             };
 
