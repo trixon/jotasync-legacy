@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import java.io.IOException;
-import java.util.Locale;
 
-class Both {
+public class Both {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
+     * @throws java.lang.InterruptedException
      */
     public static void main(String[] args) throws IOException, InterruptedException {
         Server.main(args);
