@@ -185,8 +185,16 @@ public class TasksPanel extends EditPanel {
     }
 
     private void removeButtonActionPerformed(ActionEvent evt) {
-        if (getSelectedTask() != null) {
-            String message = String.format(mBundle.getString("TasksPanel.message.remove"), getSelectedTask().getName());
+        int[] indices = list.getSelectedIndices();
+
+        if (indices.length > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (int index : indices) {
+                Task task = (Task) getModel().getElementAt(index);
+                sb.append(task.getName()).append("\n");
+            }
+
+            String message = String.format(mBundle.getString("TasksPanel.message.remove"), sb.toString());
             int retval = JOptionPane.showConfirmDialog(getRoot(),
                     message,
                     mBundle.getString("TasksPanel.title.remove"),
@@ -194,7 +202,10 @@ public class TasksPanel extends EditPanel {
                     JOptionPane.WARNING_MESSAGE);
 
             if (retval == JOptionPane.OK_OPTION) {
-                getModel().removeElement(getSelectedTask());
+                for (int i = indices.length - 1; i >= 0; i--) {
+                    getModel().removeElement(getModel().getElementAt(indices[i]));
+                }
+
                 sortModel();
                 notifyTaskListenersChanged();
             }
