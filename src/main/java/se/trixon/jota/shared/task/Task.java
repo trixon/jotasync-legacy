@@ -15,12 +15,10 @@
  */
 package se.trixon.jota.shared.task;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
@@ -52,9 +50,6 @@ public class Task implements Comparable<Task>, Serializable {
         mExecuteSection = new TaskExecuteSection();
         mExcludeSection = new ExcludeSection();
         mOptionSection = new OptionSection();
-
-        mSource = new File(FileUtils.getTempDirectory(), "jotasync-source").getAbsolutePath();
-        mDestination = new File(FileUtils.getTempDirectory(), "jotasync-dest").getAbsolutePath();
     }
 
     public void addHistory(String history) {
