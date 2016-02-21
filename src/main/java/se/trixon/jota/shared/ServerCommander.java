@@ -30,6 +30,8 @@ import se.trixon.jota.server.JobValidator;
  */
 public interface ServerCommander extends Remote {
 
+    String getAboutRsync() throws RemoteException;
+
     Job getJob(long jobId) throws RemoteException;
 
     LinkedList<Job> getJobs() throws RemoteException;

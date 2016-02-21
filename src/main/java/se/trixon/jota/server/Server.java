@@ -16,7 +16,9 @@
 package se.trixon.jota.server;
 
 import it.sauronsoftware.cron4j.Scheduler;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -24,6 +26,7 @@ import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +40,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
@@ -112,6 +116,22 @@ class Server extends UnicastRemoteObject implements ServerCommander {
         }
 
         mScheduler.start();
+    }
+
+    @Override
+    public String getAboutRsync() throws RemoteException {
+        ProcessBuilder processBuilder = new ProcessBuilder(new String[]{mOptions.getRsyncPath()});
+        String result = "";
+        
+        try {
+            Process p = processBuilder.start();
+            result = IOUtils.toString(p.getErrorStream());
+            p.waitFor();
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result.split("Usage: rsync")[0].trim();
     }
 
     @Override

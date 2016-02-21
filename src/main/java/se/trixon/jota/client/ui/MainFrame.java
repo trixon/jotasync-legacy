@@ -438,6 +438,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         jobEditorMenuItem = new javax.swing.JMenuItem();
         optionsMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        aboutRsyncMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         saveMenuItem = new javax.swing.JMenuItem();
@@ -460,6 +461,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         sPopupMenu.add(jobEditorMenuItem);
         sPopupMenu.add(optionsMenuItem);
         sPopupMenu.add(jSeparator2);
+
+        aboutRsyncMenuItem.setText("jMenuItem1");
+        sPopupMenu.add(aboutRsyncMenuItem);
         sPopupMenu.add(aboutMenuItem);
         sPopupMenu.add(jSeparator6);
         sPopupMenu.add(saveMenuItem);
@@ -497,6 +501,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem aboutRsyncMenuItem;
     private javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JCheckBoxMenuItem cronCheckBoxMenuItem;
@@ -518,6 +523,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     class ActionManager {
 
         static final String ABOUT = "about";
+        static final String ABOUT_S = "about_s";
         static final String CLOSE_TAB = "closeTab";
         static final String CONNECT = "connect";
         static final String CRON = "cron";
@@ -669,6 +675,24 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             initAction(action, ABOUT, keyStroke, null, false);
             aboutMenuItem.setAction(action);
+
+            //about rsync
+            keyStroke = null;
+            action = new AbstractAction(String.format(Dict.ABOUT_S.toString(), "rsync")) {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        String aboutRsync = mManager.getServerCommander().getAboutRsync();
+                        Message.information(MainFrame.this, String.format(Dict.ABOUT_S.toString(), "rsync"), aboutRsync);
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            };
+
+            initAction(action, ABOUT_S, keyStroke, null, true);
+            aboutRsyncMenuItem.setAction(action);
 
             //start Server
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask | InputEvent.SHIFT_MASK);
