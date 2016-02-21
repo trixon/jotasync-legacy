@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
@@ -352,13 +353,14 @@ class JobExecutor extends Thread {
 
     private void writelogs() {
         File directory = new File(ServerOptions.INSTANCE.getLogDir());
-        String outFile = String.format("%s.log", mJob.getName());
-        String errFile = String.format("%s.err", mJob.getName());
+        String jobName = StringUtils.replace(mJob.getName(), String.valueOf(IOUtils.DIR_SEPARATOR), "_");
+        String outFile = String.format("%s.log", jobName);
+        String errFile = String.format("%s.err", jobName);
 
         int logMode = mJob.getLogMode();
         if (logMode == 2) {
-            outFile = String.format("%s %s.log", mJob.getName(), mJob.getLastRunDateTime("", mLastRun));
-            errFile = String.format("%s %s.err", mJob.getName(), mJob.getLastRunDateTime("", mLastRun));
+            outFile = String.format("%s %s.log", jobName, mJob.getLastRunDateTime("", mLastRun));
+            errFile = String.format("%s %s.err", jobName, mJob.getLastRunDateTime("", mLastRun));
         }
 
         boolean append = logMode == 0;

@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
@@ -149,8 +150,9 @@ public class TabItem extends JPanel implements TabListener {
         SimpleDialog.addFilter(filter);
         SimpleDialog.setFilter(filter);
         SimpleDialog.setParent(this);
+        String jobName = StringUtils.replace(mJob.getName(), String.valueOf(IOUtils.DIR_SEPARATOR), "_");
 
-        String filename = String.format("%s_%s.%s", mJob.getName(), getFinishedTime(), ext);
+        String filename = String.format("%s_%s.%s", jobName, getFinishedTime(), ext);
         SimpleDialog.setSelectedFile(new File(filename));
         if (SimpleDialog.saveFile(new String[]{ext})) {
             try {
