@@ -24,6 +24,8 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
 
@@ -115,6 +117,10 @@ public class EditorPanel extends JPanel implements JobsPanel.JobsListener, Tasks
 
     private void initListeners() {
         mActiveTasksPanel.activateButton.addActionListener(this::activateButtonActionPerformed);
+
+        mJobsPanel.list.addListSelectionListener((ListSelectionEvent e) -> {
+            loadActiveTasks();
+        });
 
         mJobsPanel.list.addMouseListener(new MouseAdapter() {
 

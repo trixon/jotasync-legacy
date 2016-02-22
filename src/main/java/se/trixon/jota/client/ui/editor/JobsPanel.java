@@ -175,7 +175,7 @@ public final class JobsPanel extends EditPanel {
         editButton.addActionListener(this::editButtonActionPerformed);
         removeButton.addActionListener(this::removeButtonActionPerformed);
         removeAllButton.addActionListener(this::removeAllButtonActionPerformed);
-
+        
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
