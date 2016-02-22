@@ -90,8 +90,8 @@ public abstract class EditPanel extends javax.swing.JPanel {
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(8, 0), new java.awt.Dimension(8, 0), new java.awt.Dimension(8, 32767));
         toggleButton = new javax.swing.JToggleButton();
         addButton = new javax.swing.JButton();
+        cloneButton = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
-        copyButton = new javax.swing.JButton();
         removeButton = new javax.swing.JButton();
         removeAllButton = new javax.swing.JButton();
         checkBox = new javax.swing.JCheckBox();
@@ -127,19 +127,19 @@ public abstract class EditPanel extends javax.swing.JPanel {
         addButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(addButton);
 
+        cloneButton.setIcon(Pict.Actions.EDIT_COPY.get(ICON_SIZE));
+        cloneButton.setToolTipText(Dict.CLONE.toString());
+        cloneButton.setFocusable(false);
+        cloneButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        cloneButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(cloneButton);
+
         editButton.setIcon(Pict.Actions.DOCUMENT_EDIT.get(ICON_SIZE));
         editButton.setToolTipText(Dict.EDIT.getString());
         editButton.setFocusable(false);
         editButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         editButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(editButton);
-
-        copyButton.setIcon(Pict.Actions.EDIT_COPY.get(ICON_SIZE));
-        copyButton.setToolTipText(Dict.COPY.getString());
-        copyButton.setFocusable(false);
-        copyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        copyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(copyButton);
 
         removeButton.setIcon(Pict.Actions.LIST_REMOVE.get(ICON_SIZE));
         removeButton.setToolTipText(Dict.REMOVE.getString());
@@ -237,7 +237,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
     protected javax.swing.JButton activateButton;
     protected javax.swing.JButton addButton;
     protected javax.swing.JCheckBox checkBox;
-    protected javax.swing.JButton copyButton;
+    protected javax.swing.JButton cloneButton;
     protected javax.swing.JButton deactivateButton;
     protected javax.swing.JButton editButton;
     protected javax.swing.Box.Filler filler1;

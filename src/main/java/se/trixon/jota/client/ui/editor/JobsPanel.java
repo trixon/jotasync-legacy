@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.SerializationUtils;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.util.BundleHelper;
@@ -92,6 +93,18 @@ public final class JobsPanel extends EditPanel {
         edit(null);
     }
 
+    private void cloneButtonActionPerformed(ActionEvent evt) {
+        if (getSelectedJob() != null) {
+            Job job = SerializationUtils.clone(getSelectedJob());
+            long id = System.currentTimeMillis();
+            job.setId(id);
+            job.setName(String.format("%s_%d", job.getName(), id));
+            getModel().addElement(job);
+            sortModel();
+            list.setSelectedValue(job, true);
+        }
+    }
+
     private void edit(Job job) {
         String title;
         boolean add = job == null;
@@ -141,6 +154,7 @@ public final class JobsPanel extends EditPanel {
         label.setText(Dict.JOB.getString());
 
         addButton.setVisible(true);
+        cloneButton.setVisible(true);
         editButton.setVisible(true);
         removeButton.setVisible(true);
         removeAllButton.setVisible(true);
@@ -156,6 +170,7 @@ public final class JobsPanel extends EditPanel {
 
     private void initListeners() {
         addButton.addActionListener(this::addButtonActionPerformed);
+        cloneButton.addActionListener(this::cloneButtonActionPerformed);
         editButton.addActionListener(this::editButtonActionPerformed);
         removeButton.addActionListener(this::removeButtonActionPerformed);
         removeAllButton.addActionListener(this::removeAllButtonActionPerformed);

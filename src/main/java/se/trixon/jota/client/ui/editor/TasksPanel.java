@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.apache.commons.lang3.SerializationUtils;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.client.Manager;
 import se.trixon.util.BundleHelper;
@@ -72,6 +73,36 @@ public class TasksPanel extends EditPanel {
 
     private void addButtonActionPerformed(ActionEvent evt) {
         edit(null);
+    }
+
+    private void cloneButtonActionPerformed(ActionEvent evt) {
+        int[] indices = list.getSelectedIndices();
+
+        if (indices.length > 0) {
+            ArrayList<Task> clonedTasks = new ArrayList<>();
+            for (int index : indices) {
+                Task task = (Task) getModel().getElementAt(index);
+                long id = System.currentTimeMillis();
+
+                task = SerializationUtils.clone(task);
+
+                task.setId(id);
+                task.setName(String.format("%s_%d", task.getName(), id));
+                clonedTasks.add(task);
+            }
+
+            for (Task task : clonedTasks) {
+                getModel().addElement(task);
+            }
+
+            sortModel();
+
+            for (int i = 0; i < indices.length; i++) {
+                indices[i] = getModel().indexOf(clonedTasks.get(i));
+            }
+
+            list.setSelectedIndices(indices);
+        }
     }
 
     private void edit(Task task) {
@@ -129,6 +160,7 @@ public class TasksPanel extends EditPanel {
         label.setText(Dict.TASKS_AVAILABLE.getString());
 
         addButton.setVisible(true);
+        cloneButton.setVisible(true);
         editButton.setVisible(true);
         removeButton.setVisible(true);
         removeAllButton.setVisible(true);
@@ -142,6 +174,7 @@ public class TasksPanel extends EditPanel {
 
     private void initListeners() {
         addButton.addActionListener(this::addButtonActionPerformed);
+        cloneButton.addActionListener(this::cloneButtonActionPerformed);
         editButton.addActionListener(this::editButtonActionPerformed);
         removeButton.addActionListener(this::removeButtonActionPerformed);
         removeAllButton.addActionListener(this::removeAllButtonActionPerformed);
