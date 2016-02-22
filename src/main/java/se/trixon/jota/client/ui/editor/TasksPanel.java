@@ -88,6 +88,7 @@ public class TasksPanel extends EditPanel {
 
                 task.setId(id);
                 task.setName(String.format("%s_%d", task.getName(), id));
+                task.setHistory("");
                 clonedTasks.add(task);
             }
 
@@ -110,9 +111,9 @@ public class TasksPanel extends EditPanel {
         boolean add = task == null;
         if (task == null) {
             task = new Task();
-            title = Dict.ADD.getString();
+            title = Dict.ADD.toString();
         } else {
-            title = Dict.EDIT.getString();
+            title = Dict.EDIT.toString();
         }
 
         TaskPanel taskPanel = new TaskPanel();
@@ -157,7 +158,7 @@ public class TasksPanel extends EditPanel {
     }
 
     private void init() {
-        label.setText(Dict.TASKS_AVAILABLE.getString());
+        label.setText(Dict.TASKS_AVAILABLE.toString());
 
         addButton.setVisible(true);
         cloneButton.setVisible(true);
@@ -246,7 +247,7 @@ public class TasksPanel extends EditPanel {
     }
 
     private void showInvalidTaskDialog() {
-        Message.error(getRoot(), Dict.INVALID_INPUT.getString(), mBundle.getString("TasksPanel.invalid"));
+        Message.error(getRoot(), Dict.INVALID_INPUT.toString(), mBundle.getString("TasksPanel.invalid"));
     }
 
     public interface TasksListener {

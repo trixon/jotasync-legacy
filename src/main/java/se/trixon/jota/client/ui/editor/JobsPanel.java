@@ -99,6 +99,7 @@ public final class JobsPanel extends EditPanel {
             long id = System.currentTimeMillis();
             job.setId(id);
             job.setName(String.format("%s_%d", job.getName(), id));
+            job.setHistory("");
             getModel().addElement(job);
             sortModel();
             list.setSelectedValue(job, true);
@@ -110,9 +111,9 @@ public final class JobsPanel extends EditPanel {
         boolean add = job == null;
         if (job == null) {
             job = new Job();
-            title = Dict.ADD.getString();
+            title = Dict.ADD.toString();
         } else {
-            title = Dict.EDIT.getString();
+            title = Dict.EDIT.toString();
         }
 
         JobPanel jobPanel = new JobPanel();
@@ -151,7 +152,7 @@ public final class JobsPanel extends EditPanel {
     }
 
     private void init() {
-        label.setText(Dict.JOB.getString());
+        label.setText(Dict.JOB.toString());
 
         addButton.setVisible(true);
         cloneButton.setVisible(true);
@@ -253,7 +254,7 @@ public final class JobsPanel extends EditPanel {
     }
 
     private void showInvalidJobDialog() {
-        Message.error(getRoot(), Dict.INVALID_INPUT.getString(), mBundle.getString("JobsPanel.invalid"));
+        Message.error(getRoot(), Dict.INVALID_INPUT.toString(), mBundle.getString("JobsPanel.invalid"));
     }
 
     public interface JobsListener {
