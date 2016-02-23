@@ -27,7 +27,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
@@ -38,7 +37,6 @@ import se.trixon.jota.shared.job.JobExecuteSection;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskExecuteSection;
 import se.trixon.util.BundleHelper;
-import se.trixon.util.StringHelper;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 import se.trixon.util.dictionary.Dict;
@@ -353,7 +351,9 @@ class JobExecutor extends Thread {
 
     private void writelogs() {
         File directory = new File(ServerOptions.INSTANCE.getLogDir());
-        String jobName = StringUtils.replace(mJob.getName(), String.valueOf(IOUtils.DIR_SEPARATOR), "_");
+        String[] invalidChars = new String[]{"<", ">", ":", "\"", "/", "\\", "|", "?", "*"};
+        String[] replaceChars = new String[]{"_", "_", "_", "_", "_", "_", "_", "_", "_"};
+        String jobName = StringUtils.replaceEach(mJob.getName(), invalidChars, replaceChars);
         String outFile = String.format("%s.log", jobName);
         String errFile = String.format("%s.err", jobName);
 
