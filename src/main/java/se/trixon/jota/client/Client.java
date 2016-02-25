@@ -314,6 +314,8 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
             return;
         }
+        
+        UIManager.installLookAndFeel("Darcula", "com.bulenkov.darcula.DarculaLaf");
 
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {
             try {
@@ -324,6 +326,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 Xlog.timedErr(ex.getLocalizedMessage());
             }
         }
+
         if (mOptions.isForceLookAndFeel()) {
             try {
                 UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));

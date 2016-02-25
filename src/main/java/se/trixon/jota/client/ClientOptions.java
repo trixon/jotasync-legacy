@@ -39,7 +39,7 @@ public enum ClientOptions {
     private static final int DEFAULT_AUTOSTART_SERVER_PORT = Jota.DEFAULT_PORT_HOST;
     private static final boolean DEFAULT_FORCE_LOOK_AND_FEEL = true;
     private static final String DEFAULT_HOSTS = "localhost";
-    private static final String DEFAULT_LOOK_AND_FEEL = "Nimbus";
+    private static final String DEFAULT_LOOK_AND_FEEL = "Darcula";
     private static final boolean DEFAULT_MENU_ICONS = true;
     private final Preferences mPreferences;
 

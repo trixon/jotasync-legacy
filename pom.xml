@@ -29,8 +29,8 @@
         <url>https://github.com/trixon/java-jotasync</url>
         <connection>scm:git:git://github.com/trixon/java-jotasync.git</connection>
         <developerConnection>scm:git:git@github.com:trixon/java-jotasync.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>    
+        <tag>HEAD</tag>
+    </scm>    
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -66,6 +66,11 @@
             <groupId>it.sauronsoftware.cron4j</groupId>
             <artifactId>cron4j</artifactId>
             <version>2.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bulenkov</groupId>
+            <artifactId>darcula</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
     <properties>
