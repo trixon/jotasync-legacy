@@ -104,6 +104,14 @@
                         </goals>
                         <configuration>
                             <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                    <artifact>com.bulenkov:darcula</artifact>
+                                    <includes>
+                                        <include>com/bulenkov/**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
