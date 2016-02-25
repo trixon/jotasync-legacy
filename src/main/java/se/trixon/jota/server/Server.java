@@ -16,9 +16,7 @@
 package se.trixon.jota.server;
 
 import it.sauronsoftware.cron4j.Scheduler;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -26,7 +24,6 @@ import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,8 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +45,7 @@ import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.job.Job;
+import se.trixon.jota.shared.task.Task;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.Xlog;
 
@@ -122,7 +118,7 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     public String getAboutRsync() throws RemoteException {
         ProcessBuilder processBuilder = new ProcessBuilder(new String[]{mOptions.getRsyncPath()});
         String result = "";
-        
+
         try {
             Process p = processBuilder.start();
             result = IOUtils.toString(p.getErrorStream());
@@ -176,6 +172,11 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
+    public LinkedList<Task> getTasks() throws RemoteException {
+        return mTaskManager.getTasks();
+    }
+
+    @Override
     public VMID getVMID() throws RemoteException {
         return mServerVmid;
     }
@@ -224,21 +225,6 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public DefaultComboBoxModel populateJobModel(DefaultComboBoxModel model) throws RemoteException {
-        return mJobManager.populateModel(model);
-    }
-
-    @Override
-    public DefaultListModel populateJobModel(DefaultListModel model) throws RemoteException {
-        return mJobManager.populateModel(model);
-    }
-
-    @Override
-    public DefaultListModel populateTaskModel(DefaultListModel model) throws RemoteException {
-        return mTaskManager.populateModel(model);
-    }
-
-    @Override
     public void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException {
         Xlog.timedOut("registerClient(): " + hostname);
         mClientCallbacks.add(clientCallback);
@@ -281,8 +267,8 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public void setJobs(DefaultListModel model) throws RemoteException {
-        mJobManager.setJobs(model);
+    public void setJobs(Job[] jobs) throws RemoteException {
+        mJobManager.setJobs(jobs);
     }
 
     @Override
@@ -301,8 +287,8 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public void setTasks(DefaultListModel model) throws RemoteException {
-        mTaskManager.setTasks(model);
+    public void setTasks(Task[] tasks) throws RemoteException {
+        mTaskManager.setTasks(tasks);
     }
 
     @Override

@@ -15,10 +15,9 @@
  */
 package se.trixon.jota.server;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import se.trixon.jota.shared.JsonHelper;
@@ -32,6 +31,7 @@ import se.trixon.jota.shared.job.Job;
 enum JobManager {
 
     INSTANCE;
+    private final LinkedList<Job> mJobs = new LinkedList<>();
     private static final String KEY_COLOR_BACKGROUND = "colorBackground";
     private static final String KEY_COLOR_FOREGROUND = "colorForeground";
     private static final String KEY_CRON_ACTIVE = "cronActive";
@@ -48,7 +48,6 @@ enum JobManager {
     private static final String KEY_LOG_SEPARATE_ERRORS = "logSeparateErrors";
     private static final String KEY_NAME = "name";
     private static final String KEY_TASKS = "tasks";
-    private final LinkedList<Job> mJobs = new LinkedList<>();
 
     private JobManager() {
     }
@@ -109,27 +108,6 @@ enum JobManager {
         return getJobs().size() > 0;
     }
 
-    public DefaultComboBoxModel populateModel(DefaultComboBoxModel model) {
-
-        model.removeAllElements();
-
-        mJobs.stream().forEach((job) -> {
-            model.addElement(job);
-        });
-
-        return model;
-    }
-
-    public DefaultListModel populateModel(DefaultListModel model) {
-        model.clear();
-
-        mJobs.stream().forEach((job) -> {
-            model.addElement(job);
-        });
-
-        return model;
-    }
-
     void setJobs(JSONArray array) {
         mJobs.clear();
 
@@ -167,11 +145,8 @@ enum JobManager {
         Collections.sort(mJobs);
     }
 
-    void setJobs(DefaultListModel model) {
+    void setJobs(Job[] jobs) {
         mJobs.clear();
-
-        for (Object object : model.toArray()) {
-            mJobs.add((Job) object);
-        }
+        mJobs.addAll(Arrays.asList(jobs));
     }
 }

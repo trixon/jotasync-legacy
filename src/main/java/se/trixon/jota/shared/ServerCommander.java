@@ -19,10 +19,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
 import java.util.LinkedList;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.server.JobValidator;
+import se.trixon.jota.shared.task.Task;
 
 /**
  *
@@ -44,6 +43,8 @@ public interface ServerCommander extends Remote {
 
     String getStatus() throws RemoteException;
 
+    LinkedList<Task> getTasks() throws RemoteException;
+
     VMID getVMID() throws RemoteException;
 
     boolean hasJobs() throws RemoteException;
@@ -56,12 +57,6 @@ public interface ServerCommander extends Remote {
 
     String listTasks() throws RemoteException;
 
-    DefaultComboBoxModel populateJobModel(DefaultComboBoxModel model) throws RemoteException;
-
-    DefaultListModel populateJobModel(DefaultListModel model) throws RemoteException;
-
-    DefaultListModel populateTaskModel(DefaultListModel model) throws RemoteException;
-
     void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
 
     void removeClient(ClientCallbacks clientCallback, String hostname) throws RemoteException;
@@ -70,7 +65,7 @@ public interface ServerCommander extends Remote {
 
     void setCronActive(boolean enable) throws RemoteException;
 
-    void setJobs(DefaultListModel model) throws RemoteException;
+    void setJobs(Job[] jobs) throws RemoteException;
 
     void setLogDir(String path) throws RemoteException;
 
@@ -78,7 +73,7 @@ public interface ServerCommander extends Remote {
 
     void setSpeedDial(int key, long jobId) throws RemoteException;
 
-    void setTasks(DefaultListModel model) throws RemoteException;
+    void setTasks(Task[] tasks) throws RemoteException;
 
     void shutdown() throws RemoteException;
 

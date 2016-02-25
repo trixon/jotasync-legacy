@@ -15,10 +15,10 @@
  */
 package se.trixon.jota.server;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.DefaultListModel;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -128,22 +128,9 @@ enum TaskManager {
         return tasks;
     }
 
-    public DefaultListModel populateModel(DefaultListModel model) {
-        model.clear();
-
-        for (Task job : mTasks) {
-            model.addElement(job);
-        }
-
-        return model;
-    }
-
-    public void setTasks(DefaultListModel model) {
+    public void setTasks(Task[] tasks) {
         mTasks.clear();
-
-        for (Object object : model.toArray()) {
-            mTasks.add((Task) object);
-        }
+        mTasks.addAll(Arrays.asList(tasks));
     }
 
     public void setTasks(JSONArray array) {

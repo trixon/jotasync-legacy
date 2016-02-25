@@ -205,7 +205,11 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
         clearConfiguration();
 
         if (mManager.isConnected() && mManager.hasJobs()) {
-            DefaultComboBoxModel model = mManager.getServerCommander().populateJobModel((DefaultComboBoxModel) jobsComboBox.getModel());
+            DefaultComboBoxModel model = (DefaultComboBoxModel) jobsComboBox.getModel();
+            mManager.getServerCommander().getJobs().stream().forEach((job) -> {
+                model.addElement(job);
+            });
+
             jobsComboBox.setModel(model);
             jobsComboBox.setEnabled(true);
             jobsComboBox.setRenderer(new JobComboBoxRenderer());

@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -83,7 +84,11 @@ public final class JobsPanel extends EditPanel {
     @Override
     public void save() {
         try {
-            mManager.getServerCommander().setJobs(getModel());
+            Job[] jobs=new Job[getModel().size()];
+            for (int i = 0; i < jobs.length; i++) {
+                jobs[i]=(Job) getModel().get(i);
+            }
+            mManager.getServerCommander().setJobs(jobs);
         } catch (RemoteException ex) {
             Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -162,7 +167,11 @@ public final class JobsPanel extends EditPanel {
 
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         try {
-            setModel(mManager.getServerCommander().populateJobModel(getModel()));
+            DefaultListModel model = new DefaultListModel();
+            mManager.getServerCommander().getJobs().stream().forEach((job) -> {
+                model.addElement(job);
+            });
+            setModel(model);
         } catch (RemoteException ex) {
             Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -175,7 +184,7 @@ public final class JobsPanel extends EditPanel {
         editButton.addActionListener(this::editButtonActionPerformed);
         removeButton.addActionListener(this::removeButtonActionPerformed);
         removeAllButton.addActionListener(this::removeAllButtonActionPerformed);
-        
+
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {

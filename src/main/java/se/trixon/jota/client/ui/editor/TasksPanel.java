@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import org.apache.commons.lang3.SerializationUtils;
 import se.trixon.jota.shared.task.Task;
@@ -65,7 +66,11 @@ public class TasksPanel extends EditPanel {
     @Override
     public void save() {
         try {
-            mManager.getServerCommander().setTasks(getModel());
+            Task[] tasks = new Task[getModel().size()];
+            for (int i = 0; i < tasks.length; i++) {
+                tasks[i] = (Task) getModel().get(i);
+            }
+            mManager.getServerCommander().setTasks(tasks);
         } catch (RemoteException ex) {
             Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -167,7 +172,11 @@ public class TasksPanel extends EditPanel {
         removeAllButton.setVisible(true);
 
         try {
-            setModel(mManager.getServerCommander().populateTaskModel(getModel()));
+            DefaultListModel model = new DefaultListModel();
+            mManager.getServerCommander().getTasks().stream().forEach((task) -> {
+                model.addElement(task);
+            });
+            setModel(model);
         } catch (RemoteException ex) {
             Logger.getLogger(JobsPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
