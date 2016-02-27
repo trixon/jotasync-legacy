@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>se.trixon.jotasync</groupId>
     <artifactId>jotasync</artifactId>
-    <version>0.2.3-SNAPSHOT</version>
+    <version>0.2.3</version>
     <description>rsync GUI with integrated scheduler</description>
     <url>http://jotasync.trixon.se/</url>
     <licenses>
@@ -29,7 +29,7 @@
         <url>https://github.com/trixon/java-jotasync</url>
         <connection>scm:git:git://github.com/trixon/java-jotasync.git</connection>
         <developerConnection>scm:git:git@github.com:trixon/java-jotasync.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v0.2.3</tag>
     </scm>    
     <dependencies>
         <dependency>
