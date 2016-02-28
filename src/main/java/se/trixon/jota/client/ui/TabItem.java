@@ -33,6 +33,8 @@ import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
+import se.trixon.util.icons.IconColor;
+import se.trixon.util.icons.material.MaterialIcon;
 import se.trixon.util.swing.dialogs.Message;
 import se.trixon.util.swing.dialogs.SimpleDialog;
 
@@ -179,10 +181,6 @@ public class TabItem extends JPanel implements TabListener {
 
     private void init() {
         logPanel.getTextArea().setLineWrap(true);
-        cancelButton.setIcon(Pict.Actions.PROCESS_STOP.get(UI.ICON_SIZE_LARGE));
-        editButton.setIcon(Pict.Actions.DOCUMENT_EDIT.get(UI.ICON_SIZE_LARGE));
-        menuButton.setIcon(Pict.Custom.MENU.get(UI.ICON_SIZE_LARGE));
-        startButton.setIcon(Pict.Actions.MEDIA_PLAYBACK_START.get(UI.ICON_SIZE_LARGE));
 
         cancelButton.setToolTipText(Dict.CANCEL.toString());
         editButton.setToolTipText(Dict.EDIT.toString());
@@ -192,6 +190,14 @@ public class TabItem extends JPanel implements TabListener {
         closeButton.setVisible(false);
 
         mProgress = new Progress();
+        updateIcons(UI.getInstance().getIconColor());
+    }
+
+    void updateIcons(IconColor iconColor) {
+        cancelButton.setIcon(MaterialIcon.Navigation.CANCEL.get(UI.ICON_SIZE_LARGE, iconColor));
+        editButton.setIcon(MaterialIcon.Editor.MODE_EDIT.get(UI.ICON_SIZE_LARGE, iconColor));
+        menuButton.setIcon(MaterialIcon.Navigation.MENU.get(UI.ICON_SIZE_LARGE, iconColor));
+        startButton.setIcon(MaterialIcon.Av.PLAY_ARROW.get(UI.ICON_SIZE_LARGE, iconColor));
     }
 
     /**

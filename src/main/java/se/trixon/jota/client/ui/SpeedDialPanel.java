@@ -47,7 +47,8 @@ import se.trixon.jota.shared.job.JobComboBoxRenderer;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
-import se.trixon.util.icon.Pict;
+import se.trixon.util.icons.IconColor;
+import se.trixon.util.icons.material.MaterialIcon;
 import se.trixon.util.swing.SwingHelper;
 
 /**
@@ -281,11 +282,10 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     }
 
     private void init() {
-        startButton.setIcon(Pict.Actions.MEDIA_PLAYBACK_START.get(UI.ICON_SIZE_LARGE));
-        menuButton.setIcon(Pict.Custom.MENU.get(UI.ICON_SIZE_LARGE));
+        updateIcons(UI.getInstance().getIconColor());
 
-        startButton.setToolTipText(Dict.START.getString());
-        menuButton.setToolTipText(Dict.MENU.getString());
+        startButton.setToolTipText(Dict.START.toString());
+        menuButton.setToolTipText(Dict.MENU.toString());
 
         final ActionListener editActionListener = (ActionEvent e) -> {
             MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(SpeedDialPanel.this);
@@ -350,7 +350,8 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
         mManager.getClient().addServerEventListener(this);
         addSpeedDialListener(this);
         ClientOptions.INSTANCE.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
-            if (evt.getKey().equalsIgnoreCase(ClientOptions.KEY_CUSTOM_COLORS)) {
+            String key = evt.getKey();
+            if (key.equalsIgnoreCase(ClientOptions.KEY_CUSTOM_COLORS)) {
                 if (mManager.isConnected() && mManager.hasJobs()) {
                     for (int i = 0; i < mButtons.size(); i++) {
                         SpeedDialButton button = mButtons.get(i);
@@ -362,8 +363,16 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
                         }
                     }
                 }
+            } else if (key.equalsIgnoreCase(ClientOptions.KEY_ICON_THEME)) {
+                updateIcons(UI.getInstance().getIconColor());
             }
+
         });
+    }
+
+    private void updateIcons(IconColor iconColor) {
+        startButton.setIcon(MaterialIcon.Av.PLAY_ARROW.get(UI.ICON_SIZE_LARGE, iconColor));
+        menuButton.setIcon(MaterialIcon.Navigation.MENU.get(UI.ICON_SIZE_LARGE, iconColor));
     }
 
     /**

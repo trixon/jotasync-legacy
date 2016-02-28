@@ -16,6 +16,7 @@
 package se.trixon.jota.client.ui;
 
 import java.rmi.RemoteException;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -23,6 +24,7 @@ import javax.swing.JSpinner;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ClientOptions;
+import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
 
@@ -35,6 +37,7 @@ public class OptionsPanel extends javax.swing.JPanel {
     private final Manager mManager = Manager.getInstance();
     private final ServerCommander mServerCommander;
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
 
     /**
      * Creates new form OptionsPanel
@@ -42,6 +45,8 @@ public class OptionsPanel extends javax.swing.JPanel {
     public OptionsPanel() {
         mServerCommander = mManager.getServerCommander();
         initComponents();
+
+        iconsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{mBundle.getString("OptionsPanel.iconThemeBlack"), mBundle.getString("OptionsPanel.iconThemeWhite")}));
 
         tabbedPane.setEnabledAt(1, mServerCommander != null);
         portSpinner.setEditor(new JSpinner.NumberEditor(portSpinner, "#"));
@@ -61,6 +66,7 @@ public class OptionsPanel extends javax.swing.JPanel {
 
         mOptions.setForceLookAndFeel(lafForceCheckBox.isSelected());
         mOptions.setLookAndFeel((String) lafComboBox.getSelectedItem());
+        mOptions.setIconTheme(iconsComboBox.getSelectedIndex());
         mOptions.setDisplayMenuIcons(menuIconsCheckBox.isSelected());
         mOptions.setCustomColors(customColorsCheckBox.isSelected());
         mOptions.setAutostartServer(autostartServerCheckBox.isSelected());
@@ -82,7 +88,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         lafForceCheckBox.setSelected(mOptions.isForceLookAndFeel());
         lafComboBox.setModel(SwingHelper.getLookAndFeelComboBoxModel(true));
         lafComboBox.setSelectedItem(mOptions.getLookAndFeel());
-
+        iconsComboBox.setSelectedIndex(mOptions.getIconTheme());
         lafForceCheckBoxActionPerformed(null);
         menuIconsCheckBox.setSelected(mOptions.isDisplayMenuIcons());
         customColorsCheckBox.setSelected(mOptions.isCustomColors());
@@ -106,6 +112,8 @@ public class OptionsPanel extends javax.swing.JPanel {
         lafForceCheckBox = new javax.swing.JCheckBox();
         lafLabel = new javax.swing.JLabel();
         lafComboBox = new javax.swing.JComboBox();
+        iconsLabel = new javax.swing.JLabel();
+        iconsComboBox = new javax.swing.JComboBox<>();
         menuIconsCheckBox = new javax.swing.JCheckBox();
         customColorsCheckBox = new javax.swing.JCheckBox();
         autostartServerCheckBox = new javax.swing.JCheckBox();
@@ -126,6 +134,8 @@ public class OptionsPanel extends javax.swing.JPanel {
         });
 
         lafLabel.setText(Dict.LOOK_AND_FEEL.getString());
+
+        iconsLabel.setText(Dict.ICONS.toString());
 
         menuIconsCheckBox.setText(bundle.getString("OptionsPanel.menuIconsCheckBox.text")); // NOI18N
 
@@ -154,11 +164,14 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lafComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lafForceCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(menuIconsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lafForceCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+                    .addComponent(iconsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(menuIconsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
                     .addComponent(customColorsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(clientPanelLayout.createSequentialGroup()
                         .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lafLabel)
+                            .addComponent(iconsLabel)
                             .addGroup(clientPanelLayout.createSequentialGroup()
                                 .addGap(12, 12, 12)
                                 .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,7 +181,6 @@ public class OptionsPanel extends javax.swing.JPanel {
                                 .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(connectDelayLabel)
                                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(lafLabel)
                             .addComponent(autostartServerCheckBox))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -183,6 +195,10 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(iconsLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(iconsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(menuIconsCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(customColorsCheckBox)
@@ -196,7 +212,7 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab(Dict.CLIENT.toString(), clientPanel);
@@ -213,7 +229,7 @@ public class OptionsPanel extends javax.swing.JPanel {
             .addGroup(serverPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rsyncFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                    .addComponent(rsyncFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
                     .addComponent(logDirFileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -262,6 +278,8 @@ public class OptionsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel connectDelayLabel;
     private javax.swing.JSpinner connectDelaySpinner;
     private javax.swing.JCheckBox customColorsCheckBox;
+    private javax.swing.JComboBox<String> iconsComboBox;
+    private javax.swing.JLabel iconsLabel;
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JCheckBox lafForceCheckBox;
     private javax.swing.JLabel lafLabel;

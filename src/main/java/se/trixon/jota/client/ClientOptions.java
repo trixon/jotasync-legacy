@@ -25,6 +25,7 @@ import se.trixon.jota.shared.Jota;
 public enum ClientOptions {
 
     INSTANCE;
+    private final Preferences mPreferences;
     public static final boolean DEFAULT_CUSTOM_COLORS = false;
     public static final String KEY_AUTOSTART_SERVER = "autostartServer";
     public static final String KEY_AUTOSTART_SERVER_CONNECT_DELAY = "autostartServerConnectDelay";
@@ -32,6 +33,7 @@ public enum ClientOptions {
     public static final String KEY_CUSTOM_COLORS = "customColors";
     public static final String KEY_FORCE_LOOK_AND_FEEL = "forceLookAndFeel";
     public static final String KEY_HOSTS = "hosts";
+    public static final String KEY_ICON_THEME = "lookAndFeelIcons";
     public static final String KEY_LOOK_AND_FEEL = "lookAndFeel";
     public static final String KEY_MENU_ICONS = "displayMenuIcons";
     private static final boolean DEFAULT_AUTOSTART_SERVER = false;
@@ -39,9 +41,9 @@ public enum ClientOptions {
     private static final int DEFAULT_AUTOSTART_SERVER_PORT = Jota.DEFAULT_PORT_HOST;
     private static final boolean DEFAULT_FORCE_LOOK_AND_FEEL = true;
     private static final String DEFAULT_HOSTS = "localhost";
+    private static final int DEFAULT_ICON_THEME = 1;
     private static final String DEFAULT_LOOK_AND_FEEL = "Darcula";
     private static final boolean DEFAULT_MENU_ICONS = true;
-    private final Preferences mPreferences;
 
     private ClientOptions() {
         mPreferences = Preferences.userNodeForPackage(this.getClass());
@@ -57,6 +59,10 @@ public enum ClientOptions {
 
     public String getHosts() {
         return mPreferences.get(KEY_HOSTS, DEFAULT_HOSTS);
+    }
+
+    public int getIconTheme() {
+        return mPreferences.getInt(KEY_ICON_THEME, DEFAULT_ICON_THEME);
     }
 
     public String getLookAndFeel() {
@@ -109,6 +115,10 @@ public enum ClientOptions {
 
     public void setHosts(String value) {
         mPreferences.put(KEY_HOSTS, value);
+    }
+
+    public void setIconTheme(int value) {
+        mPreferences.putInt(KEY_ICON_THEME, value);
     }
 
     public void setLookAndFeel(String value) {

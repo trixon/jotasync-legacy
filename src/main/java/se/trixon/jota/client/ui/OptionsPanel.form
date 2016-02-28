@@ -48,11 +48,14 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lafComboBox" max="32767" attributes="0"/>
-                          <Component id="lafForceCheckBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="menuIconsCheckBox" max="32767" attributes="0"/>
+                          <Component id="lafForceCheckBox" alignment="0" pref="456" max="32767" attributes="0"/>
+                          <Component id="iconsComboBox" alignment="0" max="32767" attributes="0"/>
+                          <Component id="menuIconsCheckBox" pref="456" max="32767" attributes="0"/>
                           <Component id="customColorsCheckBox" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="lafLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="iconsLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -65,7 +68,6 @@
                                           <Component id="connectDelaySpinner" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <Component id="lafLabel" min="-2" max="-2" attributes="0"/>
                                   <Component id="autostartServerCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -85,6 +87,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="lafComboBox" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="iconsLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="iconsComboBox" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="menuIconsCheckBox" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="customColorsCheckBox" min="-2" max="-2" attributes="0"/>
@@ -100,7 +106,7 @@
                           <Component id="portSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="connectDelaySpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -124,6 +130,18 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="lafComboBox">
+            </Component>
+            <Component class="javax.swing.JLabel" name="iconsLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="Dict.ICONS.toString()" type="code"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="iconsComboBox">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JCheckBox" name="menuIconsCheckBox">
               <Properties>
@@ -196,7 +214,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="rsyncFileChooserPanel" pref="312" max="32767" attributes="0"/>
+                          <Component id="rsyncFileChooserPanel" pref="456" max="32767" attributes="0"/>
                           <Component id="logDirFileChooserPanel" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>

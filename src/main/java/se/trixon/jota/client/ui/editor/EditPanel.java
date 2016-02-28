@@ -23,6 +23,8 @@ import javax.swing.SwingUtilities;
 import se.trixon.jota.client.ui.UI;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
+import se.trixon.util.icons.IconColor;
+import se.trixon.util.icons.material.MaterialIcon;
 
 /**
  *
@@ -73,6 +75,22 @@ public abstract class EditPanel extends javax.swing.JPanel {
                 button.setVisible(false);
             }
         }
+
+        IconColor iconColor = UI.getInstance().getIconColor();
+
+        addButton.setIcon(MaterialIcon.Content.ADD.get(ICON_SIZE, iconColor));
+        cloneButton.setIcon(MaterialIcon.Content.CONTENT_COPY.get(ICON_SIZE, iconColor));
+        editButton.setIcon(MaterialIcon.Editor.MODE_EDIT.get(ICON_SIZE, iconColor));
+        removeButton.setIcon(MaterialIcon.Content.REMOVE.get(ICON_SIZE, iconColor));
+        removeAllButton.setIcon(MaterialIcon.Content.CLEAR.get(ICON_SIZE, iconColor));
+
+        activateButton.setIcon(MaterialIcon.Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
+        deactivateButton.setIcon(MaterialIcon.Navigation.ARROW_FORWARD.get(ICON_SIZE, iconColor));
+
+        moveDownButton.setIcon(MaterialIcon.Navigation.ARROW_DOWNWARD.get(ICON_SIZE, iconColor));
+        moveUpButton.setIcon(MaterialIcon.Navigation.ARROW_UPWARD.get(ICON_SIZE, iconColor));
+        moveFirstButton.setIcon(MaterialIcon.Editor.VERTICAL_ALIGN_TOP.get(ICON_SIZE, iconColor));
+        moveLastButton.setIcon(MaterialIcon.Editor.VERTICAL_ALIGN_BOTTOM.get(ICON_SIZE, iconColor));
         //list.setModel(mModel);
     }
 
@@ -120,35 +138,30 @@ public abstract class EditPanel extends javax.swing.JPanel {
         toggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(toggleButton);
 
-        addButton.setIcon(Pict.Actions.LIST_ADD.get(ICON_SIZE));
         addButton.setToolTipText(Dict.ADD.getString());
         addButton.setFocusable(false);
         addButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         addButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(addButton);
 
-        cloneButton.setIcon(Pict.Actions.EDIT_COPY.get(ICON_SIZE));
         cloneButton.setToolTipText(Dict.CLONE.toString());
         cloneButton.setFocusable(false);
         cloneButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         cloneButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(cloneButton);
 
-        editButton.setIcon(Pict.Actions.DOCUMENT_EDIT.get(ICON_SIZE));
         editButton.setToolTipText(Dict.EDIT.getString());
         editButton.setFocusable(false);
         editButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         editButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(editButton);
 
-        removeButton.setIcon(Pict.Actions.LIST_REMOVE.get(ICON_SIZE));
         removeButton.setToolTipText(Dict.REMOVE.getString());
         removeButton.setFocusable(false);
         removeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         removeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(removeButton);
 
-        removeAllButton.setIcon(Pict.Actions.EDIT_DELETE.get(ICON_SIZE));
         removeAllButton.setToolTipText(Dict.REMOVE_ALL.getString());
         removeAllButton.setFocusable(false);
         removeAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -160,28 +173,24 @@ public abstract class EditPanel extends javax.swing.JPanel {
         checkBox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(checkBox);
 
-        moveFirstButton.setIcon(Pict.Actions.GO_TOP.get(ICON_SIZE));
         moveFirstButton.setToolTipText(Dict.MOVE_TOP.getString());
         moveFirstButton.setFocusable(false);
         moveFirstButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         moveFirstButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(moveFirstButton);
 
-        moveUpButton.setIcon(Pict.Actions.GO_UP.get(ICON_SIZE));
         moveUpButton.setToolTipText(Dict.MOVE_UP.getString());
         moveUpButton.setFocusable(false);
         moveUpButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         moveUpButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(moveUpButton);
 
-        moveDownButton.setIcon(Pict.Actions.GO_DOWN.get(ICON_SIZE));
         moveDownButton.setToolTipText(Dict.MOVE_DOWN.getString());
         moveDownButton.setFocusable(false);
         moveDownButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         moveDownButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(moveDownButton);
 
-        moveLastButton.setIcon(Pict.Actions.GO_BOTTOM.get(ICON_SIZE));
         moveLastButton.setToolTipText(Dict.MOVE_BOTTOM.getString());
         moveLastButton.setFocusable(false);
         moveLastButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -189,14 +198,12 @@ public abstract class EditPanel extends javax.swing.JPanel {
         toolBar.add(moveLastButton);
         toolBar.add(filler2);
 
-        activateButton.setIcon(Pict.Actions.GO_PREVIOUS.get(ICON_SIZE));
         activateButton.setToolTipText(Dict.ACTIVATE.getString());
         activateButton.setFocusable(false);
         activateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         activateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(activateButton);
 
-        deactivateButton.setIcon(Pict.Actions.GO_NEXT.get(ICON_SIZE));
         deactivateButton.setToolTipText(Dict.DEACTIVATE.getString());
         deactivateButton.setFocusable(false);
         deactivateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

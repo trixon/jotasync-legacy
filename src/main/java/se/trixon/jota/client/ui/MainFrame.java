@@ -34,7 +34,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.PreferenceChangeEvent;
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -70,6 +69,7 @@ import se.trixon.util.BundleHelper;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
+import se.trixon.util.icons.material.MaterialIcon;
 import se.trixon.util.swing.SwingHelper;
 import se.trixon.util.swing.dialogs.Message;
 
@@ -85,7 +85,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Client mClient;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
-    private final LinkedList<Action> mActions = new LinkedList<>();
+    private final LinkedList<JotaAction> mServerActions = new LinkedList<>();
+    private final LinkedList<JotaAction> mAllActions = new LinkedList<>();
     private final Manager mManager = Manager.getInstance();
     private TabHolder mTabHolder;
 
@@ -210,7 +211,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
 
-        mActions.stream().forEach((action) -> {
+        mServerActions.stream().forEach((action) -> {
             action.setEnabled(state);
         });
 
@@ -236,6 +237,10 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             } else if (key.equalsIgnoreCase(ClientOptions.KEY_FORCE_LOOK_AND_FEEL)
                     || key.equalsIgnoreCase(ClientOptions.KEY_LOOK_AND_FEEL)) {
                 loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
+            } else if (key.equalsIgnoreCase(ClientOptions.KEY_ICON_THEME)) {
+                mAllActions.stream().forEach((jotaAction) -> {
+                    jotaAction.updateIcon();
+                });
             }
         });
 
@@ -545,45 +550,34 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             return getRootPane().getActionMap().get(key);
         }
 
-        private void initAction(Action action, String key, KeyStroke keyStroke, Enum iconEnum, boolean addToList) {
+        private void initAction(JotaAction action, String key, KeyStroke keyStroke, Enum iconEnum, boolean serverAction) {
             InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             ActionMap actionMap = getRootPane().getActionMap();
 
             action.putValue(Action.ACCELERATOR_KEY, keyStroke);
             action.putValue(Action.SHORT_DESCRIPTION, action.getValue(Action.NAME));
             action.putValue("hideActionText", true);
-            if (iconEnum != null) {
-                if (iconEnum instanceof Pict.Actions) {
-                    Pict.Actions icon = (Pict.Actions) iconEnum;
-                    action.putValue(Action.LARGE_ICON_KEY, icon.get(UI.ICON_SIZE_LARGE));
-                    action.putValue(JOTA_SMALL_ICON_KEY, icon.get(UI.ICON_SIZE_SMALL));
-                } else if (iconEnum instanceof Pict.Apps) {
-                    Pict.Apps icon = (Pict.Apps) iconEnum;
-                    action.putValue(Action.LARGE_ICON_KEY, icon.get(UI.ICON_SIZE_LARGE));
-                    action.putValue(JOTA_SMALL_ICON_KEY, icon.get(UI.ICON_SIZE_SMALL));
-                } else if (iconEnum instanceof Pict.Places) {
-                    Pict.Places icon = (Pict.Places) iconEnum;
-                    action.putValue(Action.LARGE_ICON_KEY, icon.get(UI.ICON_SIZE_LARGE));
-                    action.putValue(JOTA_SMALL_ICON_KEY, icon.get(UI.ICON_SIZE_SMALL));
-                }
-            }
+            action.setIconEnum(iconEnum);
+            action.updateIcon();
 
             inputMap.put(keyStroke, key);
             actionMap.put(key, action);
 
-            if (addToList) {
-                mActions.add(action);
+            if (serverAction) {
+                mServerActions.add(action);
             }
+
+            mAllActions.add(action);
         }
 
         private void initActions() {
-            AbstractAction action;
+            JotaAction action;
             KeyStroke keyStroke;
             int commandMask = SystemHelper.getCommandMask();
 
             //connect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask);
-            action = new AbstractAction(Dict.CONNECT_TO_SERVER.toString()) {
+            action = new JotaAction(Dict.CONNECT_TO_SERVER.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -595,12 +589,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 }
             };
 
-            initAction(action, CONNECT, keyStroke, Pict.Actions.NETWORK_CONNECT, false);
+            initAction(action, CONNECT, keyStroke, MaterialIcon.Communication.CALL_MADE, false);
             connectMenuItem.setAction(action);
 
             //disconnect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask);
-            action = new AbstractAction(Dict.DISCONNECT.toString()) {
+            action = new JotaAction(Dict.DISCONNECT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -608,12 +602,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 }
             };
 
-            initAction(action, DISCONNECT, keyStroke, Pict.Actions.NETWORK_DISCONNECT, true);
+            initAction(action, DISCONNECT, keyStroke, MaterialIcon.Communication.CALL_RECEIVED, true);
             disconnectMenuItem.setAction(action);
 
             //cron
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, commandMask);
-            action = new AbstractAction(mBundle.getString("schedule")) {
+            action = new JotaAction(mBundle.getString("schedule")) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -633,13 +627,13 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 }
             };
 
-            initAction(action, CRON, keyStroke, Pict.Actions.CHRONOMETER, true);
+            initAction(action, CRON, keyStroke, MaterialIcon.Action.SCHEDULE, true);
             action.putValue(Action.SELECTED_KEY, false);
             cronCheckBoxMenuItem.setAction(action);
 
             //jobEditor
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_J, commandMask);
-            action = new AbstractAction(mBundle.getString("jobEditor")) {
+            action = new JotaAction(mBundle.getString("jobEditor")) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -647,12 +641,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 }
             };
 
-            initAction(action, JOB_EDITOR, keyStroke, Pict.Actions.DOCUMENT_EDIT, true);
+            initAction(action, JOB_EDITOR, keyStroke, MaterialIcon.Editor.MODE_EDIT, true);
             jobEditorMenuItem.setAction(action);
 
             //options
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_P, commandMask);
-            action = new AbstractAction(Dict.OPTIONS.toString()) {
+            action = new JotaAction(Dict.OPTIONS.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -660,12 +654,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 }
             };
 
-            initAction(action, OPTIONS, keyStroke, Pict.Actions.CONFIGURE, false);
+            initAction(action, OPTIONS, keyStroke, MaterialIcon.Action.SETTINGS, false);
             optionsMenuItem.setAction(action);
 
             //about
             keyStroke = null;
-            action = new AbstractAction(Dict.ABOUT.toString()) {
+            action = new JotaAction(Dict.ABOUT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -678,7 +672,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //about rsync
             keyStroke = null;
-            action = new AbstractAction(String.format(Dict.ABOUT_S.toString(), "rsync")) {
+            action = new JotaAction(String.format(Dict.ABOUT_S.toString(), "rsync")) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -696,7 +690,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //start Server
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask | InputEvent.SHIFT_MASK);
-            action = new AbstractAction(Dict.START.toString()) {
+            action = new JotaAction(Dict.START.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -715,7 +709,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //shutdown Server
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask | InputEvent.SHIFT_MASK);
-            action = new AbstractAction(Dict.SHUTDOWN.toString()) {
+            action = new JotaAction(Dict.SHUTDOWN.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -728,7 +722,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //shutdown server and quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask + InputEvent.SHIFT_MASK);
-            action = new AbstractAction(Dict.SHUTDOWN_AND_QUIT.toString()) {
+            action = new JotaAction(Dict.SHUTDOWN_AND_QUIT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -742,7 +736,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask);
-            action = new AbstractAction(Dict.QUIT.toString()) {
+            action = new JotaAction(Dict.QUIT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -755,7 +749,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //save tab
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, commandMask);
-            action = new AbstractAction(Dict.SAVE.toString()) {
+            action = new JotaAction(Dict.SAVE.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -763,12 +757,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 }
             };
 
-            initAction(action, SAVE_TAB, keyStroke, Pict.Actions.DOCUMENT_SAVE, true);
+            initAction(action, SAVE_TAB, keyStroke, MaterialIcon.Content.SAVE, true);
             saveMenuItem.setAction(action);
 
             //close tab
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, commandMask);
-            action = new AbstractAction(Dict.TAB_CLOSE.toString()) {
+            action = new JotaAction(Dict.TAB_CLOSE.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -776,7 +770,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                 }
             };
 
-            initAction(action, CLOSE_TAB, keyStroke, Pict.Actions.WINDOW_CLOSE, true);
+            initAction(action, CLOSE_TAB, keyStroke, MaterialIcon.Navigation.CLOSE, true);
             closeMenuItem.setAction(action);
 
             for (Component component : sPopupMenu.getComponents()) {

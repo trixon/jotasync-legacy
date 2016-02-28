@@ -22,6 +22,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -31,6 +32,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ui.MainFrame.ActionManager;
@@ -41,7 +43,8 @@ import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.dictionary.Dict;
-import se.trixon.util.icon.Pict;
+import se.trixon.util.icons.IconColor;
+import se.trixon.util.icons.material.MaterialIcon;
 
 /**
  *
@@ -56,6 +59,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private final Manager mManager = Manager.getInstance();
     private MouseAdapter mMenuMouseAdapter;
     private Action mSaveAction;
+    private final ClientOptions mOptions = ClientOptions.INSTANCE;
 
     /**
      * Creates new form ProgressPane
@@ -279,10 +283,26 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         return tabItem;
     }
 
+    private void updateIcons() {
+        IconColor iconColor = UI.getInstance().getIconColor();
+        setIconAt(0, MaterialIcon.Action.HOME.get(UI.ICON_SIZE_LARGE, iconColor));
+
+        mJobMap.values().stream().forEach((tabItem) -> {
+            tabItem.updateIcons(iconColor);
+        });
+    }
+
     private void init() {
         setFocusTraversalKeysEnabled(false);
         mSpeedDialPanel = new SpeedDialPanel();
-        add(mSpeedDialPanel, Pict.Actions.GO_HOME.get(UI.ICON_SIZE_LARGE));
+        add(mSpeedDialPanel, MaterialIcon.Action.HOME.get(UI.ICON_SIZE_LARGE, UI.getInstance().getIconColor()));
+        updateIcons();
+        mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
+            String key = evt.getKey();
+            if (key.equalsIgnoreCase(ClientOptions.KEY_ICON_THEME)) {
+                updateIcons();
+            }
+        });
 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);

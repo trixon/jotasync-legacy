@@ -94,9 +94,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="addButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.LIST_ADD.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.ADD.getString()" type="code"/>
             </Property>
@@ -107,9 +104,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="cloneButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.EDIT_COPY.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.CLONE.toString()" type="code"/>
             </Property>
@@ -120,9 +114,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="editButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.DOCUMENT_EDIT.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.EDIT.getString()" type="code"/>
             </Property>
@@ -133,9 +124,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="removeButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.LIST_REMOVE.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.REMOVE.getString()" type="code"/>
             </Property>
@@ -146,9 +134,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="removeAllButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.EDIT_DELETE.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.REMOVE_ALL.getString()" type="code"/>
             </Property>
@@ -166,9 +151,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="moveFirstButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.GO_TOP.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.MOVE_TOP.getString()" type="code"/>
             </Property>
@@ -179,9 +161,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="moveUpButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.GO_UP.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.MOVE_UP.getString()" type="code"/>
             </Property>
@@ -192,9 +171,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="moveDownButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.GO_DOWN.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.MOVE_DOWN.getString()" type="code"/>
             </Property>
@@ -205,9 +181,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="moveLastButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.GO_BOTTOM.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.MOVE_BOTTOM.getString()" type="code"/>
             </Property>
@@ -228,9 +201,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="activateButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.GO_PREVIOUS.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.ACTIVATE.getString()" type="code"/>
             </Property>
@@ -241,9 +211,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="deactivateButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Pict.Actions.GO_NEXT.get(ICON_SIZE)" type="code"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Dict.DEACTIVATE.getString()" type="code"/>
             </Property>

@@ -25,6 +25,8 @@ import se.trixon.jota.client.ui.editor.module.task.OptionHandler;
 import se.trixon.jota.client.ui.editor.module.task.RsyncOption;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
+import se.trixon.util.icons.IconColor;
+import se.trixon.util.icons.material.MaterialIcon;
 import se.trixon.util.swing.dialogs.Message;
 
 /**
@@ -85,6 +87,11 @@ public class DualListPanel extends javax.swing.JPanel {
     }
 
     private void init() {
+        IconColor iconColor = UI.getInstance().getIconColor();
+        removeAllButton.setIcon(MaterialIcon.Content.CLEAR.get(ICON_SIZE, iconColor));
+
+        activateButton.setIcon(MaterialIcon.Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
+        deactivateButton.setIcon(MaterialIcon.Navigation.ARROW_FORWARD.get(ICON_SIZE, iconColor));
     }
 
     private void initListeners() {
