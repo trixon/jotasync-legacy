@@ -36,7 +36,7 @@ public enum ClientOptions {
     public static final String KEY_ICON_THEME = "lookAndFeelIcons";
     public static final String KEY_LOOK_AND_FEEL = "lookAndFeel";
     public static final String KEY_MENU_ICONS = "displayMenuIcons";
-    private static final boolean DEFAULT_AUTOSTART_SERVER = false;
+    private static final boolean DEFAULT_AUTOSTART_SERVER = true;
     private static final int DEFAULT_AUTOSTART_SERVER_CONNECT_DELAY = 500;
     private static final int DEFAULT_AUTOSTART_SERVER_PORT = Jota.DEFAULT_PORT_HOST;
     private static final boolean DEFAULT_FORCE_LOOK_AND_FEEL = true;
