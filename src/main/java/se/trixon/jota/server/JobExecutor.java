@@ -78,7 +78,11 @@ class JobExecutor extends Thread {
     public void run() {
         mLastRun = System.currentTimeMillis();
         mHistoryBuilder = new StringBuilder();
-        mHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), Dict.STARTED.toString()));
+        String dryRunIndicator = "";
+        if (mDryRun) {
+            dryRunIndicator = String.format(" (%s)", Dict.DRY_RUN.toString());
+        }
+        mHistoryBuilder.append(String.format("%s %s%s\n", Jota.nowToDateTime(), Dict.STARTED.toString(), dryRunIndicator));
 
         String s = String.format("%s %s: '%s'='%s'", Jota.nowToDateTime(), Dict.START.toString(), Dict.JOB.toString(), mJob.getName());
         mOutBuffer.append(s).append("\n");
@@ -245,7 +249,13 @@ class JobExecutor extends Thread {
 
     private boolean runTask(Task task) throws InterruptedException {
         StringBuilder taskHistoryBuilder = new StringBuilder();
-        taskHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), Dict.STARTED.toString()));
+
+        String dryRunIndicator = "";
+        if (mDryRun || task.isDryRun()) {
+            dryRunIndicator = String.format(" (%s)", Dict.DRY_RUN.toString());
+        }
+        taskHistoryBuilder.append(String.format("%s %s%s\n", Jota.nowToDateTime(), Dict.STARTED.toString(), dryRunIndicator));
+
         String s = String.format("%s %s: %s='%s'", Jota.nowToDateTime(), Dict.START.toString(), Dict.TASK.toString(), task.getName());
         send(ProcessEvent.OUT, s);
         mTaskFailed = false;

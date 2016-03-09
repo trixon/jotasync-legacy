@@ -174,6 +174,10 @@ public class Task implements Comparable<Task>, Serializable {
         return mSummaryBuilder.toString();
     }
 
+    public boolean isDryRun() {
+        return mOptionSection.getCommand().contains("--dry-run");
+    }
+
     public boolean isNoAdditionalDir() {
         return mNoAdditionalDir;
     }
