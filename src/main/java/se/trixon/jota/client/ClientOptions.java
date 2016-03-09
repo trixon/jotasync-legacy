@@ -16,6 +16,7 @@
 package se.trixon.jota.client;
 
 import java.util.prefs.Preferences;
+import org.apache.commons.lang3.SystemUtils;
 import se.trixon.jota.shared.Jota;
 
 /**
@@ -33,16 +34,14 @@ public enum ClientOptions {
     public static final String KEY_CUSTOM_COLORS = "customColors";
     public static final String KEY_FORCE_LOOK_AND_FEEL = "forceLookAndFeel";
     public static final String KEY_HOSTS = "hosts";
-    public static final String KEY_ICON_THEME = "lookAndFeelIcons";
-    public static final String KEY_LOOK_AND_FEEL = "lookAndFeel";
+    public static final String KEY_ICON_THEME = "lookAndFeelIcons00";
+    public static final String KEY_LOOK_AND_FEEL = "lookAndFeel000";
     public static final String KEY_MENU_ICONS = "displayMenuIcons";
     private static final boolean DEFAULT_AUTOSTART_SERVER = true;
     private static final int DEFAULT_AUTOSTART_SERVER_CONNECT_DELAY = 500;
     private static final int DEFAULT_AUTOSTART_SERVER_PORT = Jota.DEFAULT_PORT_HOST;
     private static final boolean DEFAULT_FORCE_LOOK_AND_FEEL = true;
     private static final String DEFAULT_HOSTS = "localhost";
-    private static final int DEFAULT_ICON_THEME = 1;
-    private static final String DEFAULT_LOOK_AND_FEEL = "Darcula";
     private static final boolean DEFAULT_MENU_ICONS = true;
 
     private ClientOptions() {
@@ -62,11 +61,11 @@ public enum ClientOptions {
     }
 
     public int getIconTheme() {
-        return mPreferences.getInt(KEY_ICON_THEME, DEFAULT_ICON_THEME);
+        return mPreferences.getInt(KEY_ICON_THEME, getDefaultIconTheme());
     }
 
     public String getLookAndFeel() {
-        return mPreferences.get(KEY_LOOK_AND_FEEL, DEFAULT_LOOK_AND_FEEL);
+        return mPreferences.get(KEY_LOOK_AND_FEEL, getDefaultLookAndFeel());
     }
 
     public Preferences getPreferences() {
@@ -123,6 +122,22 @@ public enum ClientOptions {
 
     public void setLookAndFeel(String value) {
         mPreferences.put(KEY_LOOK_AND_FEEL, value);
+    }
+
+    private int getDefaultIconTheme() {
+        if (getLookAndFeel().equalsIgnoreCase("darcula")) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private String getDefaultLookAndFeel() {
+        if (SystemUtils.IS_OS_LINUX) {
+            return "Darcula";
+        } else {
+            return "System";
+        }
     }
 
     public enum ClientOptionsEvent {
