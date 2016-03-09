@@ -52,6 +52,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.apache.commons.lang3.SystemUtils;
 import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.ClientOptions.ClientOptionsEvent;
@@ -645,7 +646,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             jobEditorMenuItem.setAction(action);
 
             //options
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_P, commandMask);
+            int optionsKey = SystemUtils.IS_OS_MAC ? KeyEvent.VK_COMMA : KeyEvent.VK_P;
+            keyStroke = KeyStroke.getKeyStroke(optionsKey, commandMask);
             action = new JotaAction(Dict.OPTIONS.toString()) {
 
                 @Override
