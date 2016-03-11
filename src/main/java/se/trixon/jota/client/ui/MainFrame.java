@@ -50,6 +50,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.lang3.SystemUtils;
@@ -70,6 +71,7 @@ import se.trixon.util.BundleHelper;
 import se.trixon.util.SystemHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.icon.Pict;
+import se.trixon.util.icons.IconColor;
 import se.trixon.util.icons.material.MaterialIcon;
 import se.trixon.util.swing.SwingHelper;
 import se.trixon.util.swing.dialogs.Message;
@@ -278,6 +280,15 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                             UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
                             SwingUtilities.updateComponentTreeUI(MainFrame.this);
                             SwingUtilities.updateComponentTreeUI(sPopupMenu);
+
+                            if (mOptions.getLookAndFeel().equalsIgnoreCase("Darcula")) {
+                                int iconSize = 32;
+                                UIDefaults uiDefaults = UIManager.getLookAndFeelDefaults();
+                                uiDefaults.put("OptionPane.informationIcon", MaterialIcon.Action.INFO_OUTLINE.get(iconSize, IconColor.WHITE));
+                                uiDefaults.put("OptionPane.errorIcon", MaterialIcon.Alert.ERROR_OUTLINE.get(iconSize, IconColor.WHITE));
+                                uiDefaults.put("OptionPane.questionIcon", MaterialIcon.Action.HELP_OUTLINE.get(iconSize, IconColor.WHITE));
+                                uiDefaults.put("OptionPane.warningIcon", MaterialIcon.Alert.WARNING.get(iconSize, IconColor.WHITE));
+                            }
                         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                             //Xlog.timedErr(ex.getMessage());
                         }
