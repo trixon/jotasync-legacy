@@ -16,7 +16,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="tabbedPane" alignment="0" max="32767" attributes="0"/>
+          <Component id="tabbedPane" alignment="0" pref="384" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -48,9 +48,9 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lafComboBox" max="32767" attributes="0"/>
-                          <Component id="lafForceCheckBox" alignment="0" pref="456" max="32767" attributes="0"/>
+                          <Component id="lafForceCheckBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="iconsComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="menuIconsCheckBox" pref="456" max="32767" attributes="0"/>
+                          <Component id="menuIconsCheckBox" max="32767" attributes="0"/>
                           <Component id="customColorsCheckBox" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -130,6 +130,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="lafComboBox">
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lafComboBoxActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="iconsLabel">
               <Properties>
@@ -214,7 +217,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="rsyncFileChooserPanel" pref="456" max="32767" attributes="0"/>
+                          <Component id="rsyncFileChooserPanel" pref="370" max="32767" attributes="0"/>
                           <Component id="logDirFileChooserPanel" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>

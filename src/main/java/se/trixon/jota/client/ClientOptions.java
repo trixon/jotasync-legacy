@@ -34,8 +34,8 @@ public enum ClientOptions {
     public static final String KEY_CUSTOM_COLORS = "customColors";
     public static final String KEY_FORCE_LOOK_AND_FEEL = "forceLookAndFeel";
     public static final String KEY_HOSTS = "hosts";
-    public static final String KEY_ICON_THEME = "lookAndFeelIcons00";
-    public static final String KEY_LOOK_AND_FEEL = "lookAndFeel000";
+    public static final String KEY_ICON_THEME = "lookAndFeelIcons";
+    public static final String KEY_LOOK_AND_FEEL = "lookAndFeel";
     public static final String KEY_MENU_ICONS = "displayMenuIcons";
     private static final boolean DEFAULT_AUTOSTART_SERVER = true;
     private static final int DEFAULT_AUTOSTART_SERVER_CONNECT_DELAY = 500;
