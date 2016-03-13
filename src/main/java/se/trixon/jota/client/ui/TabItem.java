@@ -32,7 +32,6 @@ import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.util.dictionary.Dict;
-import se.trixon.util.icon.Pict;
 import se.trixon.util.icons.IconColor;
 import se.trixon.util.icons.material.MaterialIcon;
 import se.trixon.util.swing.dialogs.Message;

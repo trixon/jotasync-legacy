@@ -276,6 +276,12 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             tabItem.getCloseButton().setText(null);
 
             add(tabItem, job.getName());
+            TabCloser tabCloser = new TabCloser(this);
+            tabCloser.getButton().setAction(mCloseAction);
+            tabCloser.postSetAction();
+
+            setTabComponentAt(getTabCount() - 1, tabCloser);
+
             mJobMap.put(job.getId(), tabItem);
             setSelectedComponent(tabItem);
         }
@@ -396,7 +402,6 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private void formStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_formStateChanged
         updateActionStates();
     }//GEN-LAST:event_formStateChanged
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
