@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +56,7 @@ public class ActiveTasksPanel extends EditPanel {
     }
 
     private void init() {
-        label.setText(Dict.TASKS_ACTIVE.getString());
+        label.setText(Dict.TASKS_SELECTED.toString());
 
         moveLastButton.setVisible(true);
         moveDownButton.setVisible(true);

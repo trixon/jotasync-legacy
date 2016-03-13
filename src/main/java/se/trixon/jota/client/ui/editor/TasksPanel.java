@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,8 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import org.apache.commons.lang3.SerializationUtils;
-import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.client.Manager;
+import se.trixon.jota.shared.task.Task;
 import se.trixon.util.BundleHelper;
 import se.trixon.util.dictionary.Dict;
 import se.trixon.util.swing.SwingHelper;
@@ -114,11 +114,12 @@ public class TasksPanel extends EditPanel {
     private void edit(Task task) {
         String title;
         boolean add = task == null;
+        String type = Dict.TASK.toString().toLowerCase();
         if (task == null) {
             task = new Task();
-            title = Dict.ADD.toString();
+            title = String.format("%s %s", Dict.ADD.toString(), type);
         } else {
-            title = Dict.EDIT.toString();
+            title = String.format("%s %s", Dict.EDIT.toString(), type);
         }
 
         TaskPanel taskPanel = new TaskPanel();
@@ -163,7 +164,7 @@ public class TasksPanel extends EditPanel {
     }
 
     private void init() {
-        label.setText(Dict.TASKS_AVAILABLE.toString());
+        label.setText(Dict.TASKS.toString());
 
         addButton.setVisible(true);
         cloneButton.setVisible(true);

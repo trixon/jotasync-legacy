@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -84,9 +84,9 @@ public final class JobsPanel extends EditPanel {
     @Override
     public void save() {
         try {
-            Job[] jobs=new Job[getModel().size()];
+            Job[] jobs = new Job[getModel().size()];
             for (int i = 0; i < jobs.length; i++) {
-                jobs[i]=(Job) getModel().get(i);
+                jobs[i] = (Job) getModel().get(i);
             }
             mManager.getServerCommander().setJobs(jobs);
         } catch (RemoteException ex) {
@@ -114,11 +114,12 @@ public final class JobsPanel extends EditPanel {
     private void edit(Job job) {
         String title;
         boolean add = job == null;
+        String type = Dict.JOB.toString().toLowerCase();
         if (job == null) {
             job = new Job();
-            title = Dict.ADD.toString();
+            title = String.format("%s %s", Dict.ADD.toString(), type);
         } else {
-            title = Dict.EDIT.toString();
+            title = String.format("%s %s", Dict.EDIT.toString(), type);
         }
 
         JobPanel jobPanel = new JobPanel();
@@ -157,7 +158,7 @@ public final class JobsPanel extends EditPanel {
     }
 
     private void init() {
-        label.setText(Dict.JOB.toString());
+        label.setText(Dict.JOBS.toString());
 
         addButton.setVisible(true);
         cloneButton.setVisible(true);
