@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -82,36 +82,6 @@ class Server extends UnicastRemoteObject implements ServerCommander {
         mJotaManager.load();
         intiListeners();
         startServer();
-    }
-
-    public void cronOff() {
-        if (mScheduler.isStarted()) {
-            mScheduler.stop();
-        }
-
-        mScheduler = new Scheduler();
-    }
-
-    public void cronOn() {
-        cronOff();
-
-        for (Job job : mJobManager.getJobs()) {
-            if (job.isCronActive()) {
-                for (String cronString : StringUtils.split(job.getCronItems(), "|")) {
-                    mScheduler.schedule(cronString, () -> {
-                        try {
-                            if (!isRunning(job)) {
-                                startJob(job, false);
-                            }
-                        } catch (RemoteException ex) {
-                            Xlog.timedErr(ex.getLocalizedMessage());
-                        }
-                    });
-                }
-            }
-        }
-
-        mScheduler.start();
     }
 
     @Override
@@ -226,14 +196,16 @@ class Server extends UnicastRemoteObject implements ServerCommander {
 
     @Override
     public void registerClient(ClientCallbacks clientCallback, String hostname) throws RemoteException {
-        Xlog.timedOut("registerClient(): " + hostname);
+        Xlog.timedOut("client connected: " + hostname);
         mClientCallbacks.add(clientCallback);
     }
 
     @Override
     public void removeClient(ClientCallbacks clientCallback, String hostname) throws RemoteException {
-        Xlog.timedOut("unregisterClient(): " + hostname);
-        mClientCallbacks.remove(clientCallback);
+        if (mClientCallbacks.contains(clientCallback)) {
+            Xlog.timedOut("client disconnected: " + hostname);
+            mClientCallbacks.remove(clientCallback);
+        }
     }
 
     @Override
@@ -332,6 +304,44 @@ class Server extends UnicastRemoteObject implements ServerCommander {
         return new JobValidator(job);
     }
 
+    Set<ClientCallbacks> getClientCallbacks() {
+        return mClientCallbacks;
+    }
+
+    HashMap<Long, JobExecutor> getJobExecutors() {
+        return mJobExecutors;
+    }
+
+    private void cronOff() {
+        if (mScheduler.isStarted()) {
+            mScheduler.stop();
+        }
+
+        mScheduler = new Scheduler();
+    }
+
+    private void cronOn() {
+        cronOff();
+
+        for (Job job : mJobManager.getJobs()) {
+            if (job.isCronActive()) {
+                for (String cronString : StringUtils.split(job.getCronItems(), "|")) {
+                    mScheduler.schedule(cronString, () -> {
+                        try {
+                            if (!isRunning(job)) {
+                                startJob(job, false);
+                            }
+                        } catch (RemoteException ex) {
+                            Xlog.timedErr(ex.getLocalizedMessage());
+                        }
+                    });
+                }
+            }
+        }
+
+        mScheduler.start();
+    }
+
     private void intiListeners() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             notifyClientsShutdown();
@@ -398,13 +408,5 @@ class Server extends UnicastRemoteObject implements ServerCommander {
             Xlog.timedErr(ex.getLocalizedMessage());
             Jota.exit();
         }
-    }
-
-    Set<ClientCallbacks> getClientCallbacks() {
-        return mClientCallbacks;
-    }
-
-    HashMap<Long, JobExecutor> getJobExecutors() {
-        return mJobExecutors;
     }
 }

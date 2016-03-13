@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
  */
 package se.trixon.jota.client.ui;
 
-import se.trixon.util.swing.dialogs.HtmlPanel;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -74,6 +73,7 @@ import se.trixon.util.icon.Pict;
 import se.trixon.util.icons.IconColor;
 import se.trixon.util.icons.material.MaterialIcon;
 import se.trixon.util.swing.SwingHelper;
+import se.trixon.util.swing.dialogs.HtmlPanel;
 import se.trixon.util.swing.dialogs.Message;
 
 /**
@@ -188,7 +188,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
                         options[1]);
 
                 if (result > -1 && result < 2) {
-                    mManager.getServerCommander().startJob(job, result == 1);
+                    boolean dryRun = result == 1;
+                    mManager.getServerCommander().startJob(job, dryRun);
                 }
             } else {
                 Message.html(this, Dict.ERROR_VALIDATION.toString(), validator.getSummaryAsHtml());
@@ -495,6 +496,9 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
         });
         getContentPane().setLayout(new java.awt.CardLayout());
 
@@ -508,13 +512,15 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     private void quit() {
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-        System.exit(0);
     }
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         SwingHelper.frameStateSave(this);
-        System.exit(0);
     }//GEN-LAST:event_formWindowClosing
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        System.exit(0);
+    }//GEN-LAST:event_formWindowClosed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
@@ -551,7 +557,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         static final String QUIT = "shutdownServerAndWindow";
         static final String SAVE_TAB = "saveTab";
         static final String SHUTDOWN_SERVER = "shutdownServer";
-        static final String SHUTDOWN_SERVER_QUIT = "shutdownServer";
+        static final String SHUTDOWN_SERVER_QUIT = "shutdownServerAndQuit";
         static final String START_SERVER = "startServer";
 
         private ActionManager() {
