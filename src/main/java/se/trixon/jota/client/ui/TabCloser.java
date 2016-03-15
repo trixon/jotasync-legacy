@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -74,6 +74,7 @@ public class TabCloser extends JPanel {
 
         public TabButton() {
             init();
+            setEnabled(false);
         }
 
         @Override

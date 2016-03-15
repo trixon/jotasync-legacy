@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -277,9 +277,11 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
             add(tabItem, job.getName());
             TabCloser tabCloser = new TabCloser(this);
-            tabCloser.getButton().setAction(mCloseAction);
+            tabCloser.getButton().addActionListener((ActionEvent e) -> {
+                close(job);
+            });
             tabCloser.postSetAction();
-
+            tabItem.setCloser(tabCloser);
             setTabComponentAt(getTabCount() - 1, tabCloser);
 
             mJobMap.put(job.getId(), tabItem);

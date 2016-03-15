@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,7 @@ import se.trixon.util.swing.dialogs.SimpleDialog;
 public class TabItem extends JPanel implements TabListener {
 
     private boolean mClosable;
+    private TabCloser mCloser;
     private Job mJob;
     private boolean mLastLineWasBlank;
     private boolean mLastRowWasProgress;
@@ -127,6 +128,11 @@ public class TabItem extends JPanel implements TabListener {
         closeButton.setVisible(true);
         mTimeFinished = System.currentTimeMillis();
         mClosable = true;
+        mCloser.getButton().setEnabled(true);
+    }
+
+    void setCloser(TabCloser tabCloser) {
+        mCloser = tabCloser;
     }
 
     private String getFinishedTime() {
