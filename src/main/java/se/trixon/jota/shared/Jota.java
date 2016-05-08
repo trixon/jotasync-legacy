@@ -47,18 +47,18 @@ public class Jota {
         return sBundle;
     }
 
-    public static String getVersionInfo() {
-        String version = "";
-        CodeSource codeSource = Jota.class.getProtectionDomain().getCodeSource();
-        try {
-            File jarFile = new File(codeSource.getLocation().toURI().getPath());
-            version = StringUtils.split(jarFile.getName(), "-", 2)[1].replace(".jar", "");
-        } catch (ArrayIndexOutOfBoundsException | URISyntaxException ex) {
-            // nvm
-        }
-
-        return String.format(sBundle.getString("version_info"), version);
-    }
+//    public static String getVersionInfo() {
+//        String version = "";
+//        CodeSource codeSource = Jota.class.getProtectionDomain().getCodeSource();
+//        try {
+//            File jarFile = new File(codeSource.getLocation().toURI().getPath());
+//            version = StringUtils.split(jarFile.getName(), "-", 2)[1].replace(".jar", "");
+//        } catch (ArrayIndexOutOfBoundsException | URISyntaxException ex) {
+//            // nvm
+//        }
+//
+//        return String.format(sBundle.getString("version_info"), version);
+//    }
 
     public static String millisToDateTime(long timestamp) {
         Date date = new Date(timestamp);

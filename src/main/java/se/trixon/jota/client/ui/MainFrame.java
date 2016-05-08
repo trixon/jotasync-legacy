@@ -57,6 +57,7 @@ import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.ClientOptions.ClientOptionsEvent;
 import se.trixon.jota.client.ConnectionListener;
+import se.trixon.jota.client.Main;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ui.editor.EditorPanel;
 import se.trixon.jota.server.JobValidator;
@@ -682,7 +683,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Message.information(MainFrame.this, Dict.ABOUT.toString(), Jota.getVersionInfo());
+                    String versionInfo = String.format(Jota.getBundle().getString("version_info"), SystemHelper.getJarVersion(Main.class));
+                    Message.information(MainFrame.this, Dict.ABOUT.toString(), versionInfo);
                 }
             };
 

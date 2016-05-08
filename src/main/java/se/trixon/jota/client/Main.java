@@ -84,7 +84,7 @@ public class Main {
     }
 
     private static void displayVersion() {
-        System.out.println(Jota.getVersionInfo());
+        System.out.println(String.format(sBundle.getString("version_info"), SystemHelper.getJarVersion(Main.class)));
     }
 
     private static Options initOptions() {
