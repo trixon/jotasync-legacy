@@ -15,13 +15,9 @@
  */
 package se.trixon.jota.shared;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.security.CodeSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
-import org.apache.commons.lang3.StringUtils;
 import se.trixon.util.BundleHelper;
 
 /**
@@ -46,19 +42,6 @@ public class Jota {
     public static ResourceBundle getBundle() {
         return sBundle;
     }
-
-//    public static String getVersionInfo() {
-//        String version = "";
-//        CodeSource codeSource = Jota.class.getProtectionDomain().getCodeSource();
-//        try {
-//            File jarFile = new File(codeSource.getLocation().toURI().getPath());
-//            version = StringUtils.split(jarFile.getName(), "-", 2)[1].replace(".jar", "");
-//        } catch (ArrayIndexOutOfBoundsException | URISyntaxException ex) {
-//            // nvm
-//        }
-//
-//        return String.format(sBundle.getString("version_info"), version);
-//    }
 
     public static String millisToDateTime(long timestamp) {
         Date date = new Date(timestamp);

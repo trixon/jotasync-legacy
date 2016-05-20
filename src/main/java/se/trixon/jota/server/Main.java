@@ -44,7 +44,7 @@ public class Main {
      * @throws java.rmi.RemoteException
      */
     public static void main(String[] args) throws RemoteException, IOException {
-        System.setProperty("java.rmi.server.hostname", SystemHelper.getHostname());
+        SystemHelper.enableRmiServer();
         Options options = initOptions();
         CommandLineParser parser = new DefaultParser();
         try {
