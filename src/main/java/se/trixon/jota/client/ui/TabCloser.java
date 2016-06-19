@@ -25,8 +25,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicButtonUI;
 import org.apache.commons.lang3.SystemUtils;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.icons.material.MaterialIcon;
 
 /**
  *

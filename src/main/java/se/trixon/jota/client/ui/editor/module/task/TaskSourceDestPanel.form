@@ -63,7 +63,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="sourcePanel">
+    <Component class="se.trixon.almond.util.swing.dialogs.FileChooserPanel" name="sourcePanel">
       <Properties>
         <Property name="header" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="Dict.SOURCE.getString()" type="code"/>
@@ -75,7 +75,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="destinationPanel">
+    <Component class="se.trixon.almond.util.swing.dialogs.FileChooserPanel" name="destinationPanel">
       <Properties>
         <Property name="header" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="Dict.DESTINATION.getString()" type="code"/>

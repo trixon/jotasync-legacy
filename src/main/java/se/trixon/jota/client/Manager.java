@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import se.trixon.jota.shared.ServerCommander;
-import se.trixon.util.SystemHelper;
+import se.trixon.almond.util.SystemHelper;
 
 /**
  *

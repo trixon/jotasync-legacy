@@ -24,9 +24,9 @@ import javax.swing.JSpinner;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ClientOptions;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.swing.SwingHelper;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.swing.SwingHelper;
 
 /**
  *
@@ -122,8 +122,8 @@ public class OptionsPanel extends javax.swing.JPanel {
         connectDelayLabel = new javax.swing.JLabel();
         connectDelaySpinner = new javax.swing.JSpinner();
         serverPanel = new javax.swing.JPanel();
-        rsyncFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        logDirFileChooserPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        rsyncFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
+        logDirFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/Bundle"); // NOI18N
         lafForceCheckBox.setText(bundle.getString("OptionsPanel.lafForceCheckBox.text")); // NOI18N
@@ -299,11 +299,11 @@ public class OptionsPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox lafComboBox;
     private javax.swing.JCheckBox lafForceCheckBox;
     private javax.swing.JLabel lafLabel;
-    private se.trixon.util.swing.dialogs.FileChooserPanel logDirFileChooserPanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel logDirFileChooserPanel;
     private javax.swing.JCheckBox menuIconsCheckBox;
     private javax.swing.JLabel portLabel;
     private javax.swing.JSpinner portSpinner;
-    private se.trixon.util.swing.dialogs.FileChooserPanel rsyncFileChooserPanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel rsyncFileChooserPanel;
     private javax.swing.JPanel serverPanel;
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables

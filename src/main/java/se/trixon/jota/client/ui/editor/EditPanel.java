@@ -21,10 +21,10 @@ import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
 import se.trixon.jota.client.ui.UI;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.icon.Pict;
-import se.trixon.util.icons.IconColor;
-import se.trixon.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.icon.Pict;
+import se.trixon.almond.util.icons.IconColor;
+import se.trixon.almond.util.icons.material.MaterialIcon;
 
 /**
  *

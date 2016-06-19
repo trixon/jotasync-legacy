@@ -21,8 +21,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.swing.dialogs.FileChooserPanel;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.swing.dialogs.FileChooserPanel;
 
 /**
  *
@@ -124,8 +124,8 @@ public class TaskSourceDestPanel extends TaskModule implements FileChooserPanel.
         nameTextField = new javax.swing.JTextField();
         descriptionLabel = new javax.swing.JLabel();
         descriptionTextField = new javax.swing.JTextField();
-        sourcePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        destinationPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        sourcePanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
+        destinationPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         noAdditionalDirCheckBox = new javax.swing.JCheckBox();
         swapSourceDestButton = new javax.swing.JButton();
         fillPanel = new javax.swing.JPanel();
@@ -253,12 +253,12 @@ public class TaskSourceDestPanel extends TaskModule implements FileChooserPanel.
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTextField descriptionTextField;
-    private se.trixon.util.swing.dialogs.FileChooserPanel destinationPanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel destinationPanel;
     private javax.swing.JPanel fillPanel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JCheckBox noAdditionalDirCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel sourcePanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel sourcePanel;
     private javax.swing.JButton swapSourceDestButton;
     // End of variables declaration//GEN-END:variables
 }

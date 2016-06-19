@@ -20,7 +20,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JTextArea;
 import se.trixon.jota.client.ui.editor.module.Module;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.Dict;
 
 /**
  *

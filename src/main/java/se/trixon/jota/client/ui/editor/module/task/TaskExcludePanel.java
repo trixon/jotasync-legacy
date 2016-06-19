@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.shared.task.ExcludeSection;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.Dict;
 
 /**
  *
@@ -97,7 +97,7 @@ public class TaskExcludePanel extends TaskModule {
     private void initComponents() {
 
         dualListPanel = new se.trixon.jota.client.ui.editor.module.DualListPanel();
-        externalFilePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        externalFilePanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
 
         externalFilePanel.setCheckBoxMode(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
@@ -122,6 +122,6 @@ public class TaskExcludePanel extends TaskModule {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private se.trixon.jota.client.ui.editor.module.DualListPanel dualListPanel;
-    private se.trixon.util.swing.dialogs.FileChooserPanel externalFilePanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel externalFilePanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -31,11 +31,11 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.job.Job;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.icons.IconColor;
-import se.trixon.util.icons.material.MaterialIcon;
-import se.trixon.util.swing.dialogs.Message;
-import se.trixon.util.swing.dialogs.SimpleDialog;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.icons.IconColor;
+import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.swing.dialogs.Message;
+import se.trixon.almond.util.swing.dialogs.SimpleDialog;
 
 /**
  *
@@ -223,7 +223,7 @@ public class TabItem extends JPanel implements TabListener {
         closeButton = new javax.swing.JButton();
         startButton = new javax.swing.JButton();
         menuButton = new javax.swing.JButton();
-        logPanel = new se.trixon.util.swing.LogPanel();
+        logPanel = new se.trixon.almond.util.swing.LogPanel();
 
         setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -322,7 +322,7 @@ public class TabItem extends JPanel implements TabListener {
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton closeButton;
     private javax.swing.JButton editButton;
-    private se.trixon.util.swing.LogPanel logPanel;
+    private se.trixon.almond.util.swing.LogPanel logPanel;
     private javax.swing.JButton menuButton;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JButton saveButton;

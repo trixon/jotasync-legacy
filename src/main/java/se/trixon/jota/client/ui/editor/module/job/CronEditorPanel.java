@@ -23,11 +23,11 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.ui.editor.EditPanel;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.swing.SwingHelper;
-import se.trixon.util.swing.dialogs.Message;
-import se.trixon.util.swing.dialogs.cron.CronPanel;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.swing.SwingHelper;
+import se.trixon.almond.util.swing.dialogs.Message;
+import se.trixon.almond.util.swing.dialogs.cron.CronPanel;
 
 /**
  *

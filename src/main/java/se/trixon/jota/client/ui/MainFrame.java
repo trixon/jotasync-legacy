@@ -67,15 +67,15 @@ import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.SystemHelper;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.icon.Pict;
-import se.trixon.util.icons.IconColor;
-import se.trixon.util.icons.material.MaterialIcon;
-import se.trixon.util.swing.SwingHelper;
-import se.trixon.util.swing.dialogs.HtmlPanel;
-import se.trixon.util.swing.dialogs.Message;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.icon.Pict;
+import se.trixon.almond.util.icons.IconColor;
+import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.swing.SwingHelper;
+import se.trixon.almond.util.swing.dialogs.HtmlPanel;
+import se.trixon.almond.util.swing.dialogs.Message;
 
 /**
  *

@@ -18,8 +18,8 @@ package se.trixon.jota.client.ui.editor.module.task;
 import java.io.File;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskExecuteSection;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.swing.dialogs.FileChooserPanel;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.swing.dialogs.FileChooserPanel;
 
 /**
  *
@@ -139,16 +139,16 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        beforePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        beforePanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         beforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
-        afterFailurePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        afterFailurePanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         afterFailureHaltOnErrorCheckBox = new javax.swing.JCheckBox();
         jSeparator2 = new javax.swing.JSeparator();
-        afterSuccessPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        afterSuccessPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         afterSuccessHaltOnErrorCheckBox = new javax.swing.JCheckBox();
         jSeparator3 = new javax.swing.JSeparator();
-        afterPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        afterPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         jSeparator4 = new javax.swing.JSeparator();
         afterHaltOnErrorCheckBox = new javax.swing.JCheckBox();
         jobHaltOnErrorCheckBox = new javax.swing.JCheckBox();
@@ -285,13 +285,13 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox afterFailureHaltOnErrorCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel afterFailurePanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel afterFailurePanel;
     private javax.swing.JCheckBox afterHaltOnErrorCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel afterPanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel afterPanel;
     private javax.swing.JCheckBox afterSuccessHaltOnErrorCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel afterSuccessPanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel afterSuccessPanel;
     private javax.swing.JCheckBox beforeHaltOnErrorCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel beforePanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel beforePanel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;

@@ -18,7 +18,7 @@ package se.trixon.jota.shared;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
-import se.trixon.util.BundleHelper;
+import se.trixon.almond.util.BundleHelper;
 
 /**
  *

@@ -26,10 +26,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import se.trixon.jota.shared.Jota;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.SystemHelper;
-import se.trixon.util.Xlog;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.Xlog;
+import se.trixon.almond.util.Dict;
 
 /**
  *

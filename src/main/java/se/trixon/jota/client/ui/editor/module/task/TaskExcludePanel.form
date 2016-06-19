@@ -34,7 +34,7 @@
   <SubComponents>
     <Component class="se.trixon.jota.client.ui.editor.module.DualListPanel" name="dualListPanel">
     </Component>
-    <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="externalFilePanel">
+    <Component class="se.trixon.almond.util.swing.dialogs.FileChooserPanel" name="externalFilePanel">
       <Properties>
         <Property name="checkBoxMode" type="boolean" value="true"/>
         <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">

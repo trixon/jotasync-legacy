@@ -18,7 +18,7 @@ package se.trixon.jota.client.ui.editor.module.job;
 import se.trixon.jota.client.ui.editor.module.JobPersistor;
 import se.trixon.jota.client.ui.editor.module.common.NotePanel;
 import se.trixon.jota.shared.job.Job;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.Dict;
 
 /**
  *

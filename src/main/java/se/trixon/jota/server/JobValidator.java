@@ -24,8 +24,8 @@ import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobExecuteSection;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskValidator;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
 
 /**
  *

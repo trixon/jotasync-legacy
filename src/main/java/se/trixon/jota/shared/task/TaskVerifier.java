@@ -21,7 +21,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.Dict;
 //import org.openide.DialogDisplayer;
 //import org.openide.NotifyDescriptor;
 

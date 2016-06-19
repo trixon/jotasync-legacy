@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.DefaultListModel;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.Dict;
 
 /**
  *

@@ -16,7 +16,7 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
   <SubComponents>
-    <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="beforePanel">
+    <Component class="se.trixon.almond.util.swing.dialogs.FileChooserPanel" name="beforePanel">
       <Properties>
         <Property name="checkBoxMode" type="boolean" value="true"/>
         <Property name="header" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -48,7 +48,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="afterFailurePanel">
+    <Component class="se.trixon.almond.util.swing.dialogs.FileChooserPanel" name="afterFailurePanel">
       <Properties>
         <Property name="alignmentX" type="float" value="0.0"/>
         <Property name="checkBoxMode" type="boolean" value="true"/>
@@ -82,7 +82,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="afterSuccessPanel">
+    <Component class="se.trixon.almond.util.swing.dialogs.FileChooserPanel" name="afterSuccessPanel">
       <Properties>
         <Property name="alignmentX" type="float" value="0.0"/>
         <Property name="checkBoxMode" type="boolean" value="true"/>
@@ -116,7 +116,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="se.trixon.util.swing.dialogs.FileChooserPanel" name="afterPanel">
+    <Component class="se.trixon.almond.util.swing.dialogs.FileChooserPanel" name="afterPanel">
       <Properties>
         <Property name="alignmentX" type="float" value="0.0"/>
         <Property name="checkBoxMode" type="boolean" value="true"/>

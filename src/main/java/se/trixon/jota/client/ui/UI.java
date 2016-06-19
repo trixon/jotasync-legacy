@@ -17,7 +17,7 @@ package se.trixon.jota.client.ui;
 
 import java.util.prefs.PreferenceChangeEvent;
 import se.trixon.jota.client.ClientOptions;
-import se.trixon.util.icons.IconColor;
+import se.trixon.almond.util.icons.IconColor;
 
 /**
  *

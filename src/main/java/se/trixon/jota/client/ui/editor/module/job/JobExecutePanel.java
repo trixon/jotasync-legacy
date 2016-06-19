@@ -18,8 +18,8 @@ package se.trixon.jota.client.ui.editor.module.job;
 import java.io.File;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobExecuteSection;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.swing.dialogs.FileChooserPanel;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.swing.dialogs.FileChooserPanel;
 
 /**
  *
@@ -115,11 +115,11 @@ public class JobExecutePanel extends JobModule implements FileChooserPanel.FileC
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        beforePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        beforePanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         beforeHaltOnErrorCheckBox = new javax.swing.JCheckBox();
-        afterFailurePanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        afterSuccessPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
-        afterPanel = new se.trixon.util.swing.dialogs.FileChooserPanel();
+        afterFailurePanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
+        afterSuccessPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
+        afterPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
 
         beforePanel.setCheckBoxMode(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/job/Bundle"); // NOI18N
@@ -171,10 +171,10 @@ public class JobExecutePanel extends JobModule implements FileChooserPanel.FileC
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private se.trixon.util.swing.dialogs.FileChooserPanel afterFailurePanel;
-    private se.trixon.util.swing.dialogs.FileChooserPanel afterPanel;
-    private se.trixon.util.swing.dialogs.FileChooserPanel afterSuccessPanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel afterFailurePanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel afterPanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel afterSuccessPanel;
     private javax.swing.JCheckBox beforeHaltOnErrorCheckBox;
-    private se.trixon.util.swing.dialogs.FileChooserPanel beforePanel;
+    private se.trixon.almond.util.swing.dialogs.FileChooserPanel beforePanel;
     // End of variables declaration//GEN-END:variables
 }

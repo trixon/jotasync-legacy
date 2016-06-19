@@ -20,9 +20,9 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import se.trixon.jota.client.ClientOptions;
 import static se.trixon.jota.client.ui.MainFrame.ActionManager.JOTA_SMALL_ICON_KEY;
-import se.trixon.util.icon.Pict;
-import se.trixon.util.icons.IconColor;
-import se.trixon.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.icon.Pict;
+import se.trixon.almond.util.icons.IconColor;
+import se.trixon.almond.util.icons.material.MaterialIcon;
 
 /**
  *

@@ -26,8 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
 
 /**
  *

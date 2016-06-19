@@ -24,7 +24,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import se.trixon.jota.shared.JsonHelper;
-import se.trixon.util.Xlog;
+import se.trixon.almond.util.Xlog;
 
 /**
  *

@@ -31,10 +31,10 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.SerializationUtils;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.job.Job;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.swing.SwingHelper;
-import se.trixon.util.swing.dialogs.Message;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.swing.SwingHelper;
+import se.trixon.almond.util.swing.dialogs.Message;
 
 /**
  *

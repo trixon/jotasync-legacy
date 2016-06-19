@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.shared.task.OptionSection;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.Dict;
 
 /**
  *

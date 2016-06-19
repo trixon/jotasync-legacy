@@ -20,8 +20,8 @@ import java.io.Serializable;
 import java.util.ResourceBundle;
 import se.trixon.jota.client.ui.editor.module.task.TaskExcludePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
 
 /**
  *

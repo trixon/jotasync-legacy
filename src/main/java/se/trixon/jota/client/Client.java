@@ -50,11 +50,11 @@ import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.util.BundleHelper;
-import se.trixon.util.SystemHelper;
-import se.trixon.util.Xlog;
-import se.trixon.util.dictionary.Dict;
-import se.trixon.util.swing.SwingHelper;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.Xlog;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.swing.SwingHelper;
 
 /**
  *

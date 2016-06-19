@@ -25,7 +25,7 @@ import se.trixon.jota.client.ui.editor.module.job.JobHistoryPanel;
 import se.trixon.jota.client.ui.editor.module.job.JobLogPanel;
 import se.trixon.jota.client.ui.editor.module.job.JobNotePanel;
 import se.trixon.jota.shared.job.Job;
-import se.trixon.util.dictionary.Dict;
+import se.trixon.almond.util.Dict;
 
 /**
  *
