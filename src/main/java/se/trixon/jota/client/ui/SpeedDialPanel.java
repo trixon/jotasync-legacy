@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,6 +36,14 @@ import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import se.trixon.almond.util.AlmondOptions;
+import se.trixon.almond.util.AlmondOptions.AlmondOptionsWatcher;
+import se.trixon.almond.util.AlmondUI;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.icons.IconColor;
+import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
@@ -45,17 +53,12 @@ import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobComboBoxRenderer;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.BundleHelper;
-import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.icons.IconColor;
-import se.trixon.almond.util.icons.material.MaterialIcon;
-import se.trixon.almond.util.swing.SwingHelper;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public final class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, TabListener {
+public final class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, TabListener, AlmondOptionsWatcher {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mEditMenuItem;
@@ -67,6 +70,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Manager mManager = Manager.getInstance();
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
+    private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
 
     /**
      * Creates new form SpeedDialPanel
@@ -85,6 +89,13 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     @Override
     public JButton getMenuButton() {
         return menuButton;
+    }
+
+    @Override
+    public void onAlmondOptions(AlmondOptions.AlmondOptionsEvent almondOptionsEvent) {
+        if (almondOptionsEvent == AlmondOptions.AlmondOptionsEvent.ICON_THEME) {
+            updateIcons(mAlmondOptions.getIconColor());
+        }
     }
 
     @Override
@@ -271,9 +282,9 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     @Override
     public void updateUI() {
         super.updateUI();
-        if (mPopupMenu != null && mOptions.isForceLookAndFeel()) {
+        if (mPopupMenu != null && mAlmondOptions.isForceLookAndFeel()) {
             try {
-                UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
+                UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mAlmondOptions.getLookAndFeel()));
                 SwingUtilities.updateComponentTreeUI(mPopupMenu);
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 //Xlog.timedErr(ex.getMessage());
@@ -282,7 +293,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     }
 
     private void init() {
-        updateIcons(UI.getInstance().getIconColor());
+        updateIcons(mAlmondOptions.getIconColor());
 
         startButton.setToolTipText(Dict.START.toString());
         menuButton.setToolTipText(Dict.MENU.toString());
@@ -363,16 +374,13 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
                         }
                     }
                 }
-            } else if (key.equalsIgnoreCase(ClientOptions.KEY_ICON_THEME)) {
-                updateIcons(UI.getInstance().getIconColor());
             }
-
         });
     }
 
     private void updateIcons(IconColor iconColor) {
-        startButton.setIcon(MaterialIcon.Av.PLAY_ARROW.get(UI.ICON_SIZE_LARGE, iconColor));
-        menuButton.setIcon(MaterialIcon.Navigation.MENU.get(UI.ICON_SIZE_LARGE, iconColor));
+        startButton.setIcon(MaterialIcon.Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        menuButton.setIcon(MaterialIcon.Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
     }
 
     /**

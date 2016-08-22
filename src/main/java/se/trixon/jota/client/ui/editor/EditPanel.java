@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,8 @@ import java.util.Arrays;
 import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
-import se.trixon.jota.client.ui.UI;
+import se.trixon.almond.util.AlmondOptions;
+import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.icon.Pict;
 import se.trixon.almond.util.icons.IconColor;
@@ -32,8 +33,9 @@ import se.trixon.almond.util.icons.material.MaterialIcon;
  */
 public abstract class EditPanel extends javax.swing.JPanel {
 
-    private static final int ICON_SIZE = UI.ICON_SIZE_LARGE;
+    private static final int ICON_SIZE = AlmondUI.ICON_SIZE_NORMAL;
     private DefaultListModel mModel = new DefaultListModel();
+    private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
 
     /**
      * Creates new form EditPanel
@@ -76,7 +78,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
             }
         }
 
-        IconColor iconColor = UI.getInstance().getIconColor();
+        IconColor iconColor = mAlmondOptions.getIconColor();
 
         addButton.setIcon(MaterialIcon.Content.ADD.get(ICON_SIZE, iconColor));
         cloneButton.setIcon(MaterialIcon.Content.CONTENT_COPY.get(ICON_SIZE, iconColor));

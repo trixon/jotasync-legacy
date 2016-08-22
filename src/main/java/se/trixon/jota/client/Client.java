@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,11 +33,14 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import se.trixon.almond.util.AlmondUI;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.Xlog;
 import se.trixon.jota.client.ui.MainFrame;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
@@ -50,11 +53,6 @@ import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.BundleHelper;
-import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.Xlog;
-import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.swing.SwingHelper;
 
 /**
  *
@@ -63,7 +61,6 @@ import se.trixon.almond.util.swing.SwingHelper;
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
 
     private final ResourceBundle mBundle = BundleHelper.getBundle(Jota.class, "Bundle");
-
     private VMID mClientVmid;
     private Job mCurrentJob;
     private boolean mExitOnException;
@@ -80,6 +77,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private ServerEventListener mServerEventListener;
     private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
+    private final AlmondUI mAlmondUI = AlmondUI.getInstance();
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
@@ -314,8 +312,9 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
             return;
         }
-        
-        UIManager.installLookAndFeel("Darcula", "com.bulenkov.darcula.DarculaLaf");
+
+        mAlmondUI.installDarcula();
+        mAlmondUI.initLookAndFeel();
 
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {
             try {
@@ -324,14 +323,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                 }
             } catch (URISyntaxException | IOException | NotBoundException ex) {
                 Xlog.timedErr(ex.getLocalizedMessage());
-            }
-        }
-
-        if (mOptions.isForceLookAndFeel()) {
-            try {
-                UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                Xlog.timedErr(ex.getMessage());
             }
         }
 
@@ -346,6 +337,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                     mManager.disconnect();
                 }
             });
+
             mMainFrame.setVisible(true);
         });
     }

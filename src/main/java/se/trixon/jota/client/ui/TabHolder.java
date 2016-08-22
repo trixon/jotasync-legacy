@@ -22,7 +22,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
-import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -32,7 +31,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import se.trixon.jota.client.ClientOptions;
+import se.trixon.almond.util.AlmondOptions;
+import se.trixon.almond.util.AlmondOptions.AlmondOptionsEvent;
+import se.trixon.almond.util.AlmondOptions.AlmondOptionsWatcher;
+import se.trixon.almond.util.AlmondUI;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.icons.IconColor;
+import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ui.MainFrame.ActionManager;
@@ -41,16 +47,12 @@ import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.icons.IconColor;
-import se.trixon.almond.util.icons.material.MaterialIcon;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class TabHolder extends JTabbedPane implements ConnectionListener, ServerEventListener {
+public class TabHolder extends JTabbedPane implements ConnectionListener, ServerEventListener, AlmondOptionsWatcher {
 
     private ActionManager mActionManager;
     private Action mCloseAction;
@@ -59,7 +61,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private final Manager mManager = Manager.getInstance();
     private MouseAdapter mMenuMouseAdapter;
     private Action mSaveAction;
-    private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
 
     /**
      * Creates new form ProgressPane
@@ -71,6 +73,13 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
     public SpeedDialPanel getSpeedDialPanel() {
         return mSpeedDialPanel;
+    }
+
+    @Override
+    public void onAlmondOptions(AlmondOptionsEvent almondOptionsEvent) {
+        if (almondOptionsEvent == AlmondOptionsEvent.ICON_THEME) {
+            updateIcons();
+        }
     }
 
     @Override
@@ -292,8 +301,8 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     }
 
     private void updateIcons() {
-        IconColor iconColor = UI.getInstance().getIconColor();
-        setIconAt(0, MaterialIcon.Action.HOME.get(UI.ICON_SIZE_LARGE, iconColor));
+        IconColor iconColor = mAlmondOptions.getIconColor();
+        setIconAt(0, MaterialIcon.Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
 
         mJobMap.values().stream().forEach((tabItem) -> {
             tabItem.updateIcons(iconColor);
@@ -303,14 +312,8 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private void init() {
         setFocusTraversalKeysEnabled(false);
         mSpeedDialPanel = new SpeedDialPanel();
-        add(mSpeedDialPanel, MaterialIcon.Action.HOME.get(UI.ICON_SIZE_LARGE, UI.getInstance().getIconColor()));
+        add(mSpeedDialPanel, MaterialIcon.Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, mAlmondOptions.getIconColor()));
         updateIcons();
-        mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
-            String key = evt.getKey();
-            if (key.equalsIgnoreCase(ClientOptions.KEY_ICON_THEME)) {
-                updateIcons();
-            }
-        });
 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);

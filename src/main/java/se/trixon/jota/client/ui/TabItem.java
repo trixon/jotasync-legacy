@@ -28,14 +28,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import se.trixon.jota.client.Manager;
-import se.trixon.jota.shared.ProcessEvent;
-import se.trixon.jota.shared.job.Job;
+import se.trixon.almond.util.AlmondOptions;
+import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.dialogs.Message;
 import se.trixon.almond.util.swing.dialogs.SimpleDialog;
+import se.trixon.jota.client.Manager;
+import se.trixon.jota.shared.ProcessEvent;
+import se.trixon.jota.shared.job.Job;
 
 /**
  *
@@ -51,6 +53,7 @@ public class TabItem extends JPanel implements TabListener {
     private final Manager mManager = Manager.getInstance();
     private long mTimeFinished;
     private Progress mProgress;
+    private AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
 
     /**
      * Creates new form TabItem
@@ -195,14 +198,14 @@ public class TabItem extends JPanel implements TabListener {
         closeButton.setVisible(false);
 
         mProgress = new Progress();
-        updateIcons(UI.getInstance().getIconColor());
+        updateIcons(mAlmondOptions.getIconColor());
     }
 
     void updateIcons(IconColor iconColor) {
-        cancelButton.setIcon(MaterialIcon.Navigation.CANCEL.get(UI.ICON_SIZE_LARGE, iconColor));
-        editButton.setIcon(MaterialIcon.Editor.MODE_EDIT.get(UI.ICON_SIZE_LARGE, iconColor));
-        menuButton.setIcon(MaterialIcon.Navigation.MENU.get(UI.ICON_SIZE_LARGE, iconColor));
-        startButton.setIcon(MaterialIcon.Av.PLAY_ARROW.get(UI.ICON_SIZE_LARGE, iconColor));
+        cancelButton.setIcon(MaterialIcon.Navigation.CANCEL.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        editButton.setIcon(MaterialIcon.Editor.MODE_EDIT.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        menuButton.setIcon(MaterialIcon.Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        startButton.setIcon(MaterialIcon.Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
     }
 
     /**

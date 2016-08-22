@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,8 +31,6 @@ import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -49,13 +47,21 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.lang3.SystemUtils;
+import se.trixon.almond.util.AlmondAction;
+import se.trixon.almond.util.AlmondOptions;
+import se.trixon.almond.util.AlmondOptions.AlmondOptionsWatcher;
+import se.trixon.almond.util.AlmondUI;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.icon.Pict;
+import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.swing.SwingHelper;
+import se.trixon.almond.util.swing.dialogs.HtmlPanel;
+import se.trixon.almond.util.swing.dialogs.Message;
 import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ClientOptions;
-import se.trixon.jota.client.ClientOptions.ClientOptionsEvent;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Main;
 import se.trixon.jota.client.Manager;
@@ -67,21 +73,12 @@ import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.BundleHelper;
-import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.icon.Pict;
-import se.trixon.almond.util.icons.IconColor;
-import se.trixon.almond.util.icons.material.MaterialIcon;
-import se.trixon.almond.util.swing.SwingHelper;
-import se.trixon.almond.util.swing.dialogs.HtmlPanel;
-import se.trixon.almond.util.swing.dialogs.Message;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener {
+public class MainFrame extends JFrame implements AlmondOptionsWatcher, ConnectionListener, ServerEventListener {
 
     private ActionManager mActionManager;
     private boolean mShutdownInProgress;
@@ -89,10 +86,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Client mClient;
     private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
-    private final LinkedList<JotaAction> mServerActions = new LinkedList<>();
-    private final LinkedList<JotaAction> mAllActions = new LinkedList<>();
+    private final LinkedList<AlmondAction> mServerActions = new LinkedList<>();
+    private final LinkedList<AlmondAction> mAllActions = new LinkedList<>();
     private final Manager mManager = Manager.getInstance();
     private TabHolder mTabHolder;
+    private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
+    private final AlmondUI mAlmondUI = AlmondUI.getInstance();
 
     /**
      * Creates new form MainFrame
@@ -115,6 +114,37 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             SwingUtilities.invokeLater(() -> {
                 //showEditor(-1);
             });
+        }
+    }
+
+    @Override
+    public void onAlmondOptions(AlmondOptions.AlmondOptionsEvent almondOptionsEvent) {
+        switch (almondOptionsEvent) {
+            case ICON_THEME:
+                mAllActions.stream().forEach((almondAction) -> {
+                    almondAction.updateIcon();
+                });
+                break;
+
+            case LOOK_AND_FEEL:
+                SwingUtilities.updateComponentTreeUI(this);
+                SwingUtilities.updateComponentTreeUI(sPopupMenu);
+                break;
+
+            case MENU_ICONS:
+                ActionMap actionMap = getRootPane().getActionMap();
+                for (Object key : actionMap.allKeys()) {
+                    Action action = actionMap.get(key);
+                    Icon icon = null;
+                    if (mAlmondOptions.isDisplayMenuIcons()) {
+                        icon = (Icon) action.getValue(AlmondAction.ALMOND_SMALL_ICON_KEY);
+                    }
+                    action.putValue(Action.SMALL_ICON, icon);
+                }
+                break;
+
+            default:
+                throw new AssertionError();
         }
     }
 
@@ -235,20 +265,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         ImageIcon imageIcon = new ImageIcon(getClass().getResource(fileName));
         setIconImage(imageIcon.getImage());
 
-        mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
-            String key = evt.getKey();
-            if (key.equalsIgnoreCase(ClientOptions.KEY_MENU_ICONS)) {
-                loadClientOption(ClientOptionsEvent.MENU_ICONS);
-            } else if (key.equalsIgnoreCase(ClientOptions.KEY_FORCE_LOOK_AND_FEEL)
-                    || key.equalsIgnoreCase(ClientOptions.KEY_LOOK_AND_FEEL)) {
-                loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
-            } else if (key.equalsIgnoreCase(ClientOptions.KEY_ICON_THEME)) {
-                mAllActions.stream().forEach((jotaAction) -> {
-                    jotaAction.updateIcon();
-                });
-            }
-        });
-
         mActionManager = new ActionManager();
         mActionManager.initActions();
 
@@ -257,63 +273,14 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         mTabHolder.initActions();
         mManager.addConnectionListeners(this);
 
-        loadClientOption(ClientOptionsEvent.LOOK_AND_FEEL);
-        loadClientOption(ClientOptionsEvent.MENU_ICONS);
-
         updateWindowTitle();
-
-        try {
-            SwingHelper.frameStateRestore(this, 800, 600);
-        } catch (BackingStoreException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        mAlmondUI.addOptionsWatcher(this);
+        mAlmondUI.addWindowWatcher(this);
+        mAlmondUI.initoptions();
     }
 
     public static JPopupMenu getPopupMenu() {
         return sPopupMenu;
-    }
-
-    private void loadClientOption(ClientOptionsEvent clientOptionEvent) {
-        switch (clientOptionEvent) {
-            case LOOK_AND_FEEL:
-                if (mOptions.isForceLookAndFeel()) {
-                    SwingUtilities.invokeLater(() -> {
-                        try {
-                            UIManager.setLookAndFeel(SwingHelper.getLookAndFeelClassName(mOptions.getLookAndFeel()));
-                            SwingUtilities.updateComponentTreeUI(MainFrame.this);
-                            SwingUtilities.updateComponentTreeUI(sPopupMenu);
-
-                            if (mOptions.getLookAndFeel().equalsIgnoreCase("Darcula")) {
-                                int iconSize = 32;
-                                UIDefaults uiDefaults = UIManager.getLookAndFeelDefaults();
-                                uiDefaults.put("OptionPane.informationIcon", MaterialIcon.Action.INFO_OUTLINE.get(iconSize, IconColor.WHITE));
-                                uiDefaults.put("OptionPane.errorIcon", MaterialIcon.Alert.ERROR_OUTLINE.get(iconSize, IconColor.WHITE));
-                                uiDefaults.put("OptionPane.questionIcon", MaterialIcon.Action.HELP_OUTLINE.get(iconSize, IconColor.WHITE));
-                                uiDefaults.put("OptionPane.warningIcon", MaterialIcon.Alert.WARNING.get(iconSize, IconColor.WHITE));
-                            }
-                        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                            //Xlog.timedErr(ex.getMessage());
-                        }
-                    });
-                }
-                break;
-
-            case MENU_ICONS:
-                ActionMap actionMap = getRootPane().getActionMap();
-                for (Object allKey : actionMap.allKeys()) {
-                    Action action = actionMap.get(allKey);
-                    Icon icon = null;
-                    if (mOptions.isDisplayMenuIcons()) {
-                        icon = (Icon) action.getValue(ActionManager.JOTA_SMALL_ICON_KEY);
-                    }
-                    action.putValue(Action.SMALL_ICON, icon);
-                }
-                break;
-
-            default:
-                throw new AssertionError();
-        }
-
     }
 
     private void loadConfiguration() {
@@ -553,7 +520,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         static final String CRON = "cron";
         static final String DISCONNECT = "disconnect";
         static final String JOB_EDITOR = "jobeditor";
-        static final String JOTA_SMALL_ICON_KEY = "jota_small_icon";
         static final String OPTIONS = "options";
         static final String QUIT = "shutdownServerAndWindow";
         static final String SAVE_TAB = "saveTab";
@@ -569,7 +535,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             return getRootPane().getActionMap().get(key);
         }
 
-        private void initAction(JotaAction action, String key, KeyStroke keyStroke, Enum iconEnum, boolean serverAction) {
+        private void initAction(AlmondAction action, String key, KeyStroke keyStroke, Enum iconEnum, boolean serverAction) {
             InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             ActionMap actionMap = getRootPane().getActionMap();
 
@@ -590,13 +556,13 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         }
 
         private void initActions() {
-            JotaAction action;
+            AlmondAction action;
             KeyStroke keyStroke;
             int commandMask = SystemHelper.getCommandMask();
 
             //connect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask);
-            action = new JotaAction(Dict.CONNECT_TO_SERVER.toString()) {
+            action = new AlmondAction(Dict.CONNECT_TO_SERVER.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -613,7 +579,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //disconnect
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask);
-            action = new JotaAction(Dict.DISCONNECT.toString()) {
+            action = new AlmondAction(Dict.DISCONNECT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -626,7 +592,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //cron
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, commandMask);
-            action = new JotaAction(mBundle.getString("schedule")) {
+            action = new AlmondAction(mBundle.getString("schedule")) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -652,7 +618,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //jobEditor
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_J, commandMask);
-            action = new JotaAction(mBundle.getString("jobEditor")) {
+            action = new AlmondAction(mBundle.getString("jobEditor")) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -666,7 +632,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             //options
             int optionsKey = SystemUtils.IS_OS_MAC ? KeyEvent.VK_COMMA : KeyEvent.VK_P;
             keyStroke = KeyStroke.getKeyStroke(optionsKey, commandMask);
-            action = new JotaAction(Dict.OPTIONS.toString()) {
+            action = new AlmondAction(Dict.OPTIONS.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -679,7 +645,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //about
             keyStroke = null;
-            action = new JotaAction(Dict.ABOUT.toString()) {
+            action = new AlmondAction(Dict.ABOUT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -693,7 +659,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //about rsync
             keyStroke = null;
-            action = new JotaAction(String.format(Dict.ABOUT_S.toString(), "rsync")) {
+            action = new AlmondAction(String.format(Dict.ABOUT_S.toString(), "rsync")) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -711,7 +677,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //start Server
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask | InputEvent.SHIFT_MASK);
-            action = new JotaAction(Dict.START.toString()) {
+            action = new AlmondAction(Dict.START.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -730,7 +696,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //shutdown Server
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask | InputEvent.SHIFT_MASK);
-            action = new JotaAction(Dict.SHUTDOWN.toString()) {
+            action = new AlmondAction(Dict.SHUTDOWN.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -743,7 +709,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //shutdown server and quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask + InputEvent.SHIFT_MASK);
-            action = new JotaAction(Dict.SHUTDOWN_AND_QUIT.toString()) {
+            action = new AlmondAction(Dict.SHUTDOWN_AND_QUIT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -757,7 +723,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //quit
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask);
-            action = new JotaAction(Dict.QUIT.toString()) {
+            action = new AlmondAction(Dict.QUIT.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -770,7 +736,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //save tab
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, commandMask);
-            action = new JotaAction(Dict.SAVE.toString()) {
+            action = new AlmondAction(Dict.SAVE.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -783,7 +749,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
             //close tab
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, commandMask);
-            action = new JotaAction(Dict.TAB_CLOSE.toString()) {
+            action = new AlmondAction(Dict.TAB_CLOSE.toString()) {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {

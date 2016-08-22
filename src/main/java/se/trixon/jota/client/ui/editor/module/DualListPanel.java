@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,14 +20,15 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import se.trixon.jota.client.ui.UI;
-import se.trixon.jota.client.ui.editor.module.task.OptionHandler;
-import se.trixon.jota.client.ui.editor.module.task.RsyncOption;
+import se.trixon.almond.util.AlmondOptions;
+import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.icon.Pict;
 import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.dialogs.Message;
+import se.trixon.jota.client.ui.editor.module.task.OptionHandler;
+import se.trixon.jota.client.ui.editor.module.task.RsyncOption;
 
 /**
  *
@@ -35,7 +36,8 @@ import se.trixon.almond.util.swing.dialogs.Message;
  */
 public class DualListPanel extends javax.swing.JPanel {
 
-    private static final int ICON_SIZE = UI.ICON_SIZE_LARGE;
+    private static final int ICON_SIZE = AlmondUI.ICON_SIZE_NORMAL;
+    private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
 
     /**
      * Creates new form DualListPanel
@@ -87,7 +89,7 @@ public class DualListPanel extends javax.swing.JPanel {
     }
 
     private void init() {
-        IconColor iconColor = UI.getInstance().getIconColor();
+        IconColor iconColor = mAlmondOptions.getIconColor();
         removeAllButton.setIcon(MaterialIcon.Content.CLEAR.get(ICON_SIZE, iconColor));
 
         activateButton.setIcon(MaterialIcon.Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
