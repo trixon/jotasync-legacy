@@ -223,7 +223,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                     mManager.getServerCommander().startJob(job, dryRun);
                 }
             } else {
-                Message.html(this, Dict.ERROR_VALIDATION.toString(), validator.getSummaryAsHtml());
+                Message.html(this, Dict.Dialog.ERROR_VALIDATION.toString(), validator.getSummaryAsHtml());
             }
         } catch (RemoteException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -342,9 +342,9 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
                 mOptions.setHosts(SwingHelper.comboBoxModelToString(comboBoxModel));
             } catch (NumberFormatException e) {
-                Message.error(this, Dict.ERROR.toString(), String.format(Dict.INVALID_PORT.toString(), portString));
+                Message.error(this, Dict.Dialog.ERROR.toString(), String.format(Dict.INVALID_PORT.toString(), portString));
             } catch (NotBoundException | MalformedURLException | RemoteException | SocketException ex) {
-                Message.error(this, Dict.ERROR.toString(), ex.getLocalizedMessage());
+                Message.error(this, Dict.Dialog.ERROR.toString(), ex.getLocalizedMessage());
                 mClient.setHost(currentHost);
                 mClient.setPortHost(currentPort);
             }

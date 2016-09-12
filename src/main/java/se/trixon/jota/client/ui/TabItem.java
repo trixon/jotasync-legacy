@@ -169,7 +169,7 @@ public class TabItem extends JPanel implements TabListener {
             try {
                 FileUtils.writeStringToFile(SimpleDialog.getPath(), logPanel.getText());
             } catch (IOException ex) {
-                Message.error(this, Dict.IO_ERROR_TITLE.toString(), ex.getLocalizedMessage());
+                Message.error(this, Dict.Dialog.TITLE_IO_ERROR.toString(), ex.getLocalizedMessage());
             }
         }
     }
@@ -310,7 +310,7 @@ public class TabItem extends JPanel implements TabListener {
         try {
             Job job = mManager.getServerCommander().getJob(mJob.getId());
             if (job == null) {
-                Message.error(this, Dict.ERROR.toString(), Dict.JOB_NOT_FOUND.toString());
+                Message.error(this, Dict.Dialog.ERROR.toString(), Dict.JOB_NOT_FOUND.toString());
             } else {
                 mJob = job;
                 MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(this);

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,10 @@ package se.trixon.jota.shared.task;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ResourceBundle;
-import se.trixon.jota.client.ui.editor.module.task.TaskExcludePanel;
-import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
 import se.trixon.almond.util.BundleHelper;
 import se.trixon.almond.util.Dict;
+import se.trixon.jota.client.ui.editor.module.task.TaskExcludePanel;
+import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
 
 /**
  *
@@ -95,7 +95,7 @@ public class TaskValidator implements Serializable {
         File file = new File(command);
         if (active && !file.exists()) {
             mInvalid = true;
-            addSummary(header, String.format("%s: %s", Dict.FILE_NOT_FOUND_TITLE.toString(), command));
+            addSummary(header, String.format("%s: %s", Dict.Dialog.TITLE_FILE_NOT_FOUND.toString(), command));
         }
     }
 }

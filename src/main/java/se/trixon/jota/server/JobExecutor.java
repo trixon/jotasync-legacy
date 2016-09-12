@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.Xlog;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
 import se.trixon.jota.shared.Jota;
@@ -36,10 +40,6 @@ import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobExecuteSection;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskExecuteSection;
-import se.trixon.almond.util.BundleHelper;
-import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.Xlog;
-import se.trixon.almond.util.Dict;
 
 /**
  *
@@ -190,7 +190,7 @@ class JobExecutor extends Thread {
                 status = Dict.DONE.toString();
                 success = true;
             } else {
-                status = Dict.ERROR.toString();
+                status = Dict.Dialog.ERROR.toString();
             }
             s = String.format("%s %s: '%s'", Jota.nowToDateTime(), status, description);
             mOutBuffer.append(s).append("\n");
@@ -201,7 +201,7 @@ class JobExecutor extends Thread {
                 throw new ExecutionFailedException(string);
             }
         } else {
-            s = String.format("%s: %s", Dict.FILE_NOT_FOUND_TITLE.toString(), command);
+            s = String.format("%s: %s", Dict.Dialog.TITLE_FILE_NOT_FOUND.toString(), command);
             if (stopOnError) {
                 throw new ExecutionFailedException(s);
             } else {
@@ -263,7 +263,7 @@ class JobExecutor extends Thread {
         TaskExecuteSection taskExecute = task.getExecuteSection();
         String command;
 
-        // run before 
+        // run before
         command = taskExecute.getBeforeCommand();
         if (taskExecute.isBefore() && StringUtils.isNoneEmpty(command)) {
             doNextStep = runTaskStep(command, taskExecute.isBeforeHaltOnError(), mTaskExecBundle.getString("TaskExecutePanel.beforePanel.header"));
