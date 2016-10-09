@@ -90,10 +90,10 @@ public class DualListPanel extends javax.swing.JPanel {
 
     private void init() {
         IconColor iconColor = mAlmondOptions.getIconColor();
-        removeAllButton.setIcon(MaterialIcon.Content.CLEAR.get(ICON_SIZE, iconColor));
+        removeAllButton.setIcon(MaterialIcon._Content.CLEAR.get(ICON_SIZE, iconColor));
 
-        activateButton.setIcon(MaterialIcon.Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
-        deactivateButton.setIcon(MaterialIcon.Navigation.ARROW_FORWARD.get(ICON_SIZE, iconColor));
+        activateButton.setIcon(MaterialIcon._Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
+        deactivateButton.setIcon(MaterialIcon._Navigation.ARROW_FORWARD.get(ICON_SIZE, iconColor));
     }
 
     private void initListeners() {

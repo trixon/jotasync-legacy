@@ -55,7 +55,6 @@ import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.BundleHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.icon.Pict;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.HtmlPanel;
@@ -574,7 +573,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
             };
 
-            initAction(action, CONNECT, keyStroke, MaterialIcon.Communication.CALL_MADE, false);
+            initAction(action, CONNECT, keyStroke, MaterialIcon._Communication.CALL_MADE, false);
             connectMenuItem.setAction(action);
 
             //disconnect
@@ -587,7 +586,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
             };
 
-            initAction(action, DISCONNECT, keyStroke, MaterialIcon.Communication.CALL_RECEIVED, true);
+            initAction(action, DISCONNECT, keyStroke, MaterialIcon._Communication.CALL_RECEIVED, true);
             disconnectMenuItem.setAction(action);
 
             //cron
@@ -612,7 +611,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
             };
 
-            initAction(action, CRON, keyStroke, MaterialIcon.Action.SCHEDULE, true);
+            initAction(action, CRON, keyStroke, MaterialIcon._Action.SCHEDULE, true);
             action.putValue(Action.SELECTED_KEY, false);
             cronCheckBoxMenuItem.setAction(action);
 
@@ -626,7 +625,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
             };
 
-            initAction(action, JOB_EDITOR, keyStroke, MaterialIcon.Editor.MODE_EDIT, true);
+            initAction(action, JOB_EDITOR, keyStroke, MaterialIcon._Editor.MODE_EDIT, true);
             jobEditorMenuItem.setAction(action);
 
             //options
@@ -640,7 +639,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
             };
 
-            initAction(action, OPTIONS, keyStroke, MaterialIcon.Action.SETTINGS, false);
+            initAction(action, OPTIONS, keyStroke, MaterialIcon._Action.SETTINGS, false);
             optionsMenuItem.setAction(action);
 
             //about
@@ -731,7 +730,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
             };
 
-            initAction(action, QUIT, keyStroke, Pict.Actions.APPLICATION_EXIT, false);
+            initAction(action, QUIT, keyStroke, MaterialIcon._Content.CLEAR, false);
             quitMenuItem.setAction(action);
 
             //save tab
@@ -744,7 +743,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
             };
 
-            initAction(action, SAVE_TAB, keyStroke, MaterialIcon.Content.SAVE, true);
+            initAction(action, SAVE_TAB, keyStroke, MaterialIcon._Content.SAVE, true);
             saveMenuItem.setAction(action);
 
             //close tab
@@ -757,7 +756,7 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
                 }
             };
 
-            initAction(action, CLOSE_TAB, keyStroke, MaterialIcon.Navigation.CLOSE, true);
+            initAction(action, CLOSE_TAB, keyStroke, MaterialIcon._Navigation.CLOSE, true);
             closeMenuItem.setAction(action);
 
             for (Component component : sPopupMenu.getComponents()) {

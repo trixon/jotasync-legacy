@@ -379,8 +379,8 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     }
 
     private void updateIcons(IconColor iconColor) {
-        startButton.setIcon(MaterialIcon.Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
-        menuButton.setIcon(MaterialIcon.Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        startButton.setIcon(MaterialIcon._Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        menuButton.setIcon(MaterialIcon._Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
     }
 
     /**

@@ -302,7 +302,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
     private void updateIcons() {
         IconColor iconColor = mAlmondOptions.getIconColor();
-        setIconAt(0, MaterialIcon.Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        setIconAt(0, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
 
         mJobMap.values().stream().forEach((tabItem) -> {
             tabItem.updateIcons(iconColor);
@@ -312,7 +312,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private void init() {
         setFocusTraversalKeysEnabled(false);
         mSpeedDialPanel = new SpeedDialPanel();
-        add(mSpeedDialPanel, MaterialIcon.Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, mAlmondOptions.getIconColor()));
+        add(mSpeedDialPanel, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, mAlmondOptions.getIconColor()));
         updateIcons();
 
         mManager.addConnectionListeners(this);

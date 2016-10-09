@@ -69,7 +69,7 @@ public class TabCloser extends JPanel {
 
     void postSetAction() {
         mButton.setText(null);
-        mButton.setIcon(MaterialIcon.Navigation.CLOSE.get(ICON_SIZE, mAlmondOptions.getIconColor()));
+        mButton.setIcon(MaterialIcon._Navigation.CLOSE.get(ICON_SIZE, mAlmondOptions.getIconColor()));
     }
 
     class TabButton extends JButton {
@@ -81,7 +81,7 @@ public class TabCloser extends JPanel {
 
         @Override
         public void updateUI() {
-            setIcon(MaterialIcon.Navigation.CLOSE.get(ICON_SIZE, mAlmondOptions.getIconColor()));
+            setIcon(MaterialIcon._Navigation.CLOSE.get(ICON_SIZE, mAlmondOptions.getIconColor()));
         }
 
         private void init() {
@@ -94,7 +94,7 @@ public class TabCloser extends JPanel {
             setBorder(BorderFactory.createEtchedBorder());
             setBorderPainted(false);
             setRolloverEnabled(true);
-            setIcon(MaterialIcon.Navigation.CLOSE.get(ICON_SIZE, mAlmondOptions.getIconColor()));
+            setIcon(MaterialIcon._Navigation.CLOSE.get(ICON_SIZE, mAlmondOptions.getIconColor()));
 
             addMouseListener(new MouseListener() {
                 @Override
@@ -103,17 +103,17 @@ public class TabCloser extends JPanel {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    setIcon(MaterialIcon.Navigation.CANCEL.get(ICON_SIZE, mAlmondOptions.getIconColor()));
+                    setIcon(MaterialIcon._Navigation.CANCEL.get(ICON_SIZE, mAlmondOptions.getIconColor()));
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    setIcon(MaterialIcon.Navigation.CLOSE.get(ICON_SIZE, mAlmondOptions.getIconColor()));
+                    setIcon(MaterialIcon._Navigation.CLOSE.get(ICON_SIZE, mAlmondOptions.getIconColor()));
                 }
 
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    setIcon(MaterialIcon.Navigation.CANCEL.get(ICON_SIZE - 1, mAlmondOptions.getIconColor()));
+                    setIcon(MaterialIcon._Navigation.CANCEL.get(ICON_SIZE - 1, mAlmondOptions.getIconColor()));
                 }
 
                 @Override

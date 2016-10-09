@@ -80,19 +80,19 @@ public abstract class EditPanel extends javax.swing.JPanel {
 
         IconColor iconColor = mAlmondOptions.getIconColor();
 
-        addButton.setIcon(MaterialIcon.Content.ADD.get(ICON_SIZE, iconColor));
-        cloneButton.setIcon(MaterialIcon.Content.CONTENT_COPY.get(ICON_SIZE, iconColor));
-        editButton.setIcon(MaterialIcon.Editor.MODE_EDIT.get(ICON_SIZE, iconColor));
-        removeButton.setIcon(MaterialIcon.Content.REMOVE.get(ICON_SIZE, iconColor));
-        removeAllButton.setIcon(MaterialIcon.Content.CLEAR.get(ICON_SIZE, iconColor));
+        addButton.setIcon(MaterialIcon._Content.ADD.get(ICON_SIZE, iconColor));
+        cloneButton.setIcon(MaterialIcon._Content.CONTENT_COPY.get(ICON_SIZE, iconColor));
+        editButton.setIcon(MaterialIcon._Editor.MODE_EDIT.get(ICON_SIZE, iconColor));
+        removeButton.setIcon(MaterialIcon._Content.REMOVE.get(ICON_SIZE, iconColor));
+        removeAllButton.setIcon(MaterialIcon._Content.CLEAR.get(ICON_SIZE, iconColor));
 
-        activateButton.setIcon(MaterialIcon.Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
-        deactivateButton.setIcon(MaterialIcon.Navigation.ARROW_FORWARD.get(ICON_SIZE, iconColor));
+        activateButton.setIcon(MaterialIcon._Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
+        deactivateButton.setIcon(MaterialIcon._Navigation.ARROW_FORWARD.get(ICON_SIZE, iconColor));
 
-        moveDownButton.setIcon(MaterialIcon.Navigation.ARROW_DOWNWARD.get(ICON_SIZE, iconColor));
-        moveUpButton.setIcon(MaterialIcon.Navigation.ARROW_UPWARD.get(ICON_SIZE, iconColor));
-        moveFirstButton.setIcon(MaterialIcon.Editor.VERTICAL_ALIGN_TOP.get(ICON_SIZE, iconColor));
-        moveLastButton.setIcon(MaterialIcon.Editor.VERTICAL_ALIGN_BOTTOM.get(ICON_SIZE, iconColor));
+        moveDownButton.setIcon(MaterialIcon._Navigation.ARROW_DOWNWARD.get(ICON_SIZE, iconColor));
+        moveUpButton.setIcon(MaterialIcon._Navigation.ARROW_UPWARD.get(ICON_SIZE, iconColor));
+        moveFirstButton.setIcon(MaterialIcon._Editor.VERTICAL_ALIGN_TOP.get(ICON_SIZE, iconColor));
+        moveLastButton.setIcon(MaterialIcon._Editor.VERTICAL_ALIGN_BOTTOM.get(ICON_SIZE, iconColor));
         //list.setModel(mModel);
     }
 

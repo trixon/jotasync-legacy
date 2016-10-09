@@ -202,10 +202,10 @@ public class TabItem extends JPanel implements TabListener {
     }
 
     void updateIcons(IconColor iconColor) {
-        cancelButton.setIcon(MaterialIcon.Navigation.CANCEL.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
-        editButton.setIcon(MaterialIcon.Editor.MODE_EDIT.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
-        menuButton.setIcon(MaterialIcon.Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
-        startButton.setIcon(MaterialIcon.Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        cancelButton.setIcon(MaterialIcon._Navigation.CANCEL.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        editButton.setIcon(MaterialIcon._Editor.MODE_EDIT.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        menuButton.setIcon(MaterialIcon._Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        startButton.setIcon(MaterialIcon._Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
     }
 
     /**
