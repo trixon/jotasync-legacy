@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,9 @@ public class ExcludeSection extends TaskSection {
 
         for (String option : mOptions.split(" ")) {
             for (String option2 : option.split(OPT_SEPARATOR)) {
-                add(option2);
+                if (StringUtils.isNotBlank(option2)) {
+                    add(option2);
+                }
             }
         }
 

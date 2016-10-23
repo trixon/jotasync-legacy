@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,15 +17,15 @@ package se.trixon.jota.client.ui.editor.module.task;
 
 import java.util.ResourceBundle;
 import org.apache.commons.lang3.SystemUtils;
-import static se.trixon.jota.shared.task.TaskSection.OPT_SEPARATOR;
 import se.trixon.almond.util.BundleHelper;
+import static se.trixon.jota.shared.task.TaskSection.OPT_SEPARATOR;
 
 /**
  *
  * @author Patrik Karlsson
  */
 public enum ExcludeOption implements OptionHandler {
-    _DUMMY_WINDOWS("should only be visible on windows", SystemUtils.IS_OS_WINDOWS),
+    //_DUMMY_WINDOWS("should only be visible on windows", SystemUtils.IS_OS_WINDOWS),
     TEMP_DIRS("--exclude=**/*tmp*/", true),
     BACKUP_FILES("--exclude=**~", true),
     CACHE_DIRS("--exclude=**/*cache*/" + OPT_SEPARATOR + "--exclude=**/*Cache*/", true),
