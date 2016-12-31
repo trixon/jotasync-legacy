@@ -17,7 +17,7 @@ package se.trixon.jota.shared;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class JotaServer {
     

@@ -17,7 +17,7 @@ package se.trixon.jota.client;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public interface ConnectionListener {
 

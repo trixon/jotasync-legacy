@@ -36,7 +36,7 @@ import se.trixon.almond.util.swing.dialogs.Message;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public class TasksPanel extends EditPanel {
 

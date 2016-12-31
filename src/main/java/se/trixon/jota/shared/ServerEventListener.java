@@ -20,7 +20,7 @@ import se.trixon.jota.shared.task.Task;
 
 /**
  *
- * @author Patrik Karlsson <patrik@trixon.se>
+ * @author Patrik Karlsson
  */
 public interface ServerEventListener {
 
