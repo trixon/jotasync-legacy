@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.icon.Pict;
 import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.dialogs.Message;
@@ -90,8 +89,8 @@ public class DualListPanel extends javax.swing.JPanel {
 
     private void init() {
         IconColor iconColor = mAlmondOptions.getIconColor();
-        removeAllButton.setIcon(MaterialIcon._Content.CLEAR.get(ICON_SIZE, iconColor));
 
+        removeAllButton.setIcon(MaterialIcon._Content.CLEAR.get(ICON_SIZE, iconColor));
         activateButton.setIcon(MaterialIcon._Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
         deactivateButton.setIcon(MaterialIcon._Navigation.ARROW_FORWARD.get(ICON_SIZE, iconColor));
     }
@@ -188,7 +187,6 @@ public class DualListPanel extends javax.swing.JPanel {
         toolBar.setRollover(true);
         toolBar.add(filler1);
 
-        activateButton.setIcon(Pict.Actions.GO_PREVIOUS.get(ICON_SIZE));
         activateButton.setToolTipText(Dict.ACTIVATE.toString());
         activateButton.setFocusable(false);
         activateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -200,7 +198,6 @@ public class DualListPanel extends javax.swing.JPanel {
         });
         toolBar.add(activateButton);
 
-        deactivateButton.setIcon(Pict.Actions.GO_NEXT.get(ICON_SIZE));
         deactivateButton.setToolTipText(Dict.DEACTIVATE.toString());
         deactivateButton.setFocusable(false);
         deactivateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -212,8 +209,6 @@ public class DualListPanel extends javax.swing.JPanel {
         });
         toolBar.add(deactivateButton);
 
-        removeAllButton.setIcon(Pict.Actions.EDIT_DELETE.get(ICON_SIZE)
-        );
         removeAllButton.setToolTipText(Dict.REMOVE_ALL.toString());
         removeAllButton.setFocusable(false);
         removeAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

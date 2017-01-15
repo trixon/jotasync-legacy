@@ -23,7 +23,6 @@ import javax.swing.SwingUtilities;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.icon.Pict;
 import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 
@@ -80,6 +79,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
 
         IconColor iconColor = mAlmondOptions.getIconColor();
 
+        toggleButton.setIcon(MaterialIcon._Action.SCHEDULE.get(ICON_SIZE, iconColor));
         addButton.setIcon(MaterialIcon._Content.ADD.get(ICON_SIZE, iconColor));
         cloneButton.setIcon(MaterialIcon._Content.CONTENT_COPY.get(ICON_SIZE, iconColor));
         editButton.setIcon(MaterialIcon._Editor.MODE_EDIT.get(ICON_SIZE, iconColor));
@@ -133,7 +133,6 @@ public abstract class EditPanel extends javax.swing.JPanel {
         toolBar.setRollover(true);
         toolBar.add(filler1);
 
-        toggleButton.setIcon(Pict.Actions.CHRONOMETER.get(ICON_SIZE));
         toggleButton.setToolTipText(Dict.SCHEDULE.getString());
         toggleButton.setFocusable(false);
         toggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
