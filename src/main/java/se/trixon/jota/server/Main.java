@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,11 +25,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import se.trixon.jota.shared.Jota;
 import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
-import se.trixon.almond.util.Dict;
+import se.trixon.jota.shared.Jota;
 
 /**
  *
@@ -72,7 +73,8 @@ public class Main {
     }
 
     private static void displayVersion() {
-        System.out.println(String.format(sBundle.getString("version_info"), SystemHelper.getJarVersion(Main.class)));
+        PomInfo pomInfo = new PomInfo(se.trixon.jota.client.Main.class, "se.trixon", "jotasync");
+        System.out.println(String.format(sBundle.getString("version_info"), pomInfo.getVersion()));
     }
 
     private static Options initOptions() {
