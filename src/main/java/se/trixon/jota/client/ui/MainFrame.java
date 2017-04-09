@@ -64,14 +64,14 @@ import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.HtmlPanel;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.almond.util.swing.dialogs.Message;
+import se.trixon.almond.util.swing.dialogs.about.AboutModel;
+import se.trixon.almond.util.swing.dialogs.about.AboutPanel;
 import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.ConnectionListener;
-import se.trixon.jota.client.Main;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ui.editor.EditorPanel;
 import se.trixon.jota.server.JobValidator;
-import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
@@ -725,16 +725,11 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
 
             //about
             keyStroke = null;
-            action = new AlmondAction(Dict.ABOUT.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    PomInfo pomInfo = new PomInfo(Main.class, "se.trixon", "jotasync");
-                    String versionInfo = String.format(Jota.getBundle().getString("version_info"), pomInfo.getVersion());
-                    Message.information(MainFrame.this, Dict.ABOUT.toString(), versionInfo);
-                }
-            };
-
+            PomInfo pomInfo = new PomInfo(MainFrame.class, "se.trixon", "jotasync");
+            AboutModel aboutModel = new AboutModel(BundleHelper.getBundle(MainFrame.class, "about"), SystemHelper.getResourceAsImageIcon(MainFrame.class, "sync-256px.png"));
+            aboutModel.setAppVersion(pomInfo.getVersion());
+            AboutPanel aboutPanel = new AboutPanel(aboutModel);
+            action = AboutPanel.getAction(MainFrame.this, aboutPanel);
             initAction(action, ABOUT, keyStroke, null, false);
             aboutMenuItem.setAction(action);
 
