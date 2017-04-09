@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
@@ -70,8 +70,8 @@ class JobExecutor extends Thread {
         mErrBuffer = new StringBuffer();
         mOutBuffer = new StringBuffer();
 
-        mJobExecBundle = BundleHelper.getBundle(JobExecutePanel.class, "Bundle");
-        mTaskExecBundle = BundleHelper.getBundle(TaskExecutePanel.class, "Bundle");
+        mJobExecBundle = SystemHelper.getBundle(JobExecutePanel.class, "Bundle");
+        mTaskExecBundle = SystemHelper.getBundle(TaskExecutePanel.class, "Bundle");
     }
 
     @Override
@@ -165,7 +165,7 @@ class JobExecutor extends Thread {
     }
 
     private String getRsyncErrorCode(int exitValue) {
-        ResourceBundle bundle = BundleHelper.getBundle(getClass(), "ExitValues");
+        ResourceBundle bundle = SystemHelper.getBundle(getClass(), "ExitValues");
         String key = String.valueOf(exitValue);
 
         return bundle.containsKey(key) ? bundle.getString(key) : String.format((Dict.SYSTEM_CODE.toString()), key);

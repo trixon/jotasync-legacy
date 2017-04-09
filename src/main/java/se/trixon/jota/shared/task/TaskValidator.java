@@ -18,7 +18,7 @@ package se.trixon.jota.shared.task;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ResourceBundle;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.jota.client.ui.editor.module.task.TaskExcludePanel;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
@@ -76,14 +76,14 @@ public class TaskValidator implements Serializable {
 
     private void validateExclusion() {
         ExcludeSection excludeSection = mTask.getExcludeSection();
-        ResourceBundle bundle = BundleHelper.getBundle(TaskExcludePanel.class, "Bundle");
+        ResourceBundle bundle = SystemHelper.getBundle(TaskExcludePanel.class, "Bundle");
 
         validateFile(excludeSection.isManualFileUsed(), excludeSection.getManualFilePath(), bundle.getString("TaskExcludePanel.externalFilePanel.header"));
     }
 
     private void validateExecutors() {
         TaskExecuteSection executeSection = mTask.getExecuteSection();
-        ResourceBundle bundle = BundleHelper.getBundle(TaskExecutePanel.class, "Bundle");
+        ResourceBundle bundle = SystemHelper.getBundle(TaskExecutePanel.class, "Bundle");
 
         validateFile(executeSection.isBefore(), executeSection.getBeforeCommand(), bundle.getString("TaskExecutePanel.beforePanel.header"));
         validateFile(executeSection.isAfterFailure(), executeSection.getAfterFailureCommand(), bundle.getString("TaskExecutePanel.afterFailurePanel.header"));

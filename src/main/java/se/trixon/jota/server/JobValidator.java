@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ResourceBundle;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
 import se.trixon.jota.shared.job.Job;
@@ -73,7 +73,7 @@ public class JobValidator implements Serializable {
     }
 
     private void validateExecutor(boolean active, String command, String key) {
-        ResourceBundle bundle = BundleHelper.getBundle(JobExecutePanel.class, "Bundle");
+        ResourceBundle bundle = SystemHelper.getBundle(JobExecutePanel.class, "Bundle");
         File file = new File(command);
         if (active && !file.exists()) {
             mInvalid = true;

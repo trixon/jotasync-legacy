@@ -37,7 +37,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.AlmondUI;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
@@ -60,7 +60,7 @@ import se.trixon.jota.shared.task.Task;
  */
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
 
-    private final ResourceBundle mBundle = BundleHelper.getBundle(Jota.class, "Bundle");
+    private final ResourceBundle mBundle = SystemHelper.getBundle(Jota.class, "Bundle");
     private VMID mClientVmid;
     private Job mCurrentJob;
     private boolean mExitOnException;

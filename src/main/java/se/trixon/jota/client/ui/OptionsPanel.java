@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JSpinner;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
@@ -36,7 +36,7 @@ public class OptionsPanel extends javax.swing.JPanel {
     private final Manager mManager = Manager.getInstance();
     private final ServerCommander mServerCommander;
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
-    private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
+    private final ResourceBundle mBundle = SystemHelper.getBundle(MainFrame.class, "Bundle");
 
     /**
      * Creates new form OptionsPanel

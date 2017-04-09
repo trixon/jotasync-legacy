@@ -24,7 +24,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
@@ -37,7 +37,7 @@ import se.trixon.jota.shared.Jota;
  */
 public class Main {
 
-    private static final ResourceBundle sBundle = BundleHelper.getBundle(Jota.class, "Bundle");
+    private static final ResourceBundle sBundle = SystemHelper.getBundle(Jota.class, "Bundle");
 
     static final String OPT_CLIENT_PORT = "client-port";
     static final String OPT_CRON = "cron";

@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.SerializationUtils;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.job.Job;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.Message;
@@ -42,7 +42,7 @@ import se.trixon.almond.util.swing.dialogs.Message;
  */
 public final class JobsPanel extends EditPanel {
 
-    private final ResourceBundle mBundle = BundleHelper.getBundle(JobsPanel.class, "Bundle");
+    private final ResourceBundle mBundle = SystemHelper.getBundle(JobsPanel.class, "Bundle");
     private final HashSet<JobsListener> mJobsListeners = new HashSet<>();
     private final Manager mManager = Manager.getInstance();
 

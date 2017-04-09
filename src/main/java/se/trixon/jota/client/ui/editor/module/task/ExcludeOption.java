@@ -17,7 +17,7 @@ package se.trixon.jota.client.ui.editor.module.task;
 
 import java.util.ResourceBundle;
 import org.apache.commons.lang3.SystemUtils;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import static se.trixon.jota.shared.task.TaskSection.OPT_SEPARATOR;
 
 /**
@@ -36,7 +36,7 @@ public enum ExcludeOption implements OptionHandler {
     GVFS("--exclude=**/.gvfs/", SystemUtils.IS_OS_LINUX);
     private final boolean mActive;
     private final String mArg;
-    private final ResourceBundle mBundle = BundleHelper.getBundle(ExcludeOption.class, "ExcludeOption");
+    private final ResourceBundle mBundle = SystemHelper.getBundle(ExcludeOption.class, "ExcludeOption");
     private final String mTitle;
 
     private ExcludeOption(String arg, boolean active) {

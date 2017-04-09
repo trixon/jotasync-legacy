@@ -54,7 +54,7 @@ import se.trixon.almond.util.AlmondAction;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondOptionsPanel;
 import se.trixon.almond.util.AlmondUI;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
@@ -90,7 +90,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private boolean mServerShutdownRequested;
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Client mClient;
-    private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
+    private final ResourceBundle mBundle = SystemHelper.getBundle(MainFrame.class, "Bundle");
     private final LinkedList<AlmondAction> mServerActions = new LinkedList<>();
     private final LinkedList<AlmondAction> mAllActions = new LinkedList<>();
     private final Manager mManager = Manager.getInstance();
@@ -691,7 +691,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             //about
             keyStroke = null;
             PomInfo pomInfo = new PomInfo(MainFrame.class, "se.trixon", "jotasync");
-            AboutModel aboutModel = new AboutModel(BundleHelper.getBundle(MainFrame.class, "about"), SystemHelper.getResourceAsImageIcon(MainFrame.class, "sync-256px.png"));
+            AboutModel aboutModel = new AboutModel(SystemHelper.getBundle(MainFrame.class, "about"), SystemHelper.getResourceAsImageIcon(MainFrame.class, "sync-256px.png"));
             aboutModel.setAppVersion(pomInfo.getVersion());
             AboutPanel aboutPanel = new AboutPanel(aboutModel);
             action = AboutPanel.getAction(MainFrame.this, aboutPanel);

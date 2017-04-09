@@ -18,7 +18,7 @@ package se.trixon.jota.shared;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 
 /**
  *
@@ -29,7 +29,7 @@ public class Jota {
     public static final int DEFAULT_PORT_CLIENT = 1199;
     public static final int DEFAULT_PORT_HOST = 1099;
     public static final String TASK_SEPARATOR = ",";
-    private static final ResourceBundle sBundle = BundleHelper.getBundle(Jota.class, "Bundle");
+    private static final ResourceBundle sBundle = SystemHelper.getBundle(Jota.class, "Bundle");
 
     public static void exit() {
         exit(0);

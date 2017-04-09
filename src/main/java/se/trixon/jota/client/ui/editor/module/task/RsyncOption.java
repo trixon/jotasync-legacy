@@ -17,7 +17,7 @@ package se.trixon.jota.client.ui.editor.module.task;
 
 import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 
 /**
  *
@@ -143,7 +143,7 @@ public enum RsyncOption implements OptionHandler {
     WRITE_BATCH(null, "write-batch=FILE"),
     _8_BIT_OUTPUT("8", "8-bit-output");
 
-    private final ResourceBundle mBundle = BundleHelper.getBundle(RsyncOption.class, "RsyncOption");
+    private final ResourceBundle mBundle = SystemHelper.getBundle(RsyncOption.class, "RsyncOption");
     private final String mLongArg;
     private final String mShortArg;
     private final String mTitle;

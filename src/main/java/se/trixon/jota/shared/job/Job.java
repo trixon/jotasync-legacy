@@ -26,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 
 /**
@@ -174,7 +174,7 @@ public class Job implements Comparable<Job>, Serializable {
     public String getSummaryAsHtml() {
         mSummaryBuilder = new StringBuilder("<html><body>");
         mSummaryBuilder.append("<h1>").append(getName()).append("</h1>");
-        ResourceBundle bundle = BundleHelper.getBundle(JobExecutePanel.class, "Bundle");
+        ResourceBundle bundle = SystemHelper.getBundle(JobExecutePanel.class, "Bundle");
 
         addOptionalToSummary(mExecuteSection.isBefore(), mExecuteSection.getBeforeCommand(), bundle.getString("JobPanel.beforePanel.header"));
         if (mExecuteSection.isBefore() && mExecuteSection.isBeforeHaltOnError()) {

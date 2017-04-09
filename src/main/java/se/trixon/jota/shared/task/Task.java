@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 
 /**
@@ -143,7 +143,7 @@ public class Task implements Comparable<Task>, Serializable {
         addOptionalToSummary(true, getSource(), Dict.SOURCE.toString());
         addOptionalToSummary(true, getDestination(), Dict.DESTINATION.toString());
 
-        ResourceBundle bundle = BundleHelper.getBundle(TaskExecutePanel.class, "Bundle");
+        ResourceBundle bundle = SystemHelper.getBundle(TaskExecutePanel.class, "Bundle");
 
         addOptionalToSummary(mExecuteSection.isBefore(), mExecuteSection.getBeforeCommand(), bundle.getString("TaskExecutePanel.beforePanel.header"));
         if (mExecuteSection.isBefore() && mExecuteSection.isBeforeHaltOnError()) {

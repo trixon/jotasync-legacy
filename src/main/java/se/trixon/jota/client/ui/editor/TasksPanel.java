@@ -29,7 +29,7 @@ import javax.swing.JOptionPane;
 import org.apache.commons.lang3.SerializationUtils;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.Message;
@@ -40,7 +40,7 @@ import se.trixon.almond.util.swing.dialogs.Message;
  */
 public class TasksPanel extends EditPanel {
 
-    private final ResourceBundle mBundle = BundleHelper.getBundle(TasksPanel.class, "Bundle");
+    private final ResourceBundle mBundle = SystemHelper.getBundle(TasksPanel.class, "Bundle");
     private final Manager mManager = Manager.getInstance();
     private final HashSet<TasksListener> mTaskListeners = new HashSet<>();
 

@@ -38,7 +38,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
-import se.trixon.almond.util.BundleHelper;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.SwingHelper;
@@ -68,7 +68,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     private final HashSet<SpeedDialListener> mSpeedDialListeners = new HashSet<>();
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Manager mManager = Manager.getInstance();
-    private final ResourceBundle mBundle = BundleHelper.getBundle(MainFrame.class, "Bundle");
+    private final ResourceBundle mBundle = SystemHelper.getBundle(MainFrame.class, "Bundle");
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
 
     /**
