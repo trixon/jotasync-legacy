@@ -65,8 +65,6 @@ public class OptionsPanel extends javax.swing.JPanel {
         mOptions.setAutostartServer(autostartServerCheckBox.isSelected());
         mOptions.setAutostartServerPort((int) portSpinner.getValue());
         mOptions.setAutostartServerConnectDelay((int) connectDelaySpinner.getValue());
-        lookAndFeelPanel.save();
-        menuModePanel.save();
     }
 
     private void load() {
@@ -97,14 +95,12 @@ public class OptionsPanel extends javax.swing.JPanel {
 
         tabbedPane = new javax.swing.JTabbedPane();
         clientPanel = new javax.swing.JPanel();
-        lookAndFeelPanel = new se.trixon.almond.util.swing.dialogs.LookAndFeelPanel();
         customColorsCheckBox = new javax.swing.JCheckBox();
         autostartServerCheckBox = new javax.swing.JCheckBox();
         portLabel = new javax.swing.JLabel();
         portSpinner = new javax.swing.JSpinner();
         connectDelayLabel = new javax.swing.JLabel();
         connectDelaySpinner = new javax.swing.JSpinner();
-        menuModePanel = new se.trixon.almond.util.swing.dialogs.MenuModePanel();
         serverPanel = new javax.swing.JPanel();
         rsyncFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         logDirFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
@@ -134,7 +130,6 @@ public class OptionsPanel extends javax.swing.JPanel {
             .addGroup(clientPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lookAndFeelPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
                     .addComponent(customColorsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(clientPanelLayout.createSequentialGroup()
                         .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -148,18 +143,13 @@ public class OptionsPanel extends javax.swing.JPanel {
                                     .addComponent(connectDelayLabel)
                                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(autostartServerCheckBox))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(menuModePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 149, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         clientPanelLayout.setVerticalGroup(
             clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(clientPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lookAndFeelPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(menuModePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(customColorsCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autostartServerCheckBox)
@@ -208,7 +198,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+            .addComponent(tabbedPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,8 +222,6 @@ public class OptionsPanel extends javax.swing.JPanel {
     private javax.swing.JSpinner connectDelaySpinner;
     private javax.swing.JCheckBox customColorsCheckBox;
     private se.trixon.almond.util.swing.dialogs.FileChooserPanel logDirFileChooserPanel;
-    private se.trixon.almond.util.swing.dialogs.LookAndFeelPanel lookAndFeelPanel;
-    private se.trixon.almond.util.swing.dialogs.MenuModePanel menuModePanel;
     private javax.swing.JLabel portLabel;
     private javax.swing.JSpinner portSpinner;
     private se.trixon.almond.util.swing.dialogs.FileChooserPanel rsyncFileChooserPanel;

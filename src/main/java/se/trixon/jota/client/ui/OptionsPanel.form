@@ -16,7 +16,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="tabbedPane" alignment="0" pref="435" max="32767" attributes="0"/>
+          <Component id="tabbedPane" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -47,7 +47,6 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lookAndFeelPanel" alignment="1" pref="391" max="32767" attributes="0"/>
                           <Component id="customColorsCheckBox" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -65,9 +64,8 @@
                                   </Group>
                                   <Component id="autostartServerCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="149" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="menuModePanel" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -77,10 +75,6 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lookAndFeelPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="menuModePanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="customColorsCheckBox" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="autostartServerCheckBox" min="-2" max="-2" attributes="0"/>
@@ -100,8 +94,6 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="se.trixon.almond.util.swing.dialogs.LookAndFeelPanel" name="lookAndFeelPanel">
-            </Component>
             <Component class="javax.swing.JCheckBox" name="customColorsCheckBox">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -146,8 +138,6 @@
                   <SpinnerModel initial="500" maximum="3000" minimum="100" numberType="java.lang.Integer" stepSize="100" type="number"/>
                 </Property>
               </Properties>
-            </Component>
-            <Component class="se.trixon.almond.util.swing.dialogs.MenuModePanel" name="menuModePanel">
             </Component>
           </SubComponents>
         </Container>
