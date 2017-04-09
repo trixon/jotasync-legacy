@@ -37,11 +37,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import se.trixon.almond.util.AlmondOptions;
-import se.trixon.almond.util.AlmondOptions.AlmondOptionsWatcher;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.BundleHelper;
 import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
@@ -59,7 +57,7 @@ import se.trixon.jota.shared.task.Task;
  *
  * @author Patrik Karlsson
  */
-public final class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, TabListener, AlmondOptionsWatcher {
+public final class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, TabListener {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mEditMenuItem;
@@ -91,13 +89,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     @Override
     public JButton getMenuButton() {
         return menuButton;
-    }
-
-    @Override
-    public void onAlmondOptions(AlmondOptions.AlmondOptionsEvent almondOptionsEvent) {
-        if (almondOptionsEvent == AlmondOptions.AlmondOptionsEvent.ICON_THEME) {
-            updateIcons(mAlmondOptions.getIconColor());
-        }
     }
 
     @Override
@@ -295,7 +286,8 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     }
 
     private void init() {
-        updateIcons(mAlmondOptions.getIconColor());
+        startButton.setIcon(MaterialIcon._Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, mAlmondOptions.getIconColor()));
+        menuButton.setIcon(MaterialIcon._Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, mAlmondOptions.getIconColor()));
 
         startButton.setToolTipText(Dict.START.toString());
         menuButton.setToolTipText(Dict.MENU.toString());
@@ -378,11 +370,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
                 }
             }
         });
-    }
-
-    private void updateIcons(IconColor iconColor) {
-        startButton.setIcon(MaterialIcon._Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
-        menuButton.setIcon(MaterialIcon._Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
     }
 
     /**

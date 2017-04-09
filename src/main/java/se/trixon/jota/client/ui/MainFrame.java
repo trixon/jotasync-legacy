@@ -37,7 +37,6 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComboBox;
@@ -53,7 +52,6 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.AlmondAction;
 import se.trixon.almond.util.AlmondOptions;
-import se.trixon.almond.util.AlmondOptions.AlmondOptionsWatcher;
 import se.trixon.almond.util.AlmondOptionsPanel;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.BundleHelper;
@@ -83,7 +81,7 @@ import se.trixon.jota.shared.task.Task;
  *
  * @author Patrik Karlsson
  */
-public class MainFrame extends JFrame implements AlmondOptionsWatcher, ConnectionListener, ServerEventListener {
+public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener {
 
     private static final boolean IS_MAC = SystemUtils.IS_OS_MAC;
 
@@ -130,40 +128,6 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
             SwingUtilities.invokeLater(() -> {
                 //showEditor(-1);
             });
-        }
-    }
-
-    @Override
-    public void onAlmondOptions(AlmondOptions.AlmondOptionsEvent almondOptionsEvent) {
-        switch (almondOptionsEvent) {
-            case ICON_THEME:
-                mAllActions.stream().forEach((almondAction) -> {
-                    almondAction.updateIcon();
-                });
-                break;
-
-            case LOOK_AND_FEEL:
-                SwingUtilities.updateComponentTreeUI(this);
-                SwingUtilities.updateComponentTreeUI(sPopupMenu);
-                break;
-
-            case MENU_ICONS:
-                ActionMap actionMap = getRootPane().getActionMap();
-                for (Object key : actionMap.allKeys()) {
-                    Action action = actionMap.get(key);
-                    Icon icon = null;
-                    if (mAlmondOptions.isDisplayMenuIcons()) {
-                        icon = (Icon) action.getValue(AlmondAction.ALMOND_SMALL_ICON_KEY);
-                    }
-                    action.putValue(Action.SMALL_ICON, icon);
-                }
-                break;
-
-            case MENU_MODE:
-                break;
-
-            default:
-                throw new AssertionError();
         }
     }
 
@@ -293,7 +257,6 @@ public class MainFrame extends JFrame implements AlmondOptionsWatcher, Connectio
         mManager.addConnectionListeners(this);
 
         updateWindowTitle();
-        mAlmondUI.addOptionsWatcher(this);
         mAlmondUI.addWindowWatcher(this);
         mAlmondUI.initoptions();
     }

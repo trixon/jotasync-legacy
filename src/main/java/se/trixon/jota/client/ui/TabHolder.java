@@ -32,8 +32,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import se.trixon.almond.util.AlmondOptions;
-import se.trixon.almond.util.AlmondOptions.AlmondOptionsEvent;
-import se.trixon.almond.util.AlmondOptions.AlmondOptionsWatcher;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
@@ -53,7 +51,7 @@ import se.trixon.jota.shared.task.Task;
  *
  * @author Patrik Karlsson
  */
-public class TabHolder extends JTabbedPane implements ConnectionListener, ServerEventListener, AlmondOptionsWatcher {
+public class TabHolder extends JTabbedPane implements ConnectionListener, ServerEventListener {
 
     private ActionManager mActionManager;
     private Action mCloseAction;
@@ -74,13 +72,6 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
     public SpeedDialPanel getSpeedDialPanel() {
         return mSpeedDialPanel;
-    }
-
-    @Override
-    public void onAlmondOptions(AlmondOptionsEvent almondOptionsEvent) {
-        if (almondOptionsEvent == AlmondOptionsEvent.ICON_THEME) {
-            updateIcons();
-        }
     }
 
     @Override
@@ -303,20 +294,17 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         return tabItem;
     }
 
-    private void updateIcons() {
+    private void init() {
+        setFocusTraversalKeysEnabled(false);
+        mSpeedDialPanel = new SpeedDialPanel();
+        add(mSpeedDialPanel, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, mAlmondOptions.getIconColor()));
+
         IconColor iconColor = mAlmondOptions.getIconColor();
         setIconAt(0, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
 
         mJobMap.values().stream().forEach((tabItem) -> {
             tabItem.updateIcons(iconColor);
         });
-    }
-
-    private void init() {
-        setFocusTraversalKeysEnabled(false);
-        mSpeedDialPanel = new SpeedDialPanel();
-        add(mSpeedDialPanel, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, mAlmondOptions.getIconColor()));
-        updateIcons();
 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
