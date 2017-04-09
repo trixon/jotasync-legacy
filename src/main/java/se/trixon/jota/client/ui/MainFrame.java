@@ -54,7 +54,6 @@ import se.trixon.almond.util.AlmondAction;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondOptionsPanel;
 import se.trixon.almond.util.AlmondUI;
-import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
@@ -109,9 +108,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             initMac();
         }
 
-        if (mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BAR) {
-            initMenuBar();
-        }
+        initMenus();
 
         mClient = mManager.getClient();
         loadConfiguration();
@@ -270,41 +267,47 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         macApplication.setPreferencesHandler((AppEvent.PreferencesEvent pe) -> {
             mActionManager.getAction(ActionManager.OPTIONS).actionPerformed(null);
         });
-
-        sPopupMenu.remove(aboutMenuItem);
-        sPopupMenu.remove(optionsMenuItem);
-        sPopupMenu.remove(quitMenuItem);
-        sPopupMenu.remove(jSeparator2);
-        sPopupMenu.remove(jSeparator6);
     }
 
-    private void initMenuBar() {
-        setJMenuBar(menuBar);
+    private void initMenus() {
+        if (mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BUTTON) {
+            setJMenuBar(null);
 
-        toolsMenu.add(jobEditorMenuItem);
-        toolsMenu.add(cronCheckBoxMenuItem);
-        fileMenu.add(connectMenuItem);
-        fileMenu.add(disconnectMenuItem);
-        fileMenu.add(serverMenu);
-        fileMenu.add(new JSeparator());
-        fileMenu.add(saveMenuItem);
+            sPopupMenu.add(connectMenuItem);
+            sPopupMenu.add(disconnectMenuItem);
+            sPopupMenu.add(serverMenu);
+            sPopupMenu.add(new JSeparator());
+            sPopupMenu.add(cronCheckBoxMenuItem);
+            sPopupMenu.add(jobEditorMenuItem);
+            if (!IS_MAC) {
+                sPopupMenu.add(optionsMenuItem);
+            }
+            sPopupMenu.add(new JSeparator());
+            sPopupMenu.add(helpMenuItem);
+            sPopupMenu.add(aboutRsyncMenuItem);
+            if (!IS_MAC) {
+                sPopupMenu.add(aboutMenuItem);
+            }
+            sPopupMenu.add(new JSeparator());
+            sPopupMenu.add(saveMenuItem);
 
-        if (!IS_MAC) {
-            fileMenu.add(new JSeparator());
-            fileMenu.add(quitMenuItem);
+            if (!IS_MAC) {
+                sPopupMenu.add(quitMenuItem);
+            }
 
-            toolsMenu.add(new JSeparator());
-            toolsMenu.add(optionsMenuItem);
+        } else {
+            if (IS_MAC) {
+                fileMenu.remove(quitMenuItem);
+                toolsMenu.remove(optionsMenuItem);
+                helpMenu.remove(aboutMenuItem);
+            }
+
+            fileMenu.setVisible(fileMenu.getComponents().length > 0 || !IS_MAC);
+            toolsMenu.setVisible(toolsMenu.getComponents().length > 0 || !IS_MAC);
         }
 
-        helpMenu.add(helpMenuItem);
-        helpMenu.add(new JSeparator());
-        helpMenu.add(aboutRsyncMenuItem);
-        if (!IS_MAC) {
-            helpMenu.add(aboutMenuItem);
-        }
-
-//        menuButton.setVisible(false);
+        SwingHelper.clearToolTipText(menuBar);
+        SwingHelper.clearToolTipText(sPopupMenu);
     }
 
     public static JPopupMenu getPopupMenu() {
@@ -441,6 +444,8 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private void initComponents() {
 
         sPopupMenu = new javax.swing.JPopupMenu();
+        menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
         connectMenuItem = new javax.swing.JMenuItem();
         disconnectMenuItem = new javax.swing.JMenuItem();
         serverMenu = new javax.swing.JMenu();
@@ -448,54 +453,16 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         shutdownServerMenuItem = new javax.swing.JMenuItem();
         shutdownServerQuitMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        saveMenuItem = new javax.swing.JMenuItem();
+        quitMenuItem = new javax.swing.JMenuItem();
+        toolsMenu = new javax.swing.JMenu();
         cronCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         jobEditorMenuItem = new javax.swing.JMenuItem();
         optionsMenuItem = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        helpMenu = new javax.swing.JMenu();
         helpMenuItem = new javax.swing.JMenuItem();
         aboutRsyncMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
-        jSeparator6 = new javax.swing.JPopupMenu.Separator();
-        saveMenuItem = new javax.swing.JMenuItem();
-        quitMenuItem = new javax.swing.JMenuItem();
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        toolsMenu = new javax.swing.JMenu();
-        helpMenu = new javax.swing.JMenu();
-
-        sPopupMenu.add(connectMenuItem);
-        sPopupMenu.add(disconnectMenuItem);
-
-        serverMenu.setText(Dict.SERVER.toString());
-
-        startServerMenuItem.setText("jMenuItem1");
-        serverMenu.add(startServerMenuItem);
-        serverMenu.add(shutdownServerMenuItem);
-        serverMenu.add(shutdownServerQuitMenuItem);
-
-        sPopupMenu.add(serverMenu);
-        sPopupMenu.add(jSeparator1);
-        sPopupMenu.add(cronCheckBoxMenuItem);
-        sPopupMenu.add(jobEditorMenuItem);
-        sPopupMenu.add(optionsMenuItem);
-        sPopupMenu.add(jSeparator2);
-        sPopupMenu.add(helpMenuItem);
-
-        aboutRsyncMenuItem.setText("jMenuItem1");
-        sPopupMenu.add(aboutRsyncMenuItem);
-        sPopupMenu.add(aboutMenuItem);
-        sPopupMenu.add(jSeparator6);
-        sPopupMenu.add(saveMenuItem);
-        sPopupMenu.add(quitMenuItem);
-
-        fileMenu.setText(Dict.FILE_MENU.toString());
-        menuBar.add(fileMenu);
-
-        toolsMenu.setText(Dict.TOOLS.toString());
-        menuBar.add(toolsMenu);
-
-        helpMenu.setText(Dict.HELP.toString());
-        menuBar.add(helpMenu);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("JotaSync"); // NOI18N
@@ -508,6 +475,42 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             }
         });
         getContentPane().setLayout(new java.awt.CardLayout());
+
+        fileMenu.setText(Dict.FILE_MENU.toString());
+        fileMenu.add(connectMenuItem);
+        fileMenu.add(disconnectMenuItem);
+
+        serverMenu.setText(Dict.SERVER.toString());
+
+        startServerMenuItem.setText("jMenuItem1");
+        serverMenu.add(startServerMenuItem);
+        serverMenu.add(shutdownServerMenuItem);
+        serverMenu.add(shutdownServerQuitMenuItem);
+
+        fileMenu.add(serverMenu);
+        fileMenu.add(jSeparator1);
+        fileMenu.add(saveMenuItem);
+        fileMenu.add(quitMenuItem);
+
+        menuBar.add(fileMenu);
+
+        toolsMenu.setText(Dict.TOOLS.toString());
+        toolsMenu.add(cronCheckBoxMenuItem);
+        toolsMenu.add(jobEditorMenuItem);
+        toolsMenu.add(optionsMenuItem);
+
+        menuBar.add(toolsMenu);
+
+        helpMenu.setText(Dict.HELP.toString());
+        helpMenu.add(helpMenuItem);
+
+        aboutRsyncMenuItem.setText("jMenuItem1");
+        helpMenu.add(aboutRsyncMenuItem);
+        helpMenu.add(aboutMenuItem);
+
+        menuBar.add(helpMenu);
+
+        setJMenuBar(menuBar);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -539,8 +542,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JMenuItem jobEditorMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem optionsMenuItem;
@@ -816,8 +817,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             };
 
             initAction(action, CLOSE_TAB, keyStroke, MaterialIcon._Navigation.CLOSE, true);
-
-            SwingHelper.clearToolTipText(sPopupMenu);
         }
     }
 }
