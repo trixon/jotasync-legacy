@@ -271,8 +271,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
     private void initMenus() {
         if (mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BUTTON) {
-            setJMenuBar(null);
-
             sPopupMenu.add(connectMenuItem);
             sPopupMenu.add(disconnectMenuItem);
             sPopupMenu.add(serverMenu);
@@ -296,6 +294,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             }
 
         } else {
+            setJMenuBar(menuBar);
             if (IS_MAC) {
                 fileMenu.remove(quitMenuItem);
                 toolsMenu.remove(optionsMenuItem);
@@ -464,18 +463,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         aboutRsyncMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("JotaSync"); // NOI18N
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
-            }
-        });
-        getContentPane().setLayout(new java.awt.CardLayout());
-
         fileMenu.setText(Dict.FILE_MENU.toString());
         fileMenu.add(connectMenuItem);
         fileMenu.add(disconnectMenuItem);
@@ -510,7 +497,17 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         menuBar.add(helpMenu);
 
-        setJMenuBar(menuBar);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("JotaSync"); // NOI18N
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
+        getContentPane().setLayout(new java.awt.CardLayout());
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
