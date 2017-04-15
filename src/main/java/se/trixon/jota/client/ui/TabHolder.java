@@ -37,10 +37,8 @@ import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
-import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.ui.MainFrame.ActionManager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventListener;
@@ -53,7 +51,6 @@ import se.trixon.jota.shared.task.Task;
  */
 public class TabHolder extends JTabbedPane implements ConnectionListener, ServerEventListener {
 
-    private ActionManager mActionManager;
     private Action mCloseAction;
     private SpeedDialPanel mSpeedDialPanel;
     private HashMap<Long, TabItem> mJobMap = new HashMap<>();
@@ -61,6 +58,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private MouseAdapter mMenuMouseAdapter;
     private Action mSaveAction;
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
+    private final ActionManager mActionManager = ActionManager.getInstance();
 
     /**
      * Creates new form ProgressPane
@@ -173,7 +171,6 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     }
 
     void initActions() {
-        mActionManager = ((MainFrame) SwingUtilities.getRoot(this)).getActionManager();
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = getRootPane().getActionMap();
         int commandMask = SystemHelper.getCommandMask();
@@ -223,27 +220,9 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         inputMap.put(keyStroke, key);
         actionMap.put(key, action);
 
-        action = new AbstractAction("DisplayMenu") {
-
+        mActionManager.addAppListener(new ActionManager.AppAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                mMenuMouseAdapter.mousePressed(null);
-            }
-        };
-
-        if (mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BUTTON) {
-            key = "DisplayMenu";
-            actionMap.put(key, action);
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, commandMask);
-            inputMap.put(keyStroke, key);
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
-            inputMap.put(keyStroke, key);
-        }
-
-        action = new AbstractAction("Cancel") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            public void onCancel(ActionEvent actionEvent) {
                 if (getSelectedComponent() instanceof TabItem) {
                     TabItem tabItem = (TabItem) getSelectedComponent();
                     if (tabItem.isCancelable()) {
@@ -251,12 +230,12 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
                     }
                 }
             }
-        };
 
-        key = "Cancel";
-        actionMap.put(key, action);
-        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        inputMap.put(keyStroke, key);
+            @Override
+            public void onMenu(ActionEvent actionEvent) {
+                mMenuMouseAdapter.mousePressed(null);
+            }
+        });
     }
 
     void close(Job job) {

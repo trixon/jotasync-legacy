@@ -36,9 +36,6 @@
               </Properties>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="startServerMenuItem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="jMenuItem1"/>
-                  </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="shutdownServerMenuItem">
                 </MenuItem>
@@ -65,6 +62,8 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jobEditorMenuItem">
             </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="optionsMenuItem">
             </MenuItem>
           </SubComponents>
@@ -79,9 +78,6 @@
             <MenuItem class="javax.swing.JMenuItem" name="helpMenuItem">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="aboutRsyncMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="jMenuItem1"/>
-              </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="aboutMenuItem">
             </MenuItem>

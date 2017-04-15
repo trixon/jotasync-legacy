@@ -17,28 +17,21 @@ package se.trixon.jota.client.ui;
 
 import com.apple.eawt.AppEvent;
 import com.apple.eawt.Application;
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
-import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.InputMap;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -47,7 +40,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.AlmondAction;
@@ -57,7 +49,6 @@ import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.HtmlPanel;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
@@ -90,8 +81,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private final Client mClient;
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainFrame.class, "Bundle");
-    private final LinkedList<AlmondAction> mServerActions = new LinkedList<>();
-    private final LinkedList<AlmondAction> mAllActions = new LinkedList<>();
     private final Manager mManager = Manager.getInstance();
     private TabHolder mTabHolder;
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
@@ -102,6 +91,11 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
      */
     public MainFrame() {
         initComponents();
+
+        mAlmondUI.addWindowWatcher(this);
+        mAlmondUI.initoptions();
+
+        initActions();
         init();
 
         if (IS_MAC) {
@@ -212,10 +206,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         return false;
     }
 
-    ActionManager getActionManager() {
-        return mActionManager;
-    }
-
     private void enableGui(boolean state) {
         boolean cronActive = false;
 
@@ -226,7 +216,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
 
-        mServerActions.stream().forEach((action) -> {
+        mActionManager.getConditionallyEnabledActions().stream().forEach((action) -> {
             action.setEnabled(state);
         });
 
@@ -245,17 +235,150 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         ImageIcon imageIcon = new ImageIcon(getClass().getResource(fileName));
         setIconImage(imageIcon.getImage());
 
-        mActionManager = new ActionManager();
-        mActionManager.initActions();
-
         mTabHolder = new TabHolder();
         add(mTabHolder);
         mTabHolder.initActions();
         mManager.addConnectionListeners(this);
 
+        initListeners();
         updateWindowTitle();
-        mAlmondUI.addWindowWatcher(this);
-        mAlmondUI.initoptions();
+    }
+
+    private void initActions() {
+        mActionManager = ActionManager.getInstance().init(getRootPane().getActionMap(), getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW));
+
+        //about
+        PomInfo pomInfo = new PomInfo(MainFrame.class, "se.trixon", "jotasync");
+        AboutModel aboutModel = new AboutModel(SystemHelper.getBundle(MainFrame.class, "about"), SystemHelper.getResourceAsImageIcon(MainFrame.class, "sync-256px.png"));
+
+        aboutModel.setAppVersion(pomInfo.getVersion());
+        AboutPanel aboutPanel = new AboutPanel(aboutModel);
+        AlmondAction action = AboutPanel.getAction(MainFrame.this, aboutPanel);
+
+        getRootPane().getActionMap().put(ActionManager.ABOUT, action);
+
+        //File
+        connectMenuItem.setAction(mActionManager.getAction(ActionManager.CONNECT));
+        disconnectMenuItem.setAction(mActionManager.getAction(ActionManager.DISCONNECT));
+        startServerMenuItem.setAction(mActionManager.getAction(ActionManager.START_SERVER));
+        shutdownServerMenuItem.setAction(mActionManager.getAction(ActionManager.SHUTDOWN_SERVER));
+        shutdownServerQuitMenuItem.setAction(mActionManager.getAction(ActionManager.SHUTDOWN_SERVER_QUIT));
+        saveMenuItem.setAction(mActionManager.getAction(ActionManager.SAVE_TAB));
+        quitMenuItem.setAction(mActionManager.getAction(ActionManager.QUIT));
+
+        //Tools
+        cronCheckBoxMenuItem.setAction(mActionManager.getAction(ActionManager.CRON));
+        jobEditorMenuItem.setAction(mActionManager.getAction(ActionManager.JOB_EDITOR));
+        optionsMenuItem.setAction(mActionManager.getAction(ActionManager.OPTIONS));
+
+        //Help
+        helpMenuItem.setAction(mActionManager.getAction(ActionManager.HELP));
+        aboutMenuItem.setAction(mActionManager.getAction(ActionManager.ABOUT));
+        aboutRsyncMenuItem.setAction(mActionManager.getAction(ActionManager.ABOUT_RSYNC));
+    }
+
+    private void initListeners() {
+        mActionManager.addAppListener(new ActionManager.AppListener() {
+            @Override
+            public void onAboutRsync(ActionEvent actionEvent) {
+                try {
+                    String aboutRsync = mManager.getServerCommander().getAboutRsync();
+                    Message.information(MainFrame.this, String.format(Dict.ABOUT_S.toString(), "rsync"), aboutRsync);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            @Override
+            public void onCancel(ActionEvent actionEvent) {
+            }
+
+            @Override
+            public void onClientConnect(ActionEvent actionEvent) {
+                try {
+                    requestConnect();
+                } catch (NotBoundException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            @Override
+            public void onClientDisconnect(ActionEvent actionEvent) {
+                mManager.disconnect();
+            }
+
+            @Override
+            public void onClose(ActionEvent actionEvent) {
+                mTabHolder.closeTab();
+            }
+
+            @Override
+            public void onCron(ActionEvent actionEvent) {
+                boolean nextState = false;
+                try {
+                    nextState = !mManager.getServerCommander().isCronActive();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, !nextState);
+
+                Client.Command command = Client.Command.STOP_CRON;
+                if (nextState) {
+                    command = Client.Command.START_CRON;
+                }
+                mClient.execute(command);
+            }
+
+            @Override
+            public void onEdit(ActionEvent actionEvent) {
+                showEditor(-1, false);
+            }
+
+            @Override
+            public void onMenu(ActionEvent actionEvent) {
+            }
+
+            @Override
+            public void onOptions(ActionEvent actionEvent) {
+                showOptions();
+            }
+
+            @Override
+            public void onQuit(ActionEvent actionEvent) {
+                quit();
+            }
+
+            @Override
+            public void onSave(ActionEvent actionEvent) {
+                mTabHolder.saveTab();
+            }
+
+            @Override
+            public void onServerShutdown(ActionEvent actionEvent) {
+                serverShutdown();
+            }
+
+            @Override
+            public void onServerShutdownAndQuit(ActionEvent actionEvent) {
+                serverShutdown();
+                quit();
+            }
+
+            @Override
+            public void onServerStart(ActionEvent actionEvent) {
+                try {
+                    if (mClient.serverStart()) {
+                        mManager.connect(SystemHelper.getHostname(), mOptions.getAutostartServerPort());
+                    }
+                } catch (URISyntaxException | IOException | NotBoundException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            @Override
+            public void onStart(ActionEvent actionEvent) {
+            }
+        });
     }
 
     private void initMac() {
@@ -457,6 +580,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         toolsMenu = new javax.swing.JMenu();
         cronCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         jobEditorMenuItem = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
         optionsMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         helpMenuItem = new javax.swing.JMenuItem();
@@ -468,8 +592,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         fileMenu.add(disconnectMenuItem);
 
         serverMenu.setText(Dict.SERVER.toString());
-
-        startServerMenuItem.setText("jMenuItem1");
         serverMenu.add(startServerMenuItem);
         serverMenu.add(shutdownServerMenuItem);
         serverMenu.add(shutdownServerQuitMenuItem);
@@ -484,14 +606,13 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         toolsMenu.setText(Dict.TOOLS.toString());
         toolsMenu.add(cronCheckBoxMenuItem);
         toolsMenu.add(jobEditorMenuItem);
+        toolsMenu.add(jSeparator2);
         toolsMenu.add(optionsMenuItem);
 
         menuBar.add(toolsMenu);
 
         helpMenu.setText(Dict.HELP.toString());
         helpMenu.add(helpMenuItem);
-
-        aboutRsyncMenuItem.setText("jMenuItem1");
         helpMenu.add(aboutRsyncMenuItem);
         helpMenu.add(aboutMenuItem);
 
@@ -539,6 +660,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JMenuItem jobEditorMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem optionsMenuItem;
@@ -551,269 +673,4 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private javax.swing.JMenuItem startServerMenuItem;
     private javax.swing.JMenu toolsMenu;
     // End of variables declaration//GEN-END:variables
-
-    class ActionManager {
-
-        static final String ABOUT = "about";
-        static final String ABOUT_S = "about_s";
-        static final String CLOSE_TAB = "closeTab";
-        static final String CONNECT = "connect";
-        static final String CRON = "cron";
-        static final String DISCONNECT = "disconnect";
-        static final String HELP = "help";
-        static final String JOB_EDITOR = "jobeditor";
-        static final String OPTIONS = "options";
-        static final String QUIT = "shutdownServerAndWindow";
-        static final String SAVE_TAB = "saveTab";
-        static final String SHUTDOWN_SERVER = "shutdownServer";
-        static final String SHUTDOWN_SERVER_QUIT = "shutdownServerAndQuit";
-        static final String START_SERVER = "startServer";
-
-        private ActionManager() {
-            initActions();
-        }
-
-        Action getAction(String key) {
-            return getRootPane().getActionMap().get(key);
-        }
-
-        private void initAction(AlmondAction action, String key, KeyStroke keyStroke, Enum iconEnum, boolean serverAction) {
-            InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-            ActionMap actionMap = getRootPane().getActionMap();
-
-            action.putValue(Action.ACCELERATOR_KEY, keyStroke);
-            action.putValue(Action.SHORT_DESCRIPTION, action.getValue(Action.NAME));
-            action.putValue("hideActionText", true);
-            action.setIconEnum(iconEnum);
-            action.updateIcon();
-
-            inputMap.put(keyStroke, key);
-            actionMap.put(key, action);
-
-            if (serverAction) {
-                mServerActions.add(action);
-            }
-
-            mAllActions.add(action);
-        }
-
-        private void initActions() {
-            AlmondAction action;
-            KeyStroke keyStroke;
-            int commandMask = SystemHelper.getCommandMask();
-
-            //connect
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask);
-            action = new AlmondAction(Dict.CONNECT_TO_SERVER.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        requestConnect();
-                    } catch (NotBoundException ex) {
-                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            };
-
-            initAction(action, CONNECT, keyStroke, MaterialIcon._Communication.CALL_MADE, false);
-            connectMenuItem.setAction(action);
-
-            //disconnect
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask);
-            action = new AlmondAction(Dict.DISCONNECT.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    mManager.disconnect();
-                }
-            };
-
-            initAction(action, DISCONNECT, keyStroke, MaterialIcon._Communication.CALL_RECEIVED, true);
-            disconnectMenuItem.setAction(action);
-
-            //cron
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, commandMask);
-            action = new AlmondAction(mBundle.getString("schedule")) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    boolean nextState = false;
-                    try {
-                        nextState = !mManager.getServerCommander().isCronActive();
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    putValue(Action.SELECTED_KEY, !nextState);
-
-                    Client.Command command = Client.Command.STOP_CRON;
-                    if (nextState) {
-                        command = Client.Command.START_CRON;
-                    }
-                    mClient.execute(command);
-                }
-            };
-
-            initAction(action, CRON, keyStroke, MaterialIcon._Action.SCHEDULE, true);
-            action.putValue(Action.SELECTED_KEY, false);
-            cronCheckBoxMenuItem.setAction(action);
-
-            //jobEditor
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_J, commandMask);
-            action = new AlmondAction(mBundle.getString("jobEditor")) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    showEditor(-1, false);
-                }
-            };
-
-            initAction(action, JOB_EDITOR, keyStroke, MaterialIcon._Editor.MODE_EDIT, true);
-            jobEditorMenuItem.setAction(action);
-
-            //options
-            int optionsKey = SystemUtils.IS_OS_MAC ? KeyEvent.VK_COMMA : KeyEvent.VK_P;
-            keyStroke = KeyStroke.getKeyStroke(optionsKey, commandMask);
-            keyStroke = IS_MAC ? null : keyStroke;
-            action = new AlmondAction(Dict.OPTIONS.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    showOptions();
-                }
-            };
-
-            initAction(action, OPTIONS, keyStroke, MaterialIcon._Action.SETTINGS, false);
-            optionsMenuItem.setAction(action);
-
-            //about
-            keyStroke = null;
-            PomInfo pomInfo = new PomInfo(MainFrame.class, "se.trixon", "jotasync");
-            AboutModel aboutModel = new AboutModel(SystemHelper.getBundle(MainFrame.class, "about"), SystemHelper.getResourceAsImageIcon(MainFrame.class, "sync-256px.png"));
-            aboutModel.setAppVersion(pomInfo.getVersion());
-            AboutPanel aboutPanel = new AboutPanel(aboutModel);
-            action = AboutPanel.getAction(MainFrame.this, aboutPanel);
-            initAction(action, ABOUT, keyStroke, null, false);
-            aboutMenuItem.setAction(action);
-
-            //about rsync
-            keyStroke = null;
-            action = new AlmondAction(String.format(Dict.ABOUT_S.toString(), "rsync")) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        String aboutRsync = mManager.getServerCommander().getAboutRsync();
-                        Message.information(MainFrame.this, String.format(Dict.ABOUT_S.toString(), "rsync"), aboutRsync);
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            };
-
-            initAction(action, ABOUT_S, keyStroke, null, true);
-            aboutRsyncMenuItem.setAction(action);
-
-            //help
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
-            action = new AlmondAction(Dict.DOCUMENTATION.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        Desktop.getDesktop().browse(new URI("https://trixon.se/projects/jotasync/documentation/"));
-                    } catch (URISyntaxException | IOException ex) {
-                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            };
-
-            initAction(action, HELP, keyStroke, null, false);
-            helpMenuItem.setAction(action);
-
-            //start Server
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, commandMask | InputEvent.SHIFT_MASK);
-            action = new AlmondAction(Dict.START.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        if (mClient.serverStart()) {
-                            mManager.connect(SystemHelper.getHostname(), mOptions.getAutostartServerPort());
-                        }
-                    } catch (URISyntaxException | IOException | NotBoundException ex) {
-                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            };
-
-            initAction(action, START_SERVER, keyStroke, null, false);
-            startServerMenuItem.setAction(action);
-
-            //shutdown Server
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, commandMask | InputEvent.SHIFT_MASK);
-            action = new AlmondAction(Dict.SHUTDOWN.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    serverShutdown();
-                }
-            };
-
-            initAction(action, SHUTDOWN_SERVER, keyStroke, null, true);
-            shutdownServerMenuItem.setAction(action);
-
-            //shutdown server and quit
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask + InputEvent.SHIFT_MASK);
-            action = new AlmondAction(Dict.SHUTDOWN_AND_QUIT.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    serverShutdown();
-                    quit();
-                }
-            };
-
-            initAction(action, SHUTDOWN_SERVER_QUIT, keyStroke, null, true);
-            shutdownServerQuitMenuItem.setAction(action);
-
-            //quit
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, commandMask);
-            action = new AlmondAction(Dict.QUIT.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    quit();
-                }
-            };
-
-            initAction(action, QUIT, keyStroke, MaterialIcon._Content.CLEAR, false);
-            quitMenuItem.setAction(action);
-
-            //save tab
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, commandMask);
-            action = new AlmondAction(Dict.SAVE.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    mTabHolder.saveTab();
-                }
-            };
-
-            initAction(action, SAVE_TAB, keyStroke, MaterialIcon._Content.SAVE, true);
-            saveMenuItem.setAction(action);
-
-            //close tab
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_W, commandMask);
-            action = new AlmondAction(Dict.TAB_CLOSE.toString()) {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    mTabHolder.closeTab();
-                }
-            };
-
-            initAction(action, CLOSE_TAB, keyStroke, MaterialIcon._Navigation.CLOSE, true);
-        }
-    }
 }
