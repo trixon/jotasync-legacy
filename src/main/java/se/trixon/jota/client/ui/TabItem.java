@@ -82,10 +82,6 @@ public class TabItem extends JPanel implements TabListener {
         return menuButton;
     }
 
-    public JButton getSaveButton() {
-        return saveButton;
-    }
-
     synchronized public void log(ProcessEvent processEvent, String string) {
         SwingUtilities.invokeLater(() -> {
             StringBuilder builder = new StringBuilder(string).append("\n");
@@ -128,7 +124,6 @@ public class TabItem extends JPanel implements TabListener {
         progressBar.setStringPainted(false);
         editButton.setEnabled(true);
         startButton.setEnabled(true);
-        saveButton.setEnabled(true);
         cancelButton.setVisible(false);
         closeButton.setVisible(true);
         mTimeFinished = System.currentTimeMillis();
@@ -183,7 +178,6 @@ public class TabItem extends JPanel implements TabListener {
 
         editButton.setEnabled(false);
         startButton.setEnabled(false);
-        saveButton.setEnabled(false);
         cancelButton.setVisible(true);
         closeButton.setVisible(false);
         mClosable = false;
@@ -221,7 +215,6 @@ public class TabItem extends JPanel implements TabListener {
 
         progressBar = new javax.swing.JProgressBar();
         toolBar = new javax.swing.JToolBar();
-        saveButton = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
@@ -240,11 +233,6 @@ public class TabItem extends JPanel implements TabListener {
         toolBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
-
-        saveButton.setFocusable(false);
-        saveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(saveButton);
 
         editButton.setFocusable(false);
         editButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -329,7 +317,6 @@ public class TabItem extends JPanel implements TabListener {
     private se.trixon.almond.util.swing.LogPanel logPanel;
     private javax.swing.JButton menuButton;
     private javax.swing.JProgressBar progressBar;
-    private javax.swing.JButton saveButton;
     private javax.swing.JButton startButton;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
