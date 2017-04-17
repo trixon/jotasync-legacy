@@ -133,7 +133,7 @@ class JobExecutor extends Thread {
             Xlog.timedOut(String.format(Dict.JOB_FINISHED.toString(), mJob.getName()));
         } catch (InterruptedException ex) {
             mCurrentProcess.destroy();
-            appendHistoryFile(getHistoryLine(mJob.getId(), Dict.CANCEL.toString(), dryRunIndicator));
+            appendHistoryFile(getHistoryLine(mJob.getId(), Dict.CANCELED.toString(), dryRunIndicator));
             updateJobStatus(99);
             writelogs();
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {

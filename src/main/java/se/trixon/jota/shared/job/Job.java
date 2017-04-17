@@ -76,7 +76,7 @@ public class Job implements Comparable<Job>, Serializable {
     public String getCaption(boolean verbose) {
         String caption;
         if (verbose) {
-            String template = "<html><center><h2><b>%s</b></h2><p><i>%s</i></p><br />%s %s</center></html>";
+            String template = "<html><center><h2><b>%s</b></h2><p><i>%s</i></p><br />%s <font size=\"6\">%s</font></center></html>";
             caption = String.format(template, mName, mDescription, getLastRunDateTime("-"), getLastRunStatus());
         } else {
             String template = "<html><b>%s</b><i>%s</i> %s %s</html>";
@@ -150,7 +150,7 @@ public class Job implements Comparable<Job>, Serializable {
     public String getLastRunStatus() {
         String status = "";
         if (mLastRun > 0) {
-            status = getLastRunExitCode() == 0 ? "☺" : "☹";
+            status = getLastRunExitCode() == 0 ? "" : "⚠";
             //if (isRunnning()) {
             //    status = "∞";
             //}
