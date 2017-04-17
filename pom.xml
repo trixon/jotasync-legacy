@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>se.trixon</groupId>
     <artifactId>jotasync</artifactId>
-    <version>0.2.10-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <description>rsync GUI with integrated scheduler</description>
     <url>http://jotasync.trixon.se/</url>
     <licenses>
@@ -131,6 +131,7 @@
                                         <include>se/trixon/almond/util/icons/material/_communication/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_content/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_editor/*.png</include>
+                                        <include>se/trixon/almond/util/icons/material/_file/folder_open*</include>
                                         <include>se/trixon/almond/util/icons/material/_navigation/*.png</include>
                                     </includes>
                                 </filter>
