@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.DefaultListModel;
 import org.apache.commons.lang3.StringUtils;
+import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.Dict;
 
 /**
  *
@@ -66,10 +66,6 @@ public class Job implements Comparable<Job>, Serializable {
         mDescription = description;
         mDetails = comment;
         mExecuteSection = new JobExecuteSection();
-    }
-
-    public void addHistory(String history) {
-        mHistory = history + mHistory;
     }
 
     @Override

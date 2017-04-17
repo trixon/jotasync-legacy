@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +15,25 @@
  */
 package se.trixon.jota.server;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.JsonHelper;
 import se.trixon.jota.shared.task.ExcludeSection;
+import se.trixon.jota.shared.task.OptionSection;
 import se.trixon.jota.shared.task.Task;
 import se.trixon.jota.shared.task.TaskExecuteSection;
-import se.trixon.jota.shared.task.OptionSection;
 
 /**
  *
@@ -36,15 +42,15 @@ import se.trixon.jota.shared.task.OptionSection;
 enum TaskManager {
 
     INSTANCE;
-    private final LinkedList<Task> mTasks = new LinkedList<>();
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_DEST = "dest";
     private static final String KEY_DETAILS = "details";
-    private static final String KEY_HISTORY = "history";
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_NO_ADDITIONAL_DIR = "additionalDir";
     private static final String KEY_SOURCE = "source";
+    private List<String> mHistoryLines = new ArrayList<>();
+    private final LinkedList<Task> mTasks = new LinkedList<>();
 
     private TaskManager() {
     }
@@ -79,7 +85,6 @@ enum TaskManager {
             object.put(KEY_NO_ADDITIONAL_DIR, task.isNoAdditionalDir());
             object.put(KEY_DESCRIPTION, task.getDescription());
             object.put(KEY_DETAILS, task.getDetails());
-            object.put(KEY_HISTORY, task.getHistory());
 
             object.put(TaskExecuteSection.KEY, task.getExecuteSection().getJson());
             object.put(OptionSection.KEY, task.getOptionSection().getJson());
@@ -134,6 +139,12 @@ enum TaskManager {
     }
 
     public void setTasks(JSONArray array) {
+        try {
+            mHistoryLines = FileUtils.readLines(JotaManager.INSTANCE.getHistoryFile(), Charset.defaultCharset());
+        } catch (IOException ex) {
+            Logger.getLogger(JobManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         mTasks.clear();
 
         for (Object arrayItem : array) {
@@ -147,7 +158,6 @@ enum TaskManager {
             task.setDestination((String) object.get(KEY_DEST));
             task.setNoAdditionalDir(JsonHelper.optBoolean(object, KEY_NO_ADDITIONAL_DIR));
             task.setDetails((String) object.get(KEY_DETAILS));
-            task.setHistory((String) object.get(KEY_HISTORY));
 
             if (object.containsKey(TaskExecuteSection.KEY)) {
                 task.getExecuteSection().loadFromJson((JSONObject) object.get(TaskExecuteSection.KEY));
@@ -161,9 +171,21 @@ enum TaskManager {
                 task.getExcludeSection().loadFromJson((JSONObject) object.get(ExcludeSection.KEY));
             }
 
+            loadHistory(task);
             mTasks.add(task);
         }
 
         Collections.sort(mTasks);
+    }
+
+    private void loadHistory(Task task) {
+        StringBuilder builder = new StringBuilder();
+        for (String line : mHistoryLines) {
+            String id = String.valueOf(task.getId());
+            if (StringUtils.contains(line, id)) {
+                builder.append(StringUtils.remove(line, id + " ")).append("\n");
+            }
+        }
+        task.setHistory(builder.toString());
     }
 }

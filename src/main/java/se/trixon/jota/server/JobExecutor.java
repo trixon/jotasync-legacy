@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.FileHelper;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
@@ -50,7 +51,6 @@ class JobExecutor extends Thread {
     private Process mCurrentProcess;
     private boolean mDryRun;
     private final StringBuffer mErrBuffer;
-    private StringBuilder mHistoryBuilder;
     private final Job mJob;
     private final ResourceBundle mJobExecBundle;
     private final JotaManager mJotaManager = JotaManager.INSTANCE;
@@ -77,13 +77,12 @@ class JobExecutor extends Thread {
     @Override
     public void run() {
         mLastRun = System.currentTimeMillis();
-        mHistoryBuilder = new StringBuilder();
         String dryRunIndicator = "";
         if (mDryRun) {
             dryRunIndicator = String.format(" (%s)", Dict.DRY_RUN.toString());
         }
-        mHistoryBuilder.append(String.format("%s %s%s\n", Jota.nowToDateTime(), Dict.STARTED.toString(), dryRunIndicator));
 
+        appendHistoryFile(getHistoryLine(mJob.getId(), Dict.STARTED.toString(), dryRunIndicator));
         String s = String.format("%s %s: '%s'='%s'", Jota.nowToDateTime(), Dict.START.toString(), Dict.JOB.toString(), mJob.getName());
         mOutBuffer.append(s).append("\n");
         send(ProcessEvent.OUT, s);
@@ -125,7 +124,7 @@ class JobExecutor extends Thread {
 
             Thread.sleep(500);
 
-            mHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), Dict.DONE.toString()));
+            appendHistoryFile(getHistoryLine(mJob.getId(), Dict.DONE.toString(), dryRunIndicator));
             s = String.format("%s %s: %s", Jota.nowToDateTime(), Dict.DONE.toString(), Dict.JOB.toString());
             mOutBuffer.append(s).append("\n");
             updateJobStatus(0);
@@ -134,7 +133,7 @@ class JobExecutor extends Thread {
             Xlog.timedOut(String.format(Dict.JOB_FINISHED.toString(), mJob.getName()));
         } catch (InterruptedException ex) {
             mCurrentProcess.destroy();
-            mHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), Dict.CANCEL.toString()));
+            appendHistoryFile(getHistoryLine(mJob.getId(), Dict.CANCEL.toString(), dryRunIndicator));
             updateJobStatus(99);
             writelogs();
             mServer.getClientCallbacks().stream().forEach((clientCallback) -> {
@@ -150,7 +149,7 @@ class JobExecutor extends Thread {
         } catch (ExecutionFailedException ex) {
             //Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
             //send(ProcessEvent.OUT, "before failed and will not continue");
-            mHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), Dict.FAILED.toString()));
+            appendHistoryFile(getHistoryLine(mJob.getId(), Dict.FAILED.toString(), dryRunIndicator));
             updateJobStatus(1);
             writelogs();
             send(ProcessEvent.FAILED, String.format("\n\n%s", Dict.JOB_FAILED.toString()));
@@ -162,6 +161,18 @@ class JobExecutor extends Thread {
     public void stopJob() {
         mCurrentProcess.destroy();
         interrupt();
+    }
+
+    private void appendHistoryFile(String string) {
+        try {
+            FileUtils.write(mJotaManager.getHistoryFile(), string, Charset.defaultCharset(), true);
+        } catch (IOException ex) {
+            Logger.getLogger(JobExecutor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private String getHistoryLine(long id, String status, String dryRunIndicator) {
+        return String.format("%s %d %s%s\n", Jota.nowToDateTime(), id, status, dryRunIndicator);
     }
 
     private String getRsyncErrorCode(int exitValue) {
@@ -254,7 +265,7 @@ class JobExecutor extends Thread {
         if (mDryRun || task.isDryRun()) {
             dryRunIndicator = String.format(" (%s)", Dict.DRY_RUN.toString());
         }
-        taskHistoryBuilder.append(String.format("%s %s%s\n", Jota.nowToDateTime(), Dict.STARTED.toString(), dryRunIndicator));
+        appendHistoryFile(getHistoryLine(task.getId(), Dict.STARTED.toString(), dryRunIndicator));
 
         String s = String.format("%s %s: %s='%s'", Jota.nowToDateTime(), Dict.START.toString(), Dict.TASK.toString(), task.getName());
         send(ProcessEvent.OUT, s);
@@ -303,8 +314,8 @@ class JobExecutor extends Thread {
             mNumOfFailedTasks++;
         }
 
-        taskHistoryBuilder.append(String.format("%s %s\n", Jota.nowToDateTime(), Dict.DONE.toString()));
-        mJotaManager.getTaskManager().getTaskById(task.getId()).addHistory(taskHistoryBuilder.append("\n").toString());
+        appendHistoryFile(getHistoryLine(task.getId(), Dict.DONE.toString(), dryRunIndicator));
+        appendHistoryFile(taskHistoryBuilder.toString());
 
         s = String.format("%s %s: %s", Jota.nowToDateTime(), Dict.DONE.toString(), Dict.TASK.toString());
         send(ProcessEvent.OUT, s);
@@ -351,7 +362,7 @@ class JobExecutor extends Thread {
     private void updateJobStatus(int exitCode) {
         mJotaManager.getJobManager().getJobById(mJob.getId()).setLastRun(mLastRun);
         mJotaManager.getJobManager().getJobById(mJob.getId()).setLastRunExitCode(exitCode);
-        mJotaManager.getJobManager().getJobById(mJob.getId()).addHistory(mHistoryBuilder.append("\n").toString());
+
         try {
             mJotaManager.save();
         } catch (IOException ex) {
@@ -361,9 +372,7 @@ class JobExecutor extends Thread {
 
     private void writelogs() {
         File directory = new File(ServerOptions.INSTANCE.getLogDir());
-        String[] invalidChars = new String[]{"<", ">", ":", "\"", "/", "\\", "|", "?", "*"};
-        String[] replaceChars = new String[]{"_", "_", "_", "_", "_", "_", "_", "_", "_"};
-        String jobName = StringUtils.replaceEach(mJob.getName(), invalidChars, replaceChars);
+        String jobName = FileHelper.replaceInvalidChars(mJob.getName());
         String outFile = String.format("%s.log", jobName);
         String errFile = String.format("%s.err", jobName);
 

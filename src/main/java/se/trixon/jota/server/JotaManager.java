@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,14 +17,15 @@ package se.trixon.jota.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import se.trixon.jota.shared.JsonHelper;
 import se.trixon.almond.util.Xlog;
+import se.trixon.jota.shared.JsonHelper;
 
 /**
  *
@@ -36,19 +37,21 @@ enum JotaManager {
     private static final String KEY_JOBS = "jobs";
     private static final String KEY_TASKS = "tasks";
     private static final String KEY_VERSION = "version";
-    private static final int sVersion = 1;
+    private static final int sVersion = 2;
     private final File mDirectory;
+    private final File mHistoryFile;
     private final File mJobBakFile;
-    private final File mJobFile;
     private final JobManager mJobManager = JobManager.INSTANCE;
     private final File mLogFile;
+    private final File mProfilesFile;
     private final TaskManager mTaskManager = TaskManager.INSTANCE;
     private int mVersion;
 
     private JotaManager() {
         mDirectory = new File(System.getProperty("user.home"), ".config/jotasync");
-        mJobFile = new File(mDirectory, "jobs.json");
-        mJobBakFile = new File(mDirectory, "jobs.bak");
+        mHistoryFile = new File(mDirectory, "jotasync.history");
+        mProfilesFile = new File(mDirectory, "jotasync.profiles");
+        mJobBakFile = new File(mDirectory, "jotasync.profiles.bak");
         mLogFile = new File(mDirectory, "jotasync.log");
 
         try {
@@ -62,8 +65,8 @@ enum JotaManager {
         return mDirectory;
     }
 
-    public File getJobFile() {
-        return mJobFile;
+    public File getHistoryFile() {
+        return mHistoryFile;
     }
 
     public JobManager getJobManager() {
@@ -72,6 +75,10 @@ enum JotaManager {
 
     public File getLogFile() {
         return mLogFile;
+    }
+
+    public File getProfilesFile() {
+        return mProfilesFile;
     }
 
     public TaskManager getTaskManager() {
@@ -83,8 +90,8 @@ enum JotaManager {
     }
 
     public void load() throws IOException {
-        if (mJobFile.exists()) {
-            JSONObject jsonObject = (JSONObject) JSONValue.parse(FileUtils.readFileToString(mJobFile));
+        if (mProfilesFile.exists()) {
+            JSONObject jsonObject = (JSONObject) JSONValue.parse(FileUtils.readFileToString(mProfilesFile, Charset.defaultCharset()));
             mVersion = JsonHelper.getInt(jsonObject, KEY_VERSION);
             JSONArray jobsArray = (JSONArray) jsonObject.get(KEY_JOBS);
             JSONArray tasksArray = (JSONArray) jsonObject.get(KEY_TASKS);
@@ -102,8 +109,8 @@ enum JotaManager {
 
         String tag = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String jsonString = jsonObject.toJSONString();
-        FileUtils.writeStringToFile(mJobFile, jsonString);
-        FileUtils.writeStringToFile(mJobBakFile, String.format("%s=%s\n", tag, jsonString), true);
+        FileUtils.writeStringToFile(mProfilesFile, jsonString, Charset.defaultCharset());
+        FileUtils.writeStringToFile(mJobBakFile, String.format("%s=%s\n", tag, jsonString), Charset.defaultCharset(), true);
 
         load();
     }

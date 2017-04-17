@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,22 @@
  */
 package se.trixon.jota.server;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import se.trixon.jota.shared.JsonHelper;
-import se.trixon.jota.shared.job.JobExecuteSection;
 import se.trixon.jota.shared.job.Job;
+import se.trixon.jota.shared.job.JobExecuteSection;
 
 /**
  *
@@ -31,14 +39,12 @@ import se.trixon.jota.shared.job.Job;
 enum JobManager {
 
     INSTANCE;
-    private final LinkedList<Job> mJobs = new LinkedList<>();
     private static final String KEY_COLOR_BACKGROUND = "colorBackground";
     private static final String KEY_COLOR_FOREGROUND = "colorForeground";
     private static final String KEY_CRON_ACTIVE = "cronActive";
     private static final String KEY_CRON_ITEMS = "cronItems";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_DETAILS = "details";
-    private static final String KEY_HISTORY = "history";
     private static final String KEY_ID = "id";
     private static final String KEY_LAST_RUN = "lastRun";
     private static final String KEY_LAST_RUN_EXIT_CODE = "lastRunExitCode";
@@ -48,6 +54,8 @@ enum JobManager {
     private static final String KEY_LOG_SEPARATE_ERRORS = "logSeparateErrors";
     private static final String KEY_NAME = "name";
     private static final String KEY_TASKS = "tasks";
+    private List<String> mHistoryLines = new ArrayList<>();
+    private final LinkedList<Job> mJobs = new LinkedList<>();
 
     private JobManager() {
     }
@@ -82,7 +90,6 @@ enum JobManager {
             object.put(KEY_CRON_ACTIVE, job.isCronActive());
             object.put(KEY_CRON_ITEMS, job.getCronItems());
 
-            object.put(KEY_HISTORY, job.getHistory());
             object.put(KEY_DETAILS, job.getDetails());
             object.put(KEY_LAST_RUN, job.getLastRun());
             object.put(KEY_LAST_RUN_EXIT_CODE, job.getLastRunExitCode());
@@ -108,7 +115,23 @@ enum JobManager {
         return getJobs().size() > 0;
     }
 
+    private void loadHistory(Job job) {
+        StringBuilder builder = new StringBuilder();
+        for (String line : mHistoryLines) {
+            String id = String.valueOf(job.getId());
+            if (StringUtils.contains(line, id)) {
+                builder.append(StringUtils.remove(line, id + " ")).append("\n");
+            }
+        }
+        job.setHistory(builder.toString());
+    }
+
     void setJobs(JSONArray array) {
+        try {
+            mHistoryLines = FileUtils.readLines(JotaManager.INSTANCE.getHistoryFile(), Charset.defaultCharset());
+        } catch (IOException ex) {
+            Logger.getLogger(JobManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         mJobs.clear();
 
         for (Object arrayItem : array) {
@@ -117,7 +140,6 @@ enum JobManager {
             job.setId(JsonHelper.getLong(object, KEY_ID));
             job.setName((String) object.get(KEY_NAME));
             job.setDescription((String) object.get(KEY_DESCRIPTION));
-            job.setHistory((String) object.get(KEY_HISTORY));
             job.setDetails((String) object.get(KEY_DETAILS));
             job.setLastRun(JsonHelper.getLong(object, KEY_LAST_RUN));
             job.setLastRunExitCode(JsonHelper.getInt(object, KEY_LAST_RUN_EXIT_CODE));
@@ -139,6 +161,7 @@ enum JobManager {
                 job.getExecuteSection().loadFromJson((JSONObject) object.get(JobExecuteSection.KEY));
             }
 
+            loadHistory(job);
             mJobs.add(job);
         }
 

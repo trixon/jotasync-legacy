@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
-import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
 
 /**
  *
@@ -50,10 +50,6 @@ public class Task implements Comparable<Task>, Serializable {
         mExecuteSection = new TaskExecuteSection();
         mExcludeSection = new ExcludeSection();
         mOptionSection = new OptionSection();
-    }
-
-    public void addHistory(String history) {
-        mHistory = history + mHistory;
     }
 
     @Override

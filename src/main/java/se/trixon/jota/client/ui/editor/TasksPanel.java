@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,12 +27,12 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import org.apache.commons.lang3.SerializationUtils;
-import se.trixon.jota.client.Manager;
-import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.Message;
+import se.trixon.jota.client.Manager;
+import se.trixon.jota.shared.task.Task;
 
 /**
  *
@@ -93,7 +93,6 @@ public class TasksPanel extends EditPanel {
 
                 task.setId(id);
                 task.setName(String.format("%s_%d", task.getName(), id));
-                task.setHistory("");
                 clonedTasks.add(task);
             }
 

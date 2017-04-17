@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,10 @@
  */
 package se.trixon.jota.client.ui.editor.module.job;
 
+import se.trixon.almond.util.Dict;
 import se.trixon.jota.client.ui.editor.module.JobPersistor;
 import se.trixon.jota.client.ui.editor.module.common.NotePanel;
 import se.trixon.jota.shared.job.Job;
-import se.trixon.almond.util.Dict;
 
 /**
  *
@@ -37,13 +37,12 @@ public class JobHistoryPanel extends NotePanel implements JobPersistor {
 
     @Override
     public Job saveJob(Job job) {
-        job.setHistory(getText());
-
         return job;
     }
 
     private void init() {
         mTitle = Dict.HISTORY.toString();
         getTextArea().setEditable(false);
+        removePopupListener();
     }
 }

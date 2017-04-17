@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,12 +29,12 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.SerializationUtils;
-import se.trixon.jota.client.Manager;
-import se.trixon.jota.shared.job.Job;
-import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.Message;
+import se.trixon.jota.client.Manager;
+import se.trixon.jota.shared.job.Job;
 
 /**
  *
@@ -104,7 +104,6 @@ public final class JobsPanel extends EditPanel {
             long id = System.currentTimeMillis();
             job.setId(id);
             job.setName(String.format("%s_%d", job.getName(), id));
-            job.setHistory("");
             getModel().addElement(job);
             sortModel();
             list.setSelectedValue(job, true);

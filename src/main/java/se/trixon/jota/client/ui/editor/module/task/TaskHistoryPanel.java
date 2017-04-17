@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,10 @@
  */
 package se.trixon.jota.client.ui.editor.module.task;
 
+import se.trixon.almond.util.Dict;
 import se.trixon.jota.client.ui.editor.module.TaskPersistor;
 import se.trixon.jota.client.ui.editor.module.common.NotePanel;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.Dict;
 
 /**
  *
@@ -40,13 +40,12 @@ public class TaskHistoryPanel extends NotePanel implements TaskPersistor {
 
     @Override
     public Task saveTask(Task task) {
-        task.setHistory(getText());
-
         return task;
     }
 
     private void init() {
         mTitle = Dict.HISTORY.toString();
         getTextArea().setEditable(false);
+        removePopupListener();
     }
 }
