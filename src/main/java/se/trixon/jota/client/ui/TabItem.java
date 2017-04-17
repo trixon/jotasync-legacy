@@ -17,6 +17,7 @@ package se.trixon.jota.client.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.FileHelper;
 import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
@@ -54,7 +56,7 @@ public class TabItem extends JPanel implements TabListener {
     private final Manager mManager = Manager.getInstance();
     private long mTimeFinished;
     private Progress mProgress;
-    private AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
+    private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
 
     /**
      * Creates new form TabItem
@@ -71,10 +73,6 @@ public class TabItem extends JPanel implements TabListener {
 
     public Job getJob() {
         return mJob;
-    }
-
-    public JButton getCloseButton() {
-        return closeButton;
     }
 
     @Override
@@ -123,9 +121,8 @@ public class TabItem extends JPanel implements TabListener {
         progressBar.setValue(100);
         progressBar.setStringPainted(false);
         editButton.setEnabled(true);
-        startButton.setEnabled(true);
         cancelButton.setVisible(false);
-        closeButton.setVisible(true);
+        startButton.setVisible(true);
         mTimeFinished = System.currentTimeMillis();
         mClosable = true;
         mCloser.getButton().setEnabled(true);
@@ -156,15 +153,13 @@ public class TabItem extends JPanel implements TabListener {
         SimpleDialog.addFilter(filter);
         SimpleDialog.setFilter(filter);
         SimpleDialog.setParent(this);
-        String[] invalidChars = new String[]{"<", ">", ":", "\"", "/", "\\", "|", "?", "*"};
-        String[] replaceChars = new String[]{"_", "_", "_", "_", "_", "_", "_", "_", "_"};
-        String jobName = StringUtils.replaceEach(mJob.getName(), invalidChars, replaceChars);
+        String jobName = FileHelper.replaceInvalidChars(mJob.getName());
 
         String filename = String.format("%s_%s.%s", jobName, getFinishedTime(), ext);
         SimpleDialog.setSelectedFile(new File(filename));
         if (SimpleDialog.saveFile(new String[]{ext})) {
             try {
-                FileUtils.writeStringToFile(SimpleDialog.getPath(), logPanel.getText());
+                FileUtils.writeStringToFile(SimpleDialog.getPath(), logPanel.getText(), Charset.defaultCharset());
             } catch (IOException ex) {
                 Message.error(this, Dict.Dialog.TITLE_IO_ERROR.toString(), ex.getLocalizedMessage());
             }
@@ -177,9 +172,8 @@ public class TabItem extends JPanel implements TabListener {
         progressBar.setStringPainted(false);
 
         editButton.setEnabled(false);
-        startButton.setEnabled(false);
         cancelButton.setVisible(true);
-        closeButton.setVisible(false);
+        startButton.setVisible(false);
         mClosable = false;
     }
 
@@ -190,8 +184,6 @@ public class TabItem extends JPanel implements TabListener {
         editButton.setToolTipText(Dict.EDIT.toString());
         menuButton.setToolTipText(Dict.MENU.toString());
         startButton.setToolTipText(Dict.START.toString());
-
-        closeButton.setVisible(false);
 
         mProgress = new Progress();
         updateIcons(mAlmondOptions.getIconColor());
@@ -217,7 +209,6 @@ public class TabItem extends JPanel implements TabListener {
         toolBar = new javax.swing.JToolBar();
         editButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
         startButton = new javax.swing.JButton();
         menuButton = new javax.swing.JButton();
         logPanel = new se.trixon.almond.util.swing.LogPanel();
@@ -253,11 +244,6 @@ public class TabItem extends JPanel implements TabListener {
             }
         });
         toolBar.add(cancelButton);
-
-        closeButton.setFocusable(false);
-        closeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        closeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(closeButton);
 
         startButton.setFocusable(false);
         startButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -312,7 +298,6 @@ public class TabItem extends JPanel implements TabListener {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
-    private javax.swing.JButton closeButton;
     private javax.swing.JButton editButton;
     private se.trixon.almond.util.swing.LogPanel logPanel;
     private javax.swing.JButton menuButton;

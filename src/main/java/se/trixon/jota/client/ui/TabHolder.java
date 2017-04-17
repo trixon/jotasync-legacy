@@ -252,8 +252,6 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         } else {
             tabItem = new TabItem(job);
             tabItem.getMenuButton().addMouseListener(mMenuMouseAdapter);
-            tabItem.getCloseButton().setAction(mCloseAction);
-            tabItem.getCloseButton().setText(null);
 
             add(tabItem, job.getName());
             TabCloser tabCloser = new TabCloser(this);
