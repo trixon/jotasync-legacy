@@ -21,8 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JSpinner;
-import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.SystemHelper;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ServerCommander;
@@ -65,6 +65,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         mOptions.setAutostartServer(autostartServerCheckBox.isSelected());
         mOptions.setAutostartServerPort((int) portSpinner.getValue());
         mOptions.setAutostartServerConnectDelay((int) connectDelaySpinner.getValue());
+        mOptions.setWordWrap(wordWrapCheckBox.isSelected());
     }
 
     private void load() {
@@ -82,6 +83,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         autostartServerCheckBox.setSelected(mOptions.isAutostartServer());
         portSpinner.setValue(mOptions.getAutostartServerPort());
         connectDelaySpinner.setValue(mOptions.getAutostartServerConnectDelay());
+        wordWrapCheckBox.setSelected(mOptions.isWordWrap());
         autostartServerCheckBoxActionPerformed(null);
     }
 
@@ -101,6 +103,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         portSpinner = new javax.swing.JSpinner();
         connectDelayLabel = new javax.swing.JLabel();
         connectDelaySpinner = new javax.swing.JSpinner();
+        wordWrapCheckBox = new javax.swing.JCheckBox();
         serverPanel = new javax.swing.JPanel();
         rsyncFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         logDirFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
@@ -123,6 +126,8 @@ public class OptionsPanel extends javax.swing.JPanel {
 
         connectDelaySpinner.setModel(new javax.swing.SpinnerNumberModel(500, 100, 3000, 100));
 
+        wordWrapCheckBox.setText(Dict.DYNAMIC_WORD_WRAP.toString());
+
         javax.swing.GroupLayout clientPanelLayout = new javax.swing.GroupLayout(clientPanel);
         clientPanel.setLayout(clientPanelLayout);
         clientPanelLayout.setHorizontalGroup(
@@ -142,7 +147,8 @@ public class OptionsPanel extends javax.swing.JPanel {
                                 .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(connectDelayLabel)
                                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(autostartServerCheckBox))
+                            .addComponent(autostartServerCheckBox)
+                            .addComponent(wordWrapCheckBox))
                         .addGap(0, 149, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -161,6 +167,8 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(wordWrapCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -202,7 +210,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane)
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -227,5 +235,6 @@ public class OptionsPanel extends javax.swing.JPanel {
     private se.trixon.almond.util.swing.dialogs.FileChooserPanel rsyncFileChooserPanel;
     private javax.swing.JPanel serverPanel;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JCheckBox wordWrapCheckBox;
     // End of variables declaration//GEN-END:variables
 }

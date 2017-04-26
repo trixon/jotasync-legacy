@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -38,6 +39,7 @@ import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.almond.util.swing.dialogs.Message;
 import se.trixon.almond.util.swing.dialogs.SimpleDialog;
+import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.job.Job;
@@ -57,6 +59,7 @@ public class TabItem extends JPanel implements TabListener {
     private long mTimeFinished;
     private Progress mProgress;
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
+    private final ClientOptions mOptions = ClientOptions.INSTANCE;
 
     /**
      * Creates new form TabItem
@@ -178,7 +181,7 @@ public class TabItem extends JPanel implements TabListener {
     }
 
     private void init() {
-        logPanel.getTextArea().setLineWrap(true);
+        logPanel.setWordWrap(mOptions.isWordWrap());
 
         cancelButton.setToolTipText(Dict.CANCEL.toString());
         editButton.setToolTipText(Dict.EDIT.toString());
@@ -187,6 +190,12 @@ public class TabItem extends JPanel implements TabListener {
 
         mProgress = new Progress();
         updateIcons(mAlmondOptions.getIconColor());
+
+        mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
+            if (evt.getKey().equalsIgnoreCase(ClientOptions.KEY_WORD_WRAP)) {
+                logPanel.setWordWrap(mOptions.isWordWrap());
+            }
+        });
     }
 
     void updateIcons(IconColor iconColor) {
