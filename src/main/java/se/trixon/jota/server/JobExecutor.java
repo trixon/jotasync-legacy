@@ -172,7 +172,7 @@ class JobExecutor extends Thread {
     }
 
     private String getHistoryLine(long id, String status, String dryRunIndicator) {
-        return String.format("%s %d %s%s\n", Jota.nowToDateTime(), id, status, dryRunIndicator);
+        return String.format("%d %s %s%s\n", id, Jota.nowToDateTime(), status, dryRunIndicator);
     }
 
     private String getRsyncErrorCode(int exitValue) {
@@ -259,8 +259,6 @@ class JobExecutor extends Thread {
     }
 
     private boolean runTask(Task task) throws InterruptedException {
-        StringBuilder taskHistoryBuilder = new StringBuilder();
-
         String dryRunIndicator = "";
         if (mDryRun || task.isDryRun()) {
             dryRunIndicator = String.format(" (%s)", Dict.DRY_RUN.toString());
@@ -315,7 +313,6 @@ class JobExecutor extends Thread {
         }
 
         appendHistoryFile(getHistoryLine(task.getId(), Dict.DONE.toString(), dryRunIndicator));
-        appendHistoryFile(taskHistoryBuilder.toString());
 
         s = String.format("%s %s: %s", Jota.nowToDateTime(), Dict.DONE.toString(), Dict.TASK.toString());
         send(ProcessEvent.OUT, s);

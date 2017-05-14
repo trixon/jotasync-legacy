@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package se.trixon.jota.server;
 import it.sauronsoftware.cron4j.Scheduler;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -35,8 +36,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.Xlog;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.JotaHelper;
@@ -46,8 +50,6 @@ import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
-import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.Xlog;
 
 /**
  *
@@ -98,6 +100,19 @@ class Server extends UnicastRemoteObject implements ServerCommander {
         }
 
         return result.split("Usage: rsync")[0].trim();
+    }
+
+    @Override
+    public String getHistory() throws RemoteException {
+        String history = "";
+
+        try {
+            history = FileUtils.readFileToString(mJotaManager.getHistoryFile(), Charset.defaultCharset());
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return history;
     }
 
     @Override
@@ -304,14 +319,6 @@ class Server extends UnicastRemoteObject implements ServerCommander {
         return new JobValidator(job);
     }
 
-    Set<ClientCallbacks> getClientCallbacks() {
-        return mClientCallbacks;
-    }
-
-    HashMap<Long, JobExecutor> getJobExecutors() {
-        return mJobExecutors;
-    }
-
     private void cronOff() {
         if (mScheduler.isStarted()) {
             mScheduler.stop();
@@ -408,5 +415,13 @@ class Server extends UnicastRemoteObject implements ServerCommander {
             Xlog.timedErr(ex.getLocalizedMessage());
             Jota.exit();
         }
+    }
+
+    Set<ClientCallbacks> getClientCallbacks() {
+        return mClientCallbacks;
+    }
+
+    HashMap<Long, JobExecutor> getJobExecutors() {
+        return mJobExecutors;
     }
 }

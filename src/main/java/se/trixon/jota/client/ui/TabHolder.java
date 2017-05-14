@@ -272,10 +272,13 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private void init() {
         setFocusTraversalKeysEnabled(false);
         mSpeedDialPanel = new SpeedDialPanel();
-        add(mSpeedDialPanel, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, mAlmondOptions.getIconColor()));
-
         IconColor iconColor = mAlmondOptions.getIconColor();
+
+        add(mSpeedDialPanel, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
         setIconAt(0, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        HistoryPanel historyPanel = new HistoryPanel();
+        add(historyPanel, MaterialIcon._Action.HISTORY.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        setIconAt(1, MaterialIcon._Action.HISTORY.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
 
         mJobMap.values().stream().forEach((tabItem) -> {
             tabItem.updateIcons(iconColor);
