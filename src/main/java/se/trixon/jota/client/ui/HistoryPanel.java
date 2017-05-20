@@ -73,7 +73,6 @@ public class HistoryPanel extends javax.swing.JPanel {
 
         jobList.addListSelectionListener(listSelectionListener);
         taskList.addListSelectionListener(listSelectionListener);
-        abandonedList.addListSelectionListener(listSelectionListener);
     }
 
     private void refresh() {
@@ -98,7 +97,6 @@ public class HistoryPanel extends javax.swing.JPanel {
 
             ArrayList<HistoryItem> jobHistoryItems = new ArrayList<>();
             ArrayList<HistoryItem> taskHistoryItems = new ArrayList<>();
-            ArrayList<HistoryItem> abandonedHistoryItems = new ArrayList<>();
 
             for (Long key : mHistoryMap.keySet()) {
                 boolean isJob = false;
@@ -122,17 +120,11 @@ public class HistoryPanel extends javax.swing.JPanel {
                             break;
                         }
                     }
-
-                    if (!isTask) {
-                        HistoryItem historyItem = new HistoryItem(key, String.valueOf(key), String.join("\n", mHistoryMap.get(key)));
-                        abandonedHistoryItems.add(historyItem);
-                    }
                 }
             }
 
             jobHistoryItems.sort((HistoryItem o1, HistoryItem o2) -> o1.getName().compareTo(o2.getName()));
             taskHistoryItems.sort((HistoryItem o1, HistoryItem o2) -> o1.getName().compareTo(o2.getName()));
-            abandonedHistoryItems.sort((HistoryItem o1, HistoryItem o2) -> o1.getName().compareTo(o2.getName()));
 
             DefaultListModel<HistoryItem> jobModel = new DefaultListModel<>();
             jobHistoryItems.forEach((historyItem) -> {
@@ -145,13 +137,6 @@ public class HistoryPanel extends javax.swing.JPanel {
                 taskModel.addElement(historyItem);
             });
             taskList.setModel(taskModel);
-
-            DefaultListModel<HistoryItem> abandonedModel = new DefaultListModel<>();
-            abandonedHistoryItems.forEach((historyItem) -> {
-                abandonedModel.addElement(historyItem);
-            });
-            abandonedList.setModel(abandonedModel);
-
         } catch (RemoteException ex) {
             Logger.getLogger(HistoryPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -171,8 +156,6 @@ public class HistoryPanel extends javax.swing.JPanel {
         jobList = new javax.swing.JList<>();
         taskScrollPane = new javax.swing.JScrollPane();
         taskList = new javax.swing.JList<>();
-        abandonedScrollPane = new javax.swing.JScrollPane();
-        abandonedList = new javax.swing.JList<>();
         logPanel = new se.trixon.almond.util.swing.LogPanel();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -187,17 +170,12 @@ public class HistoryPanel extends javax.swing.JPanel {
         jobList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jobScrollPane.setViewportView(jobList);
 
-        tabbedPane.addTab(Dict.JOB.toString(), jobScrollPane);
+        tabbedPane.addTab(Dict.JOBS.toString(), jobScrollPane);
 
         taskList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         taskScrollPane.setViewportView(taskList);
 
-        tabbedPane.addTab(Dict.TASK.toString(), taskScrollPane);
-
-        abandonedList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        abandonedScrollPane.setViewportView(abandonedList);
-
-        tabbedPane.addTab(Dict.ABANDONED.toString(), abandonedScrollPane);
+        tabbedPane.addTab(Dict.TASKS.toString(), taskScrollPane);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -222,8 +200,6 @@ public class HistoryPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_formComponentShown
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList<HistoryItem> abandonedList;
-    private javax.swing.JScrollPane abandonedScrollPane;
     private javax.swing.JList<HistoryItem> jobList;
     private javax.swing.JScrollPane jobScrollPane;
     private se.trixon.almond.util.swing.LogPanel logPanel;
