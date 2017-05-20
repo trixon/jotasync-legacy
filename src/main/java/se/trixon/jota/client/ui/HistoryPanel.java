@@ -27,6 +27,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.almond.util.Dict;
+import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
@@ -39,6 +40,7 @@ public class HistoryPanel extends javax.swing.JPanel {
 
     private final Manager mManager = Manager.getInstance();
     private final HashMap<Long, ArrayList<String>> mHistoryMap = new HashMap<>();
+    private final ClientOptions mOptions = ClientOptions.INSTANCE;
 
     /**
      * Creates new form LogViewerPanel
@@ -86,7 +88,9 @@ public class HistoryPanel extends javax.swing.JPanel {
             for (String line : lines) {
                 String[] lineItems = StringUtils.split(line, null, 2);
                 Long key = Long.parseLong(lineItems[0]);
-                getList(key).add(lineItems[1]);
+                if (mOptions.isDisplayDryRun() || (!mOptions.isDisplayDryRun() && !lineItems[1].endsWith(")"))) {
+                    getList(key).add(lineItems[1]);
+                }
             }
 
             LinkedList<Job> jobs = mManager.getServerCommander().getJobs();

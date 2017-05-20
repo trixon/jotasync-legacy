@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JTextArea;
 import se.trixon.almond.util.Dict;
+import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.ui.editor.module.Module;
 
 /**
@@ -28,6 +29,7 @@ import se.trixon.jota.client.ui.editor.module.Module;
 public abstract class NotePanel extends Module {
 
     private PopupListener mPopupListener;
+    protected final ClientOptions mOptions = ClientOptions.INSTANCE;
 
     /**
      * Creates new form ModulePanel
@@ -52,7 +54,6 @@ public abstract class NotePanel extends Module {
     public void setText(String string) {
         textArea.setText(string);
         textArea.setCaretPosition(0);
-
     }
 
     private void init() {

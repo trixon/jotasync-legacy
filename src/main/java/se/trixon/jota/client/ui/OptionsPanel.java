@@ -66,6 +66,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         mOptions.setAutostartServerPort((int) portSpinner.getValue());
         mOptions.setAutostartServerConnectDelay((int) connectDelaySpinner.getValue());
         mOptions.setWordWrap(wordWrapCheckBox.isSelected());
+        mOptions.setDisplayDryRun(displayDryRunCheckBox.isSelected());
     }
 
     private void load() {
@@ -84,6 +85,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         portSpinner.setValue(mOptions.getAutostartServerPort());
         connectDelaySpinner.setValue(mOptions.getAutostartServerConnectDelay());
         wordWrapCheckBox.setSelected(mOptions.isWordWrap());
+        displayDryRunCheckBox.setSelected(mOptions.isDisplayDryRun());
         autostartServerCheckBoxActionPerformed(null);
     }
 
@@ -104,6 +106,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         connectDelayLabel = new javax.swing.JLabel();
         connectDelaySpinner = new javax.swing.JSpinner();
         wordWrapCheckBox = new javax.swing.JCheckBox();
+        displayDryRunCheckBox = new javax.swing.JCheckBox();
         serverPanel = new javax.swing.JPanel();
         rsyncFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         logDirFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
@@ -128,6 +131,8 @@ public class OptionsPanel extends javax.swing.JPanel {
 
         wordWrapCheckBox.setText(Dict.DYNAMIC_WORD_WRAP.toString());
 
+        displayDryRunCheckBox.setText(bundle.getString("OptionsPanel.displayDryRunCheckBox.text")); // NOI18N
+
         javax.swing.GroupLayout clientPanelLayout = new javax.swing.GroupLayout(clientPanel);
         clientPanel.setLayout(clientPanelLayout);
         clientPanelLayout.setHorizontalGroup(
@@ -148,7 +153,8 @@ public class OptionsPanel extends javax.swing.JPanel {
                                     .addComponent(connectDelayLabel)
                                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(autostartServerCheckBox)
-                            .addComponent(wordWrapCheckBox))
+                            .addComponent(wordWrapCheckBox)
+                            .addComponent(displayDryRunCheckBox))
                         .addGap(0, 149, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -169,7 +175,9 @@ public class OptionsPanel extends javax.swing.JPanel {
                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(wordWrapCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(displayDryRunCheckBox)
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab(Dict.CLIENT.toString(), clientPanel);
@@ -210,7 +218,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+            .addComponent(tabbedPane)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -229,6 +237,7 @@ public class OptionsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel connectDelayLabel;
     private javax.swing.JSpinner connectDelaySpinner;
     private javax.swing.JCheckBox customColorsCheckBox;
+    private javax.swing.JCheckBox displayDryRunCheckBox;
     private se.trixon.almond.util.swing.dialogs.FileChooserPanel logDirFileChooserPanel;
     private javax.swing.JLabel portLabel;
     private javax.swing.JSpinner portSpinner;

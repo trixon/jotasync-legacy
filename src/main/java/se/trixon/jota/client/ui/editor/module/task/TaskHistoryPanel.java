@@ -35,7 +35,14 @@ public class TaskHistoryPanel extends NotePanel implements TaskPersistor {
 
     @Override
     public void loadTask(Task task) {
-        setText(task.getHistory());
+        StringBuilder builder = new StringBuilder();
+        for (String line : task.getHistory().split("\\r?\\n")) {
+            if (mOptions.isDisplayDryRun() || (!mOptions.isDisplayDryRun() && !line.endsWith(")"))) {
+                builder.append(line).append("\n");
+            }
+        }
+
+        setText(builder.toString());
     }
 
     @Override

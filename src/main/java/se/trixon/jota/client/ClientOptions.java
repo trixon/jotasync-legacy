@@ -30,11 +30,13 @@ public enum ClientOptions {
     public static final String KEY_AUTOSTART_SERVER_CONNECT_DELAY = "autostartServerConnectDelay";
     public static final String KEY_AUTOSTART_SERVER_PORT = "autostartServerPort";
     public static final String KEY_CUSTOM_COLORS = "customColors";
+    public static final String KEY_DISPLAY_DRY_RUN = "display_dry_run";
     public static final String KEY_HOSTS = "hosts";
     public static final String KEY_WORD_WRAP = "word_wrap";
     private static final boolean DEFAULT_AUTOSTART_SERVER = true;
     private static final int DEFAULT_AUTOSTART_SERVER_CONNECT_DELAY = 500;
     private static final int DEFAULT_AUTOSTART_SERVER_PORT = Jota.DEFAULT_PORT_HOST;
+    private static final boolean DEFAULT_DISPLAY_DRY_RUN = false;
     private static final String DEFAULT_HOSTS = "localhost";
     private static final boolean DEFAULT_WORD_WRAP = false;
 
@@ -68,6 +70,10 @@ public enum ClientOptions {
         return mPreferences.getBoolean(KEY_CUSTOM_COLORS, DEFAULT_CUSTOM_COLORS);
     }
 
+    public boolean isDisplayDryRun() {
+        return mPreferences.getBoolean(KEY_DISPLAY_DRY_RUN, DEFAULT_DISPLAY_DRY_RUN);
+    }
+
     public boolean isWordWrap() {
         return mPreferences.getBoolean(KEY_WORD_WRAP, DEFAULT_WORD_WRAP);
     }
@@ -86,6 +92,10 @@ public enum ClientOptions {
 
     public void setCustomColors(boolean value) {
         mPreferences.putBoolean(KEY_CUSTOM_COLORS, value);
+    }
+
+    public void setDisplayDryRun(boolean value) {
+        mPreferences.putBoolean(KEY_DISPLAY_DRY_RUN, value);
     }
 
     public void setHosts(String value) {

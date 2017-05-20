@@ -32,7 +32,14 @@ public class JobHistoryPanel extends NotePanel implements JobPersistor {
 
     @Override
     public void loadJob(Job job) {
-        setText(job.getHistory());
+        StringBuilder builder = new StringBuilder();
+        for (String line : job.getHistory().split("\\r?\\n")) {
+            if (mOptions.isDisplayDryRun() || (!mOptions.isDisplayDryRun() && !line.endsWith(")"))) {
+                builder.append(line).append("\n");
+            }
+        }
+
+        setText(builder.toString());
     }
 
     @Override
