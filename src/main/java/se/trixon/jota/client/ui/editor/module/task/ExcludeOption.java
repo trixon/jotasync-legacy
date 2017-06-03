@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import static se.trixon.jota.shared.task.TaskSection.OPT_SEPARATOR;
  */
 public enum ExcludeOption implements OptionHandler {
     //_DUMMY_WINDOWS("should only be visible on windows", SystemUtils.IS_OS_WINDOWS),
-    TEMP_DIRS("--exclude=**/*tmp*/", true),
+    TEMP_DIRS("--exclude=**/*tmp*/" + OPT_SEPARATOR + "--exclude=**/*temp*/" + OPT_SEPARATOR + "--exclude=**/*Tmp*/" + OPT_SEPARATOR + "--exclude=**/*Temp*/", true),
     BACKUP_FILES("--exclude=**~", true),
     CACHE_DIRS("--exclude=**/*cache*/" + OPT_SEPARATOR + "--exclude=**/*Cache*/", true),
     TRASH("--exclude=**/*Trash*/" + OPT_SEPARATOR + "--exclude=**/*trash*/", true),
