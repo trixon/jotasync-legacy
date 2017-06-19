@@ -67,6 +67,8 @@ public class OptionsPanel extends javax.swing.JPanel {
         mOptions.setAutostartServerConnectDelay((int) connectDelaySpinner.getValue());
         mOptions.setWordWrap(wordWrapCheckBox.isSelected());
         mOptions.setDisplayDryRun(displayDryRunCheckBox.isSelected());
+        mOptions.setSplitDeletions(splitDeletionsLogCheckBox.isSelected());
+        mOptions.setSplitErrors(splitErrorsLogCheckBox.isSelected());
     }
 
     private void load() {
@@ -87,6 +89,8 @@ public class OptionsPanel extends javax.swing.JPanel {
         wordWrapCheckBox.setSelected(mOptions.isWordWrap());
         displayDryRunCheckBox.setSelected(mOptions.isDisplayDryRun());
         autostartServerCheckBoxActionPerformed(null);
+        splitDeletionsLogCheckBox.setSelected(mOptions.isSplitDeletions());
+        splitErrorsLogCheckBox.setSelected(mOptions.isSplitErrors());
     }
 
     /**
@@ -107,6 +111,9 @@ public class OptionsPanel extends javax.swing.JPanel {
         connectDelaySpinner = new javax.swing.JSpinner();
         wordWrapCheckBox = new javax.swing.JCheckBox();
         displayDryRunCheckBox = new javax.swing.JCheckBox();
+        outputLabel = new javax.swing.JLabel();
+        splitErrorsLogCheckBox = new javax.swing.JCheckBox();
+        splitDeletionsLogCheckBox = new javax.swing.JCheckBox();
         serverPanel = new javax.swing.JPanel();
         rsyncFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         logDirFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
@@ -133,6 +140,13 @@ public class OptionsPanel extends javax.swing.JPanel {
 
         displayDryRunCheckBox.setText(bundle.getString("OptionsPanel.displayDryRunCheckBox.text")); // NOI18N
 
+        outputLabel.setFont(outputLabel.getFont().deriveFont((outputLabel.getFont().getStyle() | java.awt.Font.ITALIC) | java.awt.Font.BOLD, outputLabel.getFont().getSize()+2));
+        outputLabel.setText(Dict.OUTPUT.toString());
+
+        splitErrorsLogCheckBox.setText(bundle.getString("OptionsPanel.splitErrorsLogCheckBox.text")); // NOI18N
+
+        splitDeletionsLogCheckBox.setText(bundle.getString("OptionsPanel.splitDeletionsLogCheckBox.text")); // NOI18N
+
         javax.swing.GroupLayout clientPanelLayout = new javax.swing.GroupLayout(clientPanel);
         clientPanel.setLayout(clientPanelLayout);
         clientPanelLayout.setHorizontalGroup(
@@ -154,8 +168,11 @@ public class OptionsPanel extends javax.swing.JPanel {
                                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(autostartServerCheckBox)
                             .addComponent(wordWrapCheckBox)
-                            .addComponent(displayDryRunCheckBox))
-                        .addGap(0, 149, Short.MAX_VALUE)))
+                            .addComponent(displayDryRunCheckBox)
+                            .addComponent(outputLabel)
+                            .addComponent(splitErrorsLogCheckBox)
+                            .addComponent(splitDeletionsLogCheckBox))
+                        .addGap(0, 128, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         clientPanelLayout.setVerticalGroup(
@@ -173,11 +190,17 @@ public class OptionsPanel extends javax.swing.JPanel {
                 .addGroup(clientPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(portSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(connectDelaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(wordWrapCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(displayDryRunCheckBox)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(outputLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(wordWrapCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(splitErrorsLogCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(splitDeletionsLogCheckBox)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab(Dict.CLIENT.toString(), clientPanel);
@@ -239,10 +262,13 @@ public class OptionsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox customColorsCheckBox;
     private javax.swing.JCheckBox displayDryRunCheckBox;
     private se.trixon.almond.util.swing.dialogs.FileChooserPanel logDirFileChooserPanel;
+    private javax.swing.JLabel outputLabel;
     private javax.swing.JLabel portLabel;
     private javax.swing.JSpinner portSpinner;
     private se.trixon.almond.util.swing.dialogs.FileChooserPanel rsyncFileChooserPanel;
     private javax.swing.JPanel serverPanel;
+    private javax.swing.JCheckBox splitDeletionsLogCheckBox;
+    private javax.swing.JCheckBox splitErrorsLogCheckBox;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JCheckBox wordWrapCheckBox;
     // End of variables declaration//GEN-END:variables

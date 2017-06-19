@@ -82,8 +82,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         setSelectedComponent(mSpeedDialPanel);
 
         mJobMap.entrySet().stream().forEach((entry) -> {
-            TabItem tabItem = entry.getValue();
-            remove(tabItem);
+            remove(entry.getValue());
         });
 
         mJobMap = new HashMap<>();
@@ -242,6 +241,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         TabItem panel = getTabItem(job);
         mJobMap.remove(job.getId());
         remove(panel);
+        setSelectedIndex(0);
     }
 
     private synchronized TabItem getTabItem(Job job) {

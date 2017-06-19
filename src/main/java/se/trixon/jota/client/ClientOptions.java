@@ -32,12 +32,16 @@ public enum ClientOptions {
     public static final String KEY_CUSTOM_COLORS = "customColors";
     public static final String KEY_DISPLAY_DRY_RUN = "display_dry_run";
     public static final String KEY_HOSTS = "hosts";
+    public static final String KEY_SPLIT_DELETIONS = "split_deletions";
+    public static final String KEY_SPLIT_ERRORS = "split_errors";
     public static final String KEY_WORD_WRAP = "word_wrap";
     private static final boolean DEFAULT_AUTOSTART_SERVER = true;
     private static final int DEFAULT_AUTOSTART_SERVER_CONNECT_DELAY = 500;
     private static final int DEFAULT_AUTOSTART_SERVER_PORT = Jota.DEFAULT_PORT_HOST;
     private static final boolean DEFAULT_DISPLAY_DRY_RUN = false;
     private static final String DEFAULT_HOSTS = "localhost";
+    private static final boolean DEFAULT_SPLIT_DELETIONS = true;
+    private static final boolean DEFAULT_SPLIT_ERRORS = true;
     private static final boolean DEFAULT_WORD_WRAP = false;
 
     private final Preferences mPreferences;
@@ -74,6 +78,14 @@ public enum ClientOptions {
         return mPreferences.getBoolean(KEY_DISPLAY_DRY_RUN, DEFAULT_DISPLAY_DRY_RUN);
     }
 
+    public boolean isSplitDeletions() {
+        return mPreferences.getBoolean(KEY_SPLIT_DELETIONS, DEFAULT_SPLIT_DELETIONS);
+    }
+
+    public boolean isSplitErrors() {
+        return mPreferences.getBoolean(KEY_SPLIT_ERRORS, DEFAULT_SPLIT_ERRORS);
+    }
+
     public boolean isWordWrap() {
         return mPreferences.getBoolean(KEY_WORD_WRAP, DEFAULT_WORD_WRAP);
     }
@@ -100,6 +112,14 @@ public enum ClientOptions {
 
     public void setHosts(String value) {
         mPreferences.put(KEY_HOSTS, value);
+    }
+
+    public void setSplitDeletions(boolean value) {
+        mPreferences.putBoolean(KEY_SPLIT_DELETIONS, value);
+    }
+
+    public void setSplitErrors(boolean value) {
+        mPreferences.putBoolean(KEY_SPLIT_ERRORS, value);
     }
 
     public void setWordWrap(boolean value) {

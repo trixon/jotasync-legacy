@@ -36,6 +36,7 @@ import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.FileHelper;
 import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.swing.LogPanel;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.almond.util.swing.dialogs.Message;
 import se.trixon.almond.util.swing.dialogs.SimpleDialog;
@@ -60,6 +61,7 @@ public class TabItem extends JPanel implements TabListener {
     private Progress mProgress;
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final IconColor mIconColor = mAlmondOptions.getIconColor();
 
     /**
      * Creates new form TabItem
@@ -85,12 +87,24 @@ public class TabItem extends JPanel implements TabListener {
 
     synchronized public void log(ProcessEvent processEvent, String string) {
         SwingUtilities.invokeLater(() -> {
-            StringBuilder builder = new StringBuilder(string).append("\n");
-            if (processEvent == ProcessEvent.ERR) {
-                builder.insert(0, "E: ");
+            String line = string + "\n";
+
+            LogPanel lp = logPanel;
+
+            if (mOptions.isSplitDeletions() && StringUtils.startsWith(line, "deleting ")) {
+                lp = deletionsLogPanel;
+                if (lp.getParent() == null) {
+                    tabbedPane.add(lp, MaterialIcon._Action.DELETE.get(AlmondUI.ICON_SIZE_NORMAL, mIconColor));
+                    tabbedPane.setToolTipTextAt(tabbedPane.getTabCount() - 1, Dict.DELETIONS.toString());
+                }
+            } else if (mOptions.isSplitErrors() && (StringUtils.startsWith(line, "rsync: ") || StringUtils.startsWith(line, "rsync error: "))) {
+                lp = errorsLogPanel;
+                if (lp.getParent() == null) {
+                    tabbedPane.add(lp, MaterialIcon._Alert.ERROR_OUTLINE.get(AlmondUI.ICON_SIZE_NORMAL, mIconColor));
+                    tabbedPane.setToolTipTextAt(tabbedPane.getTabCount() - 1, Dict.Dialog.ERRORS.toString());
+                }
             }
 
-            String line = builder.toString();
             if (mProgress.parse(line)) {
                 progressBar.setIndeterminate(false);
                 progressBar.setStringPainted(true);
@@ -100,10 +114,10 @@ public class TabItem extends JPanel implements TabListener {
                 mLastRowWasProgress = true;
             } else {
                 if (mLastRowWasProgress && mLastLineWasBlank) {
-                    int size = logPanel.getText().length();
-                    logPanel.getTextArea().replaceRange(null, size - 1, size);
+                    int size = lp.getText().length();
+                    lp.getTextArea().replaceRange(null, size - 1, size);
                 }
-                logPanel.getTextArea().append(line);
+                lp.getTextArea().append(line);
                 mLastLineWasBlank = StringUtils.isBlank(line);
                 mLastRowWasProgress = false;
             }
@@ -170,7 +184,7 @@ public class TabItem extends JPanel implements TabListener {
     }
 
     synchronized void start() {
-        logPanel.clear();
+        initSubTabs();
         progressBar.setIndeterminate(true);
         progressBar.setStringPainted(false);
 
@@ -182,6 +196,8 @@ public class TabItem extends JPanel implements TabListener {
 
     private void init() {
         logPanel.setWordWrap(mOptions.isWordWrap());
+        deletionsLogPanel.setWordWrap(mOptions.isWordWrap());
+        errorsLogPanel.setWordWrap(mOptions.isWordWrap());
 
         cancelButton.setToolTipText(Dict.CANCEL.toString());
         editButton.setToolTipText(Dict.EDIT.toString());
@@ -194,8 +210,27 @@ public class TabItem extends JPanel implements TabListener {
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             if (evt.getKey().equalsIgnoreCase(ClientOptions.KEY_WORD_WRAP)) {
                 logPanel.setWordWrap(mOptions.isWordWrap());
+                deletionsLogPanel.setWordWrap(mOptions.isWordWrap());
+                errorsLogPanel.setWordWrap(mOptions.isWordWrap());
             }
         });
+    }
+
+    private void initSubTabs() {
+        logPanel.clear();
+        errorsLogPanel.clear();
+        deletionsLogPanel.clear();
+
+        holderPanel.removeAll();
+        tabbedPane.removeAll();
+
+        if (mOptions.isSplitDeletions() || mOptions.isSplitErrors()) {
+            holderPanel.add(tabbedPane);
+            tabbedPane.add(logPanel, MaterialIcon._Action.INFO_OUTLINE.get(AlmondUI.ICON_SIZE_NORMAL, mIconColor));
+            tabbedPane.setToolTipTextAt(0, Dict.LOG.toString());
+        } else {
+            holderPanel.add(logPanel);
+        }
     }
 
     void updateIcons(IconColor iconColor) {
@@ -214,13 +249,17 @@ public class TabItem extends JPanel implements TabListener {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        logPanel = new se.trixon.almond.util.swing.LogPanel();
+        errorsLogPanel = new se.trixon.almond.util.swing.LogPanel();
+        deletionsLogPanel = new se.trixon.almond.util.swing.LogPanel();
+        tabbedPane = new javax.swing.JTabbedPane();
         progressBar = new javax.swing.JProgressBar();
         toolBar = new javax.swing.JToolBar();
         editButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         startButton = new javax.swing.JButton();
         menuButton = new javax.swing.JButton();
-        logPanel = new se.trixon.almond.util.swing.LogPanel();
+        holderPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -270,15 +309,16 @@ public class TabItem extends JPanel implements TabListener {
         toolBar.add(menuButton);
 
         add(toolBar, new java.awt.GridBagConstraints());
+
+        holderPanel.setLayout(new java.awt.GridLayout(1, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        add(logPanel, gridBagConstraints);
+        add(holderPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -307,11 +347,15 @@ public class TabItem extends JPanel implements TabListener {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
+    private se.trixon.almond.util.swing.LogPanel deletionsLogPanel;
     private javax.swing.JButton editButton;
+    private se.trixon.almond.util.swing.LogPanel errorsLogPanel;
+    private javax.swing.JPanel holderPanel;
     private se.trixon.almond.util.swing.LogPanel logPanel;
     private javax.swing.JButton menuButton;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JButton startButton;
+    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 }
