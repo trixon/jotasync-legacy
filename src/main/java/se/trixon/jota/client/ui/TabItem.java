@@ -114,8 +114,11 @@ public class TabItem extends JPanel implements TabListener {
                 mLastRowWasProgress = true;
             } else {
                 if (mLastRowWasProgress && mLastLineWasBlank) {
-                    int size = lp.getText().length();
-                    lp.getTextArea().replaceRange(null, size - 1, size);
+                    try {
+                        int size = lp.getText().length();
+                        lp.getTextArea().replaceRange(null, size - 1, size);
+                    } catch (IllegalArgumentException e) {
+                    }
                 }
                 lp.getTextArea().append(line);
                 mLastLineWasBlank = StringUtils.isBlank(line);
