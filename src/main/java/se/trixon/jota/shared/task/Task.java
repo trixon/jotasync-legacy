@@ -37,8 +37,6 @@ public class Task implements Comparable<Task>, Serializable {
     private String mDescription = "";
     @SerializedName("destination")
     private String mDestination;
-    @SerializedName("details")
-    private String mDetails = "";
     @SerializedName("environment")
     private String mEnvironment = "";
     @SerializedName("exclude_section")
@@ -52,6 +50,8 @@ public class Task implements Comparable<Task>, Serializable {
     private String mName = "";
     @SerializedName("no_additional_dir")
     private boolean mNoAdditionalDir;
+    @SerializedName("note")
+    private String mNote = "";
     @SerializedName("option_section")
     private final OptionSection mOptionSection;
     @SerializedName("source")
@@ -109,10 +109,6 @@ public class Task implements Comparable<Task>, Serializable {
         return mDestination;
     }
 
-    public String getDetails() {
-        return mDetails;
-    }
-
     public String getEnvironment() {
         return mEnvironment;
     }
@@ -135,6 +131,10 @@ public class Task implements Comparable<Task>, Serializable {
 
     public String getName() {
         return mName;
+    }
+
+    public String getNote() {
+        return mNote;
     }
 
     public OptionSection getOptionSection() {
@@ -202,10 +202,6 @@ public class Task implements Comparable<Task>, Serializable {
         mDestination = destination;
     }
 
-    public void setDetails(String string) {
-        mDetails = string;
-    }
-
     public void setEnvironment(String environment) {
         mEnvironment = environment;
     }
@@ -224,6 +220,10 @@ public class Task implements Comparable<Task>, Serializable {
 
     public void setNoAdditionalDir(boolean value) {
         mNoAdditionalDir = value;
+    }
+
+    public void setNote(String string) {
+        mNote = string;
     }
 
     public void setSource(String source) {

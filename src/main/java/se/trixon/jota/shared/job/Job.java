@@ -49,8 +49,6 @@ public class Job implements Comparable<Job>, Serializable {
     private String mCronItems = "";
     @SerializedName("description")
     private String mDescription = "";
-    @SerializedName("details")
-    private String mDetails = "";
     @SerializedName("execute_section")
     private final JobExecuteSection mExecuteSection;
     private String mHistory = "";
@@ -70,6 +68,8 @@ public class Job implements Comparable<Job>, Serializable {
     private boolean mLogSeparateErrors = true;
     @SerializedName("name")
     private String mName = "";
+    @SerializedName("note")
+    private String mNote = "";
     private transient StringBuilder mSummaryBuilder;
     @SerializedName("tasks")
     private ArrayList<Long> mTaskIds = new ArrayList<>();
@@ -83,7 +83,7 @@ public class Job implements Comparable<Job>, Serializable {
         mId = id;
         mName = name;
         mDescription = description;
-        mDetails = comment;
+        mNote = comment;
         mExecuteSection = new JobExecuteSection();
     }
 
@@ -125,10 +125,6 @@ public class Job implements Comparable<Job>, Serializable {
 
     public String getDescription() {
         return mDescription;
-    }
-
-    public String getDetails() {
-        return mDetails;
     }
 
     public JobExecuteSection getExecuteSection() {
@@ -184,6 +180,10 @@ public class Job implements Comparable<Job>, Serializable {
 
     public String getName() {
         return mName;
+    }
+
+    public String getNote() {
+        return mNote;
     }
 
     public String getSummaryAsHtml() {
@@ -262,10 +262,6 @@ public class Job implements Comparable<Job>, Serializable {
         mDescription = string;
     }
 
-    public void setDetails(String string) {
-        mDetails = string;
-    }
-
     public void setHistory(String history) {
         mHistory = history == null ? "" : history;
     }
@@ -300,6 +296,10 @@ public class Job implements Comparable<Job>, Serializable {
 
     public void setName(String name) {
         mName = name;
+    }
+
+    public void setNote(String string) {
+        mNote = string;
     }
 
     public void setTasks(List<Task> tasksSkip) {
