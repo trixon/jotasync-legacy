@@ -20,6 +20,7 @@ import java.awt.Container;
 import java.util.List;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import se.trixon.almond.util.Dict;
 import se.trixon.jota.client.ui.editor.module.Module;
 import se.trixon.jota.client.ui.editor.module.TaskPersistor;
 import se.trixon.jota.client.ui.editor.module.task.TaskEnvironmentPanel;
@@ -116,6 +117,9 @@ public class TaskPanel extends javax.swing.JPanel {
     }
 
     private void loadTask() {
+        nameTextField.setText(mTask.getName());
+        descriptionTextField.setText(mTask.getDescription());
+
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof TaskPersistor) {
                 TaskPersistor persistor = (TaskPersistor) component;
@@ -125,6 +129,9 @@ public class TaskPanel extends javax.swing.JPanel {
     }
 
     private void saveTask() {
+        mTask.setName(nameTextField.getText());
+        mTask.setDescription(descriptionTextField.getText());
+
         for (Component component : tabbedPane.getComponents()) {
             if (component instanceof TaskPersistor) {
                 TaskPersistor persistor = (TaskPersistor) component;
@@ -150,25 +157,67 @@ public class TaskPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        nameLabel = new javax.swing.JLabel();
+        nameTextField = new javax.swing.JTextField();
+        descriptionLabel = new javax.swing.JLabel();
+        descriptionTextField = new javax.swing.JTextField();
         tabbedPane = new javax.swing.JTabbedPane();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        nameLabel.setText(Dict.NAME.getString());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 4);
+        add(nameLabel, gridBagConstraints);
+
+        nameTextField.setColumns(20);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 4);
+        add(nameTextField, gridBagConstraints);
+
+        descriptionLabel.setText(Dict.DESCRIPTION.getString());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
+        add(descriptionLabel, gridBagConstraints);
+
+        descriptionTextField.setColumns(20);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
+        add(descriptionTextField, gridBagConstraints);
 
         tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 tabbedPaneStateChanged(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 0, 0);
+        add(tabbedPane, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
@@ -176,6 +225,10 @@ public class TaskPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_tabbedPaneStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JTextField descriptionTextField;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JTextField nameTextField;
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
 
