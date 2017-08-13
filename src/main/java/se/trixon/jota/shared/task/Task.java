@@ -15,6 +15,7 @@
  */
 package se.trixon.jota.shared.task;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +33,30 @@ import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
 public class Task implements Comparable<Task>, Serializable {
 
     private final List<String> mCommand = new ArrayList<>();
+    @SerializedName("description")
     private String mDescription = "";
+    @SerializedName("destination")
     private String mDestination;
+    @SerializedName("details")
     private String mDetails = "";
+    @SerializedName("environment")
     private String mEnvironment = "";
+    @SerializedName("exclude_section")
     private final ExcludeSection mExcludeSection;
+    @SerializedName("execute_section")
     private final TaskExecuteSection mExecuteSection;
     private String mHistory = "";
+    @SerializedName("id")
     private long mId = System.currentTimeMillis();
+    @SerializedName("name")
     private String mName = "";
+    @SerializedName("no_additional_dir")
     private boolean mNoAdditionalDir;
+    @SerializedName("option_section")
     private final OptionSection mOptionSection;
+    @SerializedName("source")
     private String mSource;
-    private StringBuilder mSummaryBuilder;
+    private transient StringBuilder mSummaryBuilder;
 
     public Task() {
         mExecuteSection = new TaskExecuteSection();

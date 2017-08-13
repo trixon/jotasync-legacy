@@ -61,7 +61,7 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     private HashMap<Long, JobExecutor> mJobExecutors = new HashMap<>();
     private final JobManager mJobManager = JobManager.INSTANCE;
     private final ResourceBundle mJotaBundle = Jota.getBundle();
-    private final JotaManager mJotaManager = JotaManager.INSTANCE;
+    private final JotaManager mJotaManager = JotaManager.getInstance();
     private final ServerOptions mOptions = ServerOptions.INSTANCE;
     private int mPort = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameServer;
@@ -254,7 +254,7 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public void setJobs(Job[] jobs) throws RemoteException {
+    public void setJobs(LinkedList<Job> jobs) throws RemoteException {
         mJobManager.setJobs(jobs);
     }
 
@@ -274,7 +274,7 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     }
 
     @Override
-    public void setTasks(Task[] tasks) throws RemoteException {
+    public void setTasks(LinkedList<Task> tasks) throws RemoteException {
         mTaskManager.setTasks(tasks);
     }
 

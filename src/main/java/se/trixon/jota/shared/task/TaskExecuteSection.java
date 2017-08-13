@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,41 +15,41 @@
  */
 package se.trixon.jota.shared.task;
 
+import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 import java.util.List;
-import org.json.simple.JSONObject;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class TaskExecuteSection extends TaskSection {
+public class TaskExecuteSection extends TaskSection implements Serializable {
 
-    public static final String KEY = "execute";
-    private static final String KEY_AFTER = "runAfter";
-    private static final String KEY_AFTER_COMMAND = "runAfterCommand";
-    private static final String KEY_AFTER_FAILURE = "runAfterFailure";
-    private static final String KEY_AFTER_FAILURE_COMMAND = "runAfterFailureCommand";
-    private static final String KEY_AFTER_FAILURE_HALT_ON_ERROR = "runAfterFailureHaltOnError";
-    private static final String KEY_AFTER_HALT_ON_ERROR = "runAfterHaltOnError";
-    private static final String KEY_AFTER_SUCCESS = "runAfterSuccess";
-    private static final String KEY_AFTER_SUCCESS_COMMAND = "runAfterSuccessCommand";
-    private static final String KEY_AFTER_SUCCESS_HALT_ON_ERROR = "runAfterSuccessHaltOnError";
-    private static final String KEY_BEFORE = "runBefore";
-    private static final String KEY_BEFORE_COMMAND = "runBeforeCommand";
-    private static final String KEY_BEFORE_HALT_ON_ERROR = "runBeforeHaltOnError";
-    private static final String KEY_JOB_HALT_ON_ERROR = "jobHaltOnError";
+    @SerializedName("after")
     private boolean mAfter;
+    @SerializedName("after_command")
     private String mAfterCommand = "";
+    @SerializedName("after_failure")
     private boolean mAfterFailure;
+    @SerializedName("after_failure_command")
     private String mAfterFailureCommand = "";
+    @SerializedName("after_failure_halt_on_error")
     private boolean mAfterFailureHaltOnError;
+    @SerializedName("after_halt_on_error")
     private boolean mAfterHaltOnError;
+    @SerializedName("after_success")
     private boolean mAfterSuccess;
+    @SerializedName("after_success_command")
     private String mAfterSuccessCommand = "";
+    @SerializedName("after_success_halt_on_error")
     private boolean mAfterSuccessHaltOnError;
+    @SerializedName("before")
     private boolean mBefore;
+    @SerializedName("before_command")
     private String mBeforeCommand = "";
+    @SerializedName("before_halt_on_error")
     private boolean mBeforeHaltOnError;
+    @SerializedName("job_halt_on_error")
     private boolean mJobHaltOnError;
 
     public String getAfterCommand() {
@@ -71,31 +71,6 @@ public class TaskExecuteSection extends TaskSection {
     @Override
     public List<String> getCommand() {
         return null;
-    }
-
-    @Override
-    public JSONObject getJson() {
-        JSONObject jsonObject = new JSONObject();
-
-        jsonObject.put(KEY_BEFORE, mBefore);
-        jsonObject.put(KEY_BEFORE_COMMAND, mBeforeCommand);
-        jsonObject.put(KEY_BEFORE_HALT_ON_ERROR, mBeforeHaltOnError);
-
-        jsonObject.put(KEY_AFTER_FAILURE, mAfterFailure);
-        jsonObject.put(KEY_AFTER_FAILURE_COMMAND, mAfterFailureCommand);
-        jsonObject.put(KEY_AFTER_FAILURE_HALT_ON_ERROR, mAfterFailureHaltOnError);
-
-        jsonObject.put(KEY_AFTER_SUCCESS, mAfterSuccess);
-        jsonObject.put(KEY_AFTER_SUCCESS_COMMAND, mAfterSuccessCommand);
-        jsonObject.put(KEY_AFTER_SUCCESS_HALT_ON_ERROR, mAfterSuccessHaltOnError);
-
-        jsonObject.put(KEY_AFTER, mAfter);
-        jsonObject.put(KEY_AFTER_COMMAND, mAfterCommand);
-        jsonObject.put(KEY_AFTER_HALT_ON_ERROR, mAfterHaltOnError);
-
-        jsonObject.put(KEY_JOB_HALT_ON_ERROR, mJobHaltOnError);
-
-        return jsonObject;
     }
 
     public boolean isAfter() {
@@ -132,27 +107,6 @@ public class TaskExecuteSection extends TaskSection {
 
     public boolean isJobHaltOnError() {
         return mJobHaltOnError;
-    }
-
-    @Override
-    public void loadFromJson(JSONObject jsonObject) {
-        mBefore = optBoolean(jsonObject, KEY_BEFORE);
-        mBeforeCommand = optString(jsonObject, KEY_BEFORE_COMMAND);
-        mBeforeHaltOnError = optBoolean(jsonObject, KEY_BEFORE_HALT_ON_ERROR);
-
-        mAfter = optBoolean(jsonObject, KEY_AFTER);
-        mAfterCommand = optString(jsonObject, KEY_AFTER_COMMAND);
-        mAfterHaltOnError = optBoolean(jsonObject, KEY_AFTER_HALT_ON_ERROR);
-
-        mAfterFailure = optBoolean(jsonObject, KEY_AFTER_FAILURE);
-        mAfterFailureCommand = optString(jsonObject, KEY_AFTER_FAILURE_COMMAND);
-        mAfterFailureHaltOnError = optBoolean(jsonObject, KEY_AFTER_FAILURE_HALT_ON_ERROR);
-
-        mAfterSuccess = optBoolean(jsonObject, KEY_AFTER_SUCCESS);
-        mAfterSuccessCommand = optString(jsonObject, KEY_AFTER_SUCCESS_COMMAND);
-        mAfterSuccessHaltOnError = optBoolean(jsonObject, KEY_AFTER_SUCCESS_HALT_ON_ERROR);
-
-        mJobHaltOnError = optBoolean(jsonObject, KEY_JOB_HALT_ON_ERROR);
     }
 
     public void setAfter(boolean value) {

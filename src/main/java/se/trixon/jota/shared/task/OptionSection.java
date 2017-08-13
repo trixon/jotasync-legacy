@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,17 @@
  */
 package se.trixon.jota.shared.task;
 
+import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 import java.util.List;
-import org.json.simple.JSONObject;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class OptionSection extends TaskSection {
+public class OptionSection extends TaskSection implements Serializable {
 
-    public static final String KEY = "option";
-    private static final String KEY_OPTIONS = "options";
-
+    @SerializedName("options")
     private String mOptions = "";
 
     @Override
@@ -40,22 +39,8 @@ public class OptionSection extends TaskSection {
         return mCommand;
     }
 
-    @Override
-    public JSONObject getJson() {
-        JSONObject jsonObject = new JSONObject();
-
-        jsonObject.put(KEY_OPTIONS, mOptions);
-
-        return jsonObject;
-    }
-
     public String getOptions() {
         return mOptions;
-    }
-
-    @Override
-    public void loadFromJson(JSONObject jsonObject) {
-        mOptions = optString(jsonObject, KEY_OPTIONS);
     }
 
     public void setOptions(String options) {

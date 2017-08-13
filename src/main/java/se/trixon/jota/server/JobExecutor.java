@@ -53,7 +53,7 @@ class JobExecutor extends Thread {
     private final StringBuffer mErrBuffer;
     private final Job mJob;
     private final ResourceBundle mJobExecBundle;
-    private final JotaManager mJotaManager = JotaManager.INSTANCE;
+    private final JotaManager mJotaManager = JotaManager.getInstance();
     private long mLastRun;
     private int mNumOfFailedTasks;
     private ServerOptions mOptions = ServerOptions.INSTANCE;

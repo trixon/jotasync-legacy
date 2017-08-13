@@ -21,36 +21,31 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.commons.io.FileUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import se.trixon.almond.util.Xlog;
-import se.trixon.jota.shared.JsonHelper;
 
 /**
  *
  * @author Patrik Karlsson
  */
-enum JotaManager {
+class JotaManager {
 
-    INSTANCE;
-    private static final String KEY_JOBS = "jobs";
-    private static final String KEY_TASKS = "tasks";
-    private static final String KEY_VERSION = "version";
-    private static final int sVersion = 2;
     private final File mDirectory;
     private final File mHistoryFile;
     private final File mJobBakFile;
     private final JobManager mJobManager = JobManager.INSTANCE;
+    private JotaJson mJotaJson = new JotaJson();
     private final File mLogFile;
     private final File mProfilesFile;
     private final TaskManager mTaskManager = TaskManager.INSTANCE;
-    private int mVersion;
+
+    public static JotaManager getInstance() {
+        return Holder.INSTANCE;
+    }
 
     private JotaManager() {
         mDirectory = new File(System.getProperty("user.home"), ".config/jotasync");
         mHistoryFile = new File(mDirectory, "jotasync.history");
-        mProfilesFile = new File(mDirectory, "jotasync.profiles");
+        mProfilesFile = new File(mDirectory, "jotasync2.profiles");
         mJobBakFile = new File(mDirectory, "jotasync.profiles.bak");
         mLogFile = new File(mDirectory, "jotasync.log");
 
@@ -63,6 +58,10 @@ enum JotaManager {
 
     public File getDirectory() {
         return mDirectory;
+    }
+
+    public int getFileFormatVersion() {
+        return mJotaJson.getFileFormatVersion();
     }
 
     public File getHistoryFile() {
@@ -85,33 +84,28 @@ enum JotaManager {
         return mTaskManager;
     }
 
-    public int getVersion() {
-        return mVersion;
-    }
-
     public void load() throws IOException {
         if (mProfilesFile.exists()) {
-            JSONObject jsonObject = (JSONObject) JSONValue.parse(FileUtils.readFileToString(mProfilesFile, Charset.defaultCharset()));
-            mVersion = JsonHelper.getInt(jsonObject, KEY_VERSION);
-            JSONArray jobsArray = (JSONArray) jsonObject.get(KEY_JOBS);
-            JSONArray tasksArray = (JSONArray) jsonObject.get(KEY_TASKS);
-
-            mTaskManager.setTasks(tasksArray);
-            mJobManager.setJobs(jobsArray);
+            mJotaJson = mJotaJson.open(mProfilesFile);
+            mTaskManager.setTasks(mJotaJson.getTasks());
+            mJobManager.setJobs(mJotaJson.getJobs());
+            mJobManager.loadHistory();
+        } else {
+            mJotaJson = new JotaJson();
         }
     }
 
     public void save() throws IOException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(KEY_TASKS, mTaskManager.getJsonArray());
-        jsonObject.put(KEY_JOBS, mJobManager.getJsonArray());
-        jsonObject.put(KEY_VERSION, sVersion);
-
+        mJotaJson.setJobs(mJobManager.getJobs());
+        mJotaJson.setTasks(mTaskManager.getTasks());
+        String json = mJotaJson.save(mProfilesFile);
         String tag = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String jsonString = jsonObject.toJSONString();
-        FileUtils.writeStringToFile(mProfilesFile, jsonString, Charset.defaultCharset());
-        FileUtils.writeStringToFile(mJobBakFile, String.format("%s=%s\n", tag, jsonString), Charset.defaultCharset(), true);
-
+        FileUtils.writeStringToFile(mJobBakFile, String.format("%s=%s\n", tag, json), Charset.defaultCharset(), true);
         load();
+    }
+
+    private static class Holder {
+
+        private static final JotaManager INSTANCE = new JotaManager();
     }
 }

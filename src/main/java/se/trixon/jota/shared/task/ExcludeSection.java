@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,23 +15,22 @@
  */
 package se.trixon.jota.shared.task;
 
+import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class ExcludeSection extends TaskSection {
+public class ExcludeSection extends TaskSection implements Serializable {
 
-    public static final String KEY = "exclude";
-    private static final String KEY_MANUAL_FILE_PATH = "manualFilePath";
-    private static final String KEY_MANUAL_FILE_USED = "manualFileUsed";
-    private static final String KEY_OPTIONS = "options";
-
+    @SerializedName("manual_file_path")
     private String mManualFilePath;
+    @SerializedName("manual_file_used")
     private boolean mManualFileUsed;
+    @SerializedName("options")
     private String mOptions = "";
 
     @Override
@@ -53,17 +52,6 @@ public class ExcludeSection extends TaskSection {
         return mCommand;
     }
 
-    @Override
-    public JSONObject getJson() {
-        JSONObject jsonObject = new JSONObject();
-
-        jsonObject.put(KEY_MANUAL_FILE_USED, mManualFileUsed);
-        jsonObject.put(KEY_MANUAL_FILE_PATH, mManualFilePath);
-        jsonObject.put(KEY_OPTIONS, mOptions);
-
-        return jsonObject;
-    }
-
     public String getManualFilePath() {
         return mManualFilePath;
     }
@@ -74,13 +62,6 @@ public class ExcludeSection extends TaskSection {
 
     public boolean isManualFileUsed() {
         return mManualFileUsed;
-    }
-
-    @Override
-    public void loadFromJson(JSONObject jsonObject) {
-        mManualFileUsed = optBoolean(jsonObject, KEY_MANUAL_FILE_USED);
-        mManualFilePath = optString(jsonObject, KEY_MANUAL_FILE_PATH);
-        mOptions = optString(jsonObject, KEY_OPTIONS);
     }
 
     public void setManualFilePath(String value) {

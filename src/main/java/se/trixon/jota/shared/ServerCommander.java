@@ -67,7 +67,7 @@ public interface ServerCommander extends Remote {
 
     void setCronActive(boolean enable) throws RemoteException;
 
-    void setJobs(Job[] jobs) throws RemoteException;
+    void setJobs(LinkedList<Job> jobs) throws RemoteException;
 
     void setLogDir(String path) throws RemoteException;
 
@@ -75,7 +75,7 @@ public interface ServerCommander extends Remote {
 
     void setSpeedDial(int key, long jobId) throws RemoteException;
 
-    void setTasks(Task[] tasks) throws RemoteException;
+    void setTasks(LinkedList<Task> tasks) throws RemoteException;
 
     void shutdown() throws RemoteException;
 

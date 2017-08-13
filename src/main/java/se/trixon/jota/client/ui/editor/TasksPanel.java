@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,9 +67,10 @@ public class TasksPanel extends EditPanel {
     @Override
     public void save() {
         try {
-            Task[] tasks = new Task[getModel().size()];
-            for (int i = 0; i < tasks.length; i++) {
-                tasks[i] = (Task) getModel().get(i);
+            LinkedList<Task> tasks = new LinkedList<>();
+
+            for (int i = 0; i < getModel().getSize(); i++) {
+                tasks.add((Task) getModel().get(i));
             }
             mManager.getServerCommander().setTasks(tasks);
         } catch (RemoteException ex) {

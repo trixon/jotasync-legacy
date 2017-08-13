@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
  */
 package se.trixon.jota.client.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
@@ -23,11 +22,10 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import org.apache.commons.lang3.StringUtils;
-import se.trixon.jota.shared.job.Job;
-import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ClientOptions;
+import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ui.editor.JobsPanel;
+import se.trixon.jota.shared.job.Job;
 
 /**
  *
@@ -124,8 +122,8 @@ public class SpeedDialButton extends JButton {
                 //if (StringUtils.isNotBlank(job.getColorBackground())) {
                 //    setBackground(Color.decode(job.getColorBackground()));
                 //}
-                if (StringUtils.isNotBlank(job.getColorForeground())) {
-                    setForeground(Color.decode(job.getColorForeground()));
+                if (job.getColorForeground() != null) {
+                    setForeground(job.getColorForeground());
                 }
             } catch (RemoteException | NumberFormatException ex) {
                 setBackground(null);

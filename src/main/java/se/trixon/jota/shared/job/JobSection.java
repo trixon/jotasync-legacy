@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,10 @@
  */
 package se.trixon.jota.shared.job;
 
-import se.trixon.jota.shared.JotaSection;
-
 /**
  *
  * @author Patrik Karlsson
  */
-public abstract class JobSection extends JotaSection {
+public abstract class JobSection {
 
 }

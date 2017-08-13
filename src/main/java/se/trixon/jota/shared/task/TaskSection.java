@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Patrik Karlsson.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,16 +17,15 @@ package se.trixon.jota.shared.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import se.trixon.jota.shared.JotaSection;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public abstract class TaskSection extends JotaSection {
+public abstract class TaskSection {
 
     public static final String OPT_SEPARATOR = ":::";
-    protected final List<String> mCommand = new ArrayList<>();
+    protected transient final List<String> mCommand = new ArrayList<>();
 
     public abstract List<String> getCommand();
 

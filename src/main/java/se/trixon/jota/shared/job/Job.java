@@ -15,8 +15,11 @@
  */
 package se.trixon.jota.shared.job;
 
+import com.google.gson.annotations.SerializedName;
+import java.awt.Color;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
-import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.task.Task;
 
 /**
@@ -37,23 +39,40 @@ public class Job implements Comparable<Job>, Serializable {
 
     public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
-    private String mColorBackground;
-    private String mColorForeground;
+    @SerializedName("color_background")
+    private Color mColorBackground;
+    @SerializedName("color_foreground")
+    private Color mColorForeground;
+    @SerializedName("cron_active")
     private boolean mCronActive;
+    @SerializedName("cron_items")
     private String mCronItems = "";
+    @SerializedName("description")
     private String mDescription = "";
+    @SerializedName("details")
     private String mDetails = "";
+    @SerializedName("execute_section")
     private final JobExecuteSection mExecuteSection;
     private String mHistory = "";
+    @SerializedName("id")
     private long mId = System.currentTimeMillis();
+    @SerializedName("last_run")
     private long mLastRun = -1;
+    @SerializedName("last_run_exit_code")
     private int mLastRunExitCode = -1;
+    @SerializedName("log_errors")
     private boolean mLogErrors = true;
+    @SerializedName("log_mode")
     private int mLogMode = 0;
+    @SerializedName("log_output")
     private boolean mLogOutput = true;
+    @SerializedName("log_separate_errors")
     private boolean mLogSeparateErrors = true;
+    @SerializedName("name")
     private String mName = "";
-    private StringBuilder mSummaryBuilder;
+    private transient StringBuilder mSummaryBuilder;
+    @SerializedName("tasks")
+    private ArrayList<Long> mTaskIds = new ArrayList<>();
     private List<Task> mTasks = new LinkedList<>();
 
     public Job() {
@@ -92,11 +111,11 @@ public class Job implements Comparable<Job>, Serializable {
         return caption;
     }
 
-    public String getColorBackground() {
+    public Color getColorBackground() {
         return mColorBackground;
     }
 
-    public String getColorForeground() {
+    public Color getColorForeground() {
         return mColorForeground;
     }
 
@@ -191,18 +210,16 @@ public class Job implements Comparable<Job>, Serializable {
         return mSummaryBuilder.toString();
     }
 
-    public List<Task> getTasks() {
-        return mTasks;
+    public ArrayList<Long> getTaskIds() {
+        return mTaskIds;
     }
 
-    public String getTasksString() {
-        Long[] taskIds = new Long[mTasks.size()];
-
-        for (int i = 0; i < taskIds.length; i++) {
-            taskIds[i] = mTasks.get(i).getId();
+    public List<Task> getTasks() {
+        if (mTasks == null) {
+            mTasks = new LinkedList<>();
         }
 
-        return StringUtils.join(taskIds, Jota.TASK_SEPARATOR);
+        return mTasks;
     }
 
     public boolean isCronActive() {
@@ -225,12 +242,12 @@ public class Job implements Comparable<Job>, Serializable {
         return !getName().isEmpty();
     }
 
-    public void setColorBackground(String colorBackground) {
-        mColorBackground = colorBackground;
+    public void setColorBackground(Color color) {
+        mColorBackground = color;
     }
 
-    public void setColorForeground(String colorForeground) {
-        mColorForeground = colorForeground;
+    public void setColorForeground(Color color) {
+        mColorForeground = color;
     }
 
     public void setCronActive(boolean cronActive) {
@@ -285,15 +302,18 @@ public class Job implements Comparable<Job>, Serializable {
         mName = name;
     }
 
-    public void setTasks(List<Task> tasks) {
-        mTasks = tasks;
+    public void setTasks(List<Task> tasksSkip) {
+        mTasks = tasksSkip;
     }
 
     public void setTasks(DefaultListModel model) {
         mTasks.clear();
+        mTaskIds.clear();
 
         for (Object object : model.toArray()) {
-            mTasks.add((Task) object);
+            Task task = (Task) object;
+            mTasks.add(task);
+            mTaskIds.add(task.getId());
         }
     }
 

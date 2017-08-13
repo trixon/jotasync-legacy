@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,9 +85,9 @@ public final class JobsPanel extends EditPanel {
     @Override
     public void save() {
         try {
-            Job[] jobs = new Job[getModel().size()];
-            for (int i = 0; i < jobs.length; i++) {
-                jobs[i] = (Job) getModel().get(i);
+            LinkedList<Job> jobs = new LinkedList<>();
+            for (int i = 0; i < getModel().getSize(); i++) {
+                jobs.add((Job) getModel().get(i));
             }
             mManager.getServerCommander().setJobs(jobs);
         } catch (RemoteException ex) {
