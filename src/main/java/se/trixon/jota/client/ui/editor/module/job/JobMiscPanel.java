@@ -16,18 +16,19 @@
 package se.trixon.jota.client.ui.editor.module.job;
 
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.swing.dialogs.SimpleDialog;
 import se.trixon.jota.shared.job.Job;
 
 /**
  *
  * @author Patrik Karlsson
  */
-public class JobLogPanel extends JobModule {
+public class JobMiscPanel extends JobModule {
 
     /**
      * Creates new form JobCron
      */
-    public JobLogPanel() {
+    public JobMiscPanel() {
         initComponents();
         init();
     }
@@ -47,6 +48,10 @@ public class JobLogPanel extends JobModule {
         logOutputCheckBox.setSelected(job.isLogOutput());
         logErrorsCheckBox.setSelected(job.isLogErrors());
         logSeparateCheckBox.setSelected(job.isLogSeparateErrors());
+
+        if (job.getColorForeground() != null) {
+            colorButton.setForeground(job.getColorForeground());
+        }
     }
 
     @Override
@@ -65,11 +70,14 @@ public class JobLogPanel extends JobModule {
         job.setLogSeparateErrors(logSeparateCheckBox.isSelected());
         job.setLogMode(logMode);
 
+        job.setColorForeground(colorButton.getForeground());
+        System.out.println(job.getColorForeground());
+
         return job;
     }
 
     private void init() {
-        mTitle = Dict.LOGGING.toString();
+        mTitle = Dict.MISCELLANEOUS.toString();
     }
 
     /**
@@ -81,12 +89,19 @@ public class JobLogPanel extends JobModule {
     private void initComponents() {
 
         logButtonGroup = new javax.swing.ButtonGroup();
+        loggingLabel = new javax.swing.JLabel();
         logOutputCheckBox = new javax.swing.JCheckBox();
         logErrorsCheckBox = new javax.swing.JCheckBox();
         logSeparateCheckBox = new javax.swing.JCheckBox();
         logAppendRadioButton = new javax.swing.JRadioButton();
         logReplaceRadioButton = new javax.swing.JRadioButton();
         logUniqueRadioButton = new javax.swing.JRadioButton();
+        appearanceLabel = new javax.swing.JLabel();
+        colorButton = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
+
+        loggingLabel.setFont(loggingLabel.getFont().deriveFont(loggingLabel.getFont().getStyle() | java.awt.Font.BOLD, loggingLabel.getFont().getSize()+3));
+        loggingLabel.setText(Dict.LOGGING.toString());
 
         logOutputCheckBox.setText(Dict.LOG_OUTPUT.toString());
 
@@ -103,6 +118,23 @@ public class JobLogPanel extends JobModule {
         logButtonGroup.add(logUniqueRadioButton);
         logUniqueRadioButton.setText(Dict.UNIQUE.toString());
 
+        appearanceLabel.setFont(appearanceLabel.getFont().deriveFont(appearanceLabel.getFont().getStyle() | java.awt.Font.BOLD, appearanceLabel.getFont().getSize()+3));
+        appearanceLabel.setText(Dict.APPEARANCE.toString());
+
+        colorButton.setText(Dict.FOREGROUND.toString());
+        colorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                colorButtonActionPerformed(evt);
+            }
+        });
+
+        resetButton.setText(Dict.RESET.toString());
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -110,20 +142,33 @@ public class JobLogPanel extends JobModule {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(logSeparateCheckBox)
-                    .addComponent(logErrorsCheckBox)
-                    .addComponent(logOutputCheckBox))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(logAppendRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(logReplaceRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(logUniqueRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(logSeparateCheckBox)
+                            .addComponent(logErrorsCheckBox)
+                            .addComponent(logOutputCheckBox))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(logAppendRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+                            .addComponent(logReplaceRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(logUniqueRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(loggingLabel)
+                            .addComponent(appearanceLabel))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(colorButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(resetButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(loggingLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(logOutputCheckBox)
                     .addComponent(logAppendRadioButton))
@@ -135,11 +180,28 @@ public class JobLogPanel extends JobModule {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(logSeparateCheckBox)
                     .addComponent(logUniqueRadioButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(appearanceLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(resetButton)
+                    .addComponent(colorButton))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void colorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorButtonActionPerformed
+        SimpleDialog.setParent(this);
+        colorButton.setForeground(SimpleDialog.selectColor(colorButton.getForeground()));
+    }//GEN-LAST:event_colorButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        colorButton.setForeground(null);
+    }//GEN-LAST:event_resetButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel appearanceLabel;
+    private javax.swing.JButton colorButton;
     private javax.swing.JRadioButton logAppendRadioButton;
     private javax.swing.ButtonGroup logButtonGroup;
     private javax.swing.JCheckBox logErrorsCheckBox;
@@ -147,5 +209,7 @@ public class JobLogPanel extends JobModule {
     private javax.swing.JRadioButton logReplaceRadioButton;
     private javax.swing.JCheckBox logSeparateCheckBox;
     private javax.swing.JRadioButton logUniqueRadioButton;
+    private javax.swing.JLabel loggingLabel;
+    private javax.swing.JButton resetButton;
     // End of variables declaration//GEN-END:variables
 }

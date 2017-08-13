@@ -19,10 +19,9 @@ import java.awt.Component;
 import se.trixon.almond.util.Dict;
 import se.trixon.jota.client.ui.editor.module.JobPersistor;
 import se.trixon.jota.client.ui.editor.module.Module;
-import se.trixon.jota.client.ui.editor.module.job.JobAppearancePanel;
 import se.trixon.jota.client.ui.editor.module.job.JobCronPanel;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
-import se.trixon.jota.client.ui.editor.module.job.JobLogPanel;
+import se.trixon.jota.client.ui.editor.module.job.JobMiscPanel;
 import se.trixon.jota.client.ui.editor.module.job.JobNotePanel;
 import se.trixon.jota.shared.job.Job;
 
@@ -32,10 +31,9 @@ import se.trixon.jota.shared.job.Job;
  */
 public class JobPanel extends javax.swing.JPanel {
 
-    private final JobAppearancePanel mAppearancePanel = new JobAppearancePanel();
     private final JobCronPanel mCronPanel = new JobCronPanel();
     private final JobExecutePanel mExecutePanel = new JobExecutePanel();
-    private final JobLogPanel mLogPanel = new JobLogPanel();
+    private final JobMiscPanel mJobMiscPanel = new JobMiscPanel();
     private final JobNotePanel mNotePanel = new JobNotePanel();
     private Job mJob = new Job();
 
@@ -66,8 +64,7 @@ public class JobPanel extends javax.swing.JPanel {
     private void init() {
         addModulePanel(mCronPanel);
         addModulePanel(mExecutePanel);
-        addModulePanel(mLogPanel);
-        addModulePanel(mAppearancePanel);
+        addModulePanel(mJobMiscPanel);
         addModulePanel(mNotePanel);
     }
 
