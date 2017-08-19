@@ -108,6 +108,7 @@ public final class JobsPanel extends EditPanel {
             getModel().addElement(job);
             sortModel();
             list.setSelectedValue(job, true);
+            edit(getSelectedJob());
         }
     }
 

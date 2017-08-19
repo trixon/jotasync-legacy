@@ -109,6 +109,7 @@ public class TasksPanel extends EditPanel {
             }
 
             list.setSelectedIndices(indices);
+            edit(getSelectedTask());
         }
     }
 
