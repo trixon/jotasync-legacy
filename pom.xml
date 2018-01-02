@@ -5,7 +5,7 @@
     <artifactId>jotasync</artifactId>
     <version>0.4.0-SNAPSHOT</version>
     <description>rsync GUI with integrated scheduler</description>
-    <url>http://trixon.se/projects/jotasync</url>
+    <url>https://trixon.se/projects/jotasync</url>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -40,12 +40,12 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.5</version>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>se.trixon.almond</groupId>
             <artifactId>almond-util</artifactId>
-            <version>1.2.1-SNAPSHOT</version>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>com.yuvimasory</groupId>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.1</version>
+            <version>2.8.2</version>
         </dependency>
         <dependency>
             <groupId>it.sauronsoftware.cron4j</groupId>
@@ -73,7 +73,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <netbeans.hint.license>apache20</netbeans.hint.license>
-        <copyright>(c) 2017 Patrik Karlsson</copyright>
+        <copyright>(c) 2018 Patrik Karlsson</copyright>
         <exeVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</exeVersion>
     </properties>
     <repositories>
@@ -100,7 +100,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -149,7 +149,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.7.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -171,7 +171,7 @@
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
-                <version>1.7.19</version>
+                <version>1.7.21</version>
                 <executions>
                     <execution>
                         <id>l4j-gui</id>
