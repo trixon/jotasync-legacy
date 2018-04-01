@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Patrik Karlsson.
+ * Copyright 2018 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import static se.trixon.jota.shared.task.TaskSection.OPT_SEPARATOR;
 
 /**
  *
- * @author Patrik Karlsson
+ * @author Patrik Karlström
  */
 public enum ExcludeOption implements OptionHandler {
     //_DUMMY_WINDOWS("should only be visible on windows", SystemUtils.IS_OS_WINDOWS),
