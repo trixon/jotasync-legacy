@@ -50,6 +50,7 @@ import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.HtmlPanel;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
@@ -90,6 +91,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
      * Creates new form MainFrame
      */
     public MainFrame() {
+        IconColor.initSwing();
         initComponents();
 
         mAlmondUI.addWindowWatcher(this);
