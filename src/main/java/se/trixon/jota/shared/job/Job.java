@@ -28,7 +28,7 @@ import javax.swing.DefaultListModel;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
-import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
+import se.trixon.jota.client.ui_swing.editor.module.job.JobExecutePanel;
 import se.trixon.jota.shared.task.Task;
 
 /**

@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.ResourceBundle;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
-import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
+import se.trixon.jota.client.ui_swing.editor.module.job.JobExecutePanel;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.job.JobExecuteSection;
 import se.trixon.jota.shared.task.Task;

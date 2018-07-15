@@ -41,7 +41,7 @@ import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
-import se.trixon.jota.client.ui.MainFrame;
+import se.trixon.jota.client.ui_swing.MainFrame;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.JotaClient;

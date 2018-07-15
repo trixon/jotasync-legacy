@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
-import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
+import se.trixon.jota.client.ui_swing.editor.module.task.TaskExecutePanel;
 
 /**
  *
