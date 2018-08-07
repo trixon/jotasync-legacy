@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2018 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,9 +39,9 @@ public class TaskVerifier extends javax.swing.JPanel {
     }
 
     public void verify(final Task taskBuilder) {
-        JButton copyButton = new JButton(Dict.COPY.getString());
-        JButton exportButton = new JButton(Dict.EXPORT.getString());
-        JButton okButton = new JButton(Dict.OK.getString());
+        JButton copyButton = new JButton(Dict.COPY.toString());
+        JButton exportButton = new JButton(Dict.EXPORT.toString());
+        JButton okButton = new JButton(Dict.OK.toString());
 
         copyButton.addActionListener(new ActionListener() {
 
@@ -72,7 +72,6 @@ public class TaskVerifier extends javax.swing.JPanel {
 //
 //        notifyDescriptor.setAdditionalOptions(new JButton[]{copyButton, exportButton});
 //        Object returnObject = DialogDisplayer.getDefault().notify(notifyDescriptor);
-
     }
 
     /**

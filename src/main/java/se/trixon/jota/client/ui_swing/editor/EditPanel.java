@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2018 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -133,13 +133,13 @@ public abstract class EditPanel extends javax.swing.JPanel {
         toolBar.setRollover(true);
         toolBar.add(filler1);
 
-        toggleButton.setToolTipText(Dict.SCHEDULE.getString());
+        toggleButton.setToolTipText(Dict.SCHEDULE.toString());
         toggleButton.setFocusable(false);
         toggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         toggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(toggleButton);
 
-        addButton.setToolTipText(Dict.ADD.getString());
+        addButton.setToolTipText(Dict.ADD.toString());
         addButton.setFocusable(false);
         addButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         addButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -151,19 +151,19 @@ public abstract class EditPanel extends javax.swing.JPanel {
         cloneButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(cloneButton);
 
-        editButton.setToolTipText(Dict.EDIT.getString());
+        editButton.setToolTipText(Dict.EDIT.toString());
         editButton.setFocusable(false);
         editButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         editButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(editButton);
 
-        removeButton.setToolTipText(Dict.REMOVE.getString());
+        removeButton.setToolTipText(Dict.REMOVE.toString());
         removeButton.setFocusable(false);
         removeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         removeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(removeButton);
 
-        removeAllButton.setToolTipText(Dict.REMOVE_ALL.getString());
+        removeAllButton.setToolTipText(Dict.REMOVE_ALL.toString());
         removeAllButton.setFocusable(false);
         removeAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         removeAllButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -174,38 +174,38 @@ public abstract class EditPanel extends javax.swing.JPanel {
         checkBox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(checkBox);
 
-        moveFirstButton.setToolTipText(Dict.MOVE_TOP.getString());
+        moveFirstButton.setToolTipText(Dict.MOVE_TOP.toString());
         moveFirstButton.setFocusable(false);
         moveFirstButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         moveFirstButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(moveFirstButton);
 
-        moveUpButton.setToolTipText(Dict.MOVE_UP.getString());
+        moveUpButton.setToolTipText(Dict.MOVE_UP.toString());
         moveUpButton.setFocusable(false);
         moveUpButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         moveUpButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(moveUpButton);
 
-        moveDownButton.setToolTipText(Dict.MOVE_DOWN.getString());
+        moveDownButton.setToolTipText(Dict.MOVE_DOWN.toString());
         moveDownButton.setFocusable(false);
         moveDownButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         moveDownButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(moveDownButton);
 
-        moveLastButton.setToolTipText(Dict.MOVE_BOTTOM.getString());
+        moveLastButton.setToolTipText(Dict.MOVE_BOTTOM.toString());
         moveLastButton.setFocusable(false);
         moveLastButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         moveLastButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(moveLastButton);
         toolBar.add(filler2);
 
-        activateButton.setToolTipText(Dict.ACTIVATE.getString());
+        activateButton.setToolTipText(Dict.ACTIVATE.toString());
         activateButton.setFocusable(false);
         activateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         activateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolBar.add(activateButton);
 
-        deactivateButton.setToolTipText(Dict.DEACTIVATE.getString());
+        deactivateButton.setToolTipText(Dict.DEACTIVATE.toString());
         deactivateButton.setFocusable(false);
         deactivateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         deactivateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2018 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  */
 package se.trixon.jota.client.ui_swing.editor.module.task;
 
-import se.trixon.jota.shared.task.Task;
 import se.trixon.almond.util.Dict;
+import se.trixon.jota.shared.task.Task;
 
 /**
  *
@@ -42,7 +42,7 @@ public class TaskIncludePanel extends TaskModule {
     }
 
     private void init() {
-        mTitle = Dict.INCLUDE.getString();
+        mTitle = Dict.INCLUDE.toString();
     }
 
     /**

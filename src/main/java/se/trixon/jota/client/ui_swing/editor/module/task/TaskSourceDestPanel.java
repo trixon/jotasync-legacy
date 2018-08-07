@@ -121,7 +121,7 @@ public class TaskSourceDestPanel extends TaskModule implements FileChooserPanel.
         setAlignmentX(0.0F);
         setLayout(new java.awt.GridBagLayout());
 
-        sourcePanel.setHeader(Dict.SOURCE.getString());
+        sourcePanel.setHeader(Dict.SOURCE.toString());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -130,7 +130,7 @@ public class TaskSourceDestPanel extends TaskModule implements FileChooserPanel.
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(sourcePanel, gridBagConstraints);
 
-        destinationPanel.setHeader(Dict.DESTINATION.getString());
+        destinationPanel.setHeader(Dict.DESTINATION.toString());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2018 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,10 @@
 package se.trixon.jota.client.ui_swing.editor.module.task;
 
 import java.io.File;
-import se.trixon.jota.shared.task.Task;
-import se.trixon.jota.shared.task.TaskExecuteSection;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.swing.dialogs.FileChooserPanel;
+import se.trixon.jota.shared.task.Task;
+import se.trixon.jota.shared.task.TaskExecuteSection;
 
 /**
  *
@@ -121,7 +121,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
     }
 
     private void init() {
-        mTitle = Dict.RUN.getString();
+        mTitle = Dict.RUN.toString();
 
         beforePanel.setButtonListener(this);
         afterFailurePanel.setButtonListener(this);
