@@ -93,7 +93,7 @@ class Server extends UnicastRemoteObject implements ServerCommander {
 
         try {
             Process p = processBuilder.start();
-            result = IOUtils.toString(p.getErrorStream());
+            result = IOUtils.toString(p.getErrorStream(), "utf-8");
             p.waitFor();
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);

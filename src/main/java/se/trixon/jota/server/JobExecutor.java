@@ -388,7 +388,7 @@ class JobExecutor extends Thread {
 
             StringBuilder builder = new StringBuilder();
             if (mJob.isLogOutput() || mJob.isLogErrors() && !mJob.isLogSeparateErrors()) {
-                FileUtils.writeStringToFile(file, mOutBuffer.toString(), append);
+                FileUtils.writeStringToFile(file, mOutBuffer.toString(), "utf-8", append);
                 String message = file.getAbsolutePath();
                 Xlog.timedOut(message);
                 builder.append(String.format("%s:%s", SystemHelper.getHostname(), message));
@@ -399,7 +399,7 @@ class JobExecutor extends Thread {
                     builder.append("\n");
                 }
                 file = new File(directory, errFile);
-                FileUtils.writeStringToFile(file, mErrBuffer.toString(), append);
+                FileUtils.writeStringToFile(file, mErrBuffer.toString(), "utf-8", append);
                 String message = file.getAbsolutePath();
                 Xlog.timedOut(message);
                 builder.append(String.format("%s:%s", SystemHelper.getHostname(), message));

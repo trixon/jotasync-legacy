@@ -77,7 +77,7 @@ public abstract class EditPanel extends javax.swing.JPanel {
             }
         }
 
-        IconColor iconColor = mAlmondOptions.getIconColor();
+        IconColor iconColor = IconColor.getDefault();
 
         toggleButton.setIcon(MaterialIcon._Action.SCHEDULE.get(ICON_SIZE, iconColor));
         addButton.setIcon(MaterialIcon._Content.ADD.get(ICON_SIZE, iconColor));

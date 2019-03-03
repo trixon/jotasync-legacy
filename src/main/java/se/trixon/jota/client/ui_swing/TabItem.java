@@ -61,7 +61,7 @@ public class TabItem extends JPanel implements TabListener {
     private Progress mProgress;
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
-    private final IconColor mIconColor = mAlmondOptions.getIconColor();
+    private final IconColor mIconColor = IconColor.getDefault();
 
     /**
      * Creates new form TabItem
@@ -208,7 +208,7 @@ public class TabItem extends JPanel implements TabListener {
         startButton.setToolTipText(Dict.START.toString());
 
         mProgress = new Progress();
-        updateIcons(mAlmondOptions.getIconColor());
+        updateIcons(IconColor.getDefault());
 
         mOptions.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             if (evt.getKey().equalsIgnoreCase(ClientOptions.KEY_WORD_WRAP)) {

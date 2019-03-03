@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2019 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.AlmondUI;
-import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
@@ -256,8 +255,8 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         Xlog.timedOut(Dict.SERVER_START.toString());
 
         StringBuilder java = new StringBuilder();
-        java.append(System.getProperty("java.home")).append(SystemUtils.FILE_SEPARATOR)
-                .append("bin").append(SystemUtils.FILE_SEPARATOR)
+        java.append(System.getProperty("java.home")).append(File.separator)
+                .append("bin").append(File.separator)
                 .append("java");
 
         if (SystemUtils.IS_OS_WINDOWS) {
