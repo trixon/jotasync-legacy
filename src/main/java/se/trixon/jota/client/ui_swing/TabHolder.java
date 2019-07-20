@@ -35,7 +35,6 @@ import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
@@ -272,16 +271,15 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private void init() {
         setFocusTraversalKeysEnabled(false);
         mSpeedDialPanel = new SpeedDialPanel();
-        IconColor iconColor = IconColor.getDefault();
 
-        add(mSpeedDialPanel, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
-        setIconAt(0, MaterialIcon._Action.HOME.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        add(mSpeedDialPanel, MaterialIcon._Action.HOME.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
+        setIconAt(0, MaterialIcon._Action.HOME.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
         HistoryPanel historyPanel = new HistoryPanel();
-        add(historyPanel, MaterialIcon._Action.HISTORY.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
-        setIconAt(1, MaterialIcon._Action.HISTORY.get(AlmondUI.ICON_SIZE_NORMAL, iconColor));
+        add(historyPanel, MaterialIcon._Action.HISTORY.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
+        setIconAt(1, MaterialIcon._Action.HISTORY.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
 
         mJobMap.values().stream().forEach((tabItem) -> {
-            tabItem.updateIcons(iconColor);
+            tabItem.updateIcons();
         });
 
         mManager.addConnectionListeners(this);

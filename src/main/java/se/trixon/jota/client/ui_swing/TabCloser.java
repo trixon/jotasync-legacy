@@ -27,7 +27,6 @@ import javax.swing.plaf.basic.BasicButtonUI;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 
 /**
@@ -70,7 +69,7 @@ public class TabCloser extends JPanel {
 
     void postSetAction() {
         mButton.setText(null);
-        mButton.setIcon(MaterialIcon._Navigation.CLOSE.get(ICON_SIZE, IconColor.getDefault()));
+        mButton.setIcon(MaterialIcon._Navigation.CLOSE.getImageIcon(ICON_SIZE));
     }
 
     class TabButton extends JButton {
@@ -82,7 +81,7 @@ public class TabCloser extends JPanel {
 
         @Override
         public void updateUI() {
-            setIcon(MaterialIcon._Navigation.CLOSE.get(ICON_SIZE, IconColor.getDefault()));
+            setIcon(MaterialIcon._Navigation.CLOSE.getImageIcon(ICON_SIZE));
         }
 
         private void init() {
@@ -95,7 +94,7 @@ public class TabCloser extends JPanel {
             setBorder(BorderFactory.createEtchedBorder());
             setBorderPainted(false);
             setRolloverEnabled(true);
-            setIcon(MaterialIcon._Navigation.CLOSE.get(ICON_SIZE, IconColor.getDefault()));
+            setIcon(MaterialIcon._Navigation.CLOSE.getImageIcon(ICON_SIZE));
 
             addMouseListener(new MouseListener() {
                 @Override
@@ -104,17 +103,17 @@ public class TabCloser extends JPanel {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    setIcon(MaterialIcon._Navigation.CANCEL.get(ICON_SIZE, IconColor.getDefault()));
+                    setIcon(MaterialIcon._Navigation.CANCEL.getImageIcon(ICON_SIZE));
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    setIcon(MaterialIcon._Navigation.CLOSE.get(ICON_SIZE, IconColor.getDefault()));
+                    setIcon(MaterialIcon._Navigation.CLOSE.getImageIcon(ICON_SIZE));
                 }
 
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    setIcon(MaterialIcon._Navigation.CANCEL.get(ICON_SIZE - 1, IconColor.getDefault()));
+                    setIcon(MaterialIcon._Navigation.CANCEL.getImageIcon(ICON_SIZE - 1));
                 }
 
                 @Override

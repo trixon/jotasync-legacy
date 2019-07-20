@@ -20,10 +20,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.dialogs.Message;
 import se.trixon.jota.client.ui_swing.editor.module.task.OptionHandler;
@@ -36,7 +34,6 @@ import se.trixon.jota.client.ui_swing.editor.module.task.RsyncOption;
 public class DualListPanel extends javax.swing.JPanel {
 
     private static final int ICON_SIZE = AlmondUI.ICON_SIZE_NORMAL;
-    private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
 
     /**
      * Creates new form DualListPanel
@@ -88,11 +85,9 @@ public class DualListPanel extends javax.swing.JPanel {
     }
 
     private void init() {
-        IconColor iconColor = IconColor.getDefault();
-
-        removeAllButton.setIcon(MaterialIcon._Content.CLEAR.get(ICON_SIZE, iconColor));
-        activateButton.setIcon(MaterialIcon._Navigation.ARROW_BACK.get(ICON_SIZE, iconColor));
-        deactivateButton.setIcon(MaterialIcon._Navigation.ARROW_FORWARD.get(ICON_SIZE, iconColor));
+        removeAllButton.setIcon(MaterialIcon._Content.CLEAR.getImageIcon(ICON_SIZE));
+        activateButton.setIcon(MaterialIcon._Navigation.ARROW_BACK.getImageIcon(ICON_SIZE));
+        deactivateButton.setIcon(MaterialIcon._Navigation.ARROW_FORWARD.getImageIcon(ICON_SIZE));
     }
 
     private void initListeners() {

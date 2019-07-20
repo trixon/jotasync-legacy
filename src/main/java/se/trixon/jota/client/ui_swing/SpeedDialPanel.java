@@ -40,7 +40,6 @@ import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.icons.IconColor;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
@@ -287,8 +286,8 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     }
 
     private void init() {
-        startButton.setIcon(MaterialIcon._Av.PLAY_ARROW.get(AlmondUI.ICON_SIZE_NORMAL, IconColor.getDefault()));
-        menuButton.setIcon(MaterialIcon._Navigation.MENU.get(AlmondUI.ICON_SIZE_NORMAL, IconColor.getDefault()));
+        startButton.setIcon(MaterialIcon._Av.PLAY_ARROW.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
+        menuButton.setIcon(MaterialIcon._Navigation.MENU.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
 
         startButton.setToolTipText(Dict.START.toString());
         menuButton.setToolTipText(Dict.MENU.toString());
