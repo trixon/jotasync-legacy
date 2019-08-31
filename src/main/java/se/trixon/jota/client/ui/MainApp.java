@@ -142,13 +142,14 @@ public class MainApp extends Application {
 
     private void createUI() {
         mStartModule = new StartModule();
-        mWorkbench = Workbench.builder(mStartModule, mLogModule, mPreferencesModule).build();
+        mWorkbench = Workbench.builder(mStartModule, mLogModule, mPreferencesModule)
+                .tabFactory(CustomTab::new)
+                .build();
         mWorkbench.getStylesheets().add(MainApp.class.getResource("customTheme.css").toExternalForm());
 
         mWorkbench.openModule(mStartModule);
         mWorkbench.openModule(mLogModule);
         mWorkbench.openModule(mPreferencesModule);
-
         initToolbar();
         initWorkbenchDrawer();
 
