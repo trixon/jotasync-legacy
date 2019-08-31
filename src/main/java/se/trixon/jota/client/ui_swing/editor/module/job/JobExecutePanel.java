@@ -122,7 +122,7 @@ public class JobExecutePanel extends JobModule implements FileChooserPanel.FileC
         afterPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
 
         beforePanel.setCheckBoxMode(true);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/job/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui_swing/editor/module/job/Bundle"); // NOI18N
         beforePanel.setHeader(bundle.getString("JobPanel.beforePanel.header")); // NOI18N
 
         beforeHaltOnErrorCheckBox.setText(Dict.STOP_ON_ERROR.toString());

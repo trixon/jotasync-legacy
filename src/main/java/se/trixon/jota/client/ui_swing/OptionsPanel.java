@@ -118,7 +118,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         rsyncFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
         logDirFileChooserPanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui_swing/Bundle"); // NOI18N
         customColorsCheckBox.setText(bundle.getString("OptionsPanel.customColorsCheckBox.text")); // NOI18N
 
         autostartServerCheckBox.setText(bundle.getString("OptionsPanel.autostartServerCheckBox.text")); // NOI18N

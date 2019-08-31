@@ -140,7 +140,7 @@ public class TaskSourceDestPanel extends TaskModule implements FileChooserPanel.
         gridBagConstraints.insets = new java.awt.Insets(8, 0, 0, 0);
         add(destinationPanel, gridBagConstraints);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui_swing/editor/module/task/Bundle"); // NOI18N
         noAdditionalDirCheckBox.setText(bundle.getString("TaskPanel.forceSourceSlashCheckBox.text")); // NOI18N
         noAdditionalDirCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
