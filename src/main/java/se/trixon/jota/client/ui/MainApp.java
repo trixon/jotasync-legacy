@@ -75,11 +75,11 @@ public class MainApp extends Application {
     private final AlmondFx mAlmondFX = AlmondFx.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
     private Action mHelpAction;
-    private LogModule mLogModule = new LogModule();
+    private LogModule mLogModule;
     private final Manager mManager = Manager.getInstance();
     private Action mOptionsAction;
     private ToolbarItem mOptionsToolbarItem;
-    private PreferencesModule mPreferencesModule = new PreferencesModule();
+    private PreferencesModule mPreferencesModule;
     private Stage mStage;
     private Workbench mWorkbench;
     private StartModule mStartModule;
@@ -91,8 +91,12 @@ public class MainApp extends Application {
         launch(args);
     }
 
+    public MainApp() {
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
+        MaterialIcon.setDefaultColor(Color.LIGHTGRAY);
         mStage = stage;
         stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("logo.png")));
 
@@ -142,6 +146,9 @@ public class MainApp extends Application {
 
     private void createUI() {
         mStartModule = new StartModule();
+        mLogModule = new LogModule();
+        mPreferencesModule = new PreferencesModule();
+
         mWorkbench = Workbench.builder(mStartModule, mLogModule, mPreferencesModule)
                 .tabFactory(CustomTab::new)
                 .build();
@@ -159,27 +166,19 @@ public class MainApp extends Application {
     }
 
     private void displayOptions() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        mWorkbench.openModule(mPreferencesModule);
     }
 
     private void initAccelerators() {
         final ObservableMap<KeyCombination, Runnable> accelerators = mStage.getScene().getAccelerators();
         for (int i = 0; i < 10; i++) {
             final int index = i;
-            accelerators.put(new KeyCodeCombination(KeyCode.valueOf("DIGIT" + i), KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN), (Runnable) () -> {
-                activateModule(index);
-            });
-
-            accelerators.put(new KeyCodeCombination(KeyCode.valueOf("NUMPAD" + i), KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN), (Runnable) () -> {
-                activateModule(index);
-            });
-
             accelerators.put(new KeyCodeCombination(KeyCode.valueOf("DIGIT" + i), KeyCombination.SHORTCUT_DOWN), (Runnable) () -> {
-                activateOpenModule(index);
+                activateModule(index);
             });
 
             accelerators.put(new KeyCodeCombination(KeyCode.valueOf("NUMPAD" + i), KeyCombination.SHORTCUT_DOWN), (Runnable) () -> {
-                activateOpenModule(index);
+                activateModule(index);
             });
         }
 
@@ -228,9 +227,10 @@ public class MainApp extends Application {
                     mWorkbench.openModule(taskModule);
                 }
         );
+
         mOptionsToolbarItem = new ToolbarItem(Dict.OPTIONS.toString(), MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_TOOLBAR, Color.LIGHTGRAY),
                 event -> {
-                    //mWorkbench.openModule(mPreferencesModule);
+                    displayOptions();
                 }
         );
 

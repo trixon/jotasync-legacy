@@ -15,6 +15,7 @@
  */
 package se.trixon.jota.client.ui;
 
+import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.dlsc.workbenchfx.view.controls.module.Tab;
 import com.dlsc.workbenchfx.view.controls.module.TabSkin;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -23,27 +24,29 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SkinBase;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.trixon.jota.client.ui.module.LogModule;
+import se.trixon.jota.client.ui.module.StartModule;
+import se.trixon.jota.client.ui.module.TaskModule;
 
 /**
  *
  * @author Patrik Karlström
  */
-public class CustomTabSkin extends TabSkin {
+public class CustomTabSkin extends SkinBase<Tab> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TabSkin.class.getName());
-
-    private HBox controlBox;
-    private StackPane closeIconShape;
     private Button closeBtn;
-
-    private Label nameLbl;
-
-    private final ReadOnlyStringProperty name;
+    private StackPane closeIconShape;
+    private HBox controlBox;
     private final ReadOnlyObjectProperty<Node> icon;
+    private final Tab mTab;
+    private final ReadOnlyStringProperty name;
+    private Label nameLbl;
 
     /**
      * Creates a new {@link TabSkin} object for a corresponding {@link Tab}.
@@ -52,6 +55,7 @@ public class CustomTabSkin extends TabSkin {
      */
     public CustomTabSkin(Tab tab) {
         super(tab);
+        mTab = tab;
         name = tab.nameProperty();
         icon = tab.iconProperty();
 
@@ -62,8 +66,11 @@ public class CustomTabSkin extends TabSkin {
         setupValueChangedListeners();
 
         updateIcon();
-
         getChildren().add(controlBox);
+    }
+
+    private WorkbenchModule getModule() {
+        return mTab.moduleProperty().get();
     }
 
     private void initializeParts() {
@@ -81,7 +88,16 @@ public class CustomTabSkin extends TabSkin {
 
     private void layoutParts() {
         Label iconPlaceholder = new Label(); // Will be replaced in the listener
-        controlBox.getChildren().addAll(iconPlaceholder, nameLbl);
+        ObservableList<Node> children = controlBox.getChildren();
+        WorkbenchModule module = getModule();
+
+        if (module instanceof StartModule || module instanceof LogModule) {
+            children.addAll(iconPlaceholder);
+        } else if (module instanceof TaskModule) {
+            children.addAll(nameLbl, closeBtn);
+        } else {
+            children.addAll(iconPlaceholder, nameLbl, closeBtn);
+        }
     }
 
     private void setupBindings() {
@@ -105,10 +121,12 @@ public class CustomTabSkin extends TabSkin {
      * Replaces the Icon when calling setModule().
      */
     private void updateIcon() {
-        Node iconNode = icon.get();
-        ObservableList<Node> children = controlBox.getChildren();
-        children.remove(0);
-        children.add(0, iconNode);
-        iconNode.getStyleClass().add("tab-icon");
+        if (!(getModule() instanceof TaskModule)) {
+            Node iconNode = icon.get();
+            ObservableList<Node> children = controlBox.getChildren();
+            children.remove(0);
+            children.add(0, iconNode);
+            iconNode.getStyleClass().add("tab-icon");
+        }
     }
 }

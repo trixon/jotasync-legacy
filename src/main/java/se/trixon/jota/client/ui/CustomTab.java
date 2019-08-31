@@ -32,7 +32,6 @@ public class CustomTab extends Tab {
 
     @Override
     protected Skin<?> createDefaultSkin() {
-//        return new com.dlsc.workbenchfx.view.controls.module.TabSkin(this);
         return new CustomTabSkin(this);
     }
 
