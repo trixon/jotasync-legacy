@@ -53,6 +53,10 @@ import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Manager;
+import se.trixon.jota.client.ui.module.LogModule;
+import se.trixon.jota.client.ui.module.PreferencesModule;
+import se.trixon.jota.client.ui.module.StartModule;
+import se.trixon.jota.client.ui.module.TaskModule;
 
 /**
  *
@@ -71,11 +75,14 @@ public class MainApp extends Application {
     private final AlmondFx mAlmondFX = AlmondFx.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
     private Action mHelpAction;
+    private LogModule mLogModule = new LogModule();
     private final Manager mManager = Manager.getInstance();
     private Action mOptionsAction;
     private ToolbarItem mOptionsToolbarItem;
+    private PreferencesModule mPreferencesModule = new PreferencesModule();
     private Stage mStage;
     private Workbench mWorkbench;
+    private StartModule mStartModule;
 
     /**
      * @param args the command line arguments
@@ -98,6 +105,7 @@ public class MainApp extends Application {
         mStage.show();
 
         initAccelerators();
+        mWorkbench.openModule(mStartModule);
     }
 
     @Override
@@ -133,8 +141,13 @@ public class MainApp extends Application {
     }
 
     private void createUI() {
-        mWorkbench = Workbench.builder().build();
+        mStartModule = new StartModule();
+        mWorkbench = Workbench.builder(mStartModule, mLogModule, mPreferencesModule).build();
         mWorkbench.getStylesheets().add(MainApp.class.getResource("customTheme.css").toExternalForm());
+
+        mWorkbench.openModule(mStartModule);
+        mWorkbench.openModule(mLogModule);
+        mWorkbench.openModule(mPreferencesModule);
 
         initToolbar();
         initWorkbenchDrawer();
@@ -207,13 +220,20 @@ public class MainApp extends Application {
     }
 
     private void initToolbar() {
+        ToolbarItem dummyRunToolbarItem = new ToolbarItem(Dict.RUN.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(ICON_SIZE_TOOLBAR, Color.LIGHTGRAY),
+                event -> {
+                    TaskModule taskModule = new TaskModule();
+                    mWorkbench.getModules().add(taskModule);
+                    mWorkbench.openModule(taskModule);
+                }
+        );
         mOptionsToolbarItem = new ToolbarItem(Dict.OPTIONS.toString(), MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_TOOLBAR, Color.LIGHTGRAY),
                 event -> {
                     //mWorkbench.openModule(mPreferencesModule);
                 }
         );
 
-        mWorkbench.getToolbarControlsRight().addAll(mOptionsToolbarItem);
+        mWorkbench.getToolbarControlsRight().addAll(dummyRunToolbarItem, mOptionsToolbarItem);
     }
 
     private void initWorkbenchDrawer() {
