@@ -40,6 +40,7 @@ import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
+import se.trixon.jota.client.ui.MainApp;
 import se.trixon.jota.client.ui_swing.MainFrame;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
@@ -326,20 +327,25 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             }
         }
 
-        java.awt.EventQueue.invokeLater(() -> {
-            mMainFrame = new MainFrame();
-            addServerEventListener(mMainFrame);
-            mMainFrame.addWindowListener(new WindowAdapter() {
+        boolean fx = true;
+        if (fx) {
+            MainApp.main(new String[]{});
+        } else {
+            java.awt.EventQueue.invokeLater(() -> {
+                mMainFrame = new MainFrame();
+                addServerEventListener(mMainFrame);
+                mMainFrame.addWindowListener(new WindowAdapter() {
 
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    super.windowClosing(e);
-                    mManager.disconnect();
-                }
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        super.windowClosing(e);
+                        mManager.disconnect();
+                    }
+                });
+
+                mMainFrame.setVisible(true);
             });
-
-            mMainFrame.setVisible(true);
-        });
+        }
     }
 
     private Job getJobByName(String jobName) throws RemoteException {
