@@ -32,19 +32,25 @@ public class PreferencesGeneral {
 
     private final ResourceBundle mBundle = SystemHelper.getBundle(PreferencesModule.class, "Bundle");
 
+    private final BooleanProperty mDarkThemeProperty = new SimpleBooleanProperty(true);
     private final Group mGroup;
-    private final BooleanProperty mIncludeDryRun = new SimpleBooleanProperty(false);
-    private final BooleanProperty mSplitDeletions = new SimpleBooleanProperty(true);
-    private final BooleanProperty mSplitErrors = new SimpleBooleanProperty(true);
-    private final BooleanProperty mWordWrap = new SimpleBooleanProperty(false);
+    private final BooleanProperty mIncludeDryRunProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty mSplitDeletionsProperty = new SimpleBooleanProperty(true);
+    private final BooleanProperty mSplitErrorsProperty = new SimpleBooleanProperty(true);
+    private final BooleanProperty mWordWrapProperty = new SimpleBooleanProperty(false);
 
     public PreferencesGeneral() {
         mGroup = Group.of(Dict.GENERAL.toString(),
-                Setting.of(Dict.DYNAMIC_WORD_WRAP.toString(), mWordWrap).customKey("general.wordWrap"),
-                Setting.of(mBundle.getString("prefs.general.includeDryRun"), mIncludeDryRun).customKey("general.includeDryRun"),
-                Setting.of(mBundle.getString("prefs.general.splitDeletions"), mSplitDeletions).customKey("general.splitDeletions"),
-                Setting.of(mBundle.getString("prefs.general.splitErrors"), mSplitErrors).customKey("general.splitErrors")
+                Setting.of(Dict.DARK_THEME.toString(), mDarkThemeProperty).customKey("general.darkTheme"),
+                Setting.of(Dict.DYNAMIC_WORD_WRAP.toString(), mWordWrapProperty).customKey("general.wordWrap"),
+                Setting.of(mBundle.getString("prefs.general.includeDryRun"), mIncludeDryRunProperty).customKey("general.includeDryRun"),
+                Setting.of(mBundle.getString("prefs.general.splitDeletions"), mSplitDeletionsProperty).customKey("general.splitDeletions"),
+                Setting.of(mBundle.getString("prefs.general.splitErrors"), mSplitErrorsProperty).customKey("general.splitErrors")
         );
+    }
+
+    public BooleanProperty darkThemeProperty() {
+        return mDarkThemeProperty;
     }
 
     public Group getGroup() {
@@ -52,35 +58,39 @@ public class PreferencesGeneral {
     }
 
     public BooleanProperty includeDryRunProperty() {
-        return mIncludeDryRun;
+        return mIncludeDryRunProperty;
+    }
+
+    public boolean isDarkTheme() {
+        return mDarkThemeProperty.get();
     }
 
     public boolean isIncludeDryRun() {
-        return mIncludeDryRun.get();
+        return mIncludeDryRunProperty.get();
     }
 
     public boolean isSplitDeletions() {
-        return mSplitDeletions.get();
+        return mSplitDeletionsProperty.get();
     }
 
     public boolean isSplitErrors() {
-        return mSplitErrors.get();
+        return mSplitErrorsProperty.get();
     }
 
     public boolean isWordWrap() {
-        return mWordWrap.get();
+        return mWordWrapProperty.get();
     }
 
     public BooleanProperty splitDeletionsProperty() {
-        return mSplitDeletions;
+        return mSplitDeletionsProperty;
     }
 
     public BooleanProperty splitErrorsProperty() {
-        return mSplitErrors;
+        return mSplitErrorsProperty;
     }
 
     public BooleanProperty wordWrapProperty() {
-        return mWordWrap;
+        return mWordWrapProperty;
     }
 
 }

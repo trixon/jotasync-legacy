@@ -34,7 +34,7 @@ public class PreferencesServer {
     private final ResourceBundle mBundle = SystemHelper.getBundle(PreferencesModule.class, "Bundle");
     private final Group mGroup;
     private final ObjectProperty<File> mLogPathFileProperty = new SimpleObjectProperty<>();
-    private final ObjectProperty<File> mRsyncPathFileProperty = new SimpleObjectProperty<>();
+    private final ObjectProperty<File> mRsyncPathFileProperty = new SimpleObjectProperty<>(new File("/usr/bin/rsync"));
 
     public PreferencesServer() {
         mGroup = Group.of(Dict.SERVER.toString(),
