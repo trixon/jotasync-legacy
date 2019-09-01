@@ -31,6 +31,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -49,6 +50,7 @@ import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.fx.AlmondFx;
+import se.trixon.almond.util.fx.FxActionCheck;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
 import se.trixon.almond.util.icons.material.MaterialIcon;
@@ -72,17 +74,24 @@ public class MainApp extends Application {
     private static final boolean IS_MAC = SystemUtils.IS_OS_MAC;
     private static final Logger LOGGER = Logger.getLogger(MainApp.class.getName());
     private Action mAboutAction;
+    private Action mAboutRsyncAction;
     private final AlmondFx mAlmondFX = AlmondFx.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
+    private Action mClientConnectAction;
+    private Action mClientDisconnectAction;
+    private Action mEditorAction;
     private Action mHelpAction;
     private LogModule mLogModule;
     private final Manager mManager = Manager.getInstance();
     private Action mOptionsAction;
-    private ToolbarItem mOptionsToolbarItem;
     private PreferencesModule mPreferencesModule;
+    private Action mServerShutdownAction;
+    private Action mServerShutdownQuitAction;
+    private Action mServerStartAction;
     private Stage mStage;
-    private Workbench mWorkbench;
     private StartModule mStartModule;
+    private FxActionCheck mTimerAction;
+    private Workbench mWorkbench;
 
     /**
      * @param args the command line arguments
@@ -132,18 +141,6 @@ public class MainApp extends Application {
         }
     }
 
-    private void activateOpenModule(int moduleIndexOnPage) {
-        if (moduleIndexOnPage == 0) {
-            moduleIndexOnPage = 10;
-        }
-
-        try {
-            mWorkbench.openModule(mWorkbench.getOpenModules().get(moduleIndexOnPage - 1));
-        } catch (IndexOutOfBoundsException e) {
-            //nvm
-        }
-    }
-
     private void createUI() {
         mStartModule = new StartModule();
         mLogModule = new LogModule();
@@ -151,18 +148,30 @@ public class MainApp extends Application {
 
         mWorkbench = Workbench.builder(mStartModule, mLogModule, mPreferencesModule)
                 .tabFactory(CustomTab::new)
+                .modulesPerPage(99)
                 .build();
         mWorkbench.getStylesheets().add(MainApp.class.getResource("customTheme.css").toExternalForm());
 
         mWorkbench.openModule(mStartModule);
         mWorkbench.openModule(mLogModule);
         mWorkbench.openModule(mPreferencesModule);
+
+        initActions();
         initToolbar();
-        initWorkbenchDrawer();
+
+        mWorkbench.getNavigationDrawerItems().setAll(
+                ActionUtils.createMenuItem(mHelpAction),
+                ActionUtils.createMenuItem(mAboutRsyncAction),
+                ActionUtils.createMenuItem(mAboutAction)
+        );
 
         Scene scene = new Scene(mWorkbench);
 
         mStage.setScene(scene);
+    }
+
+    private void displayEditor() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void displayOptions() {
@@ -192,67 +201,34 @@ public class MainApp extends Application {
             }
         });
 
+        mHelpAction.setAccelerator(KeyCombination.keyCombination("F1"));
+        mEditorAction.setAccelerator(new KeyCodeCombination(KeyCode.J, KeyCombination.SHORTCUT_DOWN));
+        mTimerAction.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.SHORTCUT_DOWN));
+        mClientConnectAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
+        mClientDisconnectAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
+
+        mServerStartAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+        mServerShutdownAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+        mServerShutdownQuitAction.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+
         if (!IS_MAC) {
-            accelerators.put(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN), (Runnable) () -> {
-                displayOptions();
-            });
+            mOptionsAction.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
         }
     }
 
-    private void initMac() {
-        MenuToolkit menuToolkit = MenuToolkit.toolkit();
-        Menu applicationMenu = menuToolkit.createDefaultApplicationMenu(APP_TITLE);
-        menuToolkit.setApplicationMenu(applicationMenu);
-
-        applicationMenu.getItems().remove(0);
-        MenuItem aboutMenuItem = new MenuItem(String.format(Dict.ABOUT_S.toString(), APP_TITLE));
-        aboutMenuItem.setOnAction(mAboutAction);
-
-        MenuItem settingsMenuItem = new MenuItem(Dict.PREFERENCES.toString());
-        settingsMenuItem.setOnAction(mOptionsAction);
-        settingsMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
-
-        applicationMenu.getItems().add(0, aboutMenuItem);
-        applicationMenu.getItems().add(2, settingsMenuItem);
-
-        int cnt = applicationMenu.getItems().size();
-        applicationMenu.getItems().get(cnt - 1).setText(String.format("%s %s", Dict.QUIT.toString(), APP_TITLE));
-    }
-
-    private void initToolbar() {
-        ToolbarItem dummyRunToolbarItem = new ToolbarItem(Dict.RUN.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(ICON_SIZE_TOOLBAR, Color.LIGHTGRAY),
-                event -> {
-                    TaskModule taskModule = new TaskModule();
-                    mWorkbench.getModules().add(taskModule);
-                    mWorkbench.openModule(taskModule);
-                }
-        );
-
-        mOptionsToolbarItem = new ToolbarItem(Dict.OPTIONS.toString(), MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_TOOLBAR, Color.LIGHTGRAY),
-                event -> {
-                    displayOptions();
-                }
-        );
-
-        mWorkbench.getToolbarControlsRight().addAll(dummyRunToolbarItem, mOptionsToolbarItem);
-    }
-
-    private void initWorkbenchDrawer() {
-        //options
-        mOptionsAction = new Action(Dict.OPTIONS.toString(), (ActionEvent event) -> {
-            mWorkbench.hideNavigationDrawer();
-            displayOptions();
-        });
-        mOptionsAction.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
-        mOptionsAction.setGraphic(MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_DRAWER));
-
+    private void initActions() {
+        // DRAWER
         //help
         mHelpAction = new Action(Dict.HELP.toString(), (ActionEvent event) -> {
             mWorkbench.hideNavigationDrawer();
             SystemHelper.desktopBrowse("https://trixon.se/projects/jotasync/documentation/");
         });
-        //mHelpAction.setAccelerator(new KeyCodeCombination(KeyCode.F1, KeyCombination.SHORTCUT_ANY));
-        mHelpAction.setAccelerator(KeyCombination.keyCombination("F1"));
+
+        //about rsync
+        mAboutRsyncAction = new Action(String.format(Dict.ABOUT_S.toString(), "rsync"), (ActionEvent event) -> {
+            mWorkbench.hideNavigationDrawer();
+            throw new UnsupportedOperationException("Not supported yet.");
+        });
 
         //about
         mAboutAction = new Action(Dict.ABOUT.toString(), (ActionEvent event) -> {
@@ -286,13 +262,98 @@ public class MainApp extends Application {
             mWorkbench.showDialog(dialog);
         });
 
-        mWorkbench.getNavigationDrawerItems().setAll(
-                ActionUtils.createMenuItem(mHelpAction),
-                ActionUtils.createMenuItem(mAboutAction)
-        );
+        // TOOLS
+        //editor
+        mEditorAction = new Action(mBundle.getString("jobEditor"), (ActionEvent event) -> {
+            mWorkbench.hideNavigationDrawer();
+            displayEditor();
+        });
+        mEditorAction.setGraphic(MaterialIcon._Editor.MODE_EDIT.getImageView(ICON_SIZE_DRAWER));
 
-        if (!IS_MAC) {
-            mOptionsAction.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
-        }
+        //timer
+        mTimerAction = new FxActionCheck(mBundle.getString("schedule"), (event) -> {
+        });
+        mTimerAction.setGraphic(MaterialIcon._Action.SCHEDULE.getImageView(ICON_SIZE_DRAWER));
+
+        //options
+        mOptionsAction = new Action(Dict.OPTIONS.toString(), (ActionEvent event) -> {
+            mWorkbench.hideNavigationDrawer();
+            displayOptions();
+        });
+        mOptionsAction.setGraphic(MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_DRAWER));
+
+        // CONNECTION
+        //Connect
+        mClientConnectAction = new Action(Dict.CONNECT_TO_SERVER.toString(), (ActionEvent event) -> {
+        });
+        mClientConnectAction.setGraphic(MaterialIcon._Communication.CALL_MADE.getImageView(ICON_SIZE_DRAWER));
+
+        //Disconnect
+        mClientDisconnectAction = new Action(Dict.DISCONNECT.toString(), (ActionEvent event) -> {
+        });
+        mClientDisconnectAction.setGraphic(MaterialIcon._Communication.CALL_RECEIVED.getImageView(ICON_SIZE_DRAWER));
+
+        //Server Start
+        mServerStartAction = new Action(Dict.START.toString(), (ActionEvent event) -> {
+        });
+
+        //Server Stop
+        mServerShutdownAction = new Action(Dict.SHUTDOWN.toString(), (ActionEvent event) -> {
+        });
+
+        //Server Stop and Quit
+        mServerShutdownQuitAction = new Action(Dict.SHUTDOWN_AND_QUIT.toString(), (ActionEvent event) -> {
+        });
+    }
+
+    private void initMac() {
+        MenuToolkit menuToolkit = MenuToolkit.toolkit();
+        Menu applicationMenu = menuToolkit.createDefaultApplicationMenu(APP_TITLE);
+        menuToolkit.setApplicationMenu(applicationMenu);
+
+        applicationMenu.getItems().remove(0);
+        MenuItem aboutMenuItem = new MenuItem(String.format(Dict.ABOUT_S.toString(), APP_TITLE));
+        aboutMenuItem.setOnAction(mAboutAction);
+
+        MenuItem settingsMenuItem = new MenuItem(Dict.PREFERENCES.toString());
+        settingsMenuItem.setOnAction(mOptionsAction);
+        settingsMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
+
+        applicationMenu.getItems().add(0, aboutMenuItem);
+        applicationMenu.getItems().add(2, settingsMenuItem);
+
+        int cnt = applicationMenu.getItems().size();
+        applicationMenu.getItems().get(cnt - 1).setText(String.format("%s %s", Dict.QUIT.toString(), APP_TITLE));
+    }
+
+    private void initToolbar() {
+        ToolbarItem dummyRunToolbarItem = new ToolbarItem(Dict.RUN.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(ICON_SIZE_TOOLBAR, Color.LIGHTGRAY),
+                event -> {
+                    TaskModule taskModule = new TaskModule();
+                    mWorkbench.getModules().add(taskModule);
+                    mWorkbench.openModule(taskModule);
+                }
+        );
+        MenuItem serverMenuItem = new MenuItem(Dict.SERVER.toString());
+        serverMenuItem.setDisable(true);
+        mWorkbench.getToolbarControlsRight().addAll(
+                dummyRunToolbarItem,
+                new ToolbarItem(Dict.CONNECTION.toString(),
+                        ActionUtils.createMenuItem(mClientConnectAction),
+                        ActionUtils.createMenuItem(mClientDisconnectAction),
+                        new SeparatorMenuItem(),
+                        serverMenuItem,
+                        new SeparatorMenuItem(),
+                        ActionUtils.createMenuItem(mServerStartAction),
+                        ActionUtils.createMenuItem(mServerShutdownAction),
+                        ActionUtils.createMenuItem(mServerShutdownQuitAction)
+                ),
+                new ToolbarItem(Dict.TOOLS.toString(),
+                        ActionUtils.createMenuItem(mTimerAction),
+                        ActionUtils.createMenuItem(mEditorAction),
+                        new SeparatorMenuItem(),
+                        ActionUtils.createMenuItem(mOptionsAction)
+                )
+        );
     }
 }
