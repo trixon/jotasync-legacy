@@ -209,6 +209,9 @@ public class MainApp extends Application {
 
         if (!IS_MAC) {
             mOptionsAction.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
+            accelerators.put(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN), (Runnable) () -> {
+                mOptionsAction.handle(null);
+            });
         }
     }
 
