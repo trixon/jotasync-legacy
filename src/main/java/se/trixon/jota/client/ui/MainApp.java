@@ -22,6 +22,7 @@ import de.codecentric.centerdevice.MenuToolkit;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -55,6 +56,7 @@ import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Manager;
+import se.trixon.jota.client.Preferences;
 
 /**
  *
@@ -80,6 +82,7 @@ public class MainApp extends Application {
     private LogModule mLogModule;
     private final Manager mManager = Manager.getInstance();
     private Action mOptionsAction;
+    private final Preferences mPreferences = Preferences.getInstance();
     private PreferencesModule mPreferencesModule;
     private Action mServerShutdownAction;
     private Action mServerShutdownQuitAction;
@@ -146,14 +149,18 @@ public class MainApp extends Application {
                 .tabFactory(CustomTab::new)
                 .modulesPerPage(99)
                 .build();
-        mWorkbench.getStylesheets().add(MainApp.class.getResource("customTheme.css").toExternalForm());
+
+        mWorkbench.getStylesheets().add(MainApp.class.getResource("baseTheme.css").toExternalForm());
 
         mWorkbench.openModule(mStartModule);
         mWorkbench.openModule(mLogModule);
-        mWorkbench.openModule(mPreferencesModule);
+        //mWorkbench.openModule(mPreferencesModule);
+
+        setNightMode(mPreferences.general().isNightMode());
 
         initActions();
         initToolbar();
+        initListeners();
 
         mWorkbench.getNavigationDrawerItems().setAll(
                 ActionUtils.createMenuItem(mHelpAction),
@@ -305,6 +312,10 @@ public class MainApp extends Application {
         });
     }
 
+    private void initListeners() {
+        mPreferences.general().nightModeProperty().addListener((observable, oldValue, newValue) -> setNightMode(newValue));
+    }
+
     private void initMac() {
         MenuToolkit menuToolkit = MenuToolkit.toolkit();
         Menu applicationMenu = menuToolkit.createDefaultApplicationMenu(APP_TITLE);
@@ -354,5 +365,23 @@ public class MainApp extends Application {
                         ActionUtils.createMenuItem(mOptionsAction)
                 )
         );
+    }
+
+    private void setNightMode(boolean state) {
+        String lightTheme = getClass().getResource("lightTheme.css").toExternalForm();
+        String darkTheme = getClass().getResource("darkTheme.css").toExternalForm();
+        String darculaTheme = FxHelper.class.getResource("darcula.css").toExternalForm();
+
+        ObservableList<String> stylesheets = mWorkbench.getStylesheets();
+
+        if (state) {
+            stylesheets.remove(lightTheme);
+            stylesheets.add(darkTheme);
+            stylesheets.add(darculaTheme);
+        } else {
+            stylesheets.remove(darkTheme);
+            stylesheets.remove(darculaTheme);
+            stylesheets.add(lightTheme);
+        }
     }
 }

@@ -16,6 +16,7 @@
 package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
+import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
@@ -36,6 +37,9 @@ public class LogModule extends WorkbenchModule {
 
     public LogModule() {
         super(Dict.LOG.toString(), MaterialIcon._Action.HISTORY.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+
+        getToolbarControlsLeft().addAll(new ToolbarItem("Left"));
+        getToolbarControlsRight().addAll(new ToolbarItem("Right"));
         createUI();
     }
 

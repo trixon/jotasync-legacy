@@ -32,25 +32,21 @@ public class PreferencesGeneral {
 
     private final ResourceBundle mBundle = SystemHelper.getBundle(PreferencesModule.class, "Bundle");
 
-    private final BooleanProperty mDarkThemeProperty = new SimpleBooleanProperty(true);
     private final Group mGroup;
     private final BooleanProperty mIncludeDryRunProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty mNightModeProperty = new SimpleBooleanProperty(true);
     private final BooleanProperty mSplitDeletionsProperty = new SimpleBooleanProperty(true);
     private final BooleanProperty mSplitErrorsProperty = new SimpleBooleanProperty(true);
     private final BooleanProperty mWordWrapProperty = new SimpleBooleanProperty(false);
 
     public PreferencesGeneral() {
         mGroup = Group.of(Dict.GENERAL.toString(),
-                Setting.of(Dict.DARK_THEME.toString(), mDarkThemeProperty).customKey("general.darkTheme"),
+                Setting.of(Dict.NIGHT_MODE.toString(), mNightModeProperty).customKey("general.darkTheme"),
                 Setting.of(Dict.DYNAMIC_WORD_WRAP.toString(), mWordWrapProperty).customKey("general.wordWrap"),
                 Setting.of(mBundle.getString("prefs.general.includeDryRun"), mIncludeDryRunProperty).customKey("general.includeDryRun"),
                 Setting.of(mBundle.getString("prefs.general.splitDeletions"), mSplitDeletionsProperty).customKey("general.splitDeletions"),
                 Setting.of(mBundle.getString("prefs.general.splitErrors"), mSplitErrorsProperty).customKey("general.splitErrors")
         );
-    }
-
-    public BooleanProperty darkThemeProperty() {
-        return mDarkThemeProperty;
     }
 
     public Group getGroup() {
@@ -61,12 +57,12 @@ public class PreferencesGeneral {
         return mIncludeDryRunProperty;
     }
 
-    public boolean isDarkTheme() {
-        return mDarkThemeProperty.get();
-    }
-
     public boolean isIncludeDryRun() {
         return mIncludeDryRunProperty.get();
+    }
+
+    public boolean isNightMode() {
+        return mNightModeProperty.get();
     }
 
     public boolean isSplitDeletions() {
@@ -79,6 +75,10 @@ public class PreferencesGeneral {
 
     public boolean isWordWrap() {
         return mWordWrapProperty.get();
+    }
+
+    public BooleanProperty nightModeProperty() {
+        return mNightModeProperty;
     }
 
     public BooleanProperty splitDeletionsProperty() {

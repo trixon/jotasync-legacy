@@ -16,6 +16,7 @@
 package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
+import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
@@ -35,6 +36,9 @@ public class StartModule extends WorkbenchModule {
 
     public StartModule() {
         super(Dict.HOME.toString(), MaterialIcon._Action.HOME.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+
+        getToolbarControlsLeft().addAll(new ToolbarItem("Left"));
+        getToolbarControlsRight().addAll(new ToolbarItem("Right"));
         createUI();
     }
 
