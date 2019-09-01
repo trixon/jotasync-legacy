@@ -55,10 +55,6 @@ import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Manager;
-import se.trixon.jota.client.ui.module.LogModule;
-import se.trixon.jota.client.ui.module.PreferencesModule;
-import se.trixon.jota.client.ui.module.StartModule;
-import se.trixon.jota.client.ui.module.TaskModule;
 
 /**
  *

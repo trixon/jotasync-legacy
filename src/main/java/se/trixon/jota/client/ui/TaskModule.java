@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.module;
+package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.icons.material.MaterialIcon;
-import se.trixon.jota.client.ui.MainApp;
 
 /**
  *
  * @author Patrik Karlström
  */
-public class PreferencesModule extends WorkbenchModule {
+public class TaskModule extends WorkbenchModule {
 
-    public PreferencesModule() {
-        super(Dict.OPTIONS.toString(), MaterialIcon._Action.SETTINGS.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+    public TaskModule() {
+        super(Dict.TASK.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
     }
 
     @Override
     public Node activate() {
-        return new Label("options");
+        return new Label("task");
     }
 
 }

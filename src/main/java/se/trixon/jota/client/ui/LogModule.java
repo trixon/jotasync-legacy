@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client.ui.module;
+package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.web.WebView;
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.fx.control.LogPanel;
 import se.trixon.almond.util.icons.material.MaterialIcon;
-import se.trixon.jota.client.ui.MainApp;
 
 /**
  *
  * @author Patrik Karlström
  */
-public class StartModule extends WorkbenchModule {
+public class LogModule extends WorkbenchModule {
 
     private BorderPane mBorderPane;
-    private ListView<String> mListView;
-    private WebView mWebView;
+    private LogPanel mLogPanel;
 
-    public StartModule() {
-        super(Dict.HOME.toString(), MaterialIcon._Action.HOME.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+    public LogModule() {
+        super(Dict.LOG.toString(), MaterialIcon._Action.HISTORY.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
         createUI();
     }
 
@@ -45,11 +45,21 @@ public class StartModule extends WorkbenchModule {
     }
 
     private void createUI() {
-        mListView = new ListView<>();
-        mListView.setPrefWidth(300);
+        mLogPanel = new LogPanel();
+        mBorderPane = new BorderPane(mLogPanel);
 
-        mWebView = new WebView();
-        mBorderPane = new BorderPane(mWebView);
-        mBorderPane.setLeft(mListView);
+        Tab jobsTab = new Tab(Dict.JOBS.toString());
+        ListView<String> jobsList = new ListView<>();
+        jobsTab.setContent(jobsList);
+        jobsTab.setClosable(false);
+
+        Tab tasksTab = new Tab(Dict.TASKS.toString());
+        ListView<String> tasksList = new ListView<>();
+        tasksTab.setContent(tasksList);
+        tasksTab.setClosable(false);
+
+        TabPane tabPane = new TabPane(jobsTab, tasksTab);
+        tabPane.setPrefWidth(300);
+        mBorderPane.setLeft(tabPane);
     }
 }
