@@ -17,7 +17,10 @@ package se.trixon.jota.client.ui.module;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.web.WebView;
+import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.ui.MainApp;
 
@@ -27,13 +30,26 @@ import se.trixon.jota.client.ui.MainApp;
  */
 public class StartModule extends WorkbenchModule {
 
+    private BorderPane mBorderPane;
+    private ListView<String> mListView;
+    private WebView mWebView;
+
     public StartModule() {
-        super("start", MaterialIcon._Action.HOME.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+        super(Dict.HOME.toString(), MaterialIcon._Action.HOME.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+        createUI();
     }
 
     @Override
     public Node activate() {
-        return new Label("start");
+        return mBorderPane;
     }
 
+    private void createUI() {
+        mListView = new ListView<>();
+        mListView.setPrefWidth(300);
+
+        mWebView = new WebView();
+        mBorderPane = new BorderPane(mWebView);
+        mBorderPane.setLeft(mListView);
+    }
 }

@@ -17,8 +17,12 @@ package se.trixon.jota.client.ui.module;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
 import se.trixon.almond.util.Dict;
+import se.trixon.almond.util.fx.control.LogPanel;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.ui.MainApp;
 
@@ -28,13 +32,35 @@ import se.trixon.jota.client.ui.MainApp;
  */
 public class LogModule extends WorkbenchModule {
 
+    private BorderPane mBorderPane;
+    private LogPanel mLogPanel;
+
     public LogModule() {
         super(Dict.LOG.toString(), MaterialIcon._Action.HISTORY.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+        createUI();
     }
 
     @Override
     public Node activate() {
-        return new Label("log");
+        return mBorderPane;
     }
 
+    private void createUI() {
+        mLogPanel = new LogPanel();
+        mBorderPane = new BorderPane(mLogPanel);
+
+        Tab jobsTab = new Tab(Dict.JOBS.toString());
+        ListView<String> jobsList = new ListView<>();
+        jobsTab.setContent(jobsList);
+        jobsTab.setClosable(false);
+
+        Tab tasksTab = new Tab(Dict.TASKS.toString());
+        ListView<String> tasksList = new ListView<>();
+        tasksTab.setContent(tasksList);
+        tasksTab.setClosable(false);
+
+        TabPane tabPane = new TabPane(jobsTab, tasksTab);
+        tabPane.setPrefWidth(300);
+        mBorderPane.setLeft(tabPane);
+    }
 }
