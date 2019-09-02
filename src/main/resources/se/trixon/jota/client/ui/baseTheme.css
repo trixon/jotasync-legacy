@@ -1,9 +1,10 @@
 .root > * {
     -primary-color: #005500;
     -on-primary-color: -fx-light-text-color;
-    -primary-variant-color: #005000;
+    -primary-variant-color: #006600;
 
     -background-color: #330033;
+    -background-variant-color: #33FF33;
     -on-background-color: -fx-light-text-color;
 
     /*

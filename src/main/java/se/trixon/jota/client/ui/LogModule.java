@@ -25,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.fx.control.LogPanel;
 import se.trixon.almond.util.icons.material.MaterialIcon;
+import static se.trixon.jota.client.ui.MainApp.ICON_SIZE_MODULE_TOOLBAR;
 
 /**
  *
@@ -36,10 +37,8 @@ public class LogModule extends WorkbenchModule {
     private LogPanel mLogPanel;
 
     public LogModule() {
-        super(Dict.LOG.toString(), MaterialIcon._Action.HISTORY.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+        super(Dict.HISTORY.toString(), MaterialIcon._Action.HISTORY.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
 
-        getToolbarControlsLeft().addAll(new ToolbarItem("Left"));
-        getToolbarControlsRight().addAll(new ToolbarItem("Right"));
         createUI();
     }
 
@@ -49,6 +48,10 @@ public class LogModule extends WorkbenchModule {
     }
 
     private void createUI() {
+        ToolbarItem clearToolbarItem = new ToolbarItem(Dict.CLEAR.toString(), MaterialIcon._Content.CLEAR.getImageView(ICON_SIZE_MODULE_TOOLBAR), (event) -> {
+        });
+        getToolbarControlsLeft().addAll(clearToolbarItem);
+
         mLogPanel = new LogPanel();
         mBorderPane = new BorderPane(mLogPanel);
 
@@ -56,6 +59,7 @@ public class LogModule extends WorkbenchModule {
         ListView<String> jobsList = new ListView<>();
         jobsTab.setContent(jobsList);
         jobsTab.setClosable(false);
+        jobsList.getItems().add("x");
 
         Tab tasksTab = new Tab(Dict.TASKS.toString());
         ListView<String> tasksList = new ListView<>();

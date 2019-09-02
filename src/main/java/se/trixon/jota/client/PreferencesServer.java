@@ -19,7 +19,9 @@ import com.dlsc.preferencesfx.model.Group;
 import com.dlsc.preferencesfx.model.Setting;
 import java.io.File;
 import java.util.ResourceBundle;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
@@ -35,9 +37,11 @@ public class PreferencesServer {
     private final Group mGroup;
     private final ObjectProperty<File> mLogPathFileProperty = new SimpleObjectProperty<>();
     private final ObjectProperty<File> mRsyncPathFileProperty = new SimpleObjectProperty<>(new File("/usr/bin/rsync"));
+    private final BooleanProperty mScheduledSyncProperty = new SimpleBooleanProperty(true);
 
     public PreferencesServer() {
         mGroup = Group.of(Dict.SERVER.toString(),
+                Setting.of(mBundle.getString("prefs.general.scheduledSync"), mScheduledSyncProperty).customKey("general.scheduledSync"),
                 Setting.of(mBundle.getString("prefs.server.rsync"), mRsyncPathFileProperty, false).customKey("server.path.rsync"),
                 Setting.of(Dict.LOG_DIRECTORY.toString(), mLogPathFileProperty, true).customKey("server.path.log")
         );
@@ -55,8 +59,16 @@ public class PreferencesServer {
         return mRsyncPathFileProperty.get();
     }
 
+    public boolean isScheduledSync() {
+        return mScheduledSyncProperty.get();
+    }
+
     public ObjectProperty<File> rsyncPathProperty() {
         return mRsyncPathFileProperty;
+    }
+
+    public BooleanProperty scheduledSyncProperty() {
+        return mScheduledSyncProperty;
     }
 
     public void setLogPath(File file) {

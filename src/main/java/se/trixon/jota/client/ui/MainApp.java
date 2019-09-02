@@ -17,7 +17,6 @@ package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchDialog;
-import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import de.codecentric.centerdevice.MenuToolkit;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -32,7 +31,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -51,7 +49,6 @@ import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.fx.AlmondFx;
-import se.trixon.almond.util.fx.FxActionCheck;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
 import se.trixon.almond.util.icons.material.MaterialIcon;
@@ -65,10 +62,11 @@ import se.trixon.jota.client.Preferences;
 public class MainApp extends Application {
 
     public static final String APP_TITLE = "JotaSync";
+    public static final int ICON_SIZE_MODULE = 32;
+    public static final int ICON_SIZE_MODULE_TOOLBAR = 40;
     public static final int ICON_SIZE_PROFILE = 32;
     public static final int ICON_SIZE_TOOLBAR = 40;
     public static final int ICON_SIZE_DRAWER = ICON_SIZE_TOOLBAR / 2;
-    public static final int MODULE_ICON_SIZE = 32;
     private static final boolean IS_MAC = SystemUtils.IS_OS_MAC;
     private static final Logger LOGGER = Logger.getLogger(MainApp.class.getName());
     private Action mAboutAction;
@@ -77,9 +75,9 @@ public class MainApp extends Application {
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
     private Action mClientConnectAction;
     private Action mClientDisconnectAction;
-    private Action mEditorAction;
     private Action mHelpAction;
-    private LogModule mLogModule;
+    private Action mHistoryAction;
+    private LogModule mHistoryModule;
     private final Manager mManager = Manager.getInstance();
     private Action mOptionsAction;
     private final Preferences mPreferences = Preferences.getInstance();
@@ -89,7 +87,6 @@ public class MainApp extends Application {
     private Action mServerStartAction;
     private Stage mStage;
     private StartModule mStartModule;
-    private FxActionCheck mTimerAction;
     private Workbench mWorkbench;
 
     /**
@@ -142,27 +139,24 @@ public class MainApp extends Application {
 
     private void createUI() {
         mStartModule = new StartModule();
-        mLogModule = new LogModule();
+        mHistoryModule = new LogModule();
         mPreferencesModule = new PreferencesModule();
 
-        mWorkbench = Workbench.builder(mStartModule, mLogModule, mPreferencesModule)
+        mWorkbench = Workbench.builder(mStartModule, mHistoryModule, mPreferencesModule)
                 .tabFactory(CustomTab::new)
                 .modulesPerPage(99)
                 .build();
 
         mWorkbench.getStylesheets().add(MainApp.class.getResource("baseTheme.css").toExternalForm());
 
-        mWorkbench.openModule(mStartModule);
-        mWorkbench.openModule(mLogModule);
-        //mWorkbench.openModule(mPreferencesModule);
-
         setNightMode(mPreferences.general().isNightMode());
 
         initActions();
-        initToolbar();
         initListeners();
 
         mWorkbench.getNavigationDrawerItems().setAll(
+                ActionUtils.createMenuItem(mHistoryAction),
+                ActionUtils.createMenuItem(mOptionsAction),
                 ActionUtils.createMenuItem(mHelpAction),
                 ActionUtils.createMenuItem(mAboutRsyncAction),
                 ActionUtils.createMenuItem(mAboutAction)
@@ -171,10 +165,6 @@ public class MainApp extends Application {
         Scene scene = new Scene(mWorkbench);
 
         mStage.setScene(scene);
-    }
-
-    private void displayEditor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void displayOptions() {
@@ -199,14 +189,12 @@ public class MainApp extends Application {
         });
 
         accelerators.put(new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN), (Runnable) () -> {
-            if (mWorkbench.getActiveModule() != null) {
+            if (mWorkbench.getActiveModule() != mStartModule && mWorkbench.getActiveModule() != null) {
                 mWorkbench.closeModule(mWorkbench.getActiveModule());
             }
         });
 
         mHelpAction.setAccelerator(KeyCombination.keyCombination("F1"));
-        mEditorAction.setAccelerator(new KeyCodeCombination(KeyCode.J, KeyCombination.SHORTCUT_DOWN));
-        mTimerAction.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.SHORTCUT_DOWN));
         mClientConnectAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
         mClientDisconnectAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
 
@@ -224,6 +212,20 @@ public class MainApp extends Application {
 
     private void initActions() {
         // DRAWER
+        //history
+        mHistoryAction = new Action(Dict.HISTORY.toString(), (ActionEvent event) -> {
+            mWorkbench.hideNavigationDrawer();
+            mWorkbench.openModule(mHistoryModule);
+        });
+        mHistoryAction.setGraphic(MaterialIcon._Action.HISTORY.getImageView(ICON_SIZE_DRAWER));
+
+        //options
+        mOptionsAction = new Action(Dict.OPTIONS.toString(), (ActionEvent event) -> {
+            mWorkbench.hideNavigationDrawer();
+            displayOptions();
+        });
+        mOptionsAction.setGraphic(MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_DRAWER));
+
         //help
         mHelpAction = new Action(Dict.HELP.toString(), (ActionEvent event) -> {
             mWorkbench.hideNavigationDrawer();
@@ -267,26 +269,6 @@ public class MainApp extends Application {
             WorkbenchDialog dialog = WorkbenchDialog.builder(Dict.ABOUT.toString(), mainBorderPane, ButtonType.CLOSE).build();
             mWorkbench.showDialog(dialog);
         });
-
-        // TOOLS
-        //editor
-        mEditorAction = new Action(mBundle.getString("jobEditor"), (ActionEvent event) -> {
-            mWorkbench.hideNavigationDrawer();
-            displayEditor();
-        });
-        mEditorAction.setGraphic(MaterialIcon._Editor.MODE_EDIT.getImageView(ICON_SIZE_DRAWER));
-
-        //timer
-        mTimerAction = new FxActionCheck(mBundle.getString("schedule"), (event) -> {
-        });
-        mTimerAction.setGraphic(MaterialIcon._Action.SCHEDULE.getImageView(ICON_SIZE_DRAWER));
-
-        //options
-        mOptionsAction = new Action(Dict.OPTIONS.toString(), (ActionEvent event) -> {
-            mWorkbench.hideNavigationDrawer();
-            displayOptions();
-        });
-        mOptionsAction.setGraphic(MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_DRAWER));
 
         // CONNECTION
         //Connect
@@ -334,37 +316,6 @@ public class MainApp extends Application {
 
         int cnt = applicationMenu.getItems().size();
         applicationMenu.getItems().get(cnt - 1).setText(String.format("%s %s", Dict.QUIT.toString(), APP_TITLE));
-    }
-
-    private void initToolbar() {
-        ToolbarItem dummyRunToolbarItem = new ToolbarItem(Dict.RUN.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(ICON_SIZE_TOOLBAR, Color.LIGHTGRAY),
-                event -> {
-                    TaskModule taskModule = new TaskModule();
-                    mWorkbench.getModules().add(taskModule);
-                    mWorkbench.openModule(taskModule);
-                }
-        );
-        MenuItem serverMenuItem = new MenuItem(Dict.SERVER.toString());
-        serverMenuItem.setDisable(true);
-        mWorkbench.getToolbarControlsRight().addAll(
-                dummyRunToolbarItem,
-                new ToolbarItem(Dict.CONNECTION.toString(),
-                        ActionUtils.createMenuItem(mClientConnectAction),
-                        ActionUtils.createMenuItem(mClientDisconnectAction),
-                        new SeparatorMenuItem(),
-                        serverMenuItem,
-                        new SeparatorMenuItem(),
-                        ActionUtils.createMenuItem(mServerStartAction),
-                        ActionUtils.createMenuItem(mServerShutdownAction),
-                        ActionUtils.createMenuItem(mServerShutdownQuitAction)
-                ),
-                new ToolbarItem(Dict.TOOLS.toString(),
-                        ActionUtils.createMenuItem(mTimerAction),
-                        ActionUtils.createMenuItem(mEditorAction),
-                        new SeparatorMenuItem(),
-                        ActionUtils.createMenuItem(mOptionsAction)
-                )
-        );
     }
 
     private void setNightMode(boolean state) {

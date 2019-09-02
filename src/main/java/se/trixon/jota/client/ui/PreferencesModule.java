@@ -17,8 +17,6 @@ package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import java.util.ResourceBundle;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
@@ -26,6 +24,7 @@ import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Preferences;
+import static se.trixon.jota.client.ui.MainApp.*;
 
 /**
  *
@@ -36,20 +35,9 @@ public class PreferencesModule extends WorkbenchModule {
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
 
     public PreferencesModule() {
-        super(Dict.OPTIONS.toString(), MaterialIcon._Action.SETTINGS.getImageView(MainApp.MODULE_ICON_SIZE).getImage());
+        super(Dict.OPTIONS.toString(), MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_MODULE).getImage());
 
-        ToolbarItem saveToolbarItem = new ToolbarItem(new MaterialDesignIconView(MaterialDesignIcon.CONTENT_SAVE), event -> Preferences.getInstance().save());
-        ToolbarItem discardToolbarItem = new ToolbarItem(new MaterialDesignIconView(MaterialDesignIcon.DELETE),
-                event -> getWorkbench().showConfirmationDialog(mBundle.getString("prefs.ui.discard_title"),
-                        mBundle.getString("prefs.ui.discard_message"),
-                        buttonType -> {
-                            if (ButtonType.YES.equals(buttonType)) {
-                                Preferences.getInstance().discardChanges();
-                            }
-                        })
-        );
-
-        getToolbarControlsLeft().addAll(saveToolbarItem, discardToolbarItem);
+        createUI();
     }
 
     @Override
@@ -61,5 +49,22 @@ public class PreferencesModule extends WorkbenchModule {
     public boolean destroy() {
         Preferences.getInstance().save();
         return true;
+    }
+
+    private void createUI() {
+        ToolbarItem saveToolbarItem = new ToolbarItem(MaterialIcon._Content.SAVE.getImageView(ICON_SIZE_MODULE_TOOLBAR),
+                event -> Preferences.getInstance().save());
+
+        ToolbarItem discardToolbarItem = new ToolbarItem(MaterialIcon._Action.DELETE.getImageView(ICON_SIZE_MODULE_TOOLBAR),
+                event -> getWorkbench().showConfirmationDialog(mBundle.getString("prefs.ui.discard_title"),
+                        mBundle.getString("prefs.ui.discard_message"),
+                        buttonType -> {
+                            if (ButtonType.YES.equals(buttonType)) {
+                                Preferences.getInstance().discardChanges();
+                            }
+                        })
+        );
+
+        getToolbarControlsLeft().addAll(saveToolbarItem, discardToolbarItem);
     }
 }

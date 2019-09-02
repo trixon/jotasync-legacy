@@ -88,7 +88,7 @@ public class CustomTabSkin extends SkinBase<Tab> {
         ObservableList<Node> children = controlBox.getChildren();
         WorkbenchModule module = getModule();
 
-        if (module instanceof StartModule || module instanceof LogModule) {
+        if (module instanceof StartModule) {
             children.addAll(iconPlaceholder);
         } else if (module instanceof TaskModule) {
             children.addAll(nameLbl, closeBtn);
