@@ -146,6 +146,7 @@
                                         <include>se/trixon/almond/util/icons/material/_content/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_editor/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_file/folder_open*</include>
+                                        <include>se/trixon/almond/util/icons/material/_maps/directions_run*</include>
                                         <include>se/trixon/almond/util/icons/material/_navigation/*.png</include>
                                         <include>se/trixon/almond/util/swing/**</include>
                                     </includes>
