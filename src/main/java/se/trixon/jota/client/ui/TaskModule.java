@@ -31,17 +31,28 @@ import static se.trixon.jota.client.ui.MainApp.*;
  */
 public class TaskModule extends BaseModule {
 
+    private LogTab mDeletionLogTab;
+    private LogTab mErrorLogTab;
+    private LogTab mInfoLogTab;
     private ProgressBar mProgressBar = new ProgressBar(.8);
     private TabPane mTabPane;
 
     public TaskModule() {
         super(Dict.TASK.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
         createUI();
+        postInit();
     }
 
     @Override
     public Node activate() {
         return mTabPane;
+    }
+
+    @Override
+    public void setNightMode(boolean state) {
+        mInfoLogTab.setGraphic(MaterialIcon._Action.INFO_OUTLINE.getImageView(ICON_SIZE_PROFILE, getThemedIconColor()));
+        mErrorLogTab.setGraphic(MaterialIcon._Alert.WARNING.getImageView(ICON_SIZE_PROFILE, getThemedIconColor()));
+        mDeletionLogTab.setGraphic(MaterialIcon._Action.DELETE.getImageView(ICON_SIZE_PROFILE, getThemedIconColor()));
     }
 
     private void createUI() {
@@ -56,23 +67,22 @@ public class TaskModule extends BaseModule {
         getToolbarControlsLeft().addAll(progressBarToolbarItem);
         getToolbarControlsRight().addAll(editToolbarItem, startToolbarItem);
 
-        LogTab infoLogTab = new LogTab(Dict.LOG.toString(), MaterialIcon._Action.INFO_OUTLINE.getImageView(ICON_SIZE_PROFILE));
-        LogTab errorLogTab = new LogTab(Dict.Dialog.ERROR.toString(), MaterialIcon._Alert.WARNING.getImageView(ICON_SIZE_PROFILE));
-        LogTab deletionLogTab = new LogTab(Dict.DELETIONS.toString(), MaterialIcon._Action.DELETE.getImageView(ICON_SIZE_PROFILE));
+        mInfoLogTab = new LogTab(Dict.LOG.toString());
+        mErrorLogTab = new LogTab(Dict.Dialog.ERROR.toString());
+        mDeletionLogTab = new LogTab(Dict.DELETIONS.toString());
 
-        mTabPane = new TabPane(infoLogTab, errorLogTab, deletionLogTab);
+        mTabPane = new TabPane(mInfoLogTab, mErrorLogTab, mDeletionLogTab);
     }
 
     class LogTab extends Tab {
 
         private LogPanel mLogPanel;
 
-        public LogTab(String string, Node node) {
-            super(string, node);
+        public LogTab(String string) {
+            super(string);
             mLogPanel = new LogPanel();
 
             setContent(mLogPanel);
-            setGraphic(node);
             setClosable(false);
         }
     }
