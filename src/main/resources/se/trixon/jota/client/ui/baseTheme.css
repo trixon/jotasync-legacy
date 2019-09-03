@@ -21,3 +21,11 @@
 .logo {
     -fx-graphic: url("logo.png");
 }
+
+.progress-bar > .track {
+    -fx-text-box-border: lightgray;
+    -fx-control-inner-background: dimgray;
+}
+.progress-bar > .bar {
+    -fx-background-color: linear-gradient(to bottom, derive(#cccccc, -7%), derive(#cccccc, 0%), derive(#cccccc, -3%), derive(#cccccc, -9%) );
+}
