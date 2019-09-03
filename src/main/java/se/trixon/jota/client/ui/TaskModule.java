@@ -15,7 +15,6 @@
  */
 package se.trixon.jota.client.ui;
 
-import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
@@ -30,7 +29,7 @@ import static se.trixon.jota.client.ui.MainApp.*;
  *
  * @author Patrik Karlström
  */
-public class TaskModule extends WorkbenchModule {
+public class TaskModule extends BaseModule {
 
     private ProgressBar mProgressBar = new ProgressBar(.8);
     private TabPane mTabPane;

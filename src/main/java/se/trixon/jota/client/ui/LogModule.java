@@ -15,7 +15,6 @@
  */
 package se.trixon.jota.client.ui;
 
-import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
@@ -31,7 +30,7 @@ import static se.trixon.jota.client.ui.MainApp.ICON_SIZE_MODULE_TOOLBAR;
  *
  * @author Patrik Karlström
  */
-public class LogModule extends WorkbenchModule {
+public class LogModule extends BaseModule {
 
     private BorderPane mBorderPane;
     private LogPanel mLogPanel;

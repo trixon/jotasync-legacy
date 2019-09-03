@@ -15,7 +15,6 @@
  */
 package se.trixon.jota.client.ui;
 
-import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -40,7 +39,7 @@ import static se.trixon.jota.client.ui.MainApp.*;
  *
  * @author Patrik Karlström
  */
-public class StartModule extends WorkbenchModule {
+public class StartModule extends BaseModule {
 
     private BorderPane mBorderPane;
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
@@ -64,6 +63,15 @@ public class StartModule extends WorkbenchModule {
         return mBorderPane;
     }
 
+    @Override
+    public void setNightMode(boolean state) {
+        if (state) {
+            mWebView.getEngine().setUserStyleSheetLocation(getClass().getResource("darkWeb.css").toExternalForm());
+        } else {
+            mWebView.getEngine().setUserStyleSheetLocation(getClass().getResource("lightWeb.css").toExternalForm());
+        }
+    }
+
     private void createUI() {
         mListView = new ListView<>();
         mListView.setPrefWidth(300);
@@ -76,6 +84,8 @@ public class StartModule extends WorkbenchModule {
         initToolbar();
         initListeners();
         initAccelerators();
+
+        postInit();
     }
 
     private void displayEditor() {

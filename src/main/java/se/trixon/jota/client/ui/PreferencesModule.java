@@ -15,7 +15,6 @@
  */
 package se.trixon.jota.client.ui;
 
-import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import java.util.ResourceBundle;
 import javafx.scene.Node;
@@ -30,7 +29,7 @@ import static se.trixon.jota.client.ui.MainApp.*;
  *
  * @author Patrik Karlström
  */
-public class PreferencesModule extends WorkbenchModule {
+public class PreferencesModule extends BaseModule {
 
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
 
