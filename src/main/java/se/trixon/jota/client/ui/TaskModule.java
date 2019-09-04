@@ -50,9 +50,9 @@ public class TaskModule extends BaseModule {
 
     @Override
     public void setNightMode(boolean state) {
-        mInfoLogTab.setGraphic(MaterialIcon._Action.INFO_OUTLINE.getImageView(ICON_SIZE_PROFILE, getThemedIconColor()));
-        mErrorLogTab.setGraphic(MaterialIcon._Alert.WARNING.getImageView(ICON_SIZE_PROFILE, getThemedIconColor()));
-        mDeletionLogTab.setGraphic(MaterialIcon._Action.DELETE.getImageView(ICON_SIZE_PROFILE, getThemedIconColor()));
+        mInfoLogTab.setGraphic(MaterialIcon._Action.INFO_OUTLINE.getImageView(ICON_SIZE_PROFILE, mPreferences.getThemedIconColor()));
+        mErrorLogTab.setGraphic(MaterialIcon._Alert.WARNING.getImageView(ICON_SIZE_PROFILE, mPreferences.getThemedIconColor()));
+        mDeletionLogTab.setGraphic(MaterialIcon._Action.DELETE.getImageView(ICON_SIZE_PROFILE, mPreferences.getThemedIconColor()));
     }
 
     private void createUI() {
@@ -72,7 +72,7 @@ public class TaskModule extends BaseModule {
         mDeletionLogTab = new LogTab(Dict.DELETIONS.toString());
 
         mTabPane = new TabPane(mInfoLogTab, mErrorLogTab, mDeletionLogTab);
-        final double TAB_SIZE = ICON_SIZE_MODULE_TOOLBAR * 1.2;
+        final double TAB_SIZE = ICON_SIZE_MODULE_TOOLBAR * 1.0;
         mTabPane.setTabMaxHeight(TAB_SIZE);
         mTabPane.setTabMinHeight(TAB_SIZE);
     }

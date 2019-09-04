@@ -18,6 +18,7 @@ package se.trixon.jota.client;
 import com.dlsc.preferencesfx.PreferencesFx;
 import com.dlsc.preferencesfx.model.Category;
 import com.dlsc.preferencesfx.view.PreferencesFxView;
+import javafx.scene.paint.Color;
 
 /**
  * Model object for Preferences.
@@ -51,6 +52,14 @@ public class Preferences {
 
     public PreferencesFxView getPreferencesFxView() {
         return mPreferencesFx.getView();
+    }
+
+    public Color getThemedIconColor() {
+        if (general().isNightMode()) {
+            return Color.LIGHTGRAY;
+        } else {
+            return Color.DIMGRAY.darker();
+        }
     }
 
     public void save() {

@@ -17,7 +17,6 @@ package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import se.trixon.jota.client.Preferences;
 
 /**
@@ -27,14 +26,6 @@ import se.trixon.jota.client.Preferences;
 public abstract class BaseModule extends WorkbenchModule {
 
     protected final Preferences mPreferences = Preferences.getInstance();
-
-    public Color getThemedIconColor() {
-        if (mPreferences.general().isNightMode()) {
-            return Color.LIGHTGRAY;
-        } else {
-            return Color.DIMGRAY.darker();
-        }
-    }
 
     public BaseModule(String name, Image icon) {
         super(name, icon);

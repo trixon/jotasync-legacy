@@ -149,10 +149,10 @@ public class MainApp extends Application {
 
         mWorkbench.getStylesheets().add(MainApp.class.getResource("baseTheme.css").toExternalForm());
 
-        setNightMode(mPreferences.general().isNightMode());
-
         initActions();
         initListeners();
+
+        setNightMode(mPreferences.general().isNightMode());
 
         mWorkbench.getNavigationDrawerItems().setAll(
                 ActionUtils.createMenuItem(mHistoryAction),
@@ -217,14 +217,12 @@ public class MainApp extends Application {
             mWorkbench.hideNavigationDrawer();
             mWorkbench.openModule(mHistoryModule);
         });
-        mHistoryAction.setGraphic(MaterialIcon._Action.HISTORY.getImageView(ICON_SIZE_DRAWER));
 
         //options
         mOptionsAction = new Action(Dict.OPTIONS.toString(), (ActionEvent event) -> {
             mWorkbench.hideNavigationDrawer();
             displayOptions();
         });
-        mOptionsAction.setGraphic(MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_DRAWER));
 
         //help
         mHelpAction = new Action(Dict.HELP.toString(), (ActionEvent event) -> {
@@ -334,5 +332,8 @@ public class MainApp extends Application {
             stylesheets.remove(darculaTheme);
             stylesheets.add(lightTheme);
         }
+
+        mHistoryAction.setGraphic(MaterialIcon._Action.INFO_OUTLINE.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
+        mOptionsAction.setGraphic(MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
     }
 }
