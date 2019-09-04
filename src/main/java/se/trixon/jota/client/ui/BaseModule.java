@@ -16,7 +16,12 @@
 package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Stage;
+import se.trixon.jota.client.Client;
+import se.trixon.jota.client.ClientOptions;
+import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.Preferences;
 
 /**
@@ -25,12 +30,25 @@ import se.trixon.jota.client.Preferences;
  */
 public abstract class BaseModule extends WorkbenchModule {
 
+    protected final Client mClient;
+    protected final Manager mManager = Manager.getInstance();
+    protected final ClientOptions mOptions = ClientOptions.INSTANCE;
     protected final Preferences mPreferences = Preferences.getInstance();
+    private final Scene mScene;
 
-    public BaseModule(String name, Image icon) {
+    public BaseModule(Scene scene, String name, Image icon) {
         super(name, icon);
-
+        mScene = scene;
+        mClient = mManager.getClient();
         initListeners();
+    }
+
+    public Scene getScene() {
+        return mScene;
+    }
+
+    public Stage getStage() {
+        return (Stage) getWorkbench().getScene().getWindow();
     }
 
     public void postInit() {

@@ -73,8 +73,6 @@ public class MainApp extends Application {
     private Action mAboutRsyncAction;
     private final AlmondFx mAlmondFX = AlmondFx.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
-    private Action mClientConnectAction;
-    private Action mClientDisconnectAction;
     private Action mHelpAction;
     private Action mHistoryAction;
     private LogModule mHistoryModule;
@@ -82,9 +80,6 @@ public class MainApp extends Application {
     private Action mOptionsAction;
     private final Preferences mPreferences = Preferences.getInstance();
     private PreferencesModule mPreferencesModule;
-    private Action mServerShutdownAction;
-    private Action mServerShutdownQuitAction;
-    private Action mServerStartAction;
     private Stage mStage;
     private StartModule mStartModule;
     private Workbench mWorkbench;
@@ -138,14 +133,19 @@ public class MainApp extends Application {
     }
 
     private void createUI() {
-        mStartModule = new StartModule();
-        mHistoryModule = new LogModule();
-        mPreferencesModule = new PreferencesModule();
-
-        mWorkbench = Workbench.builder(mStartModule, mHistoryModule, mPreferencesModule)
+        mWorkbench = Workbench.builder()
                 .tabFactory(CustomTab::new)
                 .modulesPerPage(99)
                 .build();
+
+        Scene scene = new Scene(mWorkbench);
+        mStage.setScene(scene);
+
+        mStartModule = new StartModule(scene);
+        mHistoryModule = new LogModule(scene);
+        mPreferencesModule = new PreferencesModule(scene);
+
+        mWorkbench.getModules().addAll(mStartModule, mPreferencesModule, mHistoryModule);
 
         mWorkbench.getStylesheets().add(MainApp.class.getResource("baseTheme.css").toExternalForm());
 
@@ -161,10 +161,6 @@ public class MainApp extends Application {
                 ActionUtils.createMenuItem(mAboutRsyncAction),
                 ActionUtils.createMenuItem(mAboutAction)
         );
-
-        Scene scene = new Scene(mWorkbench);
-
-        mStage.setScene(scene);
     }
 
     private void displayOptions() {
@@ -195,12 +191,6 @@ public class MainApp extends Application {
         });
 
         mHelpAction.setAccelerator(KeyCombination.keyCombination("F1"));
-        mClientConnectAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
-        mClientDisconnectAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
-
-        mServerStartAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
-        mServerShutdownAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
-        mServerShutdownQuitAction.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
 
         if (!IS_MAC) {
             mOptionsAction.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
@@ -266,29 +256,6 @@ public class MainApp extends Application {
 
             WorkbenchDialog dialog = WorkbenchDialog.builder(Dict.ABOUT.toString(), mainBorderPane, ButtonType.CLOSE).build();
             mWorkbench.showDialog(dialog);
-        });
-
-        // CONNECTION
-        //Connect
-        mClientConnectAction = new Action(Dict.CONNECT_TO_SERVER.toString(), (ActionEvent event) -> {
-        });
-        mClientConnectAction.setGraphic(MaterialIcon._Communication.CALL_MADE.getImageView(ICON_SIZE_DRAWER));
-
-        //Disconnect
-        mClientDisconnectAction = new Action(Dict.DISCONNECT.toString(), (ActionEvent event) -> {
-        });
-        mClientDisconnectAction.setGraphic(MaterialIcon._Communication.CALL_RECEIVED.getImageView(ICON_SIZE_DRAWER));
-
-        //Server Start
-        mServerStartAction = new Action(Dict.START.toString(), (ActionEvent event) -> {
-        });
-
-        //Server Stop
-        mServerShutdownAction = new Action(Dict.SHUTDOWN.toString(), (ActionEvent event) -> {
-        });
-
-        //Server Stop and Quit
-        mServerShutdownQuitAction = new Action(Dict.SHUTDOWN_AND_QUIT.toString(), (ActionEvent event) -> {
         });
     }
 

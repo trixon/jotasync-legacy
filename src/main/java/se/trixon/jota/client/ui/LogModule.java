@@ -17,6 +17,7 @@ package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -35,8 +36,8 @@ public class LogModule extends BaseModule {
     private BorderPane mBorderPane;
     private LogPanel mLogPanel;
 
-    public LogModule() {
-        super(Dict.HISTORY.toString(), MaterialIcon._Action.HISTORY.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
+    public LogModule(Scene scene) {
+        super(scene, Dict.HISTORY.toString(), MaterialIcon._Action.HISTORY.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
 
         createUI();
     }

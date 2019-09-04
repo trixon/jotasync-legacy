@@ -18,6 +18,7 @@ package se.trixon.jota.client.ui;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import java.util.ResourceBundle;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
@@ -33,8 +34,8 @@ public class PreferencesModule extends BaseModule {
 
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
 
-    public PreferencesModule() {
-        super(Dict.OPTIONS.toString(), MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_MODULE).getImage());
+    public PreferencesModule(Scene scene) {
+        super(scene, Dict.OPTIONS.toString(), MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_MODULE).getImage());
 
         createUI();
     }

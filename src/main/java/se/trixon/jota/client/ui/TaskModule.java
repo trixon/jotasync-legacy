@@ -17,6 +17,7 @@ package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -37,8 +38,8 @@ public class TaskModule extends BaseModule {
     private ProgressBar mProgressBar = new ProgressBar(.8);
     private TabPane mTabPane;
 
-    public TaskModule() {
-        super(Dict.TASK.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
+    public TaskModule(Scene scene) {
+        super(scene, Dict.TASK.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
         createUI();
         postInit();
     }
