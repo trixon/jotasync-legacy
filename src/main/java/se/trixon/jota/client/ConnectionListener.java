@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2019 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,13 @@ package se.trixon.jota.client;
  *
  * @author Patrik Karlström
  */
+@Deprecated
 public interface ConnectionListener {
 
+    @Deprecated
     void onConnectionConnect();
 
+    @Deprecated
     void onConnectionDisconnect();
 
 }

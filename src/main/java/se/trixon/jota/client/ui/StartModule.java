@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
@@ -89,6 +90,9 @@ public class StartModule extends BaseModule {
         } else {
             mWebView.getEngine().setUserStyleSheetLocation(getClass().getResource("lightWeb.css").toExternalForm());
         }
+
+        mClientConnectAction.setGraphic(MaterialIcon._Communication.CALL_MADE.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
+        mClientDisconnectAction.setGraphic(MaterialIcon._Communication.CALL_RECEIVED.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
     }
 
     private void createUI() {
@@ -135,13 +139,12 @@ public class StartModule extends BaseModule {
         mClientConnectAction = new Action(Dict.CONNECT_TO_SERVER.toString(), (ActionEvent event) -> {
             requestConnect();
         });
-        mClientConnectAction.setGraphic(MaterialIcon._Communication.CALL_MADE.getImageView(ICON_SIZE_DRAWER));
 
         //Disconnect
         mClientDisconnectAction = new Action(Dict.DISCONNECT.toString(), (ActionEvent event) -> {
             mManager.disconnect();
         });
-        mClientDisconnectAction.setGraphic(MaterialIcon._Communication.CALL_RECEIVED.getImageView(ICON_SIZE_DRAWER));
+        mClientDisconnectAction.setDisabled(true);
 
         //Server Start
         mServerStartAction = new Action(Dict.START.toString(), (ActionEvent event) -> {
@@ -163,6 +166,16 @@ public class StartModule extends BaseModule {
     }
 
     private void initListeners() {
+        mManager.connectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
+            if (t1) {
+                System.out.println("connected");
+                mClientDisconnectAction.setDisabled(false);
+            } else {
+                System.out.println("disconnected");
+                mClientDisconnectAction.setDisabled(true);
+            }
+
+        });
     }
 
     private void initToolbar() {
