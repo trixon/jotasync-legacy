@@ -72,6 +72,9 @@ public class TaskModule extends BaseModule {
         mDeletionLogTab = new LogTab(Dict.DELETIONS.toString());
 
         mTabPane = new TabPane(mInfoLogTab, mErrorLogTab, mDeletionLogTab);
+        final double TAB_SIZE = ICON_SIZE_MODULE_TOOLBAR * 1.2;
+        mTabPane.setTabMaxHeight(TAB_SIZE);
+        mTabPane.setTabMinHeight(TAB_SIZE);
     }
 
     class LogTab extends Tab {
