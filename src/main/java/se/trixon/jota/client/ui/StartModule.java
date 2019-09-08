@@ -22,9 +22,11 @@ import java.net.SocketException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
@@ -46,6 +48,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
 import se.trixon.almond.util.Dict;
@@ -53,6 +56,7 @@ import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import static se.trixon.jota.client.ui.MainApp.*;
+import se.trixon.jota.shared.job.Job;
 
 /**
  *
@@ -66,16 +70,21 @@ public class StartModule extends BaseModule {
     private Action mClientConnectAction;
     private Action mClientDisconnectAction;
     private Action mEditorAction;
-    private ListView<String> mListView;
+    private ListView<Job> mListView;
     private Action mServerShutdownAction;
     private Action mServerShutdownQuitAction;
+    private boolean mServerShutdownRequested;
     private Action mServerStartAction;
+    private boolean mShutdownInProgress;
+    private Stage mStage;
     private WebView mWebView;
 
     public StartModule(Scene scene) {
         super(scene, Dict.HOME.toString(), MaterialIcon._Action.HOME.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
-
+        mStage = (Stage) scene.getWindow();
         createUI();
+
+        updateWindowTitle();
     }
 
     @Override
@@ -93,6 +102,33 @@ public class StartModule extends BaseModule {
 
         mClientConnectAction.setGraphic(MaterialIcon._Communication.CALL_MADE.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
         mClientDisconnectAction.setGraphic(MaterialIcon._Communication.CALL_RECEIVED.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
+    }
+
+    private void connectionConnect() {
+        System.out.println("connected");
+        mClientDisconnectAction.setDisabled(false);
+        mServerShutdownRequested = false;
+        mShutdownInProgress = false;
+
+        Platform.runLater(() -> {
+            loadConfiguration();
+            enableGui(true);
+            updateStartServerState();
+        });
+    }
+
+    private void connectionDisconnect() {
+        System.out.println("disconnected");
+        mListView.getItems().clear();
+        mClientDisconnectAction.setDisabled(true);
+
+        Platform.runLater(() -> {
+            enableGui(false);
+            if (mShutdownInProgress && !mServerShutdownRequested) {
+                getWorkbench().showErrorDialog(Dict.CONNECTION_LOST.toString(), Dict.CONNECTION_LOST_SERVER_SHUTDOWN.toString(), null);
+            }
+            mServerStartAction.setDisabled(false);
+        });
     }
 
     private void createUI() {
@@ -113,6 +149,31 @@ public class StartModule extends BaseModule {
 
     private void displayEditor() {
         System.out.println("display Editor");
+    }
+
+    private void enableGui(boolean state) {
+        boolean cronActive = false;
+
+        try {
+            cronActive = state && mManager.getServerCommander().isCronActive();
+
+        } catch (RemoteException ex) {
+        }
+
+        mPreferences.server().scheduledSyncProperty().set(cronActive);
+
+        //TODO
+//        mActionManager.getConditionallyEnabledActions().stream().forEach((action) -> {
+//            action.setEnabled(state);
+//        });
+//
+//        mActionManager.getAction(ActionManager.CLOSE_TAB).setEnabled(false);
+//        mActionManager.getAction(ActionManager.SAVE_TAB).setEnabled(false);
+        if (state) {
+            updateWindowTitle();
+        } else {
+            mStage.setTitle("JotaSync");
+        }
     }
 
     private void initAccelerators() {
@@ -166,13 +227,11 @@ public class StartModule extends BaseModule {
     }
 
     private void initListeners() {
-        mManager.connectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
-            if (t1) {
-                System.out.println("connected");
-                mClientDisconnectAction.setDisabled(false);
+        mManager.connectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean connected) -> {
+            if (connected) {
+                connectionConnect();
             } else {
-                System.out.println("disconnected");
-                mClientDisconnectAction.setDisabled(true);
+                connectionDisconnect();
             }
 
         });
@@ -212,6 +271,24 @@ public class StartModule extends BaseModule {
                 dummyRunToolbarItem,
                 editorToolbarItem
         );
+    }
+
+    private void loadConfiguration() {
+        if (!mManager.isConnected()) {
+            mListView.getItems().clear();
+            return;
+        }
+
+        boolean hasJob = mManager.isConnected() && mManager.hasJobs();
+
+        try {
+            mPreferences.server().scheduledSyncProperty().set(mManager.getServerCommander().isCronActive());
+            LinkedList<Job> jobs = mManager.getServerCommander().getJobs();
+            mListView.getItems().setAll(jobs);
+        } catch (RemoteException ex) {
+            System.err.println("mManager: " + mManager);
+        }
+
     }
 
     private void requestConnect() {
@@ -268,5 +345,17 @@ public class StartModule extends BaseModule {
             }
         }).build();
         getWorkbench().showDialog(dialog);
+    }
+
+    private void updateStartServerState() {
+        boolean connectedToAutstartServer = mManager.isConnected()
+                && mClient.getHost().equalsIgnoreCase(SystemHelper.getHostname())
+                && mClient.getPortHost() == mOptions.getAutostartServerPort();
+
+        mServerStartAction.setDisabled(connectedToAutstartServer);
+    }
+
+    private void updateWindowTitle() {
+        mStage.setTitle(String.format(mBundle.getString("windowTitle"), mManager.getClient().getHost(), mManager.getClient().getPortHost()));
     }
 }

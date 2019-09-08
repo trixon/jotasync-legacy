@@ -18,7 +18,9 @@ package se.trixon.jota.client.ui;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import de.codecentric.centerdevice.MenuToolkit;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -54,6 +56,7 @@ import se.trixon.almond.util.fx.dialogs.about.AboutPane;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.Preferences;
+import se.trixon.jota.client.ui_swing.MainFrame;
 
 /**
  *
@@ -116,6 +119,7 @@ public class MainApp extends Application {
     public void stop() throws Exception {
         mManager.disconnect();
         super.stop();
+        System.exit(0);
     }
 
     private void activateModule(int moduleIndexOnPage) {
@@ -223,8 +227,14 @@ public class MainApp extends Application {
         //about rsync
         mAboutRsyncAction = new Action(String.format(Dict.ABOUT_S.toString(), "rsync"), (ActionEvent event) -> {
             mWorkbench.hideNavigationDrawer();
-            throw new UnsupportedOperationException("Not supported yet.");
+            try {
+                String aboutRsync = mManager.getServerCommander().getAboutRsync();
+                mWorkbench.showInformationDialog(String.format(Dict.ABOUT_S.toString(), "rsync"), aboutRsync, null);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
+        mAboutRsyncAction.disabledProperty().bind(mManager.connectedProperty().not());
 
         //about
         mAboutAction = new Action(Dict.ABOUT.toString(), (ActionEvent event) -> {
