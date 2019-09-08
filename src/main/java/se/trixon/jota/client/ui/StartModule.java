@@ -33,6 +33,7 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -188,6 +189,7 @@ public class StartModule extends BaseModule {
             updateWindowTitle();
         } else {
             mStage.setTitle("JotaSync");
+            mWebView.getEngine().loadContent("");
         }
     }
 
@@ -248,7 +250,15 @@ public class StartModule extends BaseModule {
             } else {
                 connectionDisconnect();
             }
+        });
 
+        mListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener.Change<? extends Job> c) -> {
+            Job job = mListView.getSelectionModel().getSelectedItem();
+            if (job != null) {
+                mWebView.getEngine().loadContent(job.getSummaryAsHtml());
+            } else {
+                mWebView.getEngine().loadContent("");
+            }
         });
     }
 
