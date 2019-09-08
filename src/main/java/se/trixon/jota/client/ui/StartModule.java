@@ -21,34 +21,48 @@ import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
 import se.trixon.almond.util.Dict;
@@ -133,7 +147,8 @@ public class StartModule extends BaseModule {
 
     private void createUI() {
         mListView = new ListView<>();
-        mListView.setPrefWidth(300);
+        mListView.setPrefWidth(400);
+        mListView.setCellFactory((ListView<Job> param) -> new JobListCell());
 
         mWebView = new WebView();
         mBorderPane = new BorderPane(mWebView);
@@ -357,5 +372,138 @@ public class StartModule extends BaseModule {
 
     private void updateWindowTitle() {
         mStage.setTitle(String.format(mBundle.getString("windowTitle"), mManager.getClient().getHost(), mManager.getClient().getPortHost()));
+    }
+
+    class JobListCell extends ListCell<Job> {
+
+        private final BorderPane mBorderPane = new BorderPane();
+        private final Label mDescLabel = new Label();
+        private final Duration mDuration = Duration.millis(200);
+        private Action mEditAction;
+        private final FadeTransition mFadeInTransition = new FadeTransition();
+        private final FadeTransition mFadeOutTransition = new FadeTransition();
+        private final Label mLastLabel = new Label();
+        private final Label mNameLabel = new Label();
+        private Action mRunAction;
+        private final SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat();
+
+        public JobListCell() {
+            mFadeInTransition.setDuration(mDuration);
+            mFadeInTransition.setFromValue(0);
+            mFadeInTransition.setToValue(1);
+
+            mFadeOutTransition.setDuration(mDuration);
+            mFadeOutTransition.setFromValue(1);
+            mFadeOutTransition.setToValue(0);
+
+            createUI();
+            setNightMode(mPreferences.general().isNightMode());
+        }
+
+        @Override
+        protected void updateItem(Job job, boolean empty) {
+            super.updateItem(job, empty);
+
+            if (job == null || empty) {
+                clearContent();
+            } else {
+                addContent(job);
+            }
+        }
+
+        private void addContent(Job job) {
+            setText(null);
+
+            mNameLabel.setText(job.getName());
+            mDescLabel.setText(job.getDescription());
+            String lastRun = "-";
+            if (job.getLastRun() != 0) {
+                lastRun = mSimpleDateFormat.format(new Date(job.getLastRun()));
+            }
+            mLastLabel.setText(lastRun);
+
+            setGraphic(mBorderPane);
+        }
+
+        private void clearContent() {
+            setText(null);
+            setGraphic(null);
+        }
+
+        private void createUI() {
+            String fontFamily = mDefaultFont.getFamily();
+            double fontSize = mDefaultFont.getSize();
+
+            mNameLabel.setFont(Font.font(fontFamily, FontWeight.BOLD, fontSize * 1.4));
+            mDescLabel.setFont(Font.font(fontFamily, FontWeight.NORMAL, fontSize * 1.1));
+            mLastLabel.setFont(Font.font(fontFamily, FontWeight.NORMAL, fontSize * 1.1));
+
+            mRunAction = new Action(Dict.RUN.toString(), (ActionEvent event) -> {
+//                jobRun(getSelectedJob());
+                mListView.requestFocus();
+            });
+
+            mEditAction = new Action(Dict.EDIT.toString(), (ActionEvent event) -> {
+//                jobEdit(getSelectedJob());
+                mListView.requestFocus();
+            });
+
+            VBox mainBox = new VBox(mNameLabel, mDescLabel, mLastLabel);
+            mainBox.setAlignment(Pos.CENTER_LEFT);
+
+            Collection<? extends Action> actions = Arrays.asList(
+                    mEditAction,
+                    mRunAction
+            );
+
+            mPreferences.general().nightModeProperty().addListener((observable, oldValue, newValue) -> {
+                setNightMode(newValue);
+            });
+            ToolBar toolBar = ActionUtils.createToolBar(actions, ActionUtils.ActionTextBehavior.HIDE);
+            toolBar.setBackground(Background.EMPTY);
+            toolBar.setVisible(false);
+            toolBar.setStyle("-fx-spacing: 0px;");
+            FxHelper.adjustButtonWidth(toolBar.getItems().stream(), ICON_SIZE_PROFILE * 1.8);
+
+            toolBar.getItems().stream().filter((item) -> (item instanceof ButtonBase))
+                    .map((item) -> (ButtonBase) item).forEachOrdered((buttonBase) -> {
+                FxHelper.undecorateButton(buttonBase);
+            });
+
+            BorderPane.setAlignment(toolBar, Pos.CENTER);
+
+            mBorderPane.setCenter(mainBox);
+            BorderPane.setMargin(mainBox, new Insets(8));
+            mBorderPane.setRight(toolBar);
+            mFadeInTransition.setNode(toolBar);
+            mFadeOutTransition.setNode(toolBar);
+
+            mBorderPane.setOnMouseEntered((MouseEvent event) -> {
+                if (!toolBar.isVisible()) {
+                    toolBar.setVisible(true);
+                }
+
+                selectListItem();
+                mFadeInTransition.playFromStart();
+            });
+
+            mBorderPane.setOnMouseExited((MouseEvent event) -> {
+                mFadeOutTransition.playFromStart();
+            });
+        }
+
+        private Job getSelectedJob() {
+            return mListView.getSelectionModel().getSelectedItem();
+        }
+
+        private void selectListItem() {
+            mListView.getSelectionModel().select(this.getIndex());
+            mListView.requestFocus();
+        }
+
+        private void setNightMode(boolean state) {
+            mRunAction.setGraphic(MaterialIcon._Av.PLAY_ARROW.getImageView(ICON_SIZE_PROFILE, mPreferences.getThemedIconColor()));
+            mEditAction.setGraphic(MaterialIcon._Image.EDIT.getImageView(ICON_SIZE_PROFILE, mPreferences.getThemedIconColor()));
+        }
     }
 }

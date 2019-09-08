@@ -18,6 +18,7 @@ package se.trixon.jota.client.ui;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ClientOptions;
@@ -31,6 +32,7 @@ import se.trixon.jota.client.Preferences;
 public abstract class BaseModule extends WorkbenchModule {
 
     protected final Client mClient;
+    protected Font mDefaultFont = Font.getDefault();
     protected final Manager mManager = Manager.getInstance();
     protected final ClientOptions mOptions = ClientOptions.INSTANCE;
     protected final Preferences mPreferences = Preferences.getInstance();
