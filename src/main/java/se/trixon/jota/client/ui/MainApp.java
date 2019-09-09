@@ -211,6 +211,7 @@ public class MainApp extends Application {
             mWorkbench.hideNavigationDrawer();
             mWorkbench.openModule(mHistoryModule);
         });
+        mHistoryAction.disabledProperty().bind(mManager.connectedProperty().not());
 
         //options
         mOptionsAction = new Action(Dict.OPTIONS.toString(), (ActionEvent event) -> {

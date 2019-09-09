@@ -16,6 +16,7 @@
 package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
+import java.util.logging.Logger;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
@@ -37,6 +38,7 @@ public abstract class BaseModule extends WorkbenchModule {
     protected final ClientOptions mOptions = ClientOptions.INSTANCE;
     protected final Preferences mPreferences = Preferences.getInstance();
     private final Scene mScene;
+    protected final Logger LOGGER = Logger.getLogger(getClass().getName());
 
     public BaseModule(Scene scene, String name, Image icon) {
         super(name, icon);
