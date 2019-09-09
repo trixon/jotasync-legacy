@@ -16,16 +16,17 @@
 package se.trixon.jota.client;
 
 import java.awt.GraphicsEnvironment;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URISyntaxException;
+import java.rmi.ConnectException;
+import java.rmi.ConnectIOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.UnknownHostException;
 import java.rmi.dgc.VMID;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
@@ -36,12 +37,10 @@ import java.util.ResourceBundle;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
 import se.trixon.jota.client.ui.MainApp;
-import se.trixon.jota.client.ui_swing.MainFrame;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.JotaClient;
@@ -66,7 +65,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private boolean mExitOnException;
     private String mHost = SystemHelper.getHostname();
     private final ResourceBundle mJotaBundle = Jota.getBundle();
-    private MainFrame mMainFrame = null;
     private final Manager mManager = Manager.getInstance();
     private final ClientOptions mOptions = ClientOptions.INSTANCE;
     private int mPortClient = Jota.DEFAULT_PORT_CLIENT;
@@ -77,7 +75,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private ServerEventListener mServerEventListener;
     private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
-    private final AlmondUI mAlmondUI = AlmondUI.getInstance();
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
@@ -117,6 +114,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         addServerEventListener(mServerEventListener);
 
         mManager.setClient(this);
+
         if (cmd.hasOption(Main.OPT_HOST)) {
             mHost = cmd.getOptionValue(Main.OPT_HOST);
         }
@@ -305,6 +303,20 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         mPortHost = portHost;
     }
 
+    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, ConnectException, ConnectIOException, UnknownHostException, SocketException {
+        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
+        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
+        mManager.setServerCommander(mServerCommander);
+        mClientVmid = new VMID();
+
+        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
+        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
+        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
+        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
+
+        mServerCommander.registerClient(this, SystemHelper.getHostname());
+    }
+
     private void displayGui() {
         if (GraphicsEnvironment.isHeadless()) {
             Xlog.timedErr("Can't open gui when in headless mode.");
@@ -313,9 +325,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             return;
         }
         SystemHelper.setMacApplicationName("JotaSync");
-
-        mAlmondUI.installDarcula();
-        mAlmondUI.initLookAndFeel();
 
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {
             try {
@@ -327,25 +336,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             }
         }
 
-        boolean fx = true;
-        if (fx) {
-            MainApp.main(new String[]{});
-        } else {
-            java.awt.EventQueue.invokeLater(() -> {
-                mMainFrame = new MainFrame();
-                addServerEventListener(mMainFrame);
-                mMainFrame.addWindowListener(new WindowAdapter() {
-
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        super.windowClosing(e);
-                        mManager.disconnect();
-                    }
-                });
-
-                mMainFrame.setVisible(true);
-            });
-        }
+        MainApp.main(new String[]{});
     }
 
     private Job getJobByName(String jobName) throws RemoteException {
@@ -409,20 +400,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         } else {
             Xlog.timedErr(String.format("%s: %s", Dict.JOB_NOT_RUNNING.toString(), job.getName()));
         }
-    }
-
-    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {
-        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
-        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
-        mManager.setServerCommander(mServerCommander);
-        mClientVmid = new VMID();
-
-        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
-        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
-        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
-        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
-
-        mServerCommander.registerClient(this, SystemHelper.getHostname());
     }
 
     public enum Command {
