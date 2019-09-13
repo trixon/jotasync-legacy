@@ -90,7 +90,7 @@ public class CustomTabSkin extends SkinBase<Tab> {
 
         if (module instanceof StartModule) {
             children.addAll(iconPlaceholder);
-        } else if (module instanceof TaskModule) {
+        } else if (module instanceof JobModule) {
             children.addAll(nameLbl, closeBtn);
         } else {
             children.addAll(iconPlaceholder, nameLbl, closeBtn);
@@ -118,7 +118,7 @@ public class CustomTabSkin extends SkinBase<Tab> {
      * Replaces the Icon when calling setModule().
      */
     private void updateIcon() {
-        if (!(getModule() instanceof TaskModule)) {
+        if (!(getModule() instanceof JobModule)) {
             Node iconNode = icon.get();
             ObservableList<Node> children = controlBox.getChildren();
             children.remove(0);
