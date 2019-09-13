@@ -17,8 +17,10 @@ package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
@@ -27,11 +29,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableMap;
@@ -47,7 +49,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Menu;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.ToolBar;
@@ -62,7 +64,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
@@ -70,8 +72,14 @@ import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.jota.client.Client;
 import static se.trixon.jota.client.ui.MainApp.*;
+import se.trixon.jota.client.ui_swing.MainFrame;
+import se.trixon.jota.shared.ProcessEvent;
+import se.trixon.jota.shared.ServerEvent;
+import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
+import se.trixon.jota.shared.task.Task;
 
 /**
  *
@@ -91,20 +99,58 @@ public class StartModule extends BaseModule {
     private boolean mServerShutdownRequested;
     private Action mServerStartAction;
     private boolean mShutdownInProgress;
-    private Stage mStage;
     private WebView mWebView;
 
     public StartModule(Scene scene) {
         super(scene, Dict.HOME.toString(), MaterialIcon._Action.HOME.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
-        mStage = (Stage) scene.getWindow();
         createUI();
 
         updateWindowTitle();
+        loadConfiguration();
+
+        if (mManager.isConnected()) {
+            enableGui(true);
+            //mTabHolder.getSpeedDialPanel().onConnectionConnect();
+            updateStartServerState();
+        } else {
+            enableGui(false);
+        }
+
+        if (mManager.isConnected()) {
+            //displayEditor(-1);
+        }
     }
 
     @Override
     public Node activate() {
         return mBorderPane;
+    }
+
+    @Override
+    public void connectionConnect() {
+        mClientDisconnectAction.setDisabled(false);
+        mServerShutdownRequested = false;
+        mShutdownInProgress = false;
+
+        Platform.runLater(() -> {
+            loadConfiguration();
+            enableGui(true);
+            updateStartServerState();
+        });
+    }
+
+    @Override
+    public void connectionDisconnect() {
+        mListView.getItems().clear();
+        mClientDisconnectAction.setDisabled(true);
+
+        Platform.runLater(() -> {
+            enableGui(false);
+            if (mShutdownInProgress && !mServerShutdownRequested) {
+                getWorkbench().showErrorDialog(Dict.CONNECTION_LOST.toString(), Dict.CONNECTION_LOST_SERVER_SHUTDOWN.toString(), null);
+            }
+            mServerStartAction.setDisabled(false);
+        });
     }
 
     @Override
@@ -117,33 +163,6 @@ public class StartModule extends BaseModule {
 
         mClientConnectAction.setGraphic(MaterialIcon._Communication.CALL_MADE.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
         mClientDisconnectAction.setGraphic(MaterialIcon._Communication.CALL_RECEIVED.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
-    }
-
-    private void connectionConnect() {
-        System.out.println("connected");
-        mClientDisconnectAction.setDisabled(false);
-        mServerShutdownRequested = false;
-        mShutdownInProgress = false;
-
-        Platform.runLater(() -> {
-            loadConfiguration();
-            enableGui(true);
-            updateStartServerState();
-        });
-    }
-
-    private void connectionDisconnect() {
-        System.out.println("disconnected");
-        mListView.getItems().clear();
-        mClientDisconnectAction.setDisabled(true);
-
-        Platform.runLater(() -> {
-            enableGui(false);
-            if (mShutdownInProgress && !mServerShutdownRequested) {
-                getWorkbench().showErrorDialog(Dict.CONNECTION_LOST.toString(), Dict.CONNECTION_LOST_SERVER_SHUTDOWN.toString(), null);
-            }
-            mServerStartAction.setDisabled(false);
-        });
     }
 
     private void createUI() {
@@ -163,8 +182,8 @@ public class StartModule extends BaseModule {
         postInit();
     }
 
-    private void displayEditor() {
-        System.out.println("display Editor");
+    private void displayEditor(long jobId) {
+        System.out.println("display Editor id=" + jobId);
     }
 
     private void enableGui(boolean state) {
@@ -177,14 +196,8 @@ public class StartModule extends BaseModule {
         }
 
         mPreferences.server().scheduledSyncProperty().set(cronActive);
+        mCategoryActionManager.setEnabled(KEY_ACTION_CATEGORY_CONNECTED, !state);
 
-        //TODO
-//        mActionManager.getConditionallyEnabledActions().stream().forEach((action) -> {
-//            action.setEnabled(state);
-//        });
-//
-//        mActionManager.getAction(ActionManager.CLOSE_TAB).setEnabled(false);
-//        mActionManager.getAction(ActionManager.SAVE_TAB).setEnabled(false);
         if (state) {
             updateWindowTitle();
         } else {
@@ -195,12 +208,15 @@ public class StartModule extends BaseModule {
 
     private void initAccelerators() {
         final ObservableMap<KeyCombination, Runnable> accelerators = getScene().getAccelerators();
+
         accelerators.put(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN), () -> {
             mClientConnectAction.handle(new ActionEvent());
         });
+
         accelerators.put(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN), () -> {
             mClientDisconnectAction.handle(new ActionEvent());
         });
+
         mClientConnectAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
         mClientDisconnectAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
 
@@ -222,36 +238,45 @@ public class StartModule extends BaseModule {
         mClientDisconnectAction = new Action(Dict.DISCONNECT.toString(), (ActionEvent event) -> {
             mManager.disconnect();
         });
-        mClientDisconnectAction.setDisabled(true);
+//        mClientDisconnectAction.setDisabled(mManager.isConnected());
 
         //Server Start
         mServerStartAction = new Action(Dict.START.toString(), (ActionEvent event) -> {
+            try {
+                if (mClient.serverStart()) {
+                    mManager.connect(SystemHelper.getHostname(), mOptions.getAutostartServerPort());
+                }
+            } catch (URISyntaxException | IOException | NotBoundException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
         });
 
         //Server Stop
         mServerShutdownAction = new Action(Dict.SHUTDOWN.toString(), (ActionEvent event) -> {
+            serverShutdown();
         });
 
         //Server Stop and Quit
         mServerShutdownQuitAction = new Action(Dict.SHUTDOWN_AND_QUIT.toString(), (ActionEvent event) -> {
+            serverShutdown();
+            quit();
         });
 
         //editor
         mEditorAction = new Action(mBundle.getString("jobEditor"), (ActionEvent event) -> {
-            displayEditor();
+            displayEditor(-1);
         });
         mEditorAction.setGraphic(MaterialIcon._Editor.MODE_EDIT.getImageView(ICON_SIZE_DRAWER));
+
+        mCategoryActionManager.addAll(KEY_ACTION_CATEGORY_CONNECTED,
+                mEditorAction.disabledProperty(),
+                mClientDisconnectAction.disabledProperty(),
+                mServerShutdownAction.disabledProperty(),
+                mServerShutdownQuitAction.disabledProperty()
+        );
     }
 
     private void initListeners() {
-        mManager.connectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean connected) -> {
-            if (connected) {
-                connectionConnect();
-            } else {
-                connectionDisconnect();
-            }
-        });
-
         mListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener.Change<? extends Job> c) -> {
             Job job = mListView.getSelectionModel().getSelectedItem();
             if (job != null) {
@@ -260,21 +285,56 @@ public class StartModule extends BaseModule {
                 mWebView.getEngine().loadContent("");
             }
         });
+
+        mClient.addServerEventListener(new ServerEventListener() {
+            @Override
+            public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
+            }
+
+            @Override
+            public void onServerEvent(ServerEvent serverEvent) {
+                Platform.runLater(() -> {
+                    switch (serverEvent) {
+                        case CRON_CHANGED:
+                            try {
+                                boolean cronActive = mManager.getServerCommander().isCronActive();
+                                mPreferences.server().setScheduledSync(cronActive);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;
+
+                        case JOTA_CHANGED:
+                            loadConfiguration();
+                            break;
+
+                        case SHUTDOWN:
+                            mShutdownInProgress = true;
+                            mManager.disconnect();
+                            break;
+
+                        default:
+                            throw new AssertionError();
+                    }
+                });
+            }
+        });
     }
 
     private void initToolbar() {
-        MenuItem serverMenuItem = new MenuItem(Dict.SERVER.toString());
-        serverMenuItem.setDisable(true);
+        Menu serverMenuItem = new Menu(Dict.SERVER.toString());
+        serverMenuItem.getItems().setAll(
+                ActionUtils.createMenuItem(mServerStartAction),
+                ActionUtils.createMenuItem(mServerShutdownAction),
+                ActionUtils.createMenuItem(mServerShutdownQuitAction)
+        );
+
         getToolbarControlsLeft().addAll(
                 new ToolbarItem(Dict.CONNECTION.toString(),
                         ActionUtils.createMenuItem(mClientConnectAction),
                         ActionUtils.createMenuItem(mClientDisconnectAction),
                         new SeparatorMenuItem(),
-                        serverMenuItem,
-                        new SeparatorMenuItem(),
-                        ActionUtils.createMenuItem(mServerStartAction),
-                        ActionUtils.createMenuItem(mServerShutdownAction),
-                        ActionUtils.createMenuItem(mServerShutdownQuitAction)
+                        serverMenuItem
                 )
         );
 
@@ -288,13 +348,18 @@ public class StartModule extends BaseModule {
 
         ToolbarItem editorToolbarItem = new ToolbarItem(mEditorAction.getText(), mEditorAction.getGraphic(),
                 event -> {
-                    displayEditor();
+                    displayEditor(-1);
                 }
         );
 
         getToolbarControlsRight().addAll(
                 dummyRunToolbarItem,
                 editorToolbarItem
+        );
+
+        mCategoryActionManager.addAll(KEY_ACTION_CATEGORY_CONNECTED,
+                dummyRunToolbarItem.disableProperty(),
+                editorToolbarItem.disableProperty()
         );
     }
 
@@ -314,6 +379,10 @@ public class StartModule extends BaseModule {
             System.err.println("mManager: " + mManager);
         }
 
+    }
+
+    private void quit() {
+        mStage.fireEvent(new WindowEvent(mStage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
     private void requestConnect() {
@@ -370,6 +439,11 @@ public class StartModule extends BaseModule {
             }
         }).build();
         getWorkbench().showDialog(dialog);
+    }
+
+    private void serverShutdown() {
+        mServerShutdownRequested = true;
+        mClient.execute(Client.Command.SHUTDOWN);
     }
 
     private void updateStartServerState() {
@@ -454,7 +528,7 @@ public class StartModule extends BaseModule {
             });
 
             mEditAction = new Action(Dict.EDIT.toString(), (ActionEvent event) -> {
-//                jobEdit(getSelectedJob());
+                displayEditor(getSelectedJob().getId());
                 mListView.requestFocus();
             });
 

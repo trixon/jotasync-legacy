@@ -72,7 +72,7 @@ public class Manager {
             try {
                 mServerCommander.removeClient(mClient, SystemHelper.getHostname());
             } catch (RemoteException ex) {
-                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }
             mServerCommander = null;
 
@@ -107,7 +107,8 @@ public class Manager {
     }
 
     public boolean isConnected() {
-        return mConnectedProperty.get();
+        return mServerCommander != null;
+        //return mConnectedProperty.get();
     }
 
     public void setClient(Client client) {

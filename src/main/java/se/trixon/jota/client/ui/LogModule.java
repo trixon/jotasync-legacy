@@ -44,12 +44,11 @@ import se.trixon.jota.shared.task.Task;
  */
 public class LogModule extends BaseModule {
 
-    private ListView<HistoryItem> jobList;
-
     private BorderPane mBorderPane;
     private final HashMap<Long, ArrayList<String>> mHistoryMap = new HashMap<>();
+    private ListView<HistoryItem> mJobList;
     private LogPanel mLogPanel;
-    private ListView<HistoryItem> taskList;
+    private ListView<HistoryItem> mTaskList;
 
     public LogModule(Scene scene) {
         super(scene, Dict.HISTORY.toString(), MaterialIcon._Action.HISTORY.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
@@ -64,8 +63,19 @@ public class LogModule extends BaseModule {
         return mBorderPane;
     }
 
+    @Override
+    public void connectionConnect() {
+        refresh();
+    }
+
+    @Override
+    public void connectionDisconnect() {
+        refresh();
+    }
+
     private void createUI() {
         ToolbarItem clearToolbarItem = new ToolbarItem(Dict.CLEAR.toString(), MaterialIcon._Content.CLEAR.getImageView(ICON_SIZE_MODULE_TOOLBAR), (event) -> {
+            System.out.println("clear");
         });
         getToolbarControlsLeft().addAll(clearToolbarItem);
 
@@ -73,13 +83,13 @@ public class LogModule extends BaseModule {
         mBorderPane = new BorderPane(mLogPanel);
 
         Tab jobsTab = new Tab(Dict.JOBS.toString());
-        jobList = new ListView<>();
-        jobsTab.setContent(jobList);
+        mJobList = new ListView<>();
+        jobsTab.setContent(mJobList);
         jobsTab.setClosable(false);
 
         Tab tasksTab = new Tab(Dict.TASKS.toString());
-        taskList = new ListView<>();
-        tasksTab.setContent(taskList);
+        mTaskList = new ListView<>();
+        tasksTab.setContent(mTaskList);
         tasksTab.setClosable(false);
 
         TabPane tabPane = new TabPane(jobsTab, tasksTab);
@@ -88,6 +98,10 @@ public class LogModule extends BaseModule {
         tabPane.setTabMaxHeight(TAB_SIZE);
         tabPane.setTabMinHeight(TAB_SIZE);
         mBorderPane.setLeft(tabPane);
+
+        mCategoryActionManager.addAll(KEY_ACTION_CATEGORY_CONNECTED,
+                clearToolbarItem.disableProperty()
+        );
     }
 
     private ArrayList<String> getList(Long key) {
@@ -107,14 +121,20 @@ public class LogModule extends BaseModule {
             }
         };
 
-        jobList.getSelectionModel().selectedItemProperty().addListener(changeListener);
-        taskList.getSelectionModel().selectedItemProperty().addListener(changeListener);
+        mJobList.getSelectionModel().selectedItemProperty().addListener(changeListener);
+        mTaskList.getSelectionModel().selectedItemProperty().addListener(changeListener);
     }
 
     private void refresh() {
         String history = "";
         mLogPanel.clear();
         mHistoryMap.clear();
+        mJobList.getItems().clear();
+        mTaskList.getItems().clear();
+
+        if (!mManager.isConnected()) {
+            return;
+        }
 
         try {
             history = mManager.getServerCommander().getHistory();
@@ -162,8 +182,8 @@ public class LogModule extends BaseModule {
             jobHistoryItems.sort((HistoryItem o1, HistoryItem o2) -> o1.getName().compareTo(o2.getName()));
             taskHistoryItems.sort((HistoryItem o1, HistoryItem o2) -> o1.getName().compareTo(o2.getName()));
 
-            jobList.getItems().setAll(jobHistoryItems);
-            taskList.getItems().setAll(taskHistoryItems);
+            mJobList.getItems().setAll(jobHistoryItems);
+            mTaskList.getItems().setAll(taskHistoryItems);
         } catch (RemoteException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }

@@ -23,6 +23,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.jota.client.ui.PreferencesModule;
@@ -33,40 +34,58 @@ import se.trixon.jota.client.ui.PreferencesModule;
  */
 public class PreferencesClient {
 
-    private final BooleanProperty mAutoStart = new SimpleBooleanProperty(true);
+    private final BooleanProperty mAutoStartProperty = new SimpleBooleanProperty(true);
     private final ResourceBundle mBundle = SystemHelper.getBundle(PreferencesModule.class, "Bundle");
-    private final IntegerProperty mDelay = new SimpleIntegerProperty(500);
+    private final ClientOptions mClientOptions = ClientOptions.INSTANCE;
+    private final IntegerProperty mDelayProperty = new SimpleIntegerProperty(500);
     private final Group mGroup;
-    private final IntegerProperty mPort = new SimpleIntegerProperty(1099);
+    private final IntegerProperty mPortProperty = new SimpleIntegerProperty(1099);
 
     public PreferencesClient() {
+        //TODO Replace errorMessage
         mGroup = Group.of(Dict.CLIENT.toString(),
-                Setting.of(mBundle.getString("prefs.client.autostartServer"), mAutoStart).customKey("client.autostart"),
-                Setting.of(Dict.PORT.toString(), mPort).customKey("client.port")
+                Setting.of(mBundle.getString("prefs.client.autostartServer"), mAutoStartProperty).customKey("client.autostart"),
+                Setting.of(Dict.PORT.toString(), mPortProperty).customKey("client.port")
                         .validate(IntegerRangeValidator.between(1024, 65535, "errorMessage")),
-                Setting.of(mBundle.getString("prefs.client.connectDelay"), mDelay).customKey("client.delay")
+                Setting.of(mBundle.getString("prefs.client.connectDelay"), mDelayProperty).customKey("client.delay")
                         .validate(IntegerRangeValidator.between(100, 3000, "errorMessage"))
         );
+
+        initListeners();
+    }
+
+    public BooleanProperty autoStartProperty() {
+        return mAutoStartProperty;
+    }
+
+    public int getDelay() {
+        return mDelayProperty.get();
     }
 
     public Group getGroup() {
         return mGroup;
     }
 
-    public int getThumbnailBorderSize() {
-        return mDelay.get();
+    public int getPort() {
+        return mPortProperty.get();
     }
 
-    public int getThumbnailSize() {
-        return mPort.get();
+    public boolean isAutoStart() {
+        return mAutoStartProperty.get();
     }
 
-    public boolean isWordWrap() {
-        return mAutoStart.get();
-    }
+    private void initListeners() {
+        //TODO Deprecate when resolved: https://github.com/dlsc-software-consulting-gmbh/PreferencesFX/issues/85
+        mAutoStartProperty.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
+            mClientOptions.setAutostartServer(t1);
+        });
 
-    public BooleanProperty wordWrapProperty() {
-        return mAutoStart;
-    }
+        mPortProperty.addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            mClientOptions.setAutostartServerPort(t1.intValue());
+        });
 
+        mDelayProperty.addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            mClientOptions.setAutostartServerConnectDelay(t1.intValue());
+        });
+    }
 }

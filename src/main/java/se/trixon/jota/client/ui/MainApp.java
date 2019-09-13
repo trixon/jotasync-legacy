@@ -70,6 +70,8 @@ public class MainApp extends Application {
     public static final int ICON_SIZE_PROFILE = 32;
     public static final int ICON_SIZE_TOOLBAR = 40;
     public static final int ICON_SIZE_DRAWER = ICON_SIZE_TOOLBAR / 2;
+    public static final String KEY_ACTION_CATEGORY_CONNECTED = "connected";
+    public static final String KEY_ACTION_CATEGORY_DISCONNECTED = "disconnected";
     private static final boolean IS_MAC = SystemUtils.IS_OS_MAC;
     private static final Logger LOGGER = Logger.getLogger(MainApp.class.getName());
     private Action mAboutAction;

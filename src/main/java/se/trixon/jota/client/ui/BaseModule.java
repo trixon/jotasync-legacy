@@ -17,10 +17,12 @@ package se.trixon.jota.client.ui;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import se.trixon.almond.util.fx.CategoryBooleanManager;
 import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
@@ -32,19 +34,28 @@ import se.trixon.jota.client.Preferences;
  */
 public abstract class BaseModule extends WorkbenchModule {
 
+    protected final Logger LOGGER = Logger.getLogger(getClass().getName());
+    protected CategoryBooleanManager mCategoryActionManager = CategoryBooleanManager.getInstance();
     protected final Client mClient;
     protected Font mDefaultFont = Font.getDefault();
     protected final Manager mManager = Manager.getInstance();
     protected final ClientOptions mOptions = ClientOptions.INSTANCE;
     protected final Preferences mPreferences = Preferences.getInstance();
+    protected Stage mStage;
     private final Scene mScene;
-    protected final Logger LOGGER = Logger.getLogger(getClass().getName());
 
     public BaseModule(Scene scene, String name, Image icon) {
         super(name, icon);
         mScene = scene;
+        mStage = (Stage) scene.getWindow();
         mClient = mManager.getClient();
         initListeners();
+    }
+
+    public void connectionConnect() {
+    }
+
+    public void connectionDisconnect() {
     }
 
     public Scene getScene() {
@@ -63,6 +74,14 @@ public abstract class BaseModule extends WorkbenchModule {
     }
 
     private void initListeners() {
+        mManager.connectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean connected) -> {
+            if (connected) {
+                connectionConnect();
+            } else {
+                connectionDisconnect();
+            }
+        });
+
         mPreferences.general().nightModeProperty().addListener((observable, oldValue, newValue) -> setNightMode(newValue));
     }
 }

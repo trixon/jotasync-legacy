@@ -79,4 +79,8 @@ public class PreferencesServer {
         mRsyncPathFileProperty.set(file);
     }
 
+    public void setScheduledSync(boolean state) {
+        mScheduledSyncProperty.set(state);
+    }
+
 }
