@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.dlsc.workbenchfx</groupId>
             <artifactId>workbenchfx-core</artifactId>
-            <version>8.0.0</version>
+            <version>8.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.dlsc.preferencesfx</groupId>
@@ -81,6 +81,11 @@
             <groupId>it.sauronsoftware.cron4j</groupId>
             <artifactId>cron4j</artifactId>
             <version>2.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.5</version>
         </dependency>
     </dependencies>
     <properties>
@@ -146,6 +151,7 @@
                                         <include>se/trixon/almond/util/icons/material/_content/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_editor/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_file/folder_open*</include>
+                                        <include>se/trixon/almond/util/icons/material/_image/edit*</include>
                                         <include>se/trixon/almond/util/icons/material/_maps/directions_run*</include>
                                         <include>se/trixon/almond/util/icons/material/_navigation/*.png</include>
                                         <include>se/trixon/almond/util/swing/**</include>
