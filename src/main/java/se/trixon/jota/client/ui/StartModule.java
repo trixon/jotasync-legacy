@@ -74,6 +74,7 @@ import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Client;
 import static se.trixon.jota.client.ui.MainApp.*;
+import se.trixon.jota.server.JobValidator;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventAdapter;
 import se.trixon.jota.shared.job.Job;
@@ -345,6 +346,43 @@ public class StartModule extends BaseModule {
         );
     }
 
+    private void jobRun(Job job) {
+        try {
+            JobValidator validator = mManager.getServerCommander().validate(job);
+
+            if (validator.isValid()) {
+                HtmlPane previewPanel = new HtmlPane(job.getSummaryAsHtml());
+
+                ButtonType runButtonType = new ButtonType(Dict.RUN.toString());
+                ButtonType dryRunButtonType = new ButtonType(Dict.DRY_RUN.toString(), ButtonBar.ButtonData.OK_DONE);
+                ButtonType cancelButtonType = new ButtonType(Dict.CANCEL.toString(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                String title = String.format(Dict.Dialog.TITLE_PROFILE_RUN.toString(), job.getName());
+
+                WorkbenchDialog dialog = WorkbenchDialog.builder(title, previewPanel, runButtonType, dryRunButtonType, cancelButtonType).onResult(buttonType -> {
+                    try {
+                        if (buttonType != cancelButtonType) {
+                            boolean dryRun = buttonType == dryRunButtonType;
+                            mManager.getServerCommander().startJob(job, dryRun);
+                        }
+                    } catch (RemoteException ex) {
+                        LOGGER.log(Level.SEVERE, null, ex);
+                    }
+                }).build();
+                getWorkbench().showDialog(dialog);
+            } else {
+                WorkbenchDialog dialog = WorkbenchDialog.builder(
+                        Dict.Dialog.ERROR_VALIDATION.toString(),
+                        new HtmlPane(validator.getSummaryAsHtml()),
+                        WorkbenchDialog.Type.ERROR).build();
+
+                getWorkbench().showDialog(dialog);
+            }
+        } catch (RemoteException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
     private void loadConfiguration() {
         if (!mManager.isConnected()) {
             mListView.getItems().clear();
@@ -505,7 +543,7 @@ public class StartModule extends BaseModule {
             mLastLabel.setFont(Font.font(fontFamily, FontWeight.NORMAL, fontSize * 1.1));
 
             mRunAction = new Action(Dict.RUN.toString(), (ActionEvent event) -> {
-//                jobRun(getSelectedJob());
+                jobRun(getSelectedJob());
                 mListView.requestFocus();
             });
 
