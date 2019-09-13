@@ -74,12 +74,9 @@ import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Client;
 import static se.trixon.jota.client.ui.MainApp.*;
-import se.trixon.jota.client.ui_swing.MainFrame;
-import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
-import se.trixon.jota.shared.ServerEventListener;
+import se.trixon.jota.shared.ServerEventAdapter;
 import se.trixon.jota.shared.job.Job;
-import se.trixon.jota.shared.task.Task;
 
 /**
  *
@@ -286,24 +283,12 @@ public class StartModule extends BaseModule {
             }
         });
 
-        mClient.addServerEventListener(new ServerEventListener() {
-            @Override
-            public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
-            }
+        mClient.addServerEventListener(new ServerEventAdapter() {
 
             @Override
             public void onServerEvent(ServerEvent serverEvent) {
                 Platform.runLater(() -> {
                     switch (serverEvent) {
-                        case CRON_CHANGED:
-                            try {
-                                boolean cronActive = mManager.getServerCommander().isCronActive();
-                                mPreferences.server().setScheduledSync(cronActive);
-                            } catch (RemoteException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            break;
-
                         case JOTA_CHANGED:
                             loadConfiguration();
                             break;
@@ -312,9 +297,6 @@ public class StartModule extends BaseModule {
                             mShutdownInProgress = true;
                             mManager.disconnect();
                             break;
-
-                        default:
-                            throw new AssertionError();
                     }
                 });
             }

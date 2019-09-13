@@ -27,6 +27,7 @@ import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.Preferences;
+import se.trixon.jota.shared.ServerCommander;
 
 /**
  *
@@ -71,6 +72,10 @@ public abstract class BaseModule extends WorkbenchModule {
     }
 
     public void setNightMode(boolean state) {
+    }
+
+    protected ServerCommander getServerCommander() {
+        return mManager.getServerCommander();
     }
 
     private void initListeners() {

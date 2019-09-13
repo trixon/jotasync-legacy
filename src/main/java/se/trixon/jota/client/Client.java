@@ -49,6 +49,7 @@ import se.trixon.jota.shared.JotaServer;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.shared.ServerEvent;
+import se.trixon.jota.shared.ServerEventAdapter;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
@@ -79,7 +80,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
 
-        mServerEventListener = new ServerEventListener() {
+        mServerEventListener = new ServerEventAdapter() {
             @Override
             public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
                 if (mCurrentJob != null && mCurrentJob.getId() == job.getId() && null != processEvent) {
@@ -103,11 +104,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                             break;
                     }
                 }
-            }
-
-            @Override
-            public void onServerEvent(ServerEvent serverEvent) {
-                // nvm
             }
         };
 
