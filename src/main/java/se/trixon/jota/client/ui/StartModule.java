@@ -66,14 +66,17 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import javax.swing.JOptionPane;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.jota.client.Client;
 import static se.trixon.jota.client.ui.MainApp.*;
+import se.trixon.jota.client.ui_swing.editor.EditorPanel;
 import se.trixon.jota.server.JobValidator;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventAdapter;
@@ -181,7 +184,27 @@ public class StartModule extends BaseModule {
     }
 
     private void displayEditor(long jobId) {
-        System.out.println("display Editor id=" + jobId);
+        boolean openJob = jobId != -1;
+        EditorPanel editorPanel = new EditorPanel(jobId, openJob);
+        SwingHelper.makeWindowResizable(editorPanel);
+
+        int retval = JOptionPane.showOptionDialog(null,
+                editorPanel,
+                mBundle.getString("jobEditor"),
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                null);
+
+        if (retval == JOptionPane.OK_OPTION) {
+            editorPanel.save();
+            try {
+                mManager.getServerCommander().saveJota();
+            } catch (RemoteException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     private void enableGui(boolean state) {
@@ -213,6 +236,12 @@ public class StartModule extends BaseModule {
 
         accelerators.put(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN), () -> {
             mClientDisconnectAction.handle(new ActionEvent());
+        });
+
+        accelerators.put(new KeyCodeCombination(KeyCode.J, KeyCombination.SHORTCUT_DOWN), () -> {
+            if (!mEditorAction.isDisabled()) {
+                displayEditor(-1);
+            }
         });
 
         mClientConnectAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
