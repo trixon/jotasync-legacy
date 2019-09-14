@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -60,7 +59,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
@@ -77,7 +75,6 @@ import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.jota.client.Client;
 import static se.trixon.jota.client.ui.MainApp.*;
 import se.trixon.jota.client.ui_swing.editor.EditorPanel;
-import se.trixon.jota.server.JobValidator;
 import se.trixon.jota.shared.ServerEvent;
 import se.trixon.jota.shared.ServerEventAdapter;
 import se.trixon.jota.shared.job.Job;
@@ -88,7 +85,6 @@ import se.trixon.jota.shared.job.Job;
  */
 public class StartModule extends BaseModule {
 
-    private static final Logger LOGGER = Logger.getLogger(StartModule.class.getName());
     private BorderPane mBorderPane;
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
     private Action mClientConnectAction;
@@ -120,6 +116,8 @@ public class StartModule extends BaseModule {
         if (mManager.isConnected()) {
             //displayEditor(-1);
         }
+
+        mManager.getClient().addServerEventListener(mJobController);
     }
 
     @Override
@@ -350,14 +348,6 @@ public class StartModule extends BaseModule {
                 )
         );
 
-        ToolbarItem dummyRunToolbarItem = new ToolbarItem(Dict.RUN.toString(), MaterialIcon._Maps.DIRECTIONS_RUN.getImageView(ICON_SIZE_TOOLBAR, Color.LIGHTGRAY),
-                event -> {
-                    TaskModule taskModule = new TaskModule(getScene());
-                    getWorkbench().getModules().add(taskModule);
-                    getWorkbench().openModule(taskModule);
-                }
-        );
-
         ToolbarItem editorToolbarItem = new ToolbarItem(mEditorAction.getText(), mEditorAction.getGraphic(),
                 event -> {
                     displayEditor(-1);
@@ -365,51 +355,12 @@ public class StartModule extends BaseModule {
         );
 
         getToolbarControlsRight().addAll(
-                dummyRunToolbarItem,
                 editorToolbarItem
         );
 
         mCategoryActionManager.addAll(KEY_ACTION_CATEGORY_CONNECTED,
-                dummyRunToolbarItem.disableProperty(),
                 editorToolbarItem.disableProperty()
         );
-    }
-
-    private void jobRun(Job job) {
-        try {
-            JobValidator validator = mManager.getServerCommander().validate(job);
-
-            if (validator.isValid()) {
-                HtmlPane previewPanel = new HtmlPane(job.getSummaryAsHtml());
-
-                ButtonType runButtonType = new ButtonType(Dict.RUN.toString());
-                ButtonType dryRunButtonType = new ButtonType(Dict.DRY_RUN.toString(), ButtonBar.ButtonData.OK_DONE);
-                ButtonType cancelButtonType = new ButtonType(Dict.CANCEL.toString(), ButtonBar.ButtonData.CANCEL_CLOSE);
-
-                String title = String.format(Dict.Dialog.TITLE_PROFILE_RUN.toString(), job.getName());
-
-                WorkbenchDialog dialog = WorkbenchDialog.builder(title, previewPanel, runButtonType, dryRunButtonType, cancelButtonType).onResult(buttonType -> {
-                    try {
-                        if (buttonType != cancelButtonType) {
-                            boolean dryRun = buttonType == dryRunButtonType;
-                            mManager.getServerCommander().startJob(job, dryRun);
-                        }
-                    } catch (RemoteException ex) {
-                        LOGGER.log(Level.SEVERE, null, ex);
-                    }
-                }).build();
-                getWorkbench().showDialog(dialog);
-            } else {
-                WorkbenchDialog dialog = WorkbenchDialog.builder(
-                        Dict.Dialog.ERROR_VALIDATION.toString(),
-                        new HtmlPane(validator.getSummaryAsHtml()),
-                        WorkbenchDialog.Type.ERROR).build();
-
-                getWorkbench().showDialog(dialog);
-            }
-        } catch (RemoteException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
-        }
     }
 
     private void loadConfiguration() {
@@ -572,7 +523,7 @@ public class StartModule extends BaseModule {
             mLastLabel.setFont(Font.font(fontFamily, FontWeight.NORMAL, fontSize * 1.1));
 
             mRunAction = new Action(Dict.RUN.toString(), (ActionEvent event) -> {
-                jobRun(getSelectedJob());
+                mJobController.run(getSelectedJob());
                 mListView.requestFocus();
             });
 

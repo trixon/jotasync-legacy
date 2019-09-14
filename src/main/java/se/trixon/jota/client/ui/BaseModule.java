@@ -39,6 +39,7 @@ public abstract class BaseModule extends WorkbenchModule {
     protected CategoryBooleanManager mCategoryActionManager = CategoryBooleanManager.getInstance();
     protected final Client mClient;
     protected Font mDefaultFont = Font.getDefault();
+    protected JobController mJobController = JobController.getInstance();
     protected final Manager mManager = Manager.getInstance();
     protected final ClientOptions mOptions = ClientOptions.INSTANCE;
     protected final Preferences mPreferences = Preferences.getInstance();

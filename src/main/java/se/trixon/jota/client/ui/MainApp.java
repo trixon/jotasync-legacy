@@ -115,6 +115,8 @@ public class MainApp extends Application {
 
         initAccelerators();
         mWorkbench.openModule(mStartModule);
+
+        JobController.getInstance().setWorkbench(mWorkbench);
     }
 
     @Override
