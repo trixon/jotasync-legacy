@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
@@ -93,7 +94,11 @@ public class MainApp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+        try {
+            launch(args);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public MainApp() {
@@ -105,16 +110,18 @@ public class MainApp extends Application {
         mStage = stage;
         stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("logo.png")));
 
-        mAlmondFX.addStageWatcher(stage, MainApp.class);
         createUI();
+
         if (IS_MAC) {
             initMac();
         }
+
         mStage.setTitle(APP_TITLE);
-        mStage.show();
 
         initAccelerators();
-        mWorkbench.openModule(mStartModule);
+        Platform.runLater(() -> {
+            mWorkbench.openModule(mStartModule);
+        });
 
         JobController.getInstance().setWorkbench(mWorkbench);
     }
@@ -169,6 +176,11 @@ public class MainApp extends Application {
                 ActionUtils.createMenuItem(mAboutRsyncAction),
                 ActionUtils.createMenuItem(mAboutAction)
         );
+
+        Platform.runLater(() -> {
+            mAlmondFX.addStageWatcher(mStage, MainApp.class);
+            mStage.show();
+        });
     }
 
     private void displayOptions() {
