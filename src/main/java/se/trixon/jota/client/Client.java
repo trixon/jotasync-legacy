@@ -312,8 +312,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             return;
         }
         SystemHelper.setMacApplicationName("JotaSync");
-
-        mAlmondUI.installDarcula();
+        mAlmondUI.installFlatLaf();
         mAlmondUI.initLookAndFeel();
 
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {

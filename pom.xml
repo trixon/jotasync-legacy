@@ -45,7 +45,7 @@
         <dependency>
             <groupId>se.trixon.almond</groupId>
             <artifactId>almond-util</artifactId>
-            <version>3.0.5-SNAPSHOT</version>
+            <version>11.0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.yuvimasory</groupId>
