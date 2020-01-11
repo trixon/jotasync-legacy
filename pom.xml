@@ -26,9 +26,9 @@
         </developer>
     </developers>
     <scm>
-        <url>https://github.com/trixon/java-jotasync</url>
-        <connection>scm:git:git://github.com/trixon/java-jotasync.git</connection>
-        <developerConnection>scm:git:git@github.com:trixon/java-jotasync.git</developerConnection>
+        <url>https://github.com/trixon/jotasync</url>
+        <connection>scm:git:git://github.com/trixon/jotasync.git</connection>
+        <developerConnection>scm:git:git@github.com:trixon/jotasync.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <dependencies>
@@ -46,6 +46,20 @@
             <groupId>se.trixon.almond</groupId>
             <artifactId>almond-util</artifactId>
             <version>11.0.5-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.controlsfx</groupId>
+                    <artifactId>controlsfx</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-swing</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.yuvimasory</groupId>
@@ -106,8 +120,15 @@
                             <minimizeJar>true</minimizeJar>
                             <filters>
                                 <filter>
+                                    <artifact>com.formdev:flatlaf</artifact>
+                                    <includes>
+                                        <include>com/formdev/flatlaf/**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
                                     <artifact>se.trixon.almond:almond-util</artifact>
                                     <includes>
+                                        <include>se/trixon/almond/util/fx/*</include>
                                         <include>se/trixon/almond/util/*</include>
                                         <include>se/trixon/almond/util/swing/**</include>
                                         <include>se/trixon/almond/util/icons/*</include>
