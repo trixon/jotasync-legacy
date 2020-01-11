@@ -46,7 +46,7 @@
     <Component class="javax.swing.JCheckBox" name="noAdditionalDirCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskPanel.forceSourceSlashCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).toString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="se/trixon/jota/client/ui_swing/editor/module/task/Bundle.properties" key="TaskPanel.forceSourceSlashCheckBox.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).toString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -61,7 +61,7 @@
     <Component class="javax.swing.JButton" name="swapSourceDestButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="se/trixon/jota/client/ui/editor/module/task/Bundle.properties" key="TaskPanel.swapSourceDestButton.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).toString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="se/trixon/jota/client/ui_swing/editor/module/task/Bundle.properties" key="TaskPanel.swapSourceDestButton.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).toString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>

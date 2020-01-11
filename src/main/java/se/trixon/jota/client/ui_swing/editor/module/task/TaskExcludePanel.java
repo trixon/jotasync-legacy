@@ -100,7 +100,7 @@ public class TaskExcludePanel extends TaskModule {
         externalFilePanel = new se.trixon.almond.util.swing.dialogs.FileChooserPanel();
 
         externalFilePanel.setCheckBoxMode(true);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui/editor/module/task/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("se/trixon/jota/client/ui_swing/editor/module/task/Bundle"); // NOI18N
         externalFilePanel.setHeader(bundle.getString("TaskExcludePanel.externalFilePanel.header")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
