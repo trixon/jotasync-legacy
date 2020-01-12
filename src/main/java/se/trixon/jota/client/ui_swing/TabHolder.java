@@ -27,15 +27,18 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
@@ -58,6 +61,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private Action mSaveAction;
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
     private final ActionManager mActionManager = ActionManager.getInstance();
+    private int mTabIndex = 1;
 
     /**
      * Creates new form ProgressPane
@@ -240,7 +244,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         TabItem panel = getTabItem(job);
         mJobMap.remove(job.getId());
         remove(panel);
-        setSelectedIndex(0);
+        setSelectedIndex(1);
     }
 
     private synchronized TabItem getTabItem(Job job) {
@@ -250,7 +254,6 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             tabItem = mJobMap.get(job.getId());
         } else {
             tabItem = new TabItem(job);
-            tabItem.getMenuButton().addMouseListener(mMenuMouseAdapter);
 
             add(tabItem, job.getName());
             TabCloser tabCloser = new TabCloser(this);
@@ -271,13 +274,20 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     private void init() {
         setFocusTraversalKeysEnabled(false);
         mSpeedDialPanel = new SpeedDialPanel();
+        if (mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BUTTON) {
+            addTab(null, MaterialIcon._Navigation.MENU.getImageIcon(AlmondUI.ICON_SIZE_NORMAL), new JPanel(), Dict.MENU.toString());
+            addChangeListener((ChangeEvent e) -> {
+                if (getSelectedIndex() == 0) {
+                    setSelectedIndex(mTabIndex);
+                    mMenuMouseAdapter.mousePressed(null);
+                } else {
+                    mTabIndex = getSelectedIndex();
+                }
+            });
+        }
 
-        add(mSpeedDialPanel, MaterialIcon._Action.HOME.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-        setIconAt(0, MaterialIcon._Action.HOME.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-        HistoryPanel historyPanel = new HistoryPanel();
-        add(historyPanel, MaterialIcon._Action.HISTORY.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-        setIconAt(1, MaterialIcon._Action.HISTORY.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-
+        addTab(null, MaterialIcon._Action.HOME.getImageIcon(AlmondUI.ICON_SIZE_NORMAL), mSpeedDialPanel);
+        addTab(null, MaterialIcon._Action.HISTORY.getImageIcon(AlmondUI.ICON_SIZE_NORMAL), new HistoryPanel());
         mJobMap.values().stream().forEach((tabItem) -> {
             tabItem.updateIcons();
         });
@@ -288,7 +298,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e == null || e.getButton() == MouseEvent.BUTTON1) {
-                    Component component = ((TabListener) getSelectedComponent()).getMenuButton();
+                    Component component = getSelectedComponent();
                     JPopupMenu popupMenu = MainFrame.getPopupMenu();
                     InputMap inputMap = popupMenu.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
                     ActionMap actionMap = popupMenu.getActionMap();
@@ -310,8 +320,8 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
                     } else {
                         popupMenu.show(component, component.getWidth() - popupMenu.getWidth(), component.getHeight());
 
-                        int x = component.getLocationOnScreen().x + component.getWidth() - popupMenu.getWidth();
-                        int y = component.getLocationOnScreen().y + component.getHeight();
+                        int x = component.getLocationOnScreen().x;
+                        int y = component.getLocationOnScreen().y;
 
                         popupMenu.setLocation(x, y);
                     }
@@ -319,11 +329,10 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
             }
         };
 
-        mSpeedDialPanel.getMenuButton().addMouseListener(mMenuMouseAdapter);
-
         //FIXME Why is this necessary?
         setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
         setTabLayoutPolicy(WRAP_TAB_LAYOUT);
+        setSelectedIndex(1);
     }
 
     private void updateActionStates() {

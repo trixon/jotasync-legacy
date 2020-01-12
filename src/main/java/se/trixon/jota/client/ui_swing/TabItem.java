@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2020 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -36,7 +35,6 @@ import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.FileHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.LogPanel;
-import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.almond.util.swing.dialogs.Message;
 import se.trixon.almond.util.swing.dialogs.SimpleDialog;
 import se.trixon.jota.client.ClientOptions;
@@ -48,7 +46,7 @@ import se.trixon.jota.shared.job.Job;
  *
  * @author Patrik Karlström
  */
-public class TabItem extends JPanel implements TabListener {
+public class TabItem extends JPanel {
 
     private boolean mClosable;
     private TabCloser mCloser;
@@ -69,18 +67,12 @@ public class TabItem extends JPanel implements TabListener {
     public TabItem(Job job) {
         initComponents();
         init();
-        menuButton.setVisible(mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BUTTON);
         mJob = job;
         progressBar.setValue(0);
     }
 
     public Job getJob() {
         return mJob;
-    }
-
-    @Override
-    public JButton getMenuButton() {
-        return menuButton;
     }
 
     synchronized public void log(ProcessEvent processEvent, String string) {
@@ -92,14 +84,12 @@ public class TabItem extends JPanel implements TabListener {
             if (mOptions.isSplitDeletions() && StringUtils.startsWith(line, "deleting ")) {
                 lp = deletionsLogPanel;
                 if (lp.getParent() == null) {
-                    tabbedPane.add(lp, MaterialIcon._Action.DELETE.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-                    tabbedPane.setToolTipTextAt(tabbedPane.getTabCount() - 1, Dict.DELETIONS.toString());
+                    tabbedPane.addTab(Dict.DELETIONS.toString(), MaterialIcon._Action.DELETE.getImageIcon(AlmondUI.ICON_SIZE_NORMAL), lp);
                 }
             } else if (mOptions.isSplitErrors() && (StringUtils.startsWith(line, "rsync: ") || StringUtils.startsWith(line, "rsync error: "))) {
                 lp = errorsLogPanel;
                 if (lp.getParent() == null) {
-                    tabbedPane.add(lp, MaterialIcon._Alert.ERROR_OUTLINE.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-                    tabbedPane.setToolTipTextAt(tabbedPane.getTabCount() - 1, Dict.Dialog.ERRORS.toString());
+                    tabbedPane.addTab(Dict.Dialog.ERRORS.toString(), MaterialIcon._Alert.ERROR_OUTLINE.getImageIcon(AlmondUI.ICON_SIZE_NORMAL), lp);
                 }
             }
 
@@ -202,7 +192,6 @@ public class TabItem extends JPanel implements TabListener {
 
         cancelButton.setToolTipText(Dict.CANCEL.toString());
         editButton.setToolTipText(Dict.EDIT.toString());
-        menuButton.setToolTipText(Dict.MENU.toString());
         startButton.setToolTipText(Dict.START.toString());
 
         mProgress = new Progress();
@@ -227,8 +216,7 @@ public class TabItem extends JPanel implements TabListener {
 
         if (mOptions.isSplitDeletions() || mOptions.isSplitErrors()) {
             holderPanel.add(tabbedPane);
-            tabbedPane.add(logPanel, MaterialIcon._Action.INFO_OUTLINE.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-            tabbedPane.setToolTipTextAt(0, Dict.LOG.toString());
+            tabbedPane.addTab(Dict.LOG.toString(), MaterialIcon._Action.INFO_OUTLINE.getImageIcon(AlmondUI.ICON_SIZE_NORMAL), logPanel);
         } else {
             holderPanel.add(logPanel);
         }
@@ -237,7 +225,6 @@ public class TabItem extends JPanel implements TabListener {
     void updateIcons() {
         cancelButton.setIcon(MaterialIcon._Navigation.CANCEL.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
         editButton.setIcon(MaterialIcon._Editor.MODE_EDIT.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-        menuButton.setIcon(MaterialIcon._Navigation.MENU.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
         startButton.setIcon(MaterialIcon._Av.PLAY_ARROW.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
     }
 
@@ -258,7 +245,6 @@ public class TabItem extends JPanel implements TabListener {
         editButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         startButton = new javax.swing.JButton();
-        menuButton = new javax.swing.JButton();
         holderPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
@@ -302,11 +288,6 @@ public class TabItem extends JPanel implements TabListener {
             }
         });
         toolBar.add(startButton);
-
-        menuButton.setFocusable(false);
-        menuButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        menuButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(menuButton);
 
         add(toolBar, new java.awt.GridBagConstraints());
 
@@ -352,7 +333,6 @@ public class TabItem extends JPanel implements TabListener {
     private se.trixon.almond.util.swing.LogPanel errorsLogPanel;
     private javax.swing.JPanel holderPanel;
     private se.trixon.almond.util.swing.LogPanel logPanel;
-    private javax.swing.JButton menuButton;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JButton startButton;
     private javax.swing.JTabbedPane tabbedPane;

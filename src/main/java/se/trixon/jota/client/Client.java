@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2020 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,13 +33,16 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
+import javafx.scene.paint.Color;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
+import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.ui_swing.MainFrame;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
@@ -59,6 +62,8 @@ import se.trixon.jota.shared.task.Task;
  */
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
 
+    private AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
+    private final AlmondUI mAlmondUI = AlmondUI.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(Jota.class, "Bundle");
     private VMID mClientVmid;
     private Job mCurrentJob;
@@ -76,7 +81,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private ServerEventListener mServerEventListener;
     private final HashSet<ServerEventListener> mServerEventListeners = new HashSet<>();
     private boolean mShutdownRequested;
-    private final AlmondUI mAlmondUI = AlmondUI.getInstance();
 
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
@@ -304,6 +308,20 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         mPortHost = portHost;
     }
 
+    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {
+        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
+        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
+        mManager.setServerCommander(mServerCommander);
+        mClientVmid = new VMID();
+
+        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
+        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
+        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
+        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
+
+        mServerCommander.registerClient(this, SystemHelper.getHostname());
+    }
+
     private void displayGui() {
         if (GraphicsEnvironment.isHeadless()) {
             Xlog.timedErr("Can't open gui when in headless mode.");
@@ -313,7 +331,11 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         }
         SystemHelper.setMacApplicationName("JotaSync");
         mAlmondUI.installFlatLaf();
+        mAlmondOptions.setDefaultLookAndFeel("FlatLaf Dark");
         mAlmondUI.initLookAndFeel();
+        if (mAlmondOptions.getLookAndFeel().equalsIgnoreCase("FlatLaf Dark")) {
+            MaterialIcon.setDefaultColor(Color.WHITE);
+        }
 
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {
             try {
@@ -402,20 +424,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         } else {
             Xlog.timedErr(String.format("%s: %s", Dict.JOB_NOT_RUNNING.toString(), job.getName()));
         }
-    }
-
-    void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {
-        mRmiNameServer = JotaHelper.getRmiName(mHost, mPortHost, JotaServer.class);
-        mServerCommander = (ServerCommander) Naming.lookup(mRmiNameServer);
-        mManager.setServerCommander(mServerCommander);
-        mClientVmid = new VMID();
-
-        Xlog.timedOut(String.format("server found at %s.", mRmiNameServer));
-        Xlog.timedOut(String.format("server vmid: %s", mServerCommander.getVMID()));
-        Xlog.timedOut(String.format("client connected to %s", mRmiNameServer));
-        Xlog.timedOut(String.format("client vmid: %s", mClientVmid.toString()));
-
-        mServerCommander.registerClient(this, SystemHelper.getHostname());
     }
 
     public enum Command {

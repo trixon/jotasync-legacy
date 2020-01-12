@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2020 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -42,7 +41,6 @@ import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.almond.util.swing.SwingHelper;
-import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
@@ -57,7 +55,7 @@ import se.trixon.jota.shared.task.Task;
  *
  * @author Patrik Karlström
  */
-public final class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, TabListener {
+public final class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mEditMenuItem;
@@ -76,7 +74,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
      */
     public SpeedDialPanel() {
         initComponents();
-        menuButton.setVisible(mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BUTTON);
         updateUI();
         init();
         onConnectionDisconnect();
@@ -84,11 +81,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
 
     public boolean addSpeedDialListener(SpeedDialListener speedDialListener) {
         return mSpeedDialListeners.add(speedDialListener);
-    }
-
-    @Override
-    public JButton getMenuButton() {
-        return menuButton;
     }
 
     @Override
@@ -109,7 +101,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
             SwingHelper.enableComponents(getParent(), false);
             clearConfiguration();
             startButton.setEnabled(false);
-            menuButton.setEnabled(true);
         });
     }
 
@@ -287,10 +278,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
 
     private void init() {
         startButton.setIcon(MaterialIcon._Av.PLAY_ARROW.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-        menuButton.setIcon(MaterialIcon._Navigation.MENU.getImageIcon(AlmondUI.ICON_SIZE_NORMAL));
-
         startButton.setToolTipText(Dict.START.toString());
-        menuButton.setToolTipText(Dict.MENU.toString());
 
         final ActionListener editActionListener = (ActionEvent e) -> {
             MainFrame mainFrame = (MainFrame) SwingUtilities.getRoot(SpeedDialPanel.this);
@@ -384,7 +372,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
         jobsComboBox = new javax.swing.JComboBox();
         toolBar = new javax.swing.JToolBar();
         startButton = new javax.swing.JButton();
-        menuButton = new javax.swing.JButton();
         centerPanel = new javax.swing.JPanel();
         speedDialButton0 = new se.trixon.jota.client.ui_swing.SpeedDialButton();
         speedDialButton1 = new se.trixon.jota.client.ui_swing.SpeedDialButton();
@@ -426,11 +413,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
             }
         });
         toolBar.add(startButton);
-
-        menuButton.setFocusable(false);
-        menuButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        menuButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(menuButton);
 
         topPanel.add(toolBar, new java.awt.GridBagConstraints());
 
@@ -519,7 +501,6 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel centerPanel;
     private javax.swing.JComboBox jobsComboBox;
-    private javax.swing.JButton menuButton;
     private se.trixon.jota.client.ui_swing.SpeedDialButton speedDialButton0;
     private se.trixon.jota.client.ui_swing.SpeedDialButton speedDialButton1;
     private se.trixon.jota.client.ui_swing.SpeedDialButton speedDialButton2;
