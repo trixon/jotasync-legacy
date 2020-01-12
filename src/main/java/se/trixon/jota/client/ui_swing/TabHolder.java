@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2020 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -349,7 +349,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 0, 0));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         setFont(getFont().deriveFont((getFont().getStyle() & ~java.awt.Font.ITALIC) & ~java.awt.Font.BOLD));
         addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -365,7 +365,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 292, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
