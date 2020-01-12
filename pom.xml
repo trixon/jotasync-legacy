@@ -82,6 +82,11 @@
             <artifactId>cron4j</artifactId>
             <version>2.2.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>13.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -115,6 +120,21 @@
                                     <artifact>com.formdev:flatlaf</artifact>
                                     <includes>
                                         <include>com/formdev/flatlaf/**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.openjfx:javafx-graphics</artifact>
+                                    <includes>
+                                        <include>com/sun/javafx/tk/*</include>
+                                        <include>com/sun/javafx/util/*</include>
+                                        <include>javafx/animation/*</include>
+                                        <include>javafx/css/**</include>
+                                        <include>javafx/geometry/*</include>
+                                        <include>javafx/scene/Node</include>
+                                        <include>javafx/scene/*</include>
+                                        <include>javafx/scene/image/*</include>
+                                        <include>javafx/scene/layout/*</include>
+                                        <include>javafx/scene/paint/*</include>
                                     </includes>
                                 </filter>
                                 <filter>
