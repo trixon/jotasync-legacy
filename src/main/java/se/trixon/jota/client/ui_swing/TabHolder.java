@@ -183,7 +183,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         for (int i = 0; i < 10; i++) {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(0x31 + i, commandMask);
             String key = "key_" + i;
-            final int tabIndex = i;
+            final int tabIndex = i + 1;
             AbstractAction action = new AbstractAction("Tab") {
 
                 @Override
@@ -212,7 +212,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayTab(Math.max(getSelectedIndex() - 1, 0));
+                displayTab(Math.max(getSelectedIndex() - 1, 1));
             }
 
         };
