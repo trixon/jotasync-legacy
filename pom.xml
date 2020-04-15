@@ -51,7 +51,7 @@
         <dependency>
             <groupId>se.trixon.almond</groupId>
             <artifactId>almond-util</artifactId>
-            <version>11.0.5-SNAPSHOT</version>
+            <version>11.0.6-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.controlsfx</groupId>
@@ -83,9 +83,9 @@
             <version>2.2.5</version>
         </dependency>
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>13.0.1</version>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>0.30</version>
         </dependency>
     </dependencies>
 
@@ -123,28 +123,13 @@
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.openjfx:javafx-graphics</artifact>
-                                    <includes>
-                                        <include>com/sun/javafx/tk/*</include>
-                                        <include>com/sun/javafx/util/*</include>
-                                        <include>javafx/animation/*</include>
-                                        <include>javafx/css/**</include>
-                                        <include>javafx/geometry/*</include>
-                                        <include>javafx/scene/Node</include>
-                                        <include>javafx/scene/*</include>
-                                        <include>javafx/scene/image/*</include>
-                                        <include>javafx/scene/layout/*</include>
-                                        <include>javafx/scene/paint/*</include>
-                                    </includes>
-                                </filter>
-                                <filter>
                                     <artifact>se.trixon.almond:almond-util</artifact>
                                     <includes>
-                                        <include>se/trixon/almond/util/fx/*</include>
                                         <include>se/trixon/almond/util/*</include>
                                         <include>se/trixon/almond/util/swing/**</include>
                                         <include>se/trixon/almond/util/icons/*</include>
                                         <include>se/trixon/almond/util/icons/material/*</include>
+                                        <include>se/trixon/almond/util/icons/material/swing/*</include>
                                         <include>se/trixon/almond/util/icons/material/_action/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_alert/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_av/*.png</include>
