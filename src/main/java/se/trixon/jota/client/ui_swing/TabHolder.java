@@ -37,7 +37,7 @@ import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.icons.material.swing.MaterialIcon;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
