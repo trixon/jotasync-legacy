@@ -135,6 +135,12 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
     public void onServerEvent(ServerEvent serverEvent) {
     }
 
+    private void displayStartTab() {
+        int index = mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BAR ? 0 : 1;
+
+        setSelectedIndex(index);
+    }
+
     private void displayTab(int index) {
         try {
             setSelectedIndex(index);
@@ -244,7 +250,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         TabItem panel = getTabItem(job);
         mJobMap.remove(job.getId());
         remove(panel);
-        setSelectedIndex(1);
+        displayStartTab();
     }
 
     private synchronized TabItem getTabItem(Job job) {
@@ -294,6 +300,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
+
         mMenuMouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -318,11 +325,10 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
                     if (popupMenu.isVisible()) {
                         popupMenu.setVisible(false);
                     } else {
-                        popupMenu.show(component, component.getWidth() - popupMenu.getWidth(), component.getHeight());
-
                         int x = component.getLocationOnScreen().x;
                         int y = component.getLocationOnScreen().y;
 
+                        popupMenu.show(component, x, y);
                         popupMenu.setLocation(x, y);
                     }
                 }
@@ -332,7 +338,7 @@ public class TabHolder extends JTabbedPane implements ConnectionListener, Server
         //FIXME Why is this necessary?
         setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
         setTabLayoutPolicy(WRAP_TAB_LAYOUT);
-        setSelectedIndex(1);
+        displayStartTab();
     }
 
     private void updateActionStates() {
