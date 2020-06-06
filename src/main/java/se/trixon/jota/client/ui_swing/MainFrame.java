@@ -42,7 +42,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.SystemUtils;
-import se.trixon.almond.util.AboutModel;
 import se.trixon.almond.util.AlmondAction;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondOptionsPanel;
@@ -50,6 +49,7 @@ import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.swing.AboutModel;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.HtmlPanel;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
@@ -155,12 +155,12 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         switch (serverEvent) {
             case CRON_CHANGED:
                 try {
-                    boolean cronActive = mManager.getServerCommander().isCronActive();
-                    mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
-                } catch (RemoteException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                break;
+                boolean cronActive = mManager.getServerCommander().isCronActive();
+                mActionManager.getAction(ActionManager.CRON).putValue(Action.SELECTED_KEY, cronActive);
+            } catch (RemoteException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            break;
 
             case JOTA_CHANGED:
                 loadConfiguration();

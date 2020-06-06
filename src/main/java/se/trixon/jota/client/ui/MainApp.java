@@ -47,10 +47,11 @@ import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.SystemUtils;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
-import se.trixon.almond.util.AboutModel;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.SystemHelperFx;
+import se.trixon.almond.util.fx.AboutModel;
 import se.trixon.almond.util.fx.AlmondFx;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
@@ -77,14 +78,14 @@ public class MainApp extends Application {
     private static final Logger LOGGER = Logger.getLogger(MainApp.class.getName());
     private Action mAboutAction;
     private Action mAboutRsyncAction;
-    private final AlmondFx mAlmondFX = AlmondFx.getInstance();
-    private final ResourceBundle mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
+    private final AlmondFx mAlmondFX;
+    private final ResourceBundle mBundle;
     private Action mHelpAction;
     private Action mHistoryAction;
     private LogModule mHistoryModule;
-    private final Manager mManager = Manager.getInstance();
+    private final Manager mManager;
     private Action mOptionsAction;
-    private final Preferences mPreferences = Preferences.getInstance();
+    private Preferences mPreferences;
     private PreferencesModule mPreferencesModule;
     private Stage mStage;
     private StartModule mStartModule;
@@ -102,10 +103,17 @@ public class MainApp extends Application {
     }
 
     public MainApp() {
+        this.mManager = Manager.getInstance();
+        this.mPreferences = Preferences.getInstance();
+        this.mBundle = SystemHelper.getBundle(MainApp.class, "Bundle");
+        this.mAlmondFX = AlmondFx.getInstance();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        if (true) {
+//            return;
+        }
         MaterialIcon.setDefaultColor(Color.LIGHTGRAY);
         mStage = stage;
         stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("logo.png")));
@@ -259,7 +267,7 @@ public class MainApp extends Application {
             PomInfo pomInfo = new PomInfo(MainApp.class, "se.trixon", "jotasync");
             AboutModel aboutModel = new AboutModel(
                     SystemHelper.getBundle(getClass(), "about"),
-                    SystemHelper.getResourceAsImageView(MainApp.class, "logo.png")
+                    SystemHelperFx.getResourceAsImageView(MainApp.class, "logo.png")
             );
             aboutModel.setAppVersion(pomInfo.getVersion());
             AboutPane aboutPane = new AboutPane(aboutModel);

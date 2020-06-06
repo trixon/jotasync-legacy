@@ -25,16 +25,19 @@ import javafx.scene.paint.Color;
  */
 public class Preferences {
 
-    private final PreferencesClient mPreferencesClient = new PreferencesClient();
+    private final PreferencesClient mPreferencesClient;
     private final PreferencesFx mPreferencesFx;
-    private final PreferencesGeneral mPreferencesGeneral = new PreferencesGeneral();
-    private final PreferencesServer mPreferencesServer = new PreferencesServer();
+    private final PreferencesGeneral mPreferencesGeneral;
+    private final PreferencesServer mPreferencesServer;
 
     public static Preferences getInstance() {
         return Holder.INSTANCE;
     }
 
     private Preferences() {
+        this.mPreferencesServer = new PreferencesServer();
+        this.mPreferencesGeneral = new PreferencesGeneral();
+        this.mPreferencesClient = new PreferencesClient();
         mPreferencesFx = createPreferences();
     }
 
@@ -71,18 +74,28 @@ public class Preferences {
     }
 
     private PreferencesFx createPreferences() {
-        return PreferencesFx
-                .of(Preferences.class,
-                        Category.of("",
-                                mPreferencesGeneral.getGroup(),
-                                mPreferencesClient.getGroup(),
-                                mPreferencesServer.getGroup()
-                        )
+        PreferencesFx aa = PreferencesFx.of(Preferences.class,
+                Category.of("ss",
+                        mPreferencesGeneral.getGroup(),
+                        mPreferencesClient.getGroup(),
+                        mPreferencesServer.getGroup()
                 )
-                .persistWindowState(false)
-                .saveSettings(true)
-                .debugHistoryMode(false)
-                .buttonsVisibility(true);
+        );
+        System.out.println(aa);
+
+        return aa;
+//        return PreferencesFx
+//                .of(Preferences.class,
+//                        Category.of("",
+//                                mPreferencesGeneral.getGroup(),
+//                                mPreferencesClient.getGroup(),
+//                                mPreferencesServer.getGroup()
+//                        )
+//                )
+//                .persistWindowState(false)
+//                .saveSettings(true)
+//                .debugHistoryMode(false)
+//                .buttonsVisibility(true);
     }
 
     private static class Holder {
