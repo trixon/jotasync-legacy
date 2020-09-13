@@ -9,6 +9,34 @@
     <packaging>pom</packaging>
 
     <name>jotasync-parent</name>
+    <url>https://trixon.se/projects/jotasync</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>trixon</id>
+            <name>Patrik Karlström</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <email>patrik@trixon.se</email>
+            <url>https://trixon.se</url>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/trixon/jotasync</url>
+        <connection>scm:git:git://github.com/trixon/jotasync.git</connection>
+        <developerConnection>scm:git:git@github.com:trixon/jotasync.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <repositories>
         <repository>
@@ -100,9 +128,10 @@
     </dependencyManagement>
 
     <modules>
-        <module>branding</module>
         <module>application</module>
+        <module>branding</module>
         <module>core</module>
+        <module>engine</module>
     </modules>
 
     <properties>

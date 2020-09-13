@@ -20,6 +20,7 @@ import org.openide.awt.ActionID;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 import se.trixon.almond.util.swing.SwingHelper;
+import se.trixon.jota.shared.job.Job;
 
 /**
  * Top component which displays something.
@@ -70,11 +71,6 @@ public final class JobsTopComponent extends TopComponent {
 
         setLayout(new java.awt.BorderLayout());
 
-        list.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(list);
 
         add(jScrollPane1, java.awt.BorderLayout.LINE_START);
@@ -82,7 +78,7 @@ public final class JobsTopComponent extends TopComponent {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList<String> list;
+    private javax.swing.JList<Job> list;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
