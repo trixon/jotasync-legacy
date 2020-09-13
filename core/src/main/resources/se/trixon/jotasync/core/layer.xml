@@ -54,6 +54,9 @@
     </folder>
 
     <folder name="Shortcuts">
+        <file name="DS-R.shadow">
+            <attr name="originalFile" stringvalue="Actions/File/se-trixon-almond-nbp-actions-RestartAction.instance"/>
+        </file>
         <file name="D-T.shadow">
             <attr name="originalFile" stringvalue="Actions/Tools/se-trixon-jotasync-core-actions-ScheduledSyncAction.instance"/>
         </file>
