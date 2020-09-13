@@ -15,7 +15,11 @@
  */
 package se.trixon.jotasync.core;
 
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import org.openide.modules.OnStart;
+import org.openide.util.NbPreferences;
+import se.trixon.almond.util.PrefsHelper;
 
 /**
  *
@@ -26,5 +30,16 @@ public class Initializer implements Runnable {
 
     @Override
     public void run() {
+        try {
+            final String key = "laf";
+            final String defaultLAF = "com.formdev.flatlaf.FlatDarkLaf";
+            Preferences preferences = NbPreferences.root().node("laf");
+            PrefsHelper.putIfAbsent(preferences, key, defaultLAF);
+        } catch (BackingStoreException ex) {
+            //Exceptions.printStackTrace(ex);
+        }
+
+        System.setProperty("netbeans.winsys.no_help_in_dialogs", "true");
+        System.setProperty("netbeans.winsys.no_toolbars", "true");
     }
 }
