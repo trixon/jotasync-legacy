@@ -60,5 +60,8 @@
         <file name="D-T.shadow">
             <attr name="originalFile" stringvalue="Actions/Tools/se-trixon-jotasync-core-actions-ScheduledSyncAction.instance"/>
         </file>
+        <file name="D-COMMA.shadow">
+            <attr name="originalFile" stringvalue="Actions/Window/org-netbeans-modules-options-OptionsWindowAction.instance"/>
+        </file>
     </folder>
 </filesystem>
