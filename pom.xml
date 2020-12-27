@@ -137,7 +137,7 @@
     <properties>
         <netbeans.version>RELEASE121</netbeans.version>
         <brandingToken>jotasync</brandingToken>
-        <almond.version>11.0.6-SNAPSHOT</almond.version>
+        <almond.version>11.0.7-SNAPSHOT</almond.version>
         <jotasync.version>3.0.0-SNAPSHOT</jotasync.version>
     </properties>
 </project>
