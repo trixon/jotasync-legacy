@@ -40,7 +40,7 @@ public class HistoryPanel extends javax.swing.JPanel {
 
     private final Manager mManager = Manager.getInstance();
     private final HashMap<Long, ArrayList<String>> mHistoryMap = new HashMap<>();
-    private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.getInstance();
 
     /**
      * Creates new form LogViewerPanel

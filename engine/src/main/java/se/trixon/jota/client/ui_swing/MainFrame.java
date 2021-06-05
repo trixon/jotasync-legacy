@@ -15,8 +15,6 @@
  */
 package se.trixon.jota.client.ui_swing;
 
-import com.apple.eawt.AppEvent;
-import com.apple.eawt.Application;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -41,7 +39,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.AlmondAction;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondOptionsPanel;
@@ -73,12 +70,10 @@ import se.trixon.jota.shared.task.Task;
  */
 public class MainFrame extends JFrame implements ConnectionListener, ServerEventListener {
 
-    private static final boolean IS_MAC = SystemUtils.IS_OS_MAC;
-
     private ActionManager mActionManager;
     private boolean mShutdownInProgress;
     private boolean mServerShutdownRequested;
-    private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.getInstance();
     private final Client mClient;
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainFrame.class, "Bundle");
     private final Manager mManager = Manager.getInstance();
@@ -98,10 +93,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
 
         initActions();
         init();
-
-        if (IS_MAC) {
-            initMac();
-        }
 
         initMenus();
 
@@ -382,17 +373,6 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
         });
     }
 
-    private void initMac() {
-        Application macApplication = Application.getApplication();
-        macApplication.setAboutHandler((AppEvent.AboutEvent ae) -> {
-            mActionManager.getAction(ActionManager.ABOUT).actionPerformed(null);
-        });
-
-        macApplication.setPreferencesHandler((AppEvent.PreferencesEvent pe) -> {
-            mActionManager.getAction(ActionManager.OPTIONS).actionPerformed(null);
-        });
-    }
-
     private void initMenus() {
         if (mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BUTTON) {
             sPopupMenu.add(connectMenuItem);
@@ -401,32 +381,18 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
             sPopupMenu.add(new JSeparator());
             sPopupMenu.add(cronCheckBoxMenuItem);
             sPopupMenu.add(jobEditorMenuItem);
-            if (!IS_MAC) {
-                sPopupMenu.add(optionsMenuItem);
-            }
+            sPopupMenu.add(optionsMenuItem);
             sPopupMenu.add(new JSeparator());
             sPopupMenu.add(helpMenuItem);
             sPopupMenu.add(aboutRsyncMenuItem);
-            if (!IS_MAC) {
-                sPopupMenu.add(aboutMenuItem);
-            }
+            sPopupMenu.add(aboutMenuItem);
             sPopupMenu.add(new JSeparator());
             sPopupMenu.add(saveMenuItem);
 
-            if (!IS_MAC) {
-                sPopupMenu.add(quitMenuItem);
-            }
+            sPopupMenu.add(quitMenuItem);
 
         } else {
             setJMenuBar(menuBar);
-            if (IS_MAC) {
-                fileMenu.remove(quitMenuItem);
-                toolsMenu.remove(optionsMenuItem);
-                helpMenu.remove(aboutMenuItem);
-            }
-
-            fileMenu.setVisible(fileMenu.getComponents().length > 0 || !IS_MAC);
-            toolsMenu.setVisible(toolsMenu.getComponents().length > 0 || !IS_MAC);
         }
 
         SwingHelper.clearToolTipText(menuBar);

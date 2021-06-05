@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2020 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,17 +20,17 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.NbPreferences;
+import se.trixon.almond.util.OptionsBase;
 
 /**
  *
  * @author Patrik Karlström
  */
-enum ServerOptions {
+class ServerOptions extends OptionsBase {
 
-    INSTANCE;
     public static final boolean DEFAULT_CRON_ACTIVE = false;
     public static final String DEFAULT_LOG_DIR = new File(FileUtils.getUserDirectory(), ".config/jotasync/log").getAbsolutePath();
     public static final String DEFAULT_RSYNC_PATH = "rsync";
@@ -39,11 +39,14 @@ enum ServerOptions {
     public static final String KEY_RSYNC_PATH = "rsync";
     public static final String KEY_SELECTED_JOB = "job";
     public static final String KEY_SPEED_DIAL = "speedDial_";
-    private final Preferences mPreferences;
     private HashMap<Integer, Long> mSpeedDials;
 
+    public static ServerOptions getInstance() {
+        return Holder.INSTANCE;
+    }
+
     private ServerOptions() {
-        mPreferences = Preferences.userNodeForPackage(this.getClass());
+        setPreferences(NbPreferences.forModule(ServerOptions.class));
         try {
             mSpeedDials = getSpeedDials();
         } catch (BackingStoreException ex) {
@@ -63,10 +66,6 @@ enum ServerOptions {
         }
 
         return dir;
-    }
-
-    Preferences getPreferences() {
-        return mPreferences;
     }
 
     String getRsyncPath() {
@@ -130,5 +129,10 @@ enum ServerOptions {
             //System.out.println("put speedDial: " + key + " " + speedDials.get(key));
             mPreferences.putLong(KEY_SPEED_DIAL + String.valueOf(key), speedDials.get(key));
         });
+    }
+
+    private static class Holder {
+
+        private static final ServerOptions INSTANCE = new ServerOptions();
     }
 }

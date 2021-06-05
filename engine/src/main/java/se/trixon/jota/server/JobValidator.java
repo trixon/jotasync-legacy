@@ -36,7 +36,7 @@ public class JobValidator implements Serializable {
     private final StringBuilder mHtmlBuilder;
     private boolean mInvalid = false;
     private final Job mJob;
-    private final ServerOptions mOptions = ServerOptions.INSTANCE;
+    private final ServerOptions mOptions = ServerOptions.getInstance();
     private boolean mRsync;
     private final StringBuilder mStringBuilder;
 

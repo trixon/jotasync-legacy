@@ -62,7 +62,7 @@ class Server extends UnicastRemoteObject implements ServerCommander {
     private final JobManager mJobManager = JobManager.INSTANCE;
     private final ResourceBundle mJotaBundle = Jota.getBundle();
     private final JotaManager mJotaManager = JotaManager.getInstance();
-    private final ServerOptions mOptions = ServerOptions.INSTANCE;
+    private final ServerOptions mOptions = ServerOptions.getInstance();
     private int mPort = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameServer;
     private Scheduler mScheduler = new Scheduler();

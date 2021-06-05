@@ -113,7 +113,7 @@ public class SpeedDialButton extends JButton {
     }
 
     void updateColor() {
-        if (mJob == null || !ClientOptions.INSTANCE.isCustomColors()) {
+        if (mJob == null || !ClientOptions.getInstance().isCustomColors()) {
             setBackground(null);
             setForeground(null);
         } else {
