@@ -46,10 +46,11 @@ import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.SystemUtils;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
-import se.trixon.almond.util.AboutModel;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.PomInfo;
 import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.SystemHelperFx;
+import se.trixon.almond.util.fx.AboutModel;
 import se.trixon.almond.util.fx.AlmondFx;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
@@ -247,7 +248,7 @@ public class MainApp extends Application {
             PomInfo pomInfo = new PomInfo(MainApp.class, "se.trixon", "jotasync");
             AboutModel aboutModel = new AboutModel(
                     SystemHelper.getBundle(getClass(), "about"),
-                    SystemHelper.getResourceAsImageView(MainApp.class, "logo.png")
+                    SystemHelperFx.getResourceAsImageView(MainApp.class, "logo.png")
             );
             aboutModel.setAppVersion(pomInfo.getVersion());
             AboutPane aboutPane = new AboutPane(aboutModel);
