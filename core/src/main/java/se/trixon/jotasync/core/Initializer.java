@@ -17,15 +17,18 @@ package se.trixon.jotasync.core;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import org.openide.modules.OnStart;
 import org.openide.util.NbPreferences;
+import org.openide.windows.OnShowing;
+import se.trixon.almond.nbp.NbLog;
 import se.trixon.almond.util.PrefsHelper;
+import se.trixon.almond.util.SystemHelper;
+import se.trixon.jotasync.core.api.Jota;
 
 /**
  *
  * @author Patrik Karlström
  */
-@OnStart
+@OnShowing
 public class Initializer implements Runnable {
 
     @Override
@@ -41,5 +44,16 @@ public class Initializer implements Runnable {
 
         System.setProperty("netbeans.winsys.no_help_in_dialogs", "true");
         System.setProperty("netbeans.winsys.no_toolbars", "true");
+
+        Jota.getLog().setUseTimestamps(false);
+        NbLog.setUseGlobalTag(false);
+        Jota.getLog().setOut(string -> {
+            NbLog.i("", string);
+        });
+        Jota.getLog().setErr(string -> {
+            NbLog.e("", string);
+        });
+        Jota.log(SystemHelper.getSystemInfo());
+
     }
 }
