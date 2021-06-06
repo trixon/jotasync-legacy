@@ -78,7 +78,7 @@ public class MainFrame extends JFrame implements ConnectionListener, ServerEvent
     private ActionManager mActionManager;
     private boolean mShutdownInProgress;
     private boolean mServerShutdownRequested;
-    private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.getInstance();
     private final Client mClient;
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainFrame.class, "Bundle");
     private final Manager mManager = Manager.getInstance();

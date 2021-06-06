@@ -66,7 +66,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
     private final JPopupMenu mPopupMenu = new JPopupMenu(Dict.JOB.toString());
     private SpeedDialButton mButton;
     private final HashSet<SpeedDialListener> mSpeedDialListeners = new HashSet<>();
-    private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.getInstance();
     private final Manager mManager = Manager.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainFrame.class, "Bundle");
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
@@ -354,7 +354,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
         mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
         addSpeedDialListener(this);
-        ClientOptions.INSTANCE.getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
+        ClientOptions.getInstance().getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {
             String key = evt.getKey();
             if (key.equalsIgnoreCase(ClientOptions.KEY_CUSTOM_COLORS)) {
                 if (mManager.isConnected() && mManager.hasJobs()) {

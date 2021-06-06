@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2021 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +16,15 @@
 package se.trixon.jota.client;
 
 import java.util.prefs.Preferences;
+import se.trixon.almond.util.OptionsBase;
 import se.trixon.jota.shared.Jota;
 
 /**
  *
  * @author Patrik Karlström
  */
-public enum ClientOptions {
+public class ClientOptions extends OptionsBase {
 
-    INSTANCE;
     public static final boolean DEFAULT_CUSTOM_COLORS = false;
     public static final String KEY_AUTOSTART_SERVER = "autostartServer";
     public static final String KEY_AUTOSTART_SERVER_CONNECT_DELAY = "autostartServerConnectDelay";
@@ -44,10 +44,12 @@ public enum ClientOptions {
     private static final boolean DEFAULT_SPLIT_ERRORS = true;
     private static final boolean DEFAULT_WORD_WRAP = false;
 
-    private final Preferences mPreferences;
+    public static ClientOptions getInstance() {
+        return Holder.INSTANCE;
+    }
 
     private ClientOptions() {
-        mPreferences = Preferences.userNodeForPackage(this.getClass());
+        setPreferences(Preferences.userNodeForPackage(this.getClass()));
     }
 
     public int getAutostartServerConnectDelay() {
@@ -60,10 +62,6 @@ public enum ClientOptions {
 
     public String getHosts() {
         return mPreferences.get(KEY_HOSTS, DEFAULT_HOSTS);
-    }
-
-    public Preferences getPreferences() {
-        return mPreferences;
     }
 
     public boolean isAutostartServer() {
@@ -124,5 +122,10 @@ public enum ClientOptions {
 
     public void setWordWrap(boolean value) {
         mPreferences.putBoolean(KEY_WORD_WRAP, value);
+    }
+
+    private static class Holder {
+
+        private static final ClientOptions INSTANCE = new ClientOptions();
     }
 }

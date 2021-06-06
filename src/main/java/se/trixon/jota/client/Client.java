@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2021 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -74,7 +74,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     private final ResourceBundle mJotaBundle = Jota.getBundle();
     private MainFrame mMainFrame = null;
     private final Manager mManager = Manager.getInstance();
-    private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.getInstance();
     private int mPortClient = Jota.DEFAULT_PORT_CLIENT;
     private int mPortHost = Jota.DEFAULT_PORT_HOST;
     private String mRmiNameClient;
@@ -281,8 +281,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             command.add(String.valueOf(mOptions.getAutostartServerPort()));
 
             Xlog.timedOut(StringUtils.join(command, " "));
-            ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
-            processBuilder.start();
+            new ProcessBuilder(command).inheritIO().start();
 
             try {
                 Thread.sleep(mOptions.getAutostartServerConnectDelay());

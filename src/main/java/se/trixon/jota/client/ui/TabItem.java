@@ -59,7 +59,7 @@ public class TabItem extends JPanel implements TabListener {
     private long mTimeFinished;
     private Progress mProgress;
     private final AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
-    private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.getInstance();
 
     /**
      * Creates new form TabItem

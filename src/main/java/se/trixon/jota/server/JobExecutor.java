@@ -56,7 +56,7 @@ class JobExecutor extends Thread {
     private final JotaManager mJotaManager = JotaManager.getInstance();
     private long mLastRun;
     private int mNumOfFailedTasks;
-    private ServerOptions mOptions = ServerOptions.INSTANCE;
+    private ServerOptions mOptions = ServerOptions.getInstance();
     private final StringBuffer mOutBuffer;
     private final Server mServer;
     private final ResourceBundle mTaskExecBundle;
@@ -368,7 +368,7 @@ class JobExecutor extends Thread {
     }
 
     private void writelogs() {
-        File directory = new File(ServerOptions.INSTANCE.getLogDir());
+        File directory = new File(ServerOptions.getInstance().getLogDir());
         String jobName = FileHelper.replaceInvalidChars(mJob.getName());
         String outFile = String.format("%s.log", jobName);
         String errFile = String.format("%s.err", jobName);

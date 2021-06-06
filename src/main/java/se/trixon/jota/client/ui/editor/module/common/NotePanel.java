@@ -29,7 +29,7 @@ import se.trixon.jota.client.ui.editor.module.Module;
 public abstract class NotePanel extends Module {
 
     private PopupListener mPopupListener;
-    protected final ClientOptions mOptions = ClientOptions.INSTANCE;
+    protected final ClientOptions mOptions = ClientOptions.getInstance();
 
     /**
      * Creates new form ModulePanel

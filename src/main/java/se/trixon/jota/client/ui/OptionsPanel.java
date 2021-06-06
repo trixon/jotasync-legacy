@@ -35,7 +35,7 @@ public class OptionsPanel extends javax.swing.JPanel {
 
     private final Manager mManager = Manager.getInstance();
     private final ServerCommander mServerCommander;
-    private final ClientOptions mOptions = ClientOptions.INSTANCE;
+    private final ClientOptions mOptions = ClientOptions.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(MainFrame.class, "Bundle");
 
     /**
