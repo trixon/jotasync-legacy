@@ -121,7 +121,7 @@ public class TaskExecutePanel extends TaskModule implements FileChooserPanel.Fil
     }
 
     private void init() {
-        mTitle = Dict.RUN.getString();
+        mTitle = Dict.RUN.toString();
 
         beforePanel.setButtonListener(this);
         afterFailurePanel.setButtonListener(this);

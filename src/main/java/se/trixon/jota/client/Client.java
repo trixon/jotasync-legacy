@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2018 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.AlmondUI;
-import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
@@ -314,7 +313,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         }
         SystemHelper.setMacApplicationName("JotaSync");
 
-        mAlmondUI.installDarcula();
         mAlmondUI.initLookAndFeel();
 
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {

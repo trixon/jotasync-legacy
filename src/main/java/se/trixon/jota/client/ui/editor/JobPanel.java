@@ -109,7 +109,7 @@ public class JobPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        nameLabel.setText(Dict.NAME.getString());
+        nameLabel.setText(Dict.NAME.toString());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -127,7 +127,7 @@ public class JobPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 4);
         add(nameTextField, gridBagConstraints);
 
-        descriptionLabel.setText(Dict.DESCRIPTION.getString());
+        descriptionLabel.setText(Dict.DESCRIPTION.toString());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;

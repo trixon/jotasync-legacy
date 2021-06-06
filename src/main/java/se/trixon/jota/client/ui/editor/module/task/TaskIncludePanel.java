@@ -42,7 +42,7 @@ public class TaskIncludePanel extends TaskModule {
     }
 
     private void init() {
-        mTitle = Dict.INCLUDE.getString();
+        mTitle = Dict.INCLUDE.toString();
     }
 
     /**

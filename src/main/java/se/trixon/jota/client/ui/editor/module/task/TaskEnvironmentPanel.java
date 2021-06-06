@@ -45,7 +45,7 @@ public class TaskEnvironmentPanel extends TaskModule {
     }
 
     private void init() {
-        mTitle = Dict.ENVIRONMENT.getString();
+        mTitle = Dict.ENVIRONMENT.toString();
     }
 
     /**

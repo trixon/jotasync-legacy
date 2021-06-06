@@ -28,7 +28,7 @@ import se.trixon.almond.util.AlmondAction;
 import se.trixon.almond.util.AlmondActionManager;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
-import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.almond.util.icons.material.swing.MaterialIcon;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 
 /**
