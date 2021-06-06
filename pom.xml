@@ -70,8 +70,6 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <netbeans.hint.license>apache20</netbeans.hint.license>
         <copyright>(c) 2021 Patrik Karlström</copyright>
         <exeVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</exeVersion>
@@ -116,6 +114,7 @@
                                         <include>se/trixon/almond/util/*</include>
                                         <include>se/trixon/almond/util/swing/**</include>
                                         <include>se/trixon/almond/util/icons/*</include>
+                                        <include>se/trixon/almond/util/icons/material/swing/*</include>
                                         <include>se/trixon/almond/util/icons/material/*</include>
                                         <include>se/trixon/almond/util/icons/material/_action/*.png</include>
                                         <include>se/trixon/almond/util/icons/material/_alert/*.png</include>
@@ -151,8 +150,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>15</source>
+                    <target>15</target>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
