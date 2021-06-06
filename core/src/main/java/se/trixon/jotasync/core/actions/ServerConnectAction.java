@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2020 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +38,7 @@ import org.openide.util.NbBundle.Messages;
 public final class ServerConnectAction implements ActionListener {
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO implement action body
+    public void actionPerformed(ActionEvent actionEvent) {
+//        Manager.getInstance().getClient().
     }
 }

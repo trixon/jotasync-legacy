@@ -22,6 +22,8 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import se.trixon.jota.client.Client;
+import se.trixon.jota.client.Manager;
 
 @ActionID(
         category = "File",
@@ -38,7 +40,7 @@ import org.openide.util.NbBundle.Messages;
 public final class ServerShutdownAction implements ActionListener {
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO implement action body
+    public void actionPerformed(ActionEvent actionEvent) {
+        Manager.getInstance().getClient().execute(Client.Command.SHUTDOWN);
     }
 }

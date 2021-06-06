@@ -15,10 +15,12 @@
  */
 package se.trixon.jotasync.core;
 
+import java.rmi.RemoteException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import org.openide.modules.OnStart;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
-import org.openide.windows.OnShowing;
 import se.trixon.almond.nbp.NbLog;
 import se.trixon.almond.util.PrefsHelper;
 import se.trixon.almond.util.SystemHelper;
@@ -28,7 +30,7 @@ import se.trixon.jotasync.core.api.Jota;
  *
  * @author Patrik Karlström
  */
-@OnShowing
+@OnStart
 public class Initializer implements Runnable {
 
     @Override
@@ -55,5 +57,10 @@ public class Initializer implements Runnable {
         });
         Jota.log(SystemHelper.getSystemInfo());
 
+        try {
+            se.trixon.jota.client.Main.main(null);
+        } catch (RemoteException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 }

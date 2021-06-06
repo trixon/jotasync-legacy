@@ -15,8 +15,6 @@
  */
 package se.trixon.jota.client;
 
-import java.awt.Color;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -34,17 +32,14 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
-import javax.swing.JButton;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.AlmondOptions;
 import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.GraphicsHelper;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
-import se.trixon.almond.util.icons.material.swing.MaterialIcon;
 import se.trixon.jota.client.ui_swing.MainFrame;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
@@ -182,7 +177,8 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             stopJob(getJobByName(cmd.getOptionValue(Main.OPT_STOP)));
             Jota.exit();
         } else {
-            displayGui();
+//            displayGui();
+            System.out.println("Used to displayGUI here");
         }
     }
 
@@ -324,18 +320,8 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         mServerCommander.registerClient(this, SystemHelper.getHostname());
     }
 
+    @Deprecated
     private void displayGui() {
-        if (GraphicsEnvironment.isHeadless()) {
-            Xlog.timedErr("Can't open gui when in headless mode.");
-            Jota.exit(1);
-
-            return;
-        }
-        SystemHelper.setMacApplicationName("JotaSync");
-        mAlmondUI.installFlatLaf();
-        mAlmondOptions.setDefaultLookAndFeel("FlatLaf Dark");
-        mAlmondUI.initLookAndFeel();
-
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {
             try {
                 if (serverStart()) {
@@ -347,7 +333,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-        MaterialIcon.setDefaultColor(GraphicsHelper.getBrightness(new JButton().getBackground()) < 128 ? Color.WHITE : Color.BLACK);
+//            MaterialIcon.setDefaultColor(GraphicsHelper.getBrightness(new JButton().getBackground()) < 128 ? Color.WHITE : Color.BLACK);
             mMainFrame = new MainFrame();
             addServerEventListener(mMainFrame);
             mMainFrame.addWindowListener(new WindowAdapter() {
