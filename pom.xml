@@ -62,7 +62,7 @@
                 <plugin>
                     <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>4.6</version>
+                    <version>4.7</version>
                     <extensions>true</extensions>
                     <configuration>
                         <brandingToken>${brandingToken}</brandingToken>
@@ -144,9 +144,15 @@
         <module>core</module>
         <module>engine</module>
     </modules>
+   <pluginRepositories>
+        <pluginRepository>
+            <id>netbeans-next</id>
+            <url>https://repository.apache.org/content/repositories/orgapachenetbeans-1096/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <properties>
-        <netbeans.version>RELEASE124</netbeans.version>
+        <netbeans.version>RELEASE126</netbeans.version>
         <brandingToken>jotasync</brandingToken>
         <almond.version>11.0.8-SNAPSHOT</almond.version>
         <jotasync.version>3.0.0-SNAPSHOT</jotasync.version>
