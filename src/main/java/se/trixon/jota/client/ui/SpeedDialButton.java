@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2021 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.ui.editor.JobsPanel;
 import se.trixon.jota.shared.job.Job;
@@ -102,7 +101,6 @@ public class SpeedDialButton extends JButton {
         }
 
         updateText();
-        updateColor();
         setEnabled(mJob != null);
     }
 
@@ -110,26 +108,6 @@ public class SpeedDialButton extends JButton {
         setMinimumSize(new Dimension(210, 128));
         setPreferredSize(new Dimension(210, 128));
         setFont(getFont().deriveFont(getFont().getStyle() & ~java.awt.Font.BOLD));
-    }
-
-    void updateColor() {
-        if (mJob == null || !ClientOptions.getInstance().isCustomColors()) {
-            setBackground(null);
-            setForeground(null);
-        } else {
-            try {
-                Job job = mManager.getServerCommander().getJob(mJobId);
-                //if (StringUtils.isNotBlank(job.getColorBackground())) {
-                //    setBackground(Color.decode(job.getColorBackground()));
-                //}
-                if (job.getColorForeground() != null) {
-                    setForeground(job.getColorForeground());
-                }
-            } catch (RemoteException | NumberFormatException ex) {
-                setBackground(null);
-                setForeground(null);
-            }
-        }
     }
 
     void updateText() {
