@@ -16,7 +16,6 @@
 package se.trixon.jota.shared.job;
 
 import com.google.gson.annotations.SerializedName;
-import java.awt.Color;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,10 +38,6 @@ public class Job implements Comparable<Job>, Serializable {
 
     public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
-    @SerializedName("color_background")
-    private Color mColorBackground;
-    @SerializedName("color_foreground")
-    private Color mColorForeground;
     @SerializedName("cron_active")
     private boolean mCronActive;
     @SerializedName("cron_items")
@@ -109,14 +104,6 @@ public class Job implements Comparable<Job>, Serializable {
         }
 
         return caption;
-    }
-
-    public Color getColorBackground() {
-        return mColorBackground;
-    }
-
-    public Color getColorForeground() {
-        return mColorForeground;
     }
 
     public String getCronItems() {
@@ -240,14 +227,6 @@ public class Job implements Comparable<Job>, Serializable {
 
     public boolean isValid() {
         return !getName().isEmpty();
-    }
-
-    public void setColorBackground(Color color) {
-        mColorBackground = color;
-    }
-
-    public void setColorForeground(Color color) {
-        mColorForeground = color;
     }
 
     public void setCronActive(boolean cronActive) {

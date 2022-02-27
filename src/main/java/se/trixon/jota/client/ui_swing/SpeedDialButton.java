@@ -122,9 +122,6 @@ public class SpeedDialButton extends JButton {
                 //if (StringUtils.isNotBlank(job.getColorBackground())) {
                 //    setBackground(Color.decode(job.getColorBackground()));
                 //}
-                if (job.getColorForeground() != null) {
-                    setForeground(job.getColorForeground());
-                }
             } catch (RemoteException | NumberFormatException ex) {
                 setBackground(null);
                 setForeground(null);
