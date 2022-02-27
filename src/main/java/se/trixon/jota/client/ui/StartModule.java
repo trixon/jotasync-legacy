@@ -27,14 +27,12 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -42,7 +40,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -51,11 +48,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -183,7 +178,7 @@ public class StartModule extends BaseModule {
 
     private void displayEditor(long jobId) {
         boolean openJob = jobId != -1;
-        EditorPanel editorPanel = new EditorPanel(jobId, openJob);
+        var editorPanel = new EditorPanel(jobId, openJob);
         SwingHelper.makeWindowResizable(editorPanel);
 
         int retval = JOptionPane.showOptionDialog(null,
@@ -255,18 +250,18 @@ public class StartModule extends BaseModule {
     private void initActions() {
         // CONNECTION
         //Connect
-        mClientConnectAction = new Action(Dict.CONNECT_TO_SERVER.toString(), (ActionEvent event) -> {
+        mClientConnectAction = new Action(Dict.CONNECT_TO_SERVER.toString(), actionEvent -> {
             requestConnect();
         });
 
         //Disconnect
-        mClientDisconnectAction = new Action(Dict.DISCONNECT.toString(), (ActionEvent event) -> {
+        mClientDisconnectAction = new Action(Dict.DISCONNECT.toString(), actionEvent -> {
             mManager.disconnect();
         });
 //        mClientDisconnectAction.setDisabled(mManager.isConnected());
 
         //Server Start
-        mServerStartAction = new Action(Dict.START.toString(), (ActionEvent event) -> {
+        mServerStartAction = new Action(Dict.START.toString(), actionEvent -> {
             try {
                 if (mClient.serverStart()) {
                     mManager.connect(SystemHelper.getHostname(), mOptions.getAutostartServerPort());
@@ -277,18 +272,18 @@ public class StartModule extends BaseModule {
         });
 
         //Server Stop
-        mServerShutdownAction = new Action(Dict.SHUTDOWN.toString(), (ActionEvent event) -> {
+        mServerShutdownAction = new Action(Dict.SHUTDOWN.toString(), actionEvent -> {
             serverShutdown();
         });
 
         //Server Stop and Quit
-        mServerShutdownQuitAction = new Action(Dict.SHUTDOWN_AND_QUIT.toString(), (ActionEvent event) -> {
+        mServerShutdownQuitAction = new Action(Dict.SHUTDOWN_AND_QUIT.toString(), actionEvent -> {
             serverShutdown();
             quit();
         });
 
         //editor
-        mEditorAction = new Action(mBundle.getString("jobEditor"), (ActionEvent event) -> {
+        mEditorAction = new Action(mBundle.getString("jobEditor"), actionEvent -> {
             displayEditor(-1);
         });
         mEditorAction.setGraphic(MaterialIcon._Editor.MODE_EDIT.getImageView(ICON_SIZE_DRAWER));
@@ -302,29 +297,19 @@ public class StartModule extends BaseModule {
     }
 
     private void initListeners() {
-        mListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener.Change<? extends Job> c) -> {
-            Job job = mListView.getSelectionModel().getSelectedItem();
-            if (job != null) {
-                mWebView.getEngine().loadContent(job.getSummaryAsHtml());
-            } else {
-                mWebView.getEngine().loadContent("");
-            }
-        });
-
         mClient.addServerEventListener(new ServerEventAdapter() {
 
             @Override
             public void onServerEvent(ServerEvent serverEvent) {
                 Platform.runLater(() -> {
                     switch (serverEvent) {
-                        case JOTA_CHANGED:
+                        case JOTA_CHANGED ->
                             loadConfiguration();
-                            break;
 
-                        case SHUTDOWN:
+                        case SHUTDOWN -> {
                             mShutdownInProgress = true;
                             mManager.disconnect();
-                            break;
+                        }
                     }
                 });
             }
@@ -332,7 +317,7 @@ public class StartModule extends BaseModule {
     }
 
     private void initToolbar() {
-        Menu serverMenuItem = new Menu(Dict.SERVER.toString());
+        var serverMenuItem = new Menu(Dict.SERVER.toString());
         serverMenuItem.getItems().setAll(
                 ActionUtils.createMenuItem(mServerStartAction),
                 ActionUtils.createMenuItem(mServerShutdownAction),
@@ -348,7 +333,7 @@ public class StartModule extends BaseModule {
                 )
         );
 
-        ToolbarItem editorToolbarItem = new ToolbarItem(mEditorAction.getText(), mEditorAction.getGraphic(),
+        var editorToolbarItem = new ToolbarItem(mEditorAction.getText(), mEditorAction.getGraphic(),
                 event -> {
                     displayEditor(-1);
                 }
@@ -373,7 +358,7 @@ public class StartModule extends BaseModule {
 
         try {
             mPreferences.server().scheduledSyncProperty().set(mManager.getServerCommander().isCronActive());
-            LinkedList<Job> jobs = mManager.getServerCommander().getJobs();
+            var jobs = mManager.getServerCommander().getJobs();
             mListView.getItems().setAll(jobs);
         } catch (RemoteException ex) {
             System.err.println("mManager: " + mManager);
@@ -388,11 +373,11 @@ public class StartModule extends BaseModule {
     private void requestConnect() {
         String[] hosts = mOptions.getHosts().split(";");
         Arrays.sort(hosts);
-        Label hostLabel = new Label(Dict.HOST.toString());
-        ComboBox<String> hostComboBox = new ComboBox<>(FXCollections.observableArrayList(hosts));
+        var hostLabel = new Label(Dict.HOST.toString());
+        var hostComboBox = new ComboBox<>(FXCollections.observableArrayList(hosts));
         hostComboBox.setEditable(true);
         hostComboBox.setPrefWidth(Integer.MAX_VALUE);
-        Label portLabel = new Label(Dict.PORT.toString());
+        var portLabel = new Label(Dict.PORT.toString());
         Spinner<Integer> portSpinner = new Spinner(1024, 65535, 1099, 1);
         portSpinner.setEditable(true);
         portSpinner.setPrefWidth(Integer.MAX_VALUE);
@@ -401,7 +386,7 @@ public class StartModule extends BaseModule {
         hostComboBox.getSelectionModel().select(mClient.getHost());
         portSpinner.getValueFactory().setValue(mClient.getPortHost());
 
-        VBox box = new VBox(
+        var box = new VBox(
                 hostLabel,
                 hostComboBox,
                 portLabel,
@@ -410,10 +395,10 @@ public class StartModule extends BaseModule {
 
         box.setPrefWidth(300);
 
-        ButtonType connectButtonType = new ButtonType(Dict.CONNECT.toString(), ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButtonType = new ButtonType(Dict.CANCEL.toString(), ButtonBar.ButtonData.CANCEL_CLOSE);
+        var connectButtonType = new ButtonType(Dict.CONNECT.toString(), ButtonBar.ButtonData.OK_DONE);
+        var cancelButtonType = new ButtonType(Dict.CANCEL.toString(), ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        WorkbenchDialog dialog = WorkbenchDialog.builder(Dict.CONNECT_TO_HOST.toString(), box, connectButtonType, cancelButtonType).onResult(buttonType -> {
+        var workbenchDialog = WorkbenchDialog.builder(Dict.CONNECT_TO_HOST.toString(), box, connectButtonType, cancelButtonType).onResult(buttonType -> {
             if (buttonType == connectButtonType) {
                 String currentHost = mClient.getHost();
                 int currentPort = mClient.getPortHost();
@@ -438,7 +423,8 @@ public class StartModule extends BaseModule {
                 }
             }
         }).build();
-        getWorkbench().showDialog(dialog);
+
+        getWorkbench().showDialog(workbenchDialog);
     }
 
     private void serverShutdown() {
@@ -522,17 +508,17 @@ public class StartModule extends BaseModule {
             mDescLabel.setFont(Font.font(fontFamily, FontWeight.NORMAL, fontSize * 1.1));
             mLastLabel.setFont(Font.font(fontFamily, FontWeight.NORMAL, fontSize * 1.1));
 
-            mRunAction = new Action(Dict.RUN.toString(), (ActionEvent event) -> {
+            mRunAction = new Action(Dict.RUN.toString(), actionEvent -> {
                 mJobController.run(getSelectedJob());
                 mListView.requestFocus();
             });
 
-            mEditAction = new Action(Dict.EDIT.toString(), (ActionEvent event) -> {
+            mEditAction = new Action(Dict.EDIT.toString(), actionEvent -> {
                 displayEditor(getSelectedJob().getId());
                 mListView.requestFocus();
             });
 
-            VBox mainBox = new VBox(mNameLabel, mDescLabel, mLastLabel);
+            var mainBox = new VBox(mNameLabel, mDescLabel, mLastLabel);
             mainBox.setAlignment(Pos.CENTER_LEFT);
 
             Collection<? extends Action> actions = Arrays.asList(
@@ -543,16 +529,13 @@ public class StartModule extends BaseModule {
             mPreferences.general().nightModeProperty().addListener((observable, oldValue, newValue) -> {
                 setNightMode(newValue);
             });
-            ToolBar toolBar = ActionUtils.createToolBar(actions, ActionUtils.ActionTextBehavior.HIDE);
+
+            var toolBar = ActionUtils.createToolBar(actions, ActionUtils.ActionTextBehavior.HIDE);
             toolBar.setBackground(Background.EMPTY);
             toolBar.setVisible(false);
             toolBar.setStyle("-fx-spacing: 0px;");
             FxHelper.adjustButtonWidth(toolBar.getItems().stream(), ICON_SIZE_PROFILE * 1.8);
-
-            toolBar.getItems().stream().filter((item) -> (item instanceof ButtonBase))
-                    .map((item) -> (ButtonBase) item).forEachOrdered((buttonBase) -> {
-                FxHelper.undecorateButton(buttonBase);
-            });
+            FxHelper.undecorateButtons(toolBar.getItems().stream());
 
             BorderPane.setAlignment(toolBar, Pos.CENTER);
 
@@ -562,7 +545,7 @@ public class StartModule extends BaseModule {
             mFadeInTransition.setNode(toolBar);
             mFadeOutTransition.setNode(toolBar);
 
-            mBorderPane.setOnMouseEntered((MouseEvent event) -> {
+            mBorderPane.setOnMouseEntered(mouseEvent -> {
                 if (!toolBar.isVisible()) {
                     toolBar.setVisible(true);
                 }
@@ -571,7 +554,7 @@ public class StartModule extends BaseModule {
                 mFadeInTransition.playFromStart();
             });
 
-            mBorderPane.setOnMouseExited((MouseEvent event) -> {
+            mBorderPane.setOnMouseExited(mouseEvent -> {
                 mFadeOutTransition.playFromStart();
             });
         }
@@ -583,6 +566,13 @@ public class StartModule extends BaseModule {
         private void selectListItem() {
             mListView.getSelectionModel().select(this.getIndex());
             mListView.requestFocus();
+
+            var job = getSelectedJob();
+            if (job != null) {
+                mWebView.getEngine().loadContent(job.getSummaryAsHtml());
+            } else {
+                mWebView.getEngine().loadContent("");
+            }
         }
 
         private void setNightMode(boolean state) {
