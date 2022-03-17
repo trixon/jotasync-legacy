@@ -28,13 +28,14 @@ import org.apache.commons.lang3.StringUtils;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.jota.client.ui_swing.editor.module.job.JobExecutePanel;
+import se.trixon.jota.shared.JotaBase;
 import se.trixon.jota.shared.task.Task;
 
 /**
  *
  * @author Patrik Karlström
  */
-public class Job implements Comparable<Job>, Serializable {
+public class Job extends JotaBase implements Comparable<Job>, Serializable {
 
     public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
@@ -65,7 +66,6 @@ public class Job implements Comparable<Job>, Serializable {
     private String mName = "";
     @SerializedName("note")
     private String mNote = "";
-    private transient StringBuilder mSummaryBuilder;
     @SerializedName("tasks")
     private ArrayList<Long> mTaskIds = new ArrayList<>();
     private List<Task> mTasks = new LinkedList<>();
@@ -304,12 +304,6 @@ public class Job implements Comparable<Job>, Serializable {
             String description = StringUtils.isBlank(mDescription) ? "&nbsp;" : mDescription;
 
             return String.format("<html><b>%s</b><br /><i>%s</i></html>", mName, description);
-        }
-    }
-
-    private void addOptionalToSummary(boolean active, String command, String header) {
-        if (active) {
-            mSummaryBuilder.append(String.format("<p><b>%s</b><br /><i>%s</i></p>", header, command));
         }
     }
 

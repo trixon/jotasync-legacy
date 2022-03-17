@@ -25,12 +25,13 @@ import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.jota.client.ui_swing.editor.module.task.TaskExecutePanel;
+import se.trixon.jota.shared.JotaBase;
 
 /**
  *
  * @author Patrik Karlström
  */
-public class Task implements Comparable<Task>, Serializable {
+public class Task extends JotaBase implements Comparable<Task>, Serializable {
 
     private final List<String> mCommand = new ArrayList<>();
     @SerializedName("description")
@@ -56,7 +57,6 @@ public class Task implements Comparable<Task>, Serializable {
     private final OptionSection mOptionSection;
     @SerializedName("source")
     private String mSource;
-    private transient StringBuilder mSummaryBuilder;
 
     public Task() {
         mExecuteSection = new TaskExecuteSection();
@@ -240,12 +240,6 @@ public class Task implements Comparable<Task>, Serializable {
     private void add(String command) {
         if (!mCommand.contains(command)) {
             mCommand.add(command);
-        }
-    }
-
-    private void addOptionalToSummary(boolean active, String command, String header) {
-        if (active) {
-            mSummaryBuilder.append(String.format("<p><b>%s</b><br /><i>%s</i></p>", header, command));
         }
     }
 }

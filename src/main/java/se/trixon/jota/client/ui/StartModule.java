@@ -15,6 +15,14 @@
  */
 package se.trixon.jota.client.ui;
 
+import com.dlsc.gemsfx.richtextarea.RTDocument;
+import com.dlsc.gemsfx.richtextarea.RTHeading;
+import com.dlsc.gemsfx.richtextarea.RTLink;
+import com.dlsc.gemsfx.richtextarea.RTList;
+import com.dlsc.gemsfx.richtextarea.RTListItem;
+import com.dlsc.gemsfx.richtextarea.RTParagraph;
+import com.dlsc.gemsfx.richtextarea.RTText;
+import com.dlsc.gemsfx.richtextarea.RichTextArea;
 import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import java.io.IOException;
@@ -56,7 +64,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.web.WebView;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javax.swing.JOptionPane;
@@ -91,7 +98,8 @@ public class StartModule extends BaseModule {
     private boolean mServerShutdownRequested;
     private Action mServerStartAction;
     private boolean mShutdownInProgress;
-    private WebView mWebView;
+//    private WebView mWebView;
+    private RichTextArea mRichTextArea;
 
     public StartModule(Scene scene) {
         super(scene, Dict.HOME.toString(), MaterialIcon._Action.HOME.getImageView(MainApp.ICON_SIZE_MODULE).getImage());
@@ -149,11 +157,11 @@ public class StartModule extends BaseModule {
 
     @Override
     public void setNightMode(boolean state) {
-        if (state) {
-            mWebView.getEngine().setUserStyleSheetLocation(getClass().getResource("darkWeb.css").toExternalForm());
-        } else {
-            mWebView.getEngine().setUserStyleSheetLocation(getClass().getResource("lightWeb.css").toExternalForm());
-        }
+//        if (state) {
+//            mWebView.getEngine().setUserStyleSheetLocation(getClass().getResource("darkWeb.css").toExternalForm());
+//        } else {
+//            mWebView.getEngine().setUserStyleSheetLocation(getClass().getResource("lightWeb.css").toExternalForm());
+//        }
 
         mClientConnectAction.setGraphic(MaterialIcon._Communication.CALL_MADE.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
         mClientDisconnectAction.setGraphic(MaterialIcon._Communication.CALL_RECEIVED.getImageView(ICON_SIZE_DRAWER, mPreferences.getThemedIconColor()));
@@ -164,8 +172,9 @@ public class StartModule extends BaseModule {
         mListView.setPrefWidth(400);
         mListView.setCellFactory((ListView<Job> param) -> new JobListCell());
 
-        mWebView = new WebView();
-        mBorderPane = new BorderPane(mWebView);
+//        mWebView = new WebView();
+        mRichTextArea = new RichTextArea();
+        mBorderPane = new BorderPane(mRichTextArea);
         mBorderPane.setLeft(mListView);
 
         initActions();
@@ -216,7 +225,8 @@ public class StartModule extends BaseModule {
             updateWindowTitle();
         } else {
             mStage.setTitle("JotaSync");
-            mWebView.getEngine().loadContent("");
+            mRichTextArea.setDocument(RTDocument.create(RTHeading.create("x")));
+//            mWebView.getEngine().loadContent("");
         }
     }
 
@@ -444,6 +454,45 @@ public class StartModule extends BaseModule {
         mStage.setTitle(String.format(mBundle.getString("windowTitle"), mManager.getClient().getHost(), mManager.getClient().getPortHost()));
     }
 
+    public RTDocument getSummaryAsRtf() {
+        var job = getSelectedJob();
+
+        return RTDocument.create(
+                RTHeading.create(job.getName()),
+                RTParagraph.create(
+                        RTText.create("This is the first paragraph. "),
+                        RTText.create("Some text comes here before the link that "),
+                        RTLink.create("points to the website ", "https://www.dlsc.com"),
+                        RTText.create("of DLSC Software & Consulting.")
+                ),
+                RTParagraph.create(
+                        RTText.create("Here comes the second paragraph.")
+                ),
+                RTParagraph.create(),
+                RTHeading.create("Heading 2"),
+                RTParagraph.create(
+                        RTText.create("Some text for the first paragraph after heading 2."),
+                        RTList.create(
+                                RTListItem.create("List item 1"),
+                                RTListItem.create("List item 2"),
+                                RTListItem.create("List item 3",
+                                        RTList.create(
+                                                RTListItem.create("Sub item A"),
+                                                RTListItem.create("Sub item B"),
+                                                RTListItem.create("Sub item C"),
+                                                RTListItem.create("Sub item D")
+                                        )
+                                ),
+                                RTListItem.create("List item 4")
+                        )
+                )
+        );
+    }
+
+    private Job getSelectedJob() {
+        return mListView.getSelectionModel().getSelectedItem();
+    }
+
     class JobListCell extends ListCell<Job> {
 
         private final BorderPane mBorderPane = new BorderPane();
@@ -559,19 +608,15 @@ public class StartModule extends BaseModule {
             });
         }
 
-        private Job getSelectedJob() {
-            return mListView.getSelectionModel().getSelectedItem();
-        }
-
         private void selectListItem() {
             mListView.getSelectionModel().select(this.getIndex());
             mListView.requestFocus();
 
             var job = getSelectedJob();
             if (job != null) {
-                mWebView.getEngine().loadContent(job.getSummaryAsHtml());
+                mRichTextArea.setDocument(getSummaryAsRtf());
             } else {
-                mWebView.getEngine().loadContent("");
+                mRichTextArea.setDocument(null);
             }
         }
 
