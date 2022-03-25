@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2021 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,10 @@ import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import se.trixon.jota.shared.ServerCommander;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import se.trixon.almond.util.SystemHelper;
+import se.trixon.jota.shared.ServerCommander;
 
 /**
  *
@@ -32,6 +34,7 @@ import se.trixon.almond.util.SystemHelper;
 public class Manager {
 
     private Client mClient;
+    private final BooleanProperty mConnectedProperty = new SimpleBooleanProperty();
     private final HashSet<ConnectionListener> mConnectionListeners = new HashSet<>();
     private ServerCommander mServerCommander;
 
@@ -54,6 +57,12 @@ public class Manager {
         mConnectionListeners.stream().forEach((connectionListener) -> {
             connectionListener.onConnectionConnect();
         });
+
+        mConnectedProperty.set(true);
+    }
+
+    public BooleanProperty connectedProperty() {
+        return mConnectedProperty;
     }
 
     public void disconnect() {
@@ -69,6 +78,8 @@ public class Manager {
                 connectionListener.onConnectionDisconnect();
             });
         }
+
+        mConnectedProperty.set(false);
     }
 
     public Client getClient() {
@@ -103,6 +114,7 @@ public class Manager {
 
     public void setServerCommander(ServerCommander serverCommander) {
         mServerCommander = serverCommander;
+        mConnectedProperty.set(serverCommander != null);
     }
 
     private static class ManagerHolder {

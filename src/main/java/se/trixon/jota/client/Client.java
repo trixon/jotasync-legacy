@@ -15,10 +15,7 @@
  */
 package se.trixon.jota.client;
 
-import java.awt.Color;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -30,22 +27,16 @@ import java.rmi.RemoteException;
 import java.rmi.dgc.VMID;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
-import javax.swing.JButton;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import se.trixon.almond.util.AlmondOptions;
-import se.trixon.almond.util.AlmondUI;
 import se.trixon.almond.util.Dict;
-import se.trixon.almond.util.GraphicsHelper;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.Xlog;
-import se.trixon.almond.util.icons.material.swing.MaterialIcon;
-import se.trixon.jota.client.ui.MainFrame;
+import se.trixon.jota.client.ui.App;
 import se.trixon.jota.shared.ClientCallbacks;
 import se.trixon.jota.shared.Jota;
 import se.trixon.jota.shared.JotaClient;
@@ -64,15 +55,12 @@ import se.trixon.jota.shared.task.Task;
  */
 public final class Client extends UnicastRemoteObject implements ClientCallbacks {
 
-    private AlmondOptions mAlmondOptions = AlmondOptions.getInstance();
-    private final AlmondUI mAlmondUI = AlmondUI.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(Jota.class, "Bundle");
     private VMID mClientVmid;
     private Job mCurrentJob;
     private boolean mExitOnException;
     private String mHost = SystemHelper.getHostname();
     private final ResourceBundle mJotaBundle = Jota.getBundle();
-    private MainFrame mMainFrame = null;
     private final Manager mManager = Manager.getInstance();
     private final ClientOptions mOptions = ClientOptions.getInstance();
     private int mPortClient = Jota.DEFAULT_PORT_CLIENT;
@@ -194,30 +182,20 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         Xlog.timedOut(command.getMessage());
         try {
             switch (command) {
-                case DISPLAY_STATUS:
+                case DISPLAY_STATUS ->
                     Xlog.timedOut(mServerCommander.getStatus());
-                    break;
-
-                case LIST_JOBS:
+                case LIST_JOBS ->
                     Xlog.timedOut(mServerCommander.listJobs());
-                    break;
-
-                case LIST_TASKS:
+                case LIST_TASKS ->
                     Xlog.timedOut(mServerCommander.listTasks());
-                    break;
-
-                case START_CRON:
+                case START_CRON ->
                     mServerCommander.setCronActive(true);
-                    break;
-
-                case STOP_CRON:
+                case STOP_CRON ->
                     mServerCommander.setCronActive(false);
-                    break;
-
-                case SHUTDOWN:
+                case SHUTDOWN -> {
                     mShutdownRequested = true;
                     mServerCommander.shutdown();
-                    break;
+                }
             }
         } catch (RemoteException ex) {
             if (command != Command.SHUTDOWN) {
@@ -260,17 +238,18 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         boolean serverProbablyStarted = false;
         Xlog.timedOut(Dict.SERVER_START.toString());
 
-        StringBuilder java = new StringBuilder();
-        java.append(System.getProperty("java.home")).append(SystemUtils.FILE_SEPARATOR)
-                .append("bin").append(SystemUtils.FILE_SEPARATOR)
+        var java = new StringBuilder();
+        java.append(System.getProperty("java.home")).append(File.separator)
+                .append("bin").append(File.separator)
                 .append("java");
 
         if (SystemUtils.IS_OS_WINDOWS) {
             java.append(".exe");
         }
 
-        CodeSource codeSource = getClass().getProtectionDomain().getCodeSource();
-        File jarFile = new File(codeSource.getLocation().toURI().getPath());
+        var codeSource = getClass().getProtectionDomain().getCodeSource();
+        var jarFile = new File(codeSource.getLocation().toURI().getPath());
+
         if (jarFile.getAbsolutePath().endsWith(".jar")) {
             ArrayList<String> command = new ArrayList<>();
             command.add(java.toString());
@@ -331,9 +310,6 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             return;
         }
         SystemHelper.setMacApplicationName("JotaSync");
-        mAlmondUI.installFlatLaf();
-        mAlmondOptions.setDefaultLookAndFeel("FlatLaf Dark");
-        mAlmondUI.initLookAndFeel();
 
         if (mOptions.isAutostartServer() && !mManager.isConnected()) {
             try {
@@ -345,21 +321,23 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
             }
         }
 
-        java.awt.EventQueue.invokeLater(() -> {
-            MaterialIcon.setDefaultColor(GraphicsHelper.getBrightness(new JButton().getBackground()) < 128 ? Color.WHITE : Color.BLACK);
-            mMainFrame = new MainFrame();
-            addServerEventListener(mMainFrame);
-            mMainFrame.addWindowListener(new WindowAdapter() {
+        App.main(new String[]{});
 
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    super.windowClosing(e);
-                    mManager.disconnect();
-                }
-            });
-
-            mMainFrame.setVisible(true);
-        });
+//        java.awt.EventQueue.invokeLater(() -> {
+//            MaterialIcon.setDefaultColor(GraphicsHelper.getBrightness(new JButton().getBackground()) < 128 ? Color.WHITE : Color.BLACK);
+//            mMainFrame = new MainFrame();
+//            addServerEventListener(mMainFrame);
+//            mMainFrame.addWindowListener(new WindowAdapter() {
+//
+//                @Override
+//                public void windowClosing(WindowEvent e) {
+//                    super.windowClosing(e);
+//                    mManager.disconnect();
+//                }
+//            });
+//
+//            mMainFrame.setVisible(true);
+//        });
     }
 
     private Job getJobByName(String jobName) throws RemoteException {
