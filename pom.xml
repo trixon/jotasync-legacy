@@ -325,9 +325,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.hint.license>apache20</netbeans.hint.license>
-        <copyright>(c) 2021 Patrik Karlström</copyright>
+        <copyright>(c) 2022 Patrik Karlström</copyright>
         <exeVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</exeVersion>
-        <javafx.version>17.0.2</javafx.version>
+        <javafx.version>18</javafx.version>
     </properties>
 
 </project>
