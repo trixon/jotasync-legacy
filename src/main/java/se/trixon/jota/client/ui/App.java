@@ -28,6 +28,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.SystemUtils;
@@ -45,7 +46,9 @@ import se.trixon.almond.util.fx.AlmondFx;
 import se.trixon.almond.util.fx.FxActionCheck;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
+import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Manager;
+import se.trixon.jota.client.Preferences;
 
 /**
  *
@@ -56,13 +59,11 @@ public class App extends Application {
     public static final String APP_TITLE = "JotaSync";
     private static final boolean IS_MAC = SystemUtils.IS_OS_MAC;
     private final AlmondFx mAlmondFX = AlmondFx.getInstance();
-//    private AppForm mAppForm;
-//    private final Options mOptions = Options.getInstance();
-//    private OptionsPanel mOptionsPanel;
+    private final ResourceBundle mBundle = SystemHelper.getBundle(App.class, "Bundle");
+    private final Manager mManager = Manager.getInstance();
+    private Preferences mPreferences = Preferences.getInstance();
     private BorderPane mRoot;
     private Stage mStage;
-    private final Manager mManager = Manager.getInstance();
-    private final ResourceBundle mBundle = SystemHelper.getBundle(App.class, "Bundle");
 
     /**
      * @param args the command line arguments
@@ -89,32 +90,25 @@ public class App extends Application {
         FxHelper.removeSceneInitFlicker(mStage);
 
         mStage.show();
-        initAccelerators();
         initListeners();
 //        mAppForm.initAccelerators();
 
         SnapHelperFx.checkSnapStatus(App.class, "snap", mStage, "jotasync", "removable-media");
     }
 
-    private void createUI() {
-//        mOptionsAction = new Action(Dict.OPTIONS.toString(), actionEvent -> {
-//            displayOptions();
-//        });
-//        FxHelper.setTooltip(mOptionsAction, new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
-//        mOptionsAction.disabledProperty().bind(mRunManager.runningProperty());
-//
-//        mHelpAction = new Action(Dict.HELP.toString(), actionEvent -> {
-//            displayHelp();
-//        });
-//        FxHelper.setTooltip(mHelpAction, new KeyCodeCombination(KeyCode.F1, KeyCombination.SHORTCUT_ANY));
+    @Override
+    public void stop() throws Exception {
+        mManager.disconnect();
+        super.stop();
+        System.exit(0);
+    }
 
-        //about
+    private void createUI() {
         var pomInfo = new PomInfo(App.class, "se.trixon", "jotasync");
         var aboutModel = new AboutModel(SystemHelper.getBundle(App.class, "about"), SystemHelperFx.getResourceAsImageView(App.class, "about_logo.png"));
         aboutModel.setAppVersion(pomInfo.getVersion());
         var aboutAction = AboutPane.getAction(mStage, aboutModel);
 
-//        mRoot = new BorderPane(mAppForm = new AppForm());
         mRoot = new BorderPane();
 
         var connectAction = new Action(Dict.CONNECT_TO_SERVER.toString(), actionEvent -> {
@@ -182,9 +176,11 @@ public class App extends Application {
         var helpAction = new Action(Dict.HELP.toString(), actionEvent -> {
             displayHelp();
         });
+
         var aboutRsyncAction = new Action("About _rsync", actionEvent -> {
         });
         aboutRsyncAction.disabledProperty().bind(mManager.connectedProperty().not());
+
         var helpActionGroup = new ActionGroup(Dict.HELP.toString(),
                 helpAction,
                 ACTION_SEPARATOR,
@@ -217,35 +213,20 @@ public class App extends Application {
         alert.setResizable(true);
 
         var dialogPane = alert.getDialogPane();
-//        dialogPane.setContent(mOptionsPanel);
+        dialogPane.setContent(mPreferences.getPreferencesFxView());
         FxHelper.removeSceneInitFlicker(dialogPane);
 
         var button = (Button) dialogPane.lookupButton(ButtonType.OK);
         button.setText(Dict.CLOSE.toString());
 
         FxHelper.showAndWait(alert, mStage);
-    }
-
-    private void initAccelerators() {
-        var accelerators = mStage.getScene().getAccelerators();
-
-//        accelerators.put(new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN), () -> {
-//        });
-        if (!IS_MAC) {
-//            accelerators.put(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN), () -> {
-//                displayOptions();
-//            });
-
-            accelerators.put(new KeyCodeCombination(KeyCode.F1, KeyCombination.SHORTCUT_ANY), () -> {
-                displayHelp();
-            });
-        }
+        mPreferences.save();
     }
 
     private void initListeners() {
-//        mOptions.nightModeProperty().addListener((observable, oldValue, newValue) -> {
-//            updateNightMode();
-//        });
+        mPreferences.general().nightModeProperty().addListener((observable, oldValue, newValue) -> {
+            updateNightMode();
+        });
     }
 
     private void initMac() {
@@ -269,18 +250,16 @@ public class App extends Application {
     }
 
     private void updateNightMode() {
-//        MaterialIcon.setDefaultColor(mOptions.isNightMode() ? Color.LIGHTGRAY : Color.BLACK);
-//
-//        mOptionsAction.setGraphic(MaterialIcon._Action.SETTINGS.getImageView(ICON_SIZE_TOOLBAR));
-//        mAboutAction.setGraphic(MaterialIcon._Action.INFO_OUTLINE.getImageView(ICON_SIZE_TOOLBAR));
-//        mHelpAction.setGraphic(MaterialIcon._Action.HELP_OUTLINE.getImageView(ICON_SIZE_TOOLBAR));
-//
-//        FxHelper.setDarkThemeEnabled(mOptions.isNightMode());
-//        if (mOptions.isNightMode()) {
-//            FxHelper.loadDarkTheme(mStage.getScene());
-//        } else {
-//            FxHelper.unloadDarkTheme(mStage.getScene());
-//        }
+        boolean nightMode = mPreferences.general().isNightMode();
+
+        MaterialIcon.setDefaultColor(nightMode ? Color.LIGHTGRAY : Color.BLACK);
+        FxHelper.setDarkThemeEnabled(nightMode);
+
+        if (nightMode) {
+            FxHelper.loadDarkTheme(mStage.getScene());
+        } else {
+            FxHelper.unloadDarkTheme(mStage.getScene());
+        }
     }
 
 }

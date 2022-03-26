@@ -21,11 +21,15 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URISyntaxException;
+import java.rmi.ConnectException;
+import java.rmi.ConnectIOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.UnknownHostException;
 import java.rmi.dgc.VMID;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,6 +49,7 @@ import se.trixon.jota.shared.JotaServer;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.shared.ServerEvent;
+import se.trixon.jota.shared.ServerEventAdapter;
 import se.trixon.jota.shared.ServerEventListener;
 import se.trixon.jota.shared.job.Job;
 import se.trixon.jota.shared.task.Task;
@@ -75,7 +80,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
     public Client(CommandLine cmd) throws RemoteException {
         super(0);
 
-        mServerEventListener = new ServerEventListener() {
+        mServerEventListener = new ServerEventAdapter() {
             @Override
             public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
                 if (mCurrentJob != null && mCurrentJob.getId() == job.getId() && null != processEvent) {
@@ -100,16 +105,12 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                     }
                 }
             }
-
-            @Override
-            public void onServerEvent(ServerEvent serverEvent) {
-                // nvm
-            }
         };
 
         addServerEventListener(mServerEventListener);
 
         mManager.setClient(this);
+
         if (cmd.hasOption(Main.OPT_HOST)) {
             mHost = cmd.getOptionValue(Main.OPT_HOST);
         }
@@ -384,7 +385,7 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
                     }
                 }
             }));
-        } catch (NotBoundException | MalformedURLException | java.rmi.server.ExportException | java.rmi.ConnectException | java.rmi.ConnectIOException | java.rmi.UnknownHostException | SocketException ex) {
+        } catch (NotBoundException | MalformedURLException | ExportException | ConnectException | ConnectIOException | UnknownHostException | SocketException ex) {
             if (mExitOnException) {
                 Xlog.timedErr(ex.getLocalizedMessage());
                 Jota.exit();
