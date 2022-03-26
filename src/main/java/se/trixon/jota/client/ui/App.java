@@ -15,19 +15,34 @@
  */
 package se.trixon.jota.client.ui;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.SocketException;
+import java.net.URISyntaxException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -47,6 +62,8 @@ import se.trixon.almond.util.fx.FxActionCheck;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
 import se.trixon.almond.util.icons.material.MaterialIcon;
+import se.trixon.jota.client.Client;
+import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.Preferences;
 
@@ -58,11 +75,15 @@ public class App extends Application {
 
     public static final String APP_TITLE = "JotaSync";
     private static final boolean IS_MAC = SystemUtils.IS_OS_MAC;
+    protected final Client mClient;
+    protected final ClientOptions mOptions = ClientOptions.getInstance();
+    private final Logger LOGGER = Logger.getLogger(getClass().getName());
     private final AlmondFx mAlmondFX = AlmondFx.getInstance();
     private final ResourceBundle mBundle = SystemHelper.getBundle(App.class, "Bundle");
     private final Manager mManager = Manager.getInstance();
     private Preferences mPreferences = Preferences.getInstance();
     private BorderPane mRoot;
+    private boolean mServerShutdownRequested;
     private Stage mStage;
 
     /**
@@ -70,6 +91,10 @@ public class App extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public App() {
+        mClient = mManager.getClient();
     }
 
     @Override
@@ -112,32 +137,38 @@ public class App extends Application {
         mRoot = new BorderPane();
 
         var connectAction = new Action(Dict.CONNECT_TO_SERVER.toString(), actionEvent -> {
+            requestConnect();
         });
         connectAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
         connectAction.disabledProperty().bind(mManager.connectedProperty());
 
         var disconnectAction = new Action(Dict.DISCONNECT.toString(), actionEvent -> {
+            mManager.disconnect();
         });
         disconnectAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN));
         disconnectAction.disabledProperty().bind(mManager.connectedProperty().not());
 
         var serverStartAction = new Action(Dict.SERVER_START.toString(), actionEvent -> {
+            serverStart();
         });
         serverStartAction.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
-        serverStartAction.disabledProperty().bind(mManager.connectedProperty().not());
+        serverStartAction.disabledProperty().bind(mManager.connectedProperty());
 
-        var serverStopAction = new Action(Dict.SERVER_SHUTDOWN.toString(), actionEvent -> {
+        var serverShutdownAction = new Action(Dict.SERVER_SHUTDOWN.toString(), actionEvent -> {
+            serverShutdown();
         });
-        serverStopAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
-        serverStopAction.disabledProperty().bind(mManager.connectedProperty().not());
+        serverShutdownAction.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+        serverShutdownAction.disabledProperty().bind(mManager.connectedProperty().not());
 
-        var serverQuitAction = new Action(Dict.SHUTDOWN_SERVER_AND_QUIT.toString(), actionEvent -> {
+        var serverShutdownQuitAction = new Action(Dict.SHUTDOWN_SERVER_AND_QUIT.toString(), actionEvent -> {
+            serverShutdown();
+            quit();
         });
-        serverQuitAction.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
-        serverQuitAction.disabledProperty().bind(mManager.connectedProperty().not());
+        serverShutdownQuitAction.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+        serverShutdownQuitAction.disabledProperty().bind(mManager.connectedProperty().not());
 
         var quitAction = new Action(Dict.QUIT.toString(), actionEvent -> {
-            mStage.fireEvent(new WindowEvent(mStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+            quit();
         });
         quitAction.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN));
 
@@ -146,8 +177,8 @@ public class App extends Application {
                 disconnectAction,
                 new ActionGroup(Dict.SERVER.toString(),
                         serverStartAction,
-                        serverStopAction,
-                        serverQuitAction
+                        serverShutdownAction,
+                        serverShutdownQuitAction
                 ),
                 ACTION_SEPARATOR,
                 quitAction
@@ -194,6 +225,21 @@ public class App extends Application {
 
         mRoot.setTop(menuBar);
         mStage.setScene(scene);
+    }
+
+    private void displayErrorDialog(String message) {
+        var alert = new Alert(Alert.AlertType.ERROR);
+        alert.initOwner(mStage);
+        alert.setTitle(Dict.Dialog.ERROR.toString());
+        alert.setHeaderText(null);
+        alert.setResizable(true);
+        alert.setContentText(message);
+
+        if (mPreferences.general().isNightMode()) {
+            FxHelper.loadDarkTheme(alert.getDialogPane());
+        }
+
+        alert.showAndWait();
     }
 
     private void displayHelp() {
@@ -247,6 +293,89 @@ public class App extends Application {
 //
 //        int cnt = applicationMenu.getItems().size();
 //        applicationMenu.getItems().get(cnt - 1).setText(String.format("%s %s", Dict.QUIT.toString(), APP_TITLE));
+    }
+
+    private void quit() {
+        mStage.fireEvent(new WindowEvent(mStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+    }
+
+    private void requestConnect() {
+        var hosts = mOptions.getHosts().split(";");
+        Arrays.sort(hosts);
+        var hostLabel = new Label(Dict.HOST.toString());
+        var hostComboBox = new ComboBox<>(FXCollections.observableArrayList(hosts));
+        hostComboBox.setEditable(true);
+        hostComboBox.setPrefWidth(Integer.MAX_VALUE);
+        var portLabel = new Label(Dict.PORT.toString());
+        var portSpinner = new Spinner<Integer>(1024, 65535, 1099, 1);
+        portSpinner.setEditable(true);
+        portSpinner.setPrefWidth(Integer.MAX_VALUE);
+        FxHelper.autoCommitSpinner(portSpinner);
+
+        hostComboBox.getSelectionModel().select(mClient.getHost());
+        portSpinner.getValueFactory().setValue(mClient.getPortHost());
+
+        var box = new VBox(
+                hostLabel,
+                hostComboBox,
+                portLabel,
+                portSpinner
+        );
+
+        box.setPrefWidth(300);
+
+        var connectButtonType = new ButtonType(Dict.CONNECT.toString(), ButtonData.OK_DONE);
+        var cancelButtonType = new ButtonType(Dict.CANCEL.toString(), ButtonData.CANCEL_CLOSE);
+
+        var alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(mStage);
+        alert.setTitle(Dict.CONNECT_TO_HOST.toString());
+        alert.setGraphic(null);
+        alert.setHeaderText(null);
+        alert.setResizable(true);
+
+        var dialogPane = alert.getDialogPane();
+        dialogPane.setContent(box);
+        FxHelper.removeSceneInitFlicker(dialogPane);
+        alert.getButtonTypes().setAll(connectButtonType, cancelButtonType);
+
+        var result = FxHelper.showAndWait(alert, mStage);
+        if (result.get() == connectButtonType) {
+            String currentHost = mClient.getHost();
+            int currentPort = mClient.getPortHost();
+            String host = (String) hostComboBox.getSelectionModel().getSelectedItem();
+            int port = portSpinner.getValue();
+            try {
+                mManager.disconnect();
+                mManager.connect(host, port);
+
+                if (hostComboBox.getItems().indexOf(host) == -1) {
+                    hostComboBox.getItems().add(host);
+                }
+                mOptions.setHosts(hostComboBox.getItems().stream().collect(Collectors.joining(";")));
+            } catch (NumberFormatException ex) {
+                displayErrorDialog(ex.getMessage());
+            } catch (NotBoundException | MalformedURLException | RemoteException | SocketException ex) {
+                displayErrorDialog(ex.getMessage());
+                mClient.setHost(currentHost);
+                mClient.setPortHost(currentPort);
+            }
+        }
+    }
+
+    private void serverShutdown() {
+        mServerShutdownRequested = true;
+        mClient.execute(Client.Command.SHUTDOWN);
+    }
+
+    private void serverStart() {
+        try {
+            if (mClient.serverStart()) {
+                mManager.connect(SystemHelper.getHostname(), mOptions.getAutostartServerPort());
+            }
+        } catch (URISyntaxException | IOException | NotBoundException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
     }
 
     private void updateNightMode() {
