@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.trixon.jota.client;
+package se.trixon.jota.client.ui;
+
+import javafx.scene.control.Tab;
+import se.trixon.jota.client.Preferences;
 
 /**
  *
  * @author Patrik Karlström
  */
-@Deprecated
-public interface ConnectionListener {
+public abstract class BaseTab extends Tab {
 
-    @Deprecated
-    void onConnectionConnect();
+    protected final Preferences mPreferences = Preferences.getInstance();
 
-    @Deprecated
-    void onConnectionDisconnect();
+    public BaseTab() {
+        initListeners();
+    }
+
+    protected abstract void updateIconColor();
+
+    private void initListeners() {
+        mPreferences.general().iconColorProperty().addListener((observable, oldValue, newValue) -> {
+            updateIconColor();
+        });
+    }
 
 }

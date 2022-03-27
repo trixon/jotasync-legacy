@@ -217,6 +217,10 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
         return mPortHost;
     }
 
+    public boolean isShutdownRequested() {
+        return mShutdownRequested;
+    }
+
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) throws RemoteException {
         mServerEventListeners.stream().forEach((serverEventListener) -> {
@@ -287,6 +291,10 @@ public final class Client extends UnicastRemoteObject implements ClientCallbacks
 
     public void setPortHost(int portHost) {
         mPortHost = portHost;
+    }
+
+    public void setShutdownRequested(boolean shutdownRequested) {
+        mShutdownRequested = shutdownRequested;
     }
 
     void connectToServer() throws NotBoundException, MalformedURLException, RemoteException, java.rmi.ConnectException, java.rmi.ConnectIOException, java.rmi.UnknownHostException, SocketException {

@@ -43,10 +43,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.apache.commons.lang3.SystemUtils;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionGroup;
 import org.controlsfx.control.action.ActionUtils;
@@ -61,7 +59,6 @@ import se.trixon.almond.util.fx.AlmondFx;
 import se.trixon.almond.util.fx.FxActionCheck;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
-import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.Client;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
@@ -74,16 +71,16 @@ import se.trixon.jota.client.Preferences;
 public class App extends Application {
 
     public static final String APP_TITLE = "JotaSync";
-    private static final boolean IS_MAC = SystemUtils.IS_OS_MAC;
-    protected final Client mClient;
-    protected final ClientOptions mOptions = ClientOptions.getInstance();
-    private final Logger LOGGER = Logger.getLogger(getClass().getName());
+    public static final int ICON_SIZE_MODULE = 32;
+    private static final Logger LOGGER = Logger.getLogger(App.class.getName());
     private final AlmondFx mAlmondFX = AlmondFx.getInstance();
+    private AppForm mAppForm;
     private final ResourceBundle mBundle = SystemHelper.getBundle(App.class, "Bundle");
+    private final Client mClient;
     private final Manager mManager = Manager.getInstance();
-    private Preferences mPreferences = Preferences.getInstance();
+    private final ClientOptions mOptions = ClientOptions.getInstance();
+    private final Preferences mPreferences = Preferences.getInstance();
     private BorderPane mRoot;
-    private boolean mServerShutdownRequested;
     private Stage mStage;
 
     /**
@@ -105,20 +102,15 @@ public class App extends Application {
         mAlmondFX.addStageWatcher(stage, App.class);
         createUI();
 
-        if (IS_MAC) {
-            initMac();
-        }
-
         updateNightMode();
 
-        mStage.setTitle(APP_TITLE);
         FxHelper.removeSceneInitFlicker(mStage);
-
         mStage.show();
+
         initListeners();
-//        mAppForm.initAccelerators();
 
         SnapHelperFx.checkSnapStatus(App.class, "snap", mStage, "jotasync", "removable-media");
+        updateWindowTitle();
     }
 
     @Override
@@ -133,8 +125,6 @@ public class App extends Application {
         var aboutModel = new AboutModel(SystemHelper.getBundle(App.class, "about"), SystemHelperFx.getResourceAsImageView(App.class, "about_logo.png"));
         aboutModel.setAppVersion(pomInfo.getVersion());
         var aboutAction = AboutPane.getAction(mStage, aboutModel);
-
-        mRoot = new BorderPane();
 
         var connectAction = new Action(Dict.CONNECT_TO_SERVER.toString(), actionEvent -> {
             requestConnect();
@@ -187,10 +177,12 @@ public class App extends Application {
         var scheduleAction = new FxActionCheck(mBundle.getString("schedule"), actionEvent -> {
         });
         scheduleAction.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.SHORTCUT_DOWN));
+        scheduleAction.disabledProperty().bind(mManager.connectedProperty().not());
 
         var editorAction = new Action(mBundle.getString("jobEditor"), actionEvent -> {
         });
         editorAction.setAccelerator(new KeyCodeCombination(KeyCode.J, KeyCombination.SHORTCUT_DOWN));
+        editorAction.disabledProperty().bind(mManager.connectedProperty().not());
 
         var optionsAction = new Action(Dict.OPTIONS.toString(), actionEvent -> {
             displayOptions();
@@ -221,9 +213,12 @@ public class App extends Application {
 
         Collection< ? extends Action> actions = Arrays.asList(fileActionGroup, toolsActionGroup, helpActionGroup);
         var menuBar = ActionUtils.createMenuBar(actions);
+
+        mAppForm = new AppForm();
+        mRoot = new BorderPane(mAppForm);
+        mRoot.setTop(menuBar);
         var scene = new Scene(mRoot);
 
-        mRoot.setTop(menuBar);
         mStage.setScene(scene);
     }
 
@@ -273,26 +268,14 @@ public class App extends Application {
         mPreferences.general().nightModeProperty().addListener((observable, oldValue, newValue) -> {
             updateNightMode();
         });
-    }
 
-    private void initMac() {
-//        var menuToolkit = MenuToolkit.toolkit();
-//        var applicationMenu = menuToolkit.createDefaultApplicationMenu(APP_TITLE);
-//        menuToolkit.setApplicationMenu(applicationMenu);
-//
-//        applicationMenu.getItems().remove(0);
-//        MenuItem aboutMenuItem = new MenuItem(String.format(Dict.ABOUT_S.toString(), APP_TITLE));
-//        aboutMenuItem.setOnAction(mAboutAction);
-//
-//        var settingsMenuItem = new MenuItem(Dict.PREFERENCES.toString());
-//        settingsMenuItem.setOnAction(mOptionsAction);
-//        settingsMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
-//
-//        applicationMenu.getItems().add(0, aboutMenuItem);
-//        applicationMenu.getItems().add(2, settingsMenuItem);
-//
-//        int cnt = applicationMenu.getItems().size();
-//        applicationMenu.getItems().get(cnt - 1).setText(String.format("%s %s", Dict.QUIT.toString(), APP_TITLE));
+        mManager.connectedProperty().addListener((observable, oldValue, connected) -> {
+            updateWindowTitle();
+
+            if (connected) {
+            } else {
+            }
+        });
     }
 
     private void quit() {
@@ -364,7 +347,7 @@ public class App extends Application {
     }
 
     private void serverShutdown() {
-        mServerShutdownRequested = true;
+        mClient.setShutdownRequested(true);
         mClient.execute(Client.Command.SHUTDOWN);
     }
 
@@ -380,14 +363,20 @@ public class App extends Application {
 
     private void updateNightMode() {
         boolean nightMode = mPreferences.general().isNightMode();
-
-        MaterialIcon.setDefaultColor(nightMode ? Color.LIGHTGRAY : Color.BLACK);
         FxHelper.setDarkThemeEnabled(nightMode);
 
         if (nightMode) {
             FxHelper.loadDarkTheme(mStage.getScene());
         } else {
             FxHelper.unloadDarkTheme(mStage.getScene());
+        }
+    }
+
+    private void updateWindowTitle() {
+        if (mManager.isConnected()) {
+            mStage.setTitle(String.format(mBundle.getString("windowTitle"), mManager.getClient().getHost(), mManager.getClient().getPortHost()));
+        } else {
+            mStage.setTitle(APP_TITLE);
         }
     }
 

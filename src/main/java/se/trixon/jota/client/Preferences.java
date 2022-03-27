@@ -28,14 +28,17 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
+import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.ui.App;
 import se.trixon.jota.shared.ServerCommander;
 import se.trixon.jota.shared.ServerEvent;
@@ -174,6 +177,7 @@ public class Preferences {
     public class General {
 
         private final Group mGroup;
+        private final ObjectProperty<Color> mIconColorProperty = new SimpleObjectProperty<>();
         private final BooleanProperty mIncludeDryRunProperty = new SimpleBooleanProperty(false);
         private final BooleanProperty mNightModeProperty = new SimpleBooleanProperty(true);
         private final BooleanProperty mSplitDeletionsProperty = new SimpleBooleanProperty(true);
@@ -188,10 +192,21 @@ public class Preferences {
                     Setting.of(mBundle.getString("prefs.general.splitDeletions"), mSplitDeletionsProperty).customKey("general.splitDeletions"),
                     Setting.of(mBundle.getString("prefs.general.splitErrors"), mSplitErrorsProperty).customKey("general.splitErrors")
             );
+
+            mNightModeProperty.addListener((observable, oldValue, newValue) -> {
+                MaterialIcon.setDefaultColor(newValue ? Color.LIGHTGRAY : Color.BLACK);
+                mIconColorProperty.set(MaterialIcon.getDefaultColor());
+            });
+
+            MaterialIcon.setDefaultColor(isNightMode() ? Color.LIGHTGRAY : Color.BLACK);
         }
 
         public Group getGroup() {
             return mGroup;
+        }
+
+        public ObjectProperty iconColorProperty() {
+            return mIconColorProperty;
         }
 
         public BooleanProperty includeDryRunProperty() {
@@ -254,11 +269,12 @@ public class Preferences {
                     Setting.of(mBundle.getString("prefs.server.rsync"), mRsyncPathProperty).customKey("server.path.rsync2"),
                     Setting.of(Dict.LOG_DIRECTORY.toString(), mLogPathProperty).customKey("server.path.log2")
             );
+
             initListeners();
+
             if (mManager.isConnected()) {
                 loadServerPreferences();
             }
-
         }
 
         public Group getGroup() {
