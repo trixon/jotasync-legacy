@@ -44,7 +44,6 @@ import se.trixon.almond.util.icons.material.swing.MaterialIcon;
 import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.almond.util.swing.dialogs.MenuModePanel;
 import se.trixon.jota.client.ClientOptions;
-import se.trixon.jota.client.ConnectionListener;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.shared.ProcessEvent;
 import se.trixon.jota.shared.ServerEvent;
@@ -57,7 +56,7 @@ import se.trixon.jota.shared.task.Task;
  *
  * @author Patrik Karlström
  */
-public final class SpeedDialPanel extends JPanel implements ConnectionListener, ServerEventListener, SpeedDialListener, TabListener {
+public final class SpeedDialPanel extends JPanel implements ServerEventListener, SpeedDialListener, TabListener {
 
     private final ArrayList<SpeedDialButton> mButtons = new ArrayList<>();
     private JMenuItem mEditMenuItem;
@@ -79,7 +78,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
         menuButton.setVisible(mAlmondOptions.getMenuMode() == MenuModePanel.MenuMode.BUTTON);
         updateUI();
         init();
-        onConnectionDisconnect();
+//        onConnectionDisconnect();
     }
 
     public boolean addSpeedDialListener(SpeedDialListener speedDialListener) {
@@ -91,28 +90,27 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
         return menuButton;
     }
 
-    @Override
-    public void onConnectionConnect() {
-        SwingUtilities.invokeLater(() -> {
-            SwingHelper.enableComponents(getParent(), true);
-            try {
-                loadConfiguration();
-            } catch (RemoteException ex) {
-                Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-    }
-
-    @Override
-    public void onConnectionDisconnect() {
-        SwingUtilities.invokeLater(() -> {
-            SwingHelper.enableComponents(getParent(), false);
-            clearConfiguration();
-            startButton.setEnabled(false);
-            menuButton.setEnabled(true);
-        });
-    }
-
+//    @Override
+//    public void onConnectionConnect() {
+//        SwingUtilities.invokeLater(() -> {
+//            SwingHelper.enableComponents(getParent(), true);
+//            try {
+//                loadConfiguration();
+//            } catch (RemoteException ex) {
+//                Logger.getLogger(SpeedDialPanel.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void onConnectionDisconnect() {
+//        SwingUtilities.invokeLater(() -> {
+//            SwingHelper.enableComponents(getParent(), false);
+//            clearConfiguration();
+//            startButton.setEnabled(false);
+//            menuButton.setEnabled(true);
+//        });
+//    }
     @Override
     public void onProcessEvent(ProcessEvent processEvent, Job job, Task task, Object object) {
         switch (processEvent) {
@@ -350,7 +348,7 @@ public final class SpeedDialPanel extends JPanel implements ConnectionListener, 
             }
         }
 
-        mManager.addConnectionListeners(this);
+//        mManager.addConnectionListeners(this);
         mManager.getClient().addServerEventListener(this);
         addSpeedDialListener(this);
         ClientOptions.getInstance().getPreferences().addPreferenceChangeListener((PreferenceChangeEvent evt) -> {

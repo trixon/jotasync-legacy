@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
@@ -35,7 +34,6 @@ public class Manager {
 
     private Client mClient;
     private final BooleanProperty mConnectedProperty = new SimpleBooleanProperty();
-    private final HashSet<ConnectionListener> mConnectionListeners = new HashSet<>();
     private ServerCommander mServerCommander;
 
     public static Manager getInstance() {
@@ -45,18 +43,10 @@ public class Manager {
     private Manager() {
     }
 
-    public boolean addConnectionListeners(ConnectionListener connectionListener) {
-        return mConnectionListeners.add(connectionListener);
-    }
-
     public void connect(String host, int port) throws NotBoundException, MalformedURLException, RemoteException, SocketException {
         mClient.setHost(host);
         mClient.setPortHost(port);
         mClient.connectToServer();
-
-        mConnectionListeners.stream().forEach((connectionListener) -> {
-            connectionListener.onConnectionConnect();
-        });
 
         mConnectedProperty.set(true);
     }
@@ -73,10 +63,6 @@ public class Manager {
                 Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
             }
             mServerCommander = null;
-
-            mConnectionListeners.stream().forEach((connectionListener) -> {
-                connectionListener.onConnectionDisconnect();
-            });
         }
 
         mConnectedProperty.set(false);
