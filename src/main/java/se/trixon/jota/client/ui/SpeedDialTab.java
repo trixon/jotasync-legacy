@@ -122,7 +122,7 @@ public class SpeedDialTab extends BaseTab {
         } catch (RemoteException ex) {
         }
 
-        mPreferences.server().scheduledSyncProperty().set(cronActive);
+        mPreferencesServer.server().scheduledSyncProperty().set(cronActive);
         //mCategoryActionManager.setEnabled(KEY_ACTION_CATEGORY_CONNECTED, !state);
     }
 
@@ -135,7 +135,7 @@ public class SpeedDialTab extends BaseTab {
         boolean hasJob = mManager.isConnected() && mManager.hasJobs();
 
         try {
-            mPreferences.server().scheduledSyncProperty().set(mManager.getServerCommander().isCronActive());
+            mPreferencesServer.server().scheduledSyncProperty().set(mManager.getServerCommander().isCronActive());
             var jobs = mManager.getServerCommander().getJobs();
             mJobComboBox.getItems().setAll(jobs);
             if (hasJob) {

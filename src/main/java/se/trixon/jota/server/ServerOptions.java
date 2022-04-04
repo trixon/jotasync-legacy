@@ -74,7 +74,7 @@ class ServerOptions extends OptionsBase implements Serializable {
     }
 
     long getSpeedDial(int key) {
-        return mSpeedDials.getOrDefault(key, new Long(-1));
+        return mSpeedDials.getOrDefault(key, -1L);
     }
 
     HashMap<Integer, Long> getSpeedDials() throws BackingStoreException {

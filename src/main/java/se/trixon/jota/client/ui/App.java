@@ -22,7 +22,6 @@ import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +44,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.swing.JOptionPane;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionGroup;
 import org.controlsfx.control.action.ActionUtils;
@@ -59,10 +59,14 @@ import se.trixon.almond.util.fx.AlmondFx;
 import se.trixon.almond.util.fx.FxActionCheck;
 import se.trixon.almond.util.fx.FxHelper;
 import se.trixon.almond.util.fx.dialogs.about.AboutPane;
+import se.trixon.almond.util.swing.SwingHelper;
 import se.trixon.jota.client.Client;
+import se.trixon.jota.client.Client.Command;
 import se.trixon.jota.client.ClientOptions;
 import se.trixon.jota.client.Manager;
 import se.trixon.jota.client.Preferences;
+import se.trixon.jota.client.PreferencesServer;
+import se.trixon.jota.client.ui.editor.EditorPanel;
 
 /**
  *
@@ -80,8 +84,10 @@ public class App extends Application {
     private final Manager mManager = Manager.getInstance();
     private final ClientOptions mOptions = ClientOptions.getInstance();
     private final Preferences mPreferences = Preferences.getInstance();
+    private final PreferencesServer mPreferencesServer = PreferencesServer.getInstance();
     private BorderPane mRoot;
     private Stage mStage;
+    private FxActionCheck scheduleAction;
 
     /**
      * @param args the command line arguments
@@ -154,7 +160,7 @@ public class App extends Application {
             serverShutdown();
             quit();
         });
-        serverShutdownQuitAction.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+        serverShutdownQuitAction.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
         serverShutdownQuitAction.disabledProperty().bind(mManager.connectedProperty().not());
 
         var quitAction = new Action(Dict.QUIT.toString(), actionEvent -> {
@@ -165,23 +171,14 @@ public class App extends Application {
         var fileActionGroup = new ActionGroup(Dict.FILE.toString(),
                 connectAction,
                 disconnectAction,
-                new ActionGroup(Dict.SERVER.toString(),
-                        serverStartAction,
-                        serverShutdownAction,
-                        serverShutdownQuitAction
-                ),
                 ACTION_SEPARATOR,
                 quitAction
         );
 
-        var scheduleAction = new FxActionCheck(mBundle.getString("schedule"), actionEvent -> {
-        });
-        scheduleAction.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.SHORTCUT_DOWN));
-        scheduleAction.disabledProperty().bind(mManager.connectedProperty().not());
-
         var editorAction = new Action(mBundle.getString("jobEditor"), actionEvent -> {
+            displayEditor(-1L);
         });
-        editorAction.setAccelerator(new KeyCodeCombination(KeyCode.J, KeyCombination.SHORTCUT_DOWN));
+        editorAction.setAccelerator(new KeyCodeCombination(KeyCode.J, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
         editorAction.disabledProperty().bind(mManager.connectedProperty().not());
 
         var optionsAction = new Action(Dict.OPTIONS.toString(), actionEvent -> {
@@ -189,10 +186,23 @@ public class App extends Application {
         });
         optionsAction.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN));
 
-        var toolsActionGroup = new ActionGroup(Dict.TOOLS.toString(),
-                scheduleAction,
+        var optionsServerAction = new Action(mBundle.getString("serverOptions"), actionEvent -> {
+            displayOptionsServer();
+        });
+        optionsServerAction.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+        optionsServerAction.disabledProperty().bind(mManager.connectedProperty().not());
+
+        var serverActionGroup = new ActionGroup(Dict.SERVER.toString(),
                 editorAction,
                 ACTION_SEPARATOR,
+                serverStartAction,
+                serverShutdownAction,
+                serverShutdownQuitAction,
+                ACTION_SEPARATOR,
+                optionsServerAction
+        );
+
+        var toolsActionGroup = new ActionGroup(Dict.TOOLS.toString(),
                 optionsAction
         );
 
@@ -211,7 +221,7 @@ public class App extends Application {
                 aboutAction
         );
 
-        Collection< ? extends Action> actions = Arrays.asList(fileActionGroup, toolsActionGroup, helpActionGroup);
+        var actions = Arrays.asList(fileActionGroup, serverActionGroup, toolsActionGroup, helpActionGroup);
         var menuBar = ActionUtils.createMenuBar(actions);
 
         mAppForm = new AppForm();
@@ -220,6 +230,30 @@ public class App extends Application {
         var scene = new Scene(mRoot);
 
         mStage.setScene(scene);
+    }
+
+    private void displayEditor(long jobId) {
+        boolean openJob = jobId != -1;
+        var editorPanel = new EditorPanel(jobId, openJob);
+        SwingHelper.makeWindowResizable(editorPanel);
+
+        int retval = JOptionPane.showOptionDialog(null,
+                editorPanel,
+                mBundle.getString("jobEditor"),
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                null);
+
+        if (retval == JOptionPane.OK_OPTION) {
+            editorPanel.save();
+            try {
+                mManager.getServerCommander().saveJota();
+            } catch (RemoteException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     private void displayErrorDialog(String message) {
@@ -242,10 +276,6 @@ public class App extends Application {
     }
 
     private void displayOptions() {
-//        if (mOptionsPanel == null) {
-//            mOptionsPanel = new OptionsPanel();
-//        }
-
         var alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(mStage);
         alert.setTitle(Dict.OPTIONS.toString());
@@ -264,6 +294,25 @@ public class App extends Application {
         mPreferences.save();
     }
 
+    private void displayOptionsServer() {
+        var alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(mStage);
+        alert.setTitle(mBundle.getString("serverOptions"));
+        alert.setGraphic(null);
+        alert.setHeaderText(null);
+        alert.setResizable(true);
+
+        var dialogPane = alert.getDialogPane();
+        dialogPane.setContent(mPreferencesServer.getPreferencesFxView());
+        FxHelper.removeSceneInitFlicker(dialogPane);
+
+        var button = (Button) dialogPane.lookupButton(ButtonType.OK);
+        button.setText(Dict.CLOSE.toString());
+
+        FxHelper.showAndWait(alert, mStage);
+        mPreferencesServer.save();
+    }
+
     private void initListeners() {
         mPreferences.general().nightModeProperty().addListener((observable, oldValue, newValue) -> {
             updateNightMode();
@@ -271,7 +320,7 @@ public class App extends Application {
 
         mManager.connectedProperty().addListener((observable, oldValue, connected) -> {
             updateWindowTitle();
-
+//            scheduleAction.setSelected(mPreferences.client().isAutoStart());
             if (connected) {
             } else {
             }
@@ -348,7 +397,7 @@ public class App extends Application {
 
     private void serverShutdown() {
         mClient.setShutdownRequested(true);
-        mClient.execute(Client.Command.SHUTDOWN);
+        mClient.execute(Command.SHUTDOWN);
     }
 
     private void serverStart() {

@@ -17,6 +17,7 @@ package se.trixon.jota.client.ui;
 
 import javafx.scene.control.Tab;
 import se.trixon.jota.client.Preferences;
+import se.trixon.jota.client.PreferencesServer;
 
 /**
  *
@@ -25,6 +26,7 @@ import se.trixon.jota.client.Preferences;
 public abstract class BaseTab extends Tab {
 
     protected final Preferences mPreferences = Preferences.getInstance();
+    protected final PreferencesServer mPreferencesServer = PreferencesServer.getInstance();
 
     public BaseTab() {
         initListeners();

@@ -21,28 +21,18 @@ import com.dlsc.preferencesfx.model.Category;
 import com.dlsc.preferencesfx.model.Group;
 import com.dlsc.preferencesfx.model.Setting;
 import com.dlsc.preferencesfx.view.PreferencesFxView;
-import java.rmi.RemoteException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.almond.util.icons.material.MaterialIcon;
 import se.trixon.jota.client.ui.App;
-import se.trixon.jota.shared.ServerCommander;
-import se.trixon.jota.shared.ServerEvent;
-import se.trixon.jota.shared.ServerEventAdapter;
 
 /**
  * Model object for Preferences.
@@ -55,7 +45,6 @@ public class Preferences {
     private final General mGeneral = new General();
     private final Manager mManager = Manager.getInstance();
     private final PreferencesFx mPreferencesFx;
-    private final Server mServer = new Server();
 
     public static Preferences getInstance() {
         return Holder.INSTANCE;
@@ -97,15 +86,10 @@ public class Preferences {
         mPreferencesFx.saveSettings();
     }
 
-    public Server server() {
-        return mServer;
-    }
-
     private PreferencesFx createPreferences() {
         return PreferencesFx.of(Preferences.class, Category.of("",
                 mGeneral.getGroup(),
-                mClient.getGroup(),
-                mServer.getGroup()
+                mClient.getGroup()
         )).persistWindowState(false)
                 .saveSettings(true)
                 .instantPersistent(true)
@@ -160,15 +144,15 @@ public class Preferences {
 
         private void initListeners() {
             //TODO Deprecate when resolved: https://github.com/dlsc-software-consulting-gmbh/PreferencesFX/issues/85
-            mAutoStartProperty.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
+            mAutoStartProperty.addListener((ov, t, t1) -> {
                 mClientOptions.setAutostartServer(t1);
             });
 
-            mPortProperty.addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            mPortProperty.addListener((ov, t, t1) -> {
                 mClientOptions.setAutostartServerPort(t1.intValue());
             });
 
-            mDelayProperty.addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            mDelayProperty.addListener((ov, t, t1) -> {
                 mClientOptions.setAutostartServerConnectDelay(t1.intValue());
             });
         }
@@ -250,162 +234,4 @@ public class Preferences {
         }
 
     }
-
-    public class Server {
-
-        protected final Logger LOGGER = Logger.getLogger(getClass().getName());
-        private ChangeListener<String> logPathChangeListener;
-
-        private final Group mGroup;
-        private final SimpleStringProperty mLogPathProperty = new SimpleStringProperty("a/b/c");
-        private final SimpleStringProperty mRsyncPathProperty = new SimpleStringProperty("rsync");
-        private final BooleanProperty mScheduledSyncProperty = new SimpleBooleanProperty(true);
-        private ChangeListener<String> rsyncPathChangeListener;
-        private ChangeListener<Boolean> scheduledSyncChangeListener;
-
-        public Server() {
-            mGroup = Group.of(Dict.SERVER.toString(),
-                    Setting.of(mBundle.getString("prefs.general.scheduledSync"), mScheduledSyncProperty).customKey("general.scheduledSync"),
-                    Setting.of(mBundle.getString("prefs.server.rsync"), mRsyncPathProperty).customKey("server.path.rsync2"),
-                    Setting.of(Dict.LOG_DIRECTORY.toString(), mLogPathProperty).customKey("server.path.log2")
-            );
-
-            initListeners();
-
-            if (mManager.isConnected()) {
-                loadServerPreferences();
-            }
-        }
-
-        public Group getGroup() {
-            return mGroup;
-        }
-
-        public String getLogPath() {
-            return mLogPathProperty.get();
-        }
-
-        public String getRsyncPath() {
-            return mRsyncPathProperty.get();
-        }
-
-        public boolean isScheduledSync() {
-            return mScheduledSyncProperty.get();
-        }
-
-        public SimpleStringProperty logPathProperty() {
-            return mLogPathProperty;
-        }
-
-        public SimpleStringProperty rsyncPathProperty() {
-            return mRsyncPathProperty;
-        }
-
-        public BooleanProperty scheduledSyncProperty() {
-            return mScheduledSyncProperty;
-        }
-
-        public void setLogPath(String path) {
-            mLogPathProperty.set(path);
-        }
-
-        public void setRsyncPath(String path) {
-            mRsyncPathProperty.set(path);
-        }
-
-        public void setScheduledSync(boolean state) {
-            mScheduledSyncProperty.set(state);
-        }
-
-        protected ServerCommander getServerCommander() {
-            return mManager.getServerCommander();
-        }
-
-        private void addListeners() {
-            rsyncPathProperty().addListener(rsyncPathChangeListener);
-            logPathProperty().addListener(logPathChangeListener);
-            scheduledSyncProperty().addListener(scheduledSyncChangeListener);
-        }
-
-        private void initListeners() {
-            rsyncPathChangeListener = (ObservableValue<? extends String> ov, String t, String t1) -> {
-                ServerCommander serverCommander = getServerCommander();
-                if (serverCommander != null) {
-                    try {
-                        serverCommander.setRsyncPath(t1);
-                    } catch (RemoteException ex) {
-                        LOGGER.log(Level.SEVERE, null, ex);
-                    }
-                }
-            };
-
-            logPathChangeListener = (ObservableValue<? extends String> ov, String t, String t1) -> {
-                ServerCommander serverCommander = getServerCommander();
-                if (serverCommander != null) {
-                    try {
-                        serverCommander.setLogDir(t1);
-                    } catch (RemoteException ex) {
-                        LOGGER.log(Level.SEVERE, null, ex);
-                    }
-                }
-            };
-
-            scheduledSyncChangeListener = (ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
-                ServerCommander serverCommander = getServerCommander();
-                if (serverCommander != null) {
-                    try {
-                        serverCommander.setCronActive(t1);
-                    } catch (RemoteException ex) {
-                        LOGGER.log(Level.SEVERE, null, ex);
-                    }
-                }
-            };
-
-            mManager.connectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
-                if (t1) {
-                    loadServerPreferences();
-                } else {
-                    removeListeners();
-                    setScheduledSync(false);
-                    setRsyncPath("-");
-                    setLogPath("-");
-                }
-            });
-            mManager.getClient().addServerEventListener(new ServerEventAdapter() {
-
-                @Override
-                public void onServerEvent(ServerEvent serverEvent) {
-                    Platform.runLater(() -> {
-                        if (serverEvent == ServerEvent.CRON_CHANGED) {
-                            try {
-                                setScheduledSync(mManager.getServerCommander().isCronActive());
-                            } catch (RemoteException ex) {
-                                LOGGER.log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        private void loadServerPreferences() {
-            addListeners();
-
-            try {
-                setScheduledSync(getServerCommander().isCronActive());
-                setRsyncPath(getServerCommander().getRsyncPath());
-                setLogPath(getServerCommander().getLogDir());
-            } catch (RemoteException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            }
-        }
-
-        private void removeListeners() {
-            rsyncPathProperty().removeListener(rsyncPathChangeListener);
-            logPathProperty().removeListener(logPathChangeListener);
-            scheduledSyncProperty().removeListener(scheduledSyncChangeListener);
-        }
-
-    }
-
 }
