@@ -181,6 +181,12 @@ public class App extends Application {
         editorAction.setAccelerator(new KeyCodeCombination(KeyCode.J, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
         editorAction.disabledProperty().bind(mManager.connectedProperty().not());
 
+        var logViewerAction = new Action(mBundle.getString("logViewer"), actionEvent -> {
+            displayLogViewer();
+        });
+        logViewerAction.setAccelerator(new KeyCodeCombination(KeyCode.L, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN));
+        logViewerAction.disabledProperty().bind(mManager.connectedProperty().not());
+
         var optionsAction = new Action(Dict.OPTIONS.toString(), actionEvent -> {
             displayOptions();
         });
@@ -194,6 +200,7 @@ public class App extends Application {
 
         var serverActionGroup = new ActionGroup(Dict.SERVER.toString(),
                 editorAction,
+                logViewerAction,
                 ACTION_SEPARATOR,
                 serverStartAction,
                 serverShutdownAction,
@@ -273,6 +280,10 @@ public class App extends Application {
 
     private void displayHelp() {
         SystemHelper.desktopBrowse("https://trixon.se/projects/mapollage/documentation/");
+    }
+
+    private void displayLogViewer() {
+        displayErrorDialog("TODO");
     }
 
     private void displayOptions() {
