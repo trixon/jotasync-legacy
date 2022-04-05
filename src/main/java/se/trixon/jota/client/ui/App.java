@@ -279,7 +279,7 @@ public class App extends Application {
     }
 
     private void displayHelp() {
-        SystemHelper.desktopBrowse("https://trixon.se/projects/mapollage/documentation/");
+        SystemHelper.desktopBrowse("https://trixon.se/projects/jotasync/documentation/");
     }
 
     private void displayLogViewer() {

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2022 Patrik Karlström.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,16 +25,15 @@ import org.apache.commons.lang3.SystemUtils;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.jota.client.ui.editor.module.task.TaskExecutePanel;
+import se.trixon.jota.shared.JotaBase;
 
 /**
  *
  * @author Patrik Karlström
  */
-public class Task implements Comparable<Task>, Serializable {
+public class Task extends JotaBase implements Comparable<Task>, Serializable {
 
     private final List<String> mCommand = new ArrayList<>();
-    @SerializedName("description")
-    private String mDescription = "";
     @SerializedName("destination")
     private String mDestination;
     @SerializedName("environment")
@@ -43,20 +42,12 @@ public class Task implements Comparable<Task>, Serializable {
     private final ExcludeSection mExcludeSection;
     @SerializedName("execute_section")
     private final TaskExecuteSection mExecuteSection;
-    private String mHistory = "";
-    @SerializedName("id")
-    private long mId = System.currentTimeMillis();
-    @SerializedName("name")
-    private String mName = "";
     @SerializedName("no_additional_dir")
     private boolean mNoAdditionalDir;
-    @SerializedName("note")
-    private String mNote = "";
     @SerializedName("option_section")
     private final OptionSection mOptionSection;
     @SerializedName("source")
     private String mSource;
-    private transient StringBuilder mSummaryBuilder;
 
     public Task() {
         mExecuteSection = new TaskExecuteSection();
@@ -101,10 +92,6 @@ public class Task implements Comparable<Task>, Serializable {
         return StringUtils.join(getCommand(), " ");
     }
 
-    public String getDescription() {
-        return mDescription;
-    }
-
     public String getDestination() {
         return mDestination;
     }
@@ -119,22 +106,6 @@ public class Task implements Comparable<Task>, Serializable {
 
     public TaskExecuteSection getExecuteSection() {
         return mExecuteSection;
-    }
-
-    public String getHistory() {
-        return mHistory;
-    }
-
-    public long getId() {
-        return mId;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public String getNote() {
-        return mNote;
     }
 
     public OptionSection getOptionSection() {
@@ -194,10 +165,6 @@ public class Task implements Comparable<Task>, Serializable {
         return !getName().isEmpty();
     }
 
-    public void setDescription(String comment) {
-        mDescription = comment;
-    }
-
     public void setDestination(String destination) {
         mDestination = destination;
     }
@@ -206,24 +173,8 @@ public class Task implements Comparable<Task>, Serializable {
         mEnvironment = environment;
     }
 
-    public void setHistory(String history) {
-        mHistory = history == null ? "" : history;
-    }
-
-    public void setId(long id) {
-        mId = id;
-    }
-
-    public void setName(String name) {
-        mName = name;
-    }
-
     public void setNoAdditionalDir(boolean value) {
         mNoAdditionalDir = value;
-    }
-
-    public void setNote(String string) {
-        mNote = string;
     }
 
     public void setSource(String source) {
@@ -240,12 +191,6 @@ public class Task implements Comparable<Task>, Serializable {
     private void add(String command) {
         if (!mCommand.contains(command)) {
             mCommand.add(command);
-        }
-    }
-
-    private void addOptionalToSummary(boolean active, String command, String header) {
-        if (active) {
-            mSummaryBuilder.append(String.format("<p><b>%s</b><br /><i>%s</i></p>", header, command));
         }
     }
 }

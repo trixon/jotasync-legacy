@@ -22,19 +22,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.swing.DefaultListModel;
 import org.apache.commons.lang3.StringUtils;
 import se.trixon.almond.util.Dict;
 import se.trixon.almond.util.SystemHelper;
 import se.trixon.jota.client.ui.editor.module.job.JobExecutePanel;
+import se.trixon.jota.shared.JotaBase;
 import se.trixon.jota.shared.task.Task;
 
 /**
  *
  * @author Patrik Karlström
  */
-public class Job implements Comparable<Job>, Serializable {
+public class Job extends JotaBase implements Comparable<Job>, Serializable {
 
     public static OUTPUT TO_STRING = OUTPUT.VERBOSE;
 
@@ -42,13 +42,8 @@ public class Job implements Comparable<Job>, Serializable {
     private boolean mCronActive;
     @SerializedName("cron_items")
     private String mCronItems = "";
-    @SerializedName("description")
-    private String mDescription = "";
     @SerializedName("execute_section")
     private final JobExecuteSection mExecuteSection;
-    private String mHistory = "";
-    @SerializedName("id")
-    private long mId = System.currentTimeMillis();
     @SerializedName("last_run")
     private long mLastRun = -1;
     @SerializedName("last_run_exit_code")
@@ -61,13 +56,8 @@ public class Job implements Comparable<Job>, Serializable {
     private boolean mLogOutput = true;
     @SerializedName("log_separate_errors")
     private boolean mLogSeparateErrors = true;
-    @SerializedName("name")
-    private String mName = "";
-    @SerializedName("note")
-    private String mNote = "";
-    private transient StringBuilder mSummaryBuilder;
     @SerializedName("tasks")
-    private ArrayList<Long> mTaskIds = new ArrayList<>();
+    private final ArrayList<Long> mTaskIds = new ArrayList<>();
     private List<Task> mTasks = new LinkedList<>();
 
     public Job() {
@@ -110,20 +100,8 @@ public class Job implements Comparable<Job>, Serializable {
         return mCronItems;
     }
 
-    public String getDescription() {
-        return mDescription;
-    }
-
     public JobExecuteSection getExecuteSection() {
         return mExecuteSection;
-    }
-
-    public String getHistory() {
-        return mHistory;
-    }
-
-    public long getId() {
-        return mId;
     }
 
     public long getLastRun() {
@@ -134,7 +112,7 @@ public class Job implements Comparable<Job>, Serializable {
         String lastRunDateTime = replacement;
 
         if (lastRun > 0) {
-            Date date = new Date(lastRun);
+            var date = new Date(lastRun);
             lastRunDateTime = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(date);
         }
 
@@ -165,18 +143,10 @@ public class Job implements Comparable<Job>, Serializable {
         return mLogMode;
     }
 
-    public String getName() {
-        return mName;
-    }
-
-    public String getNote() {
-        return mNote;
-    }
-
     public String getSummaryAsHtml() {
         mSummaryBuilder = new StringBuilder("<html><body>");
         mSummaryBuilder.append("<h1>").append(getName()).append("</h1>");
-        ResourceBundle bundle = SystemHelper.getBundle(JobExecutePanel.class, "Bundle");
+        var bundle = SystemHelper.getBundle(JobExecutePanel.class, "Bundle");
 
         addOptionalToSummary(mExecuteSection.isBefore(), mExecuteSection.getBeforeCommand(), bundle.getString("JobPanel.beforePanel.header"));
         if (mExecuteSection.isBefore() && mExecuteSection.isBeforeHaltOnError()) {
@@ -187,7 +157,7 @@ public class Job implements Comparable<Job>, Serializable {
         addOptionalToSummary(mExecuteSection.isAfterSuccess(), mExecuteSection.getAfterSuccessCommand(), bundle.getString("JobPanel.afterSuccessPanel.header"));
         addOptionalToSummary(mExecuteSection.isAfter(), mExecuteSection.getAfterCommand(), bundle.getString("JobPanel.afterPanel.header"));
 
-        for (Task task : getTasks()) {
+        for (var task : getTasks()) {
             mSummaryBuilder.append("<hr>");
             mSummaryBuilder.append(task.getSummaryAsHtml());
         }
@@ -237,18 +207,6 @@ public class Job implements Comparable<Job>, Serializable {
         mCronItems = cronItems;
     }
 
-    public void setDescription(String string) {
-        mDescription = string;
-    }
-
-    public void setHistory(String history) {
-        mHistory = history == null ? "" : history;
-    }
-
-    public void setId(long id) {
-        mId = id;
-    }
-
     public void setLastRun(long lastRun) {
         mLastRun = lastRun;
     }
@@ -273,14 +231,6 @@ public class Job implements Comparable<Job>, Serializable {
         mLogSeparateErrors = logSeparateErrors;
     }
 
-    public void setName(String name) {
-        mName = name;
-    }
-
-    public void setNote(String string) {
-        mNote = string;
-    }
-
     public void setTasks(List<Task> tasksSkip) {
         mTasks = tasksSkip;
     }
@@ -289,8 +239,8 @@ public class Job implements Comparable<Job>, Serializable {
         mTasks.clear();
         mTaskIds.clear();
 
-        for (Object object : model.toArray()) {
-            Task task = (Task) object;
+        for (var object : model.toArray()) {
+            var task = (Task) object;
             mTasks.add(task);
             mTaskIds.add(task.getId());
         }
@@ -304,12 +254,6 @@ public class Job implements Comparable<Job>, Serializable {
             String description = StringUtils.isBlank(mDescription) ? "&nbsp;" : mDescription;
 
             return String.format("<html><b>%s</b><br /><i>%s</i></html>", mName, description);
-        }
-    }
-
-    private void addOptionalToSummary(boolean active, String command, String header) {
-        if (active) {
-            mSummaryBuilder.append(String.format("<p><b>%s</b><br /><i>%s</i></p>", header, command));
         }
     }
 
